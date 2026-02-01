@@ -1,0 +1,1036 @@
+/**
+ * 桂花茶溯源小程序 - 溯源详情页样式
+ * 色系：青色(#2E8B57) + 金色(#DAA520)
+ */
+
+/* ==================== 页面容器 ==================== */
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #F5F5F0 0%, #FAFAF5 100%);
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+}
+
+/* 弹窗打开时禁止底层滚动 */
+.page-container.no-scroll {
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+/* ==================== 顶部产品概览 ==================== */
+.product-header {
+  position: relative;
+  padding: 48rpx 32rpx 72rpx;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 50%, #228B22 100%);
+  border-radius: 0 0 48rpx 48rpx;
+  overflow: hidden;
+}
+
+.header-bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 15% 25%, rgba(255,255,255,0.1) 0%, transparent 40%),
+    radial-gradient(circle at 85% 75%, rgba(218,165,32,0.15) 0%, transparent 35%);
+}
+
+.product-info {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.product-icon {
+  width: 100rpx;
+  height: 100rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20rpx;
+  font-size: 48rpx;
+}
+
+.product-name {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 8rpx;
+}
+
+.product-batch {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 区块链存证标识 */
+.blockchain-badge {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10rpx);
+  border-radius: 16rpx;
+  padding: 16rpx 24rpx;
+  margin-top: 24rpx;
+}
+
+.badge-icon {
+  width: 56rpx;
+  height: 56rpx;
+  background: rgba(218, 165, 32, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+  font-size: 28rpx;
+}
+
+.badge-text {
+  flex: 1;
+  text-align: left;
+}
+
+.badge-title {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.badge-desc {
+  display: block;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.badge-status {
+  background: #DAA520;
+  color: #FFFFFF;
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+/* ==================== 主要内容区域 ==================== */
+.main-content {
+  padding: 32rpx;
+  margin-top: -32rpx;
+  position: relative;
+  z-index: 2;
+}
+
+/* ==================== 通用卡片样式 ==================== */
+.card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.animate-card {
+  opacity: 0;
+  transform: translateY(30rpx);
+  animation: cardFadeIn 0.5s ease forwards;
+}
+
+@keyframes cardFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 28rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.title-icon {
+  margin-right: 12rpx;
+  font-size: 36rpx;
+}
+
+.title-badge {
+  margin-left: auto;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  color: #FFFFFF;
+  font-size: 22rpx;
+  font-weight: 500;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.title-badge.gold {
+  background: linear-gradient(135deg, #DAA520, #F0C75E);
+}
+
+.title-badge.green {
+  background: linear-gradient(135deg, #52C41A, #95DE64);
+}
+
+/* ==================== 信息网格布局 ==================== */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.info-item {
+  padding: 16rpx 20rpx;
+  background: #FAFAFA;
+  border-radius: 12rpx;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.info-value.highlight {
+  color: #2E8B57;
+  display: flex;
+  align-items: center;
+}
+
+.copy-icon {
+  font-size: 24rpx;
+  margin-left: 8rpx;
+  opacity: 0.6;
+}
+
+/* ==================== 树龄信息模块 ==================== */
+.tree-age-card {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8FFF8 100%);
+}
+
+.tree-age-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.tree-item {
+  text-align: center;
+  padding: 20rpx;
+  flex: 1;
+}
+
+.tree-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16rpx;
+  font-size: 40rpx;
+}
+
+.tree-icon.tea-tree {
+  background: linear-gradient(135deg, rgba(46, 139, 87, 0.15), rgba(46, 139, 87, 0.05));
+}
+
+.tree-icon.osmanthus-tree {
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(218, 165, 32, 0.05));
+}
+
+.tree-type {
+  font-size: 26rpx;
+  color: #666666;
+  margin-bottom: 8rpx;
+}
+
+.tree-age {
+  margin-bottom: 8rpx;
+}
+
+.age-number {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #2E8B57;
+}
+
+.age-unit {
+  font-size: 26rpx;
+  color: #666666;
+  margin-left: 4rpx;
+}
+
+.tree-location {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.tree-divider {
+  width: 1rpx;
+  height: 120rpx;
+  background: linear-gradient(180deg, transparent, #E8E8E8, transparent);
+}
+
+/* ==================== 桂花信息模块 ==================== */
+.osmanthus-content {
+  text-align: center;
+}
+
+.osmanthus-variety {
+  margin-bottom: 24rpx;
+}
+
+.variety-badge {
+  display: inline-block;
+  padding: 12rpx 40rpx;
+  border-radius: 30rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.variety-badge.golden {
+  background: linear-gradient(135deg, #DAA520, #FFD700);
+  color: #FFFFFF;
+}
+
+.variety-badge.silver {
+  background: linear-gradient(135deg, #C0C0C0, #E8E8E8);
+  color: #666666;
+}
+
+/* ==================== 窨制工艺模块 ==================== */
+.process-params {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: linear-gradient(135deg, #FAFAFA, #F5F5F5);
+  border-radius: 16rpx;
+  padding: 24rpx 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.param-item {
+  text-align: center;
+  flex: 1;
+}
+
+.param-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #DAA520;
+}
+
+.param-label {
+  font-size: 22rpx;
+  color: #999999;
+  margin-top: 8rpx;
+}
+
+.param-divider {
+  width: 1rpx;
+  height: 60rpx;
+  background: #E8E8E8;
+}
+
+.env-params {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 28rpx;
+}
+
+.env-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx;
+  background: #F8F8F8;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.env-icon {
+  margin-right: 8rpx;
+}
+
+/* 工艺流程图 */
+.process-flow {
+  background: linear-gradient(135deg, #F8FFF8, #F5F5F0);
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.flow-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 20rpx;
+  text-align: center;
+}
+
+.flow-steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.flow-step {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 16rpx;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.flow-step.active {
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  box-shadow: 0 4rpx 12rpx rgba(46, 139, 87, 0.3);
+}
+
+.flow-step.active .step-name {
+  color: #FFFFFF;
+}
+
+.step-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.step-name {
+  font-size: 24rpx;
+  color: #333333;
+}
+
+.step-arrow {
+  margin-left: 8rpx;
+  font-size: 24rpx;
+  color: #CCCCCC;
+}
+
+.step-detail {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  border-left: 6rpx solid #2E8B57;
+}
+
+.detail-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
+
+.detail-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.detail-desc {
+  font-size: 24rpx;
+  color: #666666;
+  margin-top: 4rpx;
+}
+
+/* ==================== 绿色溯源模块 ==================== */
+.green-card {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F0FFF0 100%);
+}
+
+.green-section {
+  margin-bottom: 24rpx;
+  padding-bottom: 24rpx;
+  border-bottom: 1rpx dashed #E8E8E8;
+}
+
+.green-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 16rpx;
+}
+
+.green-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.green-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+.green-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.green-cert {
+  margin-left: auto;
+  background: rgba(82, 196, 26, 0.1);
+  color: #52C41A;
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 16rpx;
+}
+
+.green-reduction {
+  margin-left: auto;
+  background: rgba(46, 139, 87, 0.1);
+  color: #2E8B57;
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 16rpx;
+}
+
+.green-records {
+  padding-left: 48rpx;
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  color: #666666;
+  margin-bottom: 12rpx;
+}
+
+.record-check {
+  color: #52C41A;
+  margin-right: 12rpx;
+  font-weight: 600;
+}
+
+/* 隐私提示 */
+.privacy-notice {
+  display: flex;
+  align-items: center;
+  background: rgba(46, 139, 87, 0.08);
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+}
+
+.privacy-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.privacy-text {
+  font-size: 22rpx;
+  color: #666666;
+  line-height: 1.5;
+}
+
+/* ==================== 农残检测模块 ==================== */
+.test-institution {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #F8F8FF, #F5F5F5);
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.institution-icon {
+  font-size: 48rpx;
+  margin-right: 16rpx;
+}
+
+.institution-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 4rpx;
+}
+
+.institution-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.institution-meta text {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.test-results {
+  margin-bottom: 20rpx;
+}
+
+.test-category {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 12rpx;
+}
+
+.category-icon {
+  margin-right: 8rpx;
+}
+
+.test-table {
+  background: #FAFAFA;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  background: #F0F0F0;
+  padding: 16rpx 12rpx;
+}
+
+.table-header text {
+  font-size: 22rpx;
+  color: #666666;
+  font-weight: 500;
+}
+
+.th-item { flex: 2; }
+.th-value { flex: 2; text-align: center; }
+.th-limit { flex: 2; text-align: center; }
+.th-status { flex: 1; text-align: center; }
+
+.table-row {
+  display: flex;
+  padding: 16rpx 12rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row text {
+  font-size: 24rpx;
+  color: #333333;
+}
+
+.td-item { flex: 2; }
+.td-value { flex: 2; text-align: center; color: #2E8B57; }
+.td-limit { flex: 2; text-align: center; color: #999999; }
+.td-status { flex: 1; text-align: center; }
+.td-status.pass { color: #52C41A; font-weight: 600; }
+
+.standard-tip {
+  display: flex;
+  align-items: center;
+  background: rgba(82, 196, 26, 0.1);
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.tip-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.tip-text {
+  font-size: 26rpx;
+  color: #52C41A;
+  font-weight: 500;
+}
+
+.view-report-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  color: #FFFFFF;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.btn-icon {
+  margin-right: 12rpx;
+  font-size: 32rpx;
+}
+
+/* ==================== 冲泡建议模块 ==================== */
+.brewing-params {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 28rpx;
+}
+
+.brewing-item {
+  text-align: center;
+  padding: 20rpx;
+  background: linear-gradient(135deg, #FFF8E1, #FFFEF5);
+  border-radius: 16rpx;
+  min-width: 160rpx;
+}
+
+.brewing-icon {
+  font-size: 40rpx;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.brewing-label {
+  font-size: 22rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+}
+
+.brewing-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #DAA520;
+}
+
+.brewing-extra {
+  background: #FAFAFA;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.extra-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.extra-item:last-child {
+  margin-bottom: 0;
+}
+
+.extra-label {
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.extra-value {
+  font-size: 26rpx;
+  color: #333333;
+}
+
+.brewing-tips {
+  background: linear-gradient(135deg, #F8FFF8, #F5F5F0);
+  border-radius: 12rpx;
+  padding: 20rpx;
+}
+
+.tips-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12rpx;
+}
+
+.tip-item:last-child {
+  margin-bottom: 0;
+}
+
+.tip-num {
+  width: 36rpx;
+  height: 36rpx;
+  background: #2E8B57;
+  color: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.5;
+}
+
+/* ==================== 区块链存证详情 ==================== */
+.blockchain-card {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8F8FF 100%);
+}
+
+.blockchain-detail {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+}
+
+.blockchain-item {
+  padding: 16rpx;
+  background: #FAFAFA;
+  border-radius: 12rpx;
+}
+
+.bc-label {
+  display: block;
+  font-size: 22rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+}
+
+.bc-value {
+  font-size: 26rpx;
+  color: #333333;
+  word-break: break-all;
+}
+
+.bc-value.hash {
+  font-family: monospace;
+  font-size: 24rpx;
+  color: #2E8B57;
+}
+
+/* ==================== 返回顶部按钮 ==================== */
+.back-top {
+  position: fixed;
+  right: 32rpx;
+  bottom: calc(120rpx + env(safe-area-inset-bottom));
+  width: 88rpx;
+  height: 88rpx;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(46, 139, 87, 0.3);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.back-top.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.back-top-icon {
+  font-size: 36rpx;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+/* ==================== PDF报告弹窗 ==================== */
+.pdf-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.pdf-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.pdf-content {
+  width: 90%;
+  max-width: 650rpx;
+  max-height: 80vh;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.pdf-modal.show .pdf-content {
+  transform: scale(1);
+}
+
+.pdf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  color: #FFFFFF;
+}
+
+.pdf-title {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.pdf-close {
+  width: 56rpx;
+  height: 56rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+}
+
+.pdf-body {
+  padding: 32rpx;
+  max-height: calc(80vh - 120rpx);
+  overflow-y: auto;
+}
+
+.pdf-institution {
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+
+.pdf-logo {
+  font-size: 60rpx;
+  margin-bottom: 12rpx;
+}
+
+.pdf-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.pdf-info {
+  background: #FAFAFA;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.pdf-row {
+  display: flex;
+  margin-bottom: 8rpx;
+}
+
+.pdf-row:last-child {
+  margin-bottom: 0;
+}
+
+.pdf-label {
+  font-size: 24rpx;
+  color: #999999;
+  min-width: 140rpx;
+}
+
+.pdf-value {
+  font-size: 24rpx;
+  color: #333333;
+}
+
+.pdf-divider {
+  height: 2rpx;
+  background: linear-gradient(90deg, transparent, #E8E8E8, transparent);
+  margin: 24rpx 0;
+}
+
+.pdf-section-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 12rpx;
+}
+
+.pdf-result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12rpx 0;
+  font-size: 24rpx;
+  color: #666666;
+  border-bottom: 1rpx dashed #F0F0F0;
+}
+
+.pdf-pass {
+  color: #52C41A;
+  font-weight: 500;
+}
+
+.pdf-footer {
+  margin-top: 32rpx;
+  text-align: center;
+}
+
+.pdf-stamp {
+  display: inline-block;
+  padding: 16rpx 48rpx;
+  border: 4rpx solid #52C41A;
+  border-radius: 8rpx;
+  color: #52C41A;
+  font-size: 32rpx;
+  font-weight: 600;
+  transform: rotate(-5deg);
+  margin-bottom: 16rpx;
+}
+
+.pdf-conclusion {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+/* ==================== 加载状态 ==================== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #F5F5F0;
+}
+
+.loading-spinner {
+  width: 80rpx;
+  height: 80rpx;
+  border: 6rpx solid #E8E8E8;
+  border-top-color: #2E8B57;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  margin-top: 24rpx;
+  font-size: 28rpx;
+  color: #999999;
+}

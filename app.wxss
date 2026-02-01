@@ -1,0 +1,287 @@
+/**
+ * 桂花茶溯源小程序 - 全局样式文件
+ * 定义：全局变量、通用样式、主题色彩
+ * 色系：青色(#2E8B57) + 金色(#DAA520)
+ */
+
+/* ==================== CSS变量定义 ==================== */
+page {
+  /* 主题色 - 青色系 */
+  --color-primary: #2E8B57;          /* 海绿色 - 主色调 */
+  --color-primary-light: #3CB371;    /* 中海绿 - 浅色 */
+  --color-primary-dark: #228B22;     /* 森林绿 - 深色 */
+  
+  /* 辅助色 - 金色系 */
+  --color-secondary: #DAA520;        /* 金麒麟色 - 辅助主色 */
+  --color-secondary-light: #F0C75E;  /* 浅金色 */
+  --color-secondary-dark: #B8860B;   /* 暗金色 */
+  
+  /* 背景色 */
+  --bg-primary: #F5F5F0;             /* 米白色背景 */
+  --bg-secondary: #FFFFFF;           /* 白色背景 */
+  --bg-card: #FFFFFF;                /* 卡片背景 */
+  
+  /* 文字色 */
+  --text-primary: #333333;           /* 主文字 */
+  --text-secondary: #666666;         /* 次要文字 */
+  --text-hint: #999999;              /* 提示文字 */
+  --text-white: #FFFFFF;             /* 白色文字 */
+  
+  /* 边框色 */
+  --border-color: #E8E8E8;           /* 边框颜色 */
+  --border-light: #F0F0F0;           /* 浅边框 */
+  
+  /* 状态色 */
+  --color-success: #52C41A;          /* 成功 */
+  --color-warning: #FAAD14;          /* 警告 */
+  --color-error: #FF4D4F;            /* 错误 */
+  --color-info: #1890FF;             /* 信息 */
+  
+  /* 间距 */
+  --spacing-xs: 8rpx;
+  --spacing-sm: 16rpx;
+  --spacing-md: 24rpx;
+  --spacing-lg: 32rpx;
+  --spacing-xl: 48rpx;
+  
+  /* 圆角 */
+  --radius-sm: 8rpx;
+  --radius-md: 16rpx;
+  --radius-lg: 24rpx;
+  --radius-round: 50%;
+  
+  /* 阴影 */
+  --shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.16);
+  
+  /* 字体大小 */
+  --font-xs: 22rpx;
+  --font-sm: 24rpx;
+  --font-md: 28rpx;
+  --font-lg: 32rpx;
+  --font-xl: 36rpx;
+  --font-xxl: 44rpx;
+  
+  /* 页面基础样式 */
+  background-color: var(--bg-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: var(--font-md);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* ==================== 通用容器样式 ==================== */
+.container {
+  padding: var(--spacing-lg);
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 卡片标题 */
+.card-title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+}
+
+.card-title::before {
+  content: '';
+  width: 8rpx;
+  height: 32rpx;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+  border-radius: 4rpx;
+  margin-right: var(--spacing-sm);
+}
+
+/* ==================== 按钮样式 ==================== */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  color: var(--text-white);
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-md);
+  font-weight: 500;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-light));
+  color: var(--text-white);
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-md);
+  font-weight: 500;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2rpx solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-md);
+}
+
+/* ==================== 文字样式 ==================== */
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.text-hint {
+  color: var(--text-hint);
+  font-size: var(--font-sm);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-bold {
+  font-weight: 600;
+}
+
+/* ==================== 布局工具类 ==================== */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+/* ==================== 间距工具类 ==================== */
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+
+/* ==================== 图标基础样式 ==================== */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-sm {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.icon-md {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.icon-lg {
+  width: 64rpx;
+  height: 64rpx;
+}
+
+/* ==================== 分隔线 ==================== */
+.divider {
+  height: 1rpx;
+  background-color: var(--border-color);
+  margin: var(--spacing-md) 0;
+}
+
+/* ==================== 标签样式 ==================== */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-xs);
+}
+
+.tag-success {
+  background-color: rgba(82, 196, 26, 0.1);
+  color: var(--color-success);
+}
+
+.tag-primary {
+  background-color: rgba(46, 139, 87, 0.1);
+  color: var(--color-primary);
+}
+
+.tag-warning {
+  background-color: rgba(250, 173, 20, 0.1);
+  color: var(--color-warning);
+}
+
+/* ==================== 动画 ==================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "桂花茶溯源",
+  "navigationBarBackgroundColor": "#2E8B57",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F5F5F0",
+  "enablePullDownRefresh": false,
+  "usingComponents": {}
+}

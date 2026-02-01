@@ -1,0 +1,470 @@
+/**
+ * 桂花茶溯源小程序 - 首页样式
+ * 色系：青色(#2E8B57) + 金色(#DAA520)
+ */
+
+/* ==================== 页面容器 ==================== */
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #F5F5F0 0%, #FAFAF5 100%);
+  padding-bottom: env(safe-area-inset-bottom);
+  opacity: 0;
+  transform: translateY(20rpx);
+  transition: all 0.4s ease;
+}
+
+.page-container.page-loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==================== 顶部品牌区域 ==================== */
+.header-section {
+  position: relative;
+  padding: 60rpx 40rpx 80rpx;
+  overflow: hidden;
+}
+
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 50%, #228B22 100%);
+  border-radius: 0 0 60rpx 60rpx;
+}
+
+.header-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(218,165,32,0.15) 0%, transparent 40%);
+}
+
+.brand-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand-icon {
+  width: 120rpx;
+  height: 120rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+}
+
+.osmanthus-icon {
+  font-size: 60rpx;
+}
+
+.brand-title {
+  font-size: 44rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 4rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+.brand-subtitle {
+  display: flex;
+  align-items: center;
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.eco-leaf {
+  margin: 0 12rpx;
+  font-size: 24rpx;
+}
+
+/* ==================== 主要功能区域 ==================== */
+.main-section {
+  padding: 0 32rpx;
+  margin-top: -40rpx;
+  position: relative;
+  z-index: 2;
+}
+
+/* 扫码卡片 */
+.scan-card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 40rpx 32rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 8rpx 32rpx rgba(46, 139, 87, 0.15);
+  margin-bottom: 32rpx;
+  transition: all 0.3s ease;
+}
+
+.scan-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 16rpx rgba(46, 139, 87, 0.2);
+}
+
+.scan-icon-wrapper {
+  margin-right: 28rpx;
+}
+
+.scan-icon {
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.scan-icon-inner {
+  width: 56rpx;
+  height: 56rpx;
+  position: relative;
+}
+
+.scan-corner {
+  position: absolute;
+  width: 16rpx;
+  height: 16rpx;
+  border-color: #FFFFFF;
+  border-style: solid;
+}
+
+.scan-corner-tl {
+  top: 0;
+  left: 0;
+  border-width: 4rpx 0 0 4rpx;
+}
+
+.scan-corner-tr {
+  top: 0;
+  right: 0;
+  border-width: 4rpx 4rpx 0 0;
+}
+
+.scan-corner-bl {
+  bottom: 0;
+  left: 0;
+  border-width: 0 0 4rpx 4rpx;
+}
+
+.scan-corner-br {
+  bottom: 0;
+  right: 0;
+  border-width: 0 4rpx 4rpx 0;
+}
+
+.scan-line {
+  position: absolute;
+  top: 50%;
+  left: 4rpx;
+  right: 4rpx;
+  height: 4rpx;
+  background: #DAA520;
+  animation: scanMove 2s ease-in-out infinite;
+}
+
+@keyframes scanMove {
+  0%, 100% {
+    top: 20%;
+    opacity: 1;
+  }
+  50% {
+    top: 80%;
+    opacity: 0.6;
+  }
+}
+
+.scan-text {
+  flex: 1;
+}
+
+.scan-title {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 8rpx;
+}
+
+.scan-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.scan-arrow {
+  font-size: 48rpx;
+  color: #CCCCCC;
+  font-weight: 300;
+}
+
+/* ==================== 手动输入区域 ==================== */
+.manual-section {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.manual-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.manual-toggle-text {
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.manual-toggle-icon {
+  font-size: 24rpx;
+  color: #999999;
+  transition: transform 0.3s ease;
+}
+
+.manual-toggle-icon.rotate {
+  transform: rotate(180deg);
+}
+
+.manual-input-area {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.manual-input-area.show {
+  max-height: 300rpx;
+  margin-top: 28rpx;
+  opacity: 1;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #F8F8F8;
+  border-radius: 36rpx;
+  padding: 8rpx 8rpx 8rpx 16rpx;
+  border: 2rpx solid #E8E8E8;
+}
+
+.trace-input {
+  flex: 1;
+  height: 64rpx;
+  padding: 0 16rpx;
+  font-size: 28rpx;
+  color: #333333;
+  background: transparent;
+}
+
+.input-placeholder {
+  color: #CCCCCC;
+  font-size: 26rpx;
+}
+
+.query-btn {
+  height: 56rpx;
+  line-height: 56rpx;
+  background: linear-gradient(135deg, #DAA520, #F0C75E);
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 500;
+  border-radius: 28rpx;
+  padding: 0 16rpx;
+  margin: 0;
+  margin-left: 8rpx;
+  border: none;
+  flex-shrink: 0;
+  width:200rpx !important;
+}
+
+.query-btn::after {
+  border: none;
+}
+
+.test-ids {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+}
+
+.test-label {
+  font-size: 24rpx;
+  color: #999999;
+  margin-right: 16rpx;
+}
+
+.test-id-btns {
+  display: flex;
+  gap: 16rpx;
+}
+
+.test-id-btn {
+  padding: 8rpx 24rpx;
+  background: rgba(46, 139, 87, 0.1);
+  color: #2E8B57;
+  font-size: 24rpx;
+  border-radius: 8rpx;
+  transition: all 0.2s ease;
+}
+
+.test-id-btn:active {
+  background: rgba(46, 139, 87, 0.2);
+}
+
+/* ==================== 功能说明区域 ==================== */
+.feature-section {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 28rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.title-icon {
+  margin-right: 12rpx;
+  font-size: 36rpx;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24rpx;
+}
+
+.feature-item {
+  background: #FAFAFA;
+  border-radius: 16rpx;
+  padding: 28rpx 20rpx;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.feature-item:active {
+  transform: scale(0.98);
+  background: #F5F5F5;
+}
+
+.feature-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16rpx;
+  font-size: 36rpx;
+}
+
+.feature-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 8rpx;
+}
+
+.feature-desc {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+/* ==================== 区块链存证横幅 ==================== */
+.blockchain-banner {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(46, 139, 87, 0.08), rgba(218, 165, 32, 0.08));
+  border: 2rpx solid rgba(46, 139, 87, 0.2);
+  border-radius: 20rpx;
+  padding: 28rpx 24rpx;
+  margin-bottom: 32rpx;
+}
+
+.blockchain-icon {
+  width: 72rpx;
+  height: 72rpx;
+  background: linear-gradient(135deg, #2E8B57, #DAA520);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  font-size: 32rpx;
+}
+
+.blockchain-text {
+  flex: 1;
+}
+
+.blockchain-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2E8B57;
+  margin-bottom: 4rpx;
+}
+
+.blockchain-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.blockchain-badge {
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  color: #FFFFFF;
+  font-size: 22rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+/* ==================== 底部信息 ==================== */
+.footer-section {
+  padding: 40rpx 32rpx 60rpx;
+  text-align: center;
+}
+
+.footer-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  color: #666666;
+  margin-bottom: 12rpx;
+}
+
+.eco-icon {
+  margin: 0 12rpx;
+}
+
+.footer-tip {
+  font-size: 22rpx;
+  color: #999999;
+}
