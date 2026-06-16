@@ -179,8 +179,8 @@ Page({
    * 打开弹窗时保存当前滚动位置，禁止底层滚动
    */
   showPdfReport: function() {
-    // 保存当前滚动位置
-    this.savedScrollTop = this.data.scrollTop;
+    const scrollTop = this.data.scrollTop || 0;
+    this.savedScrollTop = scrollTop;
     this.setData({ showPdfModal: true });
   },
 
@@ -191,8 +191,7 @@ Page({
   closePdfModal: function() {
     const that = this;
     this.setData({ showPdfModal: false }, function() {
-      // 恢复滚动位置
-      if (that.savedScrollTop) {
+      if (that.savedScrollTop !== undefined && that.savedScrollTop !== null) {
         wx.pageScrollTo({
           scrollTop: that.savedScrollTop,
           duration: 0

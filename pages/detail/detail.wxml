@@ -3,7 +3,7 @@
   功能：完整展示溯源信息（基础信息、树龄、窨制工艺、绿色溯源、农残检测、冲泡建议）
 -->
 
-<view class="page-container {{showPdfModal ? 'no-scroll' : ''}}" wx:if="{{!loading && traceData}}">
+<view class="page-container {{showPdfModal ? 'no-scroll' : ''}}" style="{{showPdfModal ? 'top: -' + scrollTop + 'px;' : ''}}" wx:if="{{!loading && traceData}}">
   
   <!-- ==================== 顶部产品概览 ==================== -->
   <view class="product-header">

@@ -12,10 +12,10 @@
 
 /* 弹窗打开时禁止底层滚动 */
 .page-container.no-scroll {
-  height: 100vh;
-  overflow: hidden;
   position: fixed;
   width: 100%;
+  left: 0;
+  z-index: 1;
 }
 
 /* ==================== 顶部产品概览 ==================== */
@@ -909,6 +909,7 @@
   padding: 32rpx;
   max-height: calc(80vh - 120rpx);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .pdf-institution {
