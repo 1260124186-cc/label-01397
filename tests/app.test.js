@@ -10,10 +10,48 @@ global.App = function(options) {
   Object.assign(global, options);
 };
 
+global.wx = {
+  getSystemInfoSync: jest.fn(() => ({ SDKVersion: '2.29.0' })),
+  showModal: jest.fn()
+};
+
 // 加载 app.js
 require('../app.js');
 
 describe('app.js 全局方法测试', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('onLaunch 函数测试', () => {
+    test('基础库版本满足要求时不显示提示', () => {
+      wx.getSystemInfoSync.mockReturnValue({ SDKVersion: '2.30.0' });
+      global.onLaunch();
+      expect(wx.showModal).not.toHaveBeenCalled();
+    });
+
+    test('基础库版本刚好满足要求时不显示提示', () => {
+      wx.getSystemInfoSync.mockReturnValue({ SDKVersion: '2.29.0' });
+      global.onLaunch();
+      expect(wx.showModal).not.toHaveBeenCalled();
+    });
+
+    test('基础库版本过低时应该显示提示', () => {
+      wx.getSystemInfoSync.mockReturnValue({ SDKVersion: '2.28.0' });
+      global.onLaunch();
+      expect(wx.showModal).toHaveBeenCalledWith({
+        title: '提示',
+        content: '当前微信版本过低，请升级微信以获得更好的使用体验',
+        showCancel: false
+      });
+    });
+
+    test('应该获取系统信息', () => {
+      global.onLaunch();
+      expect(wx.getSystemInfoSync).toHaveBeenCalled();
+    });
+  });
+
   describe('compareVersion 函数测试', () => {
     test('版本号相等时应该返回 0', () => {
       expect(global.compareVersion('1.0.0', '1.0.0')).toBe(0);

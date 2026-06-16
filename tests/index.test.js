@@ -186,6 +186,162 @@ describe('index.js 页面逻辑测试', () => {
     });
   });
 
+  describe('handleScanCode 扫码功能测试', () => {
+    test('扫码成功且结果有效应该调用查询', () => {
+      mockData.validateTraceId.mockReturnValue(true);
+      page.queryTraceInfo = jest.fn();
+
+      wx.scanCode.mockImplementation((options) => {
+        if (options.success) {
+          options.success({ result: 'G001' });
+        }
+      });
+
+      page.handleScanCode();
+
+      expect(wx.showLoading).toHaveBeenCalledWith({
+        title: '正在启动扫码...',
+        mask: true
+      });
+      expect(wx.scanCode).toHaveBeenCalledWith({
+        scanType: ['qrCode'],
+        success: expect.any(Function),
+        fail: expect.any(Function)
+      });
+      expect(wx.hideLoading).toHaveBeenCalled();
+      expect(page.queryTraceInfo).toHaveBeenCalledWith('G001');
+    });
+
+    test('扫码成功但结果无效应该显示提示', () => {
+      mockData.validateTraceId.mockReturnValue(false);
+      page.queryTraceInfo = jest.fn();
+
+      wx.scanCode.mockImplementation((options) => {
+        if (options.success) {
+          options.success({ result: 'invalid' });
+        }
+      });
+
+      page.handleScanCode();
+
+      expect(wx.showToast).toHaveBeenCalledWith({
+        title: '未识别到有效溯源码',
+        icon: 'none',
+        duration: 2000
+      });
+      expect(page.queryTraceInfo).not.toHaveBeenCalled();
+    });
+
+    test('扫码失败且不是用户取消应该显示错误提示', () => {
+      page.queryTraceInfo = jest.fn();
+
+      wx.scanCode.mockImplementation((options) => {
+        if (options.fail) {
+          options.fail({ errMsg: 'scanCode:fail error' });
+        }
+      });
+
+      page.handleScanCode();
+
+      expect(wx.hideLoading).toHaveBeenCalled();
+      expect(wx.showToast).toHaveBeenCalledWith({
+        title: '扫码失败，请重试',
+        icon: 'none',
+        duration: 2000
+      });
+      expect(page.queryTraceInfo).not.toHaveBeenCalled();
+    });
+
+    test('用户取消扫码不应该显示错误提示', () => {
+      page.queryTraceInfo = jest.fn();
+
+      wx.scanCode.mockImplementation((options) => {
+        if (options.fail) {
+          options.fail({ errMsg: 'scanCode:fail cancel' });
+        }
+      });
+
+      page.handleScanCode();
+
+      expect(wx.hideLoading).toHaveBeenCalled();
+      expect(wx.showToast).not.toHaveBeenCalled();
+      expect(page.queryTraceInfo).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('queryTraceInfo 溯源查询功能测试', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    test('查询成功应该跳转到详情页', () => {
+      const mockTraceData = { basicInfo: { productName: '金桂花茶' } };
+      mockData.getTraceData.mockReturnValue(mockTraceData);
+
+      wx.navigateTo.mockImplementation((options) => {
+        if (options.success) {
+          options.success();
+        }
+      });
+
+      page.queryTraceInfo('G001');
+
+      expect(wx.showLoading).toHaveBeenCalledWith({
+        title: '正在查询...',
+        mask: true
+      });
+
+      jest.advanceTimersByTime(800);
+
+      expect(wx.hideLoading).toHaveBeenCalled();
+      expect(wx.navigateTo).toHaveBeenCalledWith({
+        url: '/pages/detail/detail?traceId=G001',
+        success: expect.any(Function),
+        fail: expect.any(Function)
+      });
+    });
+
+    test('查询失败（未找到数据）应该显示提示', () => {
+      mockData.getTraceData.mockReturnValue(null);
+
+      page.queryTraceInfo('G999');
+
+      jest.advanceTimersByTime(800);
+
+      expect(wx.hideLoading).toHaveBeenCalled();
+      expect(wx.showToast).toHaveBeenCalledWith({
+        title: '未找到该溯源信息',
+        icon: 'none',
+        duration: 2500
+      });
+      expect(wx.navigateTo).not.toHaveBeenCalled();
+    });
+
+    test('页面跳转失败应该显示错误提示', () => {
+      const mockTraceData = { basicInfo: { productName: '金桂花茶' } };
+      mockData.getTraceData.mockReturnValue(mockTraceData);
+
+      wx.navigateTo.mockImplementation((options) => {
+        if (options.fail) {
+          options.fail({ errMsg: 'navigateTo:fail' });
+        }
+      });
+
+      page.queryTraceInfo('G001');
+
+      jest.advanceTimersByTime(800);
+
+      expect(wx.showToast).toHaveBeenCalledWith({
+        title: '页面跳转失败',
+        icon: 'none'
+      });
+    });
+  });
+
   describe('分享功能测试', () => {
     test('onShareAppMessage 应该返回正确的分享配置', () => {
       const result = page.onShareAppMessage();
