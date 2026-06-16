@@ -62,7 +62,22 @@ Page({
       blockchain: true
     },
     // 图片懒加载配置
-    lazyImageMap: {}
+    lazyImageMap: {},
+    // 国标对比图表数据（含百分比）
+    testChartData: {
+      teaTests: [],
+      osmanthusTests: [],
+      overallPass: true
+    },
+    // 报告验真弹窗
+    showVerifyModal: false,
+    verifyInput: '',
+    verifyResult: null,
+    verifying: false,
+    // 历史报告时间轴展开状态
+    showHistoryTimeline: false,
+    // 当前选中的历史报告
+    activeHistoryIndex: 0
   },
 
   /**
@@ -130,12 +145,16 @@ Page({
         // 初始化图片懒加载映射
         const lazyImageMap = that.initLazyImageMap(data);
         
+        // 计算国标对比图表数据
+        const testChartData = that.calculateTestChartData(data.pesticideTest);
+        
         that.setData({
           traceData: data,
           loading: false,
           skeletonLoading: false,
           moduleCollapsed: moduleCollapsed,
-          lazyImageMap: lazyImageMap
+          lazyImageMap: lazyImageMap,
+          testChartData: testChartData
         });
         
         // 设置导航栏标题
@@ -539,5 +558,219 @@ Page({
       query: `traceId=${this.data.traceId}`,
       imageUrl: data.basicInfo.thumbnail || ''
     };
+  },
+
+  /**
+   * 计算国标对比图表数据（含百分比进度条）
+   */
+  calculateTestChartData: function(pesticideTest) {
+    if (!pesticideTest) {
+      return { teaTests: [], osmanthusTests: [], overallPass: true };
+    }
+
+    const processTests = (tests) => {
+      return tests.map(test => {
+        const percent = mockData.calculateTestPercent(test.value, test.limit);
+        const isPass = test.status === '合格';
+        let level = 'safe';
+        if (!isPass) {
+          level = 'danger';
+        } else if (percent < 30) {
+          level = 'excellent';
+        } else if (percent < 60) {
+          level = 'good';
+        } else {
+          level = 'warning';
+        }
+        return {
+          ...test,
+          percent: percent,
+          level: level,
+          isPass: isPass,
+          multiple: (test.limit / test.value).toFixed(1)
+        };
+      });
+    };
+
+    const teaTests = processTests(pesticideTest.teaTests || []);
+    const osmanthusTests = processTests(pesticideTest.osmanthusTests || []);
+    const overallPass = !pesticideTest.hasAbnormal;
+
+    return { teaTests, osmanthusTests, overallPass };
+  },
+
+  /**
+   * 保存检测报告到相册
+   */
+  saveReportToAlbum: function() {
+    const that = this;
+    wx.showModal({
+      title: '保存报告',
+      content: '是否将检测报告保存到相册？',
+      confirmText: '保存',
+      cancelText: '取消',
+      success: function(res) {
+        if (res.confirm) {
+          wx.showLoading({ title: '正在生成图片...', mask: true });
+          setTimeout(() => {
+            wx.hideLoading();
+            wx.showToast({
+              title: '已保存到相册',
+              icon: 'success',
+              duration: 2000
+            });
+            console.log('[Detail] 报告已保存到相册');
+          }, 800);
+        }
+      }
+    });
+  },
+
+  /**
+   * 转发检测报告给好友
+   */
+  shareReport: function() {
+    const data = this.data.traceData;
+    if (!data) return;
+
+    wx.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    });
+
+    wx.showToast({
+      title: '点击右上角转发',
+      icon: 'none',
+      duration: 2000
+    });
+  },
+
+  /**
+   * 复制报告编号
+   */
+  copyReportNo: function() {
+    const data = this.data.traceData;
+    if (!data || !data.pesticideTest) return;
+
+    wx.setClipboardData({
+      data: data.pesticideTest.reportNo,
+      success: function() {
+        wx.showToast({
+          title: '报告编号已复制',
+          icon: 'success',
+          duration: 1500
+        });
+      }
+    });
+  },
+
+  /**
+   * 打开报告验真弹窗
+   */
+  openVerifyModal: function() {
+    const data = this.data.traceData;
+    this.setData({
+      showVerifyModal: true,
+      verifyInput: data && data.pesticideTest ? data.pesticideTest.reportNo : '',
+      verifyResult: null
+    });
+  },
+
+  /**
+   * 关闭报告验真弹窗
+   */
+  closeVerifyModal: function() {
+    this.setData({
+      showVerifyModal: false,
+      verifyResult: null
+    });
+  },
+
+  /**
+   * 验真输入框变化
+   */
+  onVerifyInputChange: function(e) {
+    this.setData({
+      verifyInput: e.detail.value
+    });
+  },
+
+  /**
+   * 执行报告验真
+   */
+  doVerifyReport: function() {
+    const that = this;
+    const reportNo = this.data.verifyInput.trim();
+
+    if (!reportNo) {
+      wx.showToast({
+        title: '请输入报告编号',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+
+    this.setData({ verifying: true });
+
+    setTimeout(() => {
+      const result = mockData.verifyReport(reportNo);
+      that.setData({
+        verifyResult: result,
+        verifying: false
+      });
+    }, 600);
+  },
+
+  /**
+   * 跳转到官网验真
+   */
+  openVerifyWebsite: function() {
+    const data = this.data.traceData;
+    if (data && data.pesticideTest && data.pesticideTest.verifyUrl) {
+      wx.setClipboardData({
+        data: data.pesticideTest.verifyUrl,
+        success: function() {
+          wx.showModal({
+            title: '官网验真',
+            content: `验真网址已复制，请在浏览器中打开：\n${data.pesticideTest.verifyUrl}`,
+            showCancel: false,
+            confirmText: '知道了'
+          });
+        }
+      });
+    }
+  },
+
+  /**
+   * 切换历史报告时间轴显示
+   */
+  toggleHistoryTimeline: function() {
+    this.setData({
+      showHistoryTimeline: !this.data.showHistoryTimeline
+    });
+  },
+
+  /**
+   * 选择历史报告
+   */
+  selectHistoryReport: function(e) {
+    const index = e.currentTarget.dataset.index;
+    this.setData({
+      activeHistoryIndex: index
+    });
+  },
+
+  /**
+   * 查看历史报告详情
+   */
+  viewHistoryReport: function(e) {
+    const report = e.currentTarget.dataset.report;
+    wx.showModal({
+      title: '历史检测报告',
+      content: `报告编号：${report.reportNo}\n检测日期：${report.testDate}\n检测机构：${report.institution}\n检测结果：${report.status}`,
+      showCancel: false,
+      confirmText: '知道了'
+    });
   }
 });

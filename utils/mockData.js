@@ -99,19 +99,50 @@ const mockTraceData = {
     
     // 农残检测
     pesticideTest: {
-      institution: '国家茶叶质量监督检验中心',    // 检测机构
-      testDate: '2025年9月20日',                 // 检测日期
-      reportNo: 'NTQC-2025-09876',               // 报告编号
-      standard: 'GB 2763-2021',                  // 国标依据
+      institution: '国家茶叶质量监督检验中心',
+      testDate: '2025年9月20日',
+      reportNo: 'NTQC-2025-09876',
+      standard: 'GB 2763-2021',
       comparisonTip: '各项农残数值远低于国标 GB 2763-2021 限值，安全放心',
+      verifyUrl: 'https://www.ntqc.org.cn/verify',
+      hasAbnormal: false,
       // 茶叶农残检测项
       teaTests: [
-        { item: '六六六', value: '<0.01', unit: 'mg/kg', limit: '0.1', status: '合格' },
-        { item: '滴滴涕', value: '<0.01', unit: 'mg/kg', limit: '0.2', status: '合格' }
+        { item: '六六六', value: 0.005, displayValue: '<0.01', unit: 'mg/kg', limit: 0.1, status: '合格', description: '' },
+        { item: '滴滴涕', value: 0.008, displayValue: '<0.01', unit: 'mg/kg', limit: 0.2, status: '合格', description: '' },
+        { item: '氯氰菊酯', value: 0.05, displayValue: '0.05', unit: 'mg/kg', limit: 20, status: '合格', description: '' }
       ],
       // 桂花农残检测项
       osmanthusTests: [
-        { item: '联苯菊酯', value: '<0.02', unit: 'mg/kg', limit: '5.0', status: '合格' }
+        { item: '联苯菊酯', value: 0.01, displayValue: '<0.02', unit: 'mg/kg', limit: 5.0, status: '合格', description: '' },
+        { item: '氯氟氰菊酯', value: 0.005, displayValue: '<0.01', unit: 'mg/kg', limit: 2.0, status: '合格', description: '' }
+      ],
+      // 历史检测报告（时间轴）
+      historyReports: [
+        {
+          reportNo: 'NTQC-2025-09876',
+          testDate: '2025年9月20日',
+          institution: '国家茶叶质量监督检验中心',
+          status: '合格',
+          statusLevel: '优秀',
+          batchNo: 'GH202503'
+        },
+        {
+          reportNo: 'NTQC-2025-07654',
+          testDate: '2025年7月15日',
+          institution: '国家茶叶质量监督检验中心',
+          status: '合格',
+          statusLevel: '良好',
+          batchNo: 'GH202502'
+        },
+        {
+          reportNo: 'NTQC-2025-05432',
+          testDate: '2025年5月10日',
+          institution: '国家茶叶质量监督检验中心',
+          status: '合格',
+          statusLevel: '优秀',
+          batchNo: 'GH202501'
+        }
       ]
     },
     
@@ -241,12 +272,66 @@ const mockTraceData = {
       testDate: '2025年9月25日',
       reportNo: 'HBAQ-2025-12345',
       standard: 'GB 2763-2021',
-      comparisonTip: '各项农残数值远低于国标 GB 2763-2021 限值，安全放心',
+      comparisonTip: '存在1项指标超标，请谨慎食用',
+      verifyUrl: 'https://www.hbagri.gov.cn/verify',
+      hasAbnormal: true,
       teaTests: [
-        { item: '氯氰菊酯', value: '<0.01', unit: 'mg/kg', limit: '20', status: '合格' }
+        { 
+          item: '氯氰菊酯', 
+          value: 25.5, 
+          displayValue: '25.5', 
+          unit: 'mg/kg', 
+          limit: 20, 
+          status: '不合格', 
+          description: '超出国标限值27.5%，建议停止食用并联系供应商'
+        },
+        { 
+          item: '六六六', 
+          value: 0.005, 
+          displayValue: '<0.01', 
+          unit: 'mg/kg', 
+          limit: 0.1, 
+          status: '合格', 
+          description: ''
+        }
       ],
       osmanthusTests: [
-        { item: '氯氟氰菊酯', value: '<0.01', unit: 'mg/kg', limit: '2.0', status: '合格' }
+        { 
+          item: '氯氟氰菊酯', 
+          value: 0.005, 
+          displayValue: '<0.01', 
+          unit: 'mg/kg', 
+          limit: 2.0, 
+          status: '合格', 
+          description: ''
+        }
+      ],
+      historyReports: [
+        {
+          reportNo: 'HBAQ-2025-12345',
+          testDate: '2025年9月25日',
+          institution: '湖北省农产品质量安全检测中心',
+          status: '不合格',
+          statusLevel: '异常',
+          batchNo: 'GH202504',
+          abnormalCount: 1
+        },
+        {
+          reportNo: 'HBAQ-2025-09876',
+          testDate: '2025年7月20日',
+          institution: '湖北省农产品质量安全检测中心',
+          status: '合格',
+          statusLevel: '良好',
+          batchNo: 'GH202503'
+        },
+        {
+          reportNo: 'HBAQ-2025-06543',
+          testDate: '2025年5月15日',
+          institution: '湖北省农产品质量安全检测中心',
+          status: '合格',
+          statusLevel: '优秀',
+          batchNo: 'GH202502'
+        }
       ]
     },
     
@@ -376,12 +461,32 @@ const mockTraceData = {
       reportNo: 'NTQC-2025-09877',
       standard: 'GB 2763-2021',
       comparisonTip: '各项农残数值远低于国标 GB 2763-2021 限值，安全放心',
+      verifyUrl: 'https://www.ntqc.org.cn/verify',
+      hasAbnormal: false,
       teaTests: [
-        { item: '六六六', value: '<0.01', unit: 'mg/kg', limit: '0.1', status: '合格' },
-        { item: '滴滴涕', value: '<0.01', unit: 'mg/kg', limit: '0.2', status: '合格' }
+        { item: '六六六', value: 0.005, displayValue: '<0.01', unit: 'mg/kg', limit: 0.1, status: '合格', description: '' },
+        { item: '滴滴涕', value: 0.008, displayValue: '<0.01', unit: 'mg/kg', limit: 0.2, status: '合格', description: '' }
       ],
       osmanthusTests: [
-        { item: '联苯菊酯', value: '<0.02', unit: 'mg/kg', limit: '5.0', status: '合格' }
+        { item: '联苯菊酯', value: 0.01, displayValue: '<0.02', unit: 'mg/kg', limit: 5.0, status: '合格', description: '' }
+      ],
+      historyReports: [
+        {
+          reportNo: 'NTQC-2025-09877',
+          testDate: '2025年9月20日',
+          institution: '国家茶叶质量监督检验中心',
+          status: '合格',
+          statusLevel: '优秀',
+          batchNo: 'GH202503'
+        },
+        {
+          reportNo: 'NTQC-2025-07653',
+          testDate: '2025年7月15日',
+          institution: '国家茶叶质量监督检验中心',
+          status: '合格',
+          statusLevel: '良好',
+          batchNo: 'GH202502'
+        }
       ]
     },
     
@@ -511,12 +616,32 @@ const mockTraceData = {
       reportNo: 'NTQC-2025-09878',
       standard: 'GB 2763-2021',
       comparisonTip: '各项农残数值远低于国标 GB 2763-2021 限值，安全放心',
+      verifyUrl: 'https://www.ntqc.org.cn/verify',
+      hasAbnormal: false,
       teaTests: [
-        { item: '六六六', value: '<0.01', unit: 'mg/kg', limit: '0.1', status: '合格' },
-        { item: '滴滴涕', value: '<0.01', unit: 'mg/kg', limit: '0.2', status: '合格' }
+        { item: '六六六', value: 0.005, displayValue: '<0.01', unit: 'mg/kg', limit: 0.1, status: '合格', description: '' },
+        { item: '滴滴涕', value: 0.008, displayValue: '<0.01', unit: 'mg/kg', limit: 0.2, status: '合格', description: '' }
       ],
       osmanthusTests: [
-        { item: '联苯菊酯', value: '<0.02', unit: 'mg/kg', limit: '5.0', status: '合格' }
+        { item: '联苯菊酯', value: 0.01, displayValue: '<0.02', unit: 'mg/kg', limit: 5.0, status: '合格', description: '' }
+      ],
+      historyReports: [
+        {
+          reportNo: 'NTQC-2025-09878',
+          testDate: '2025年9月20日',
+          institution: '国家茶叶质量监督检验中心',
+          status: '合格',
+          statusLevel: '优秀',
+          batchNo: 'GH202503'
+        },
+        {
+          reportNo: 'NTQC-2025-07652',
+          testDate: '2025年7月15日',
+          institution: '国家茶叶质量监督检验中心',
+          status: '合格',
+          statusLevel: '良好',
+          batchNo: 'GH202502'
+        }
       ]
     },
     
@@ -731,6 +856,75 @@ function parseSceneParam(scene) {
   }
 }
 
+/**
+ * 检测报告验真
+ * @param {string} reportNo - 报告编号
+ * @returns {object|null} - 返回验真结果，未找到则返回 null
+ */
+function verifyReport(reportNo) {
+  if (!reportNo || typeof reportNo !== 'string') {
+    return null;
+  }
+  
+  const normalizedReportNo = reportNo.trim().toUpperCase();
+  
+  for (const traceId in mockTraceData) {
+    const data = mockTraceData[traceId];
+    if (data.pesticideTest && data.pesticideTest.reportNo === normalizedReportNo) {
+      return {
+        valid: true,
+        reportNo: normalizedReportNo,
+        productName: data.basicInfo.productName,
+        batchNo: data.basicInfo.batchNo,
+        institution: data.pesticideTest.institution,
+        testDate: data.pesticideTest.testDate,
+        standard: data.pesticideTest.standard,
+        status: data.pesticideTest.hasAbnormal ? '存在异常项' : '全部合格',
+        verifyTime: new Date().toLocaleString('zh-CN'),
+        traceId: traceId
+      };
+    }
+    
+    if (data.pesticideTest && data.pesticideTest.historyReports) {
+      const historyReport = data.pesticideTest.historyReports.find(
+        r => r.reportNo === normalizedReportNo
+      );
+      if (historyReport) {
+        return {
+          valid: true,
+          reportNo: normalizedReportNo,
+          productName: data.basicInfo.productName,
+          batchNo: historyReport.batchNo,
+          institution: historyReport.institution,
+          testDate: historyReport.testDate,
+          standard: data.pesticideTest.standard,
+          status: historyReport.status,
+          verifyTime: new Date().toLocaleString('zh-CN'),
+          traceId: traceId
+        };
+      }
+    }
+  }
+  
+  return {
+    valid: false,
+    reportNo: normalizedReportNo,
+    message: '未找到该报告编号，请检查是否输入正确'
+  };
+}
+
+/**
+ * 计算检测项百分比（检测值/限值 * 100），用于进度条展示
+ * @param {number} value - 检测值
+ * @param {number} limit - 国标限值
+ * @returns {number} - 百分比 (0-100)
+ */
+function calculateTestPercent(value, limit) {
+  if (!limit || limit <= 0) return 0;
+  const percent = (value / limit) * 100;
+  return Math.min(Math.round(percent * 10) / 10, 100);
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -740,5 +934,7 @@ module.exports = {
   validateBatchNo,
   getBatchSkus,
   getTraceIdFromBarcode,
-  parseSceneParam
+  parseSceneParam,
+  verifyReport,
+  calculateTestPercent
 };

@@ -453,11 +453,14 @@
     </view>
 
     <!-- ========== 模块6：农残检测 ========== -->
-    <view class="card animate-card module-card" id="anchor-test" style="animation-delay: 0.35s;">
+    <view class="card animate-card module-card test-module-card {{testChartData.overallPass ? '' : 'test-abnormal-card'}}" id="anchor-test" style="animation-delay: 0.35s;">
       <view class="card-title module-header" bindtap="toggleModule" data-key="test">
         <view class="title-left">
           <text class="title-icon">🔬</text>
           <text>农残检测</text>
+          <view class="title-badge {{testChartData.overallPass ? '' : 'danger'}}" wx:if="{{traceData.pesticideTest}}">
+            {{testChartData.overallPass ? '全部合格' : '存在异常'}}
+          </view>
         </view>
         <view class="module-toggle {{moduleCollapsed.test ? 'collapsed' : ''}}">
           <text class="toggle-icon">▾</text>
@@ -465,73 +468,183 @@
       </view>
       <view class="module-content {{moduleCollapsed.test ? 'hidden' : ''}}">
         
+        <!-- 异常警告横幅 -->
+        <view class="abnormal-warning-banner" wx:if="{{!testChartData.overallPass}}">
+          <view class="warning-icon">⚠️</view>
+          <view class="warning-content">
+            <view class="warning-title">检测结果异常</view>
+            <view class="warning-desc">本次检测存在不合格项，请谨慎食用</view>
+          </view>
+        </view>
+
         <!-- 检测机构信息 -->
         <view class="test-institution">
           <view class="institution-icon">🏛️</view>
           <view class="institution-info">
             <view class="institution-name">{{traceData.pesticideTest.institution}}</view>
             <view class="institution-meta">
-              <text>报告编号：{{traceData.pesticideTest.reportNo}}</text>
+              <text bindtap="copyReportNo">报告编号：{{traceData.pesticideTest.reportNo}} 📋</text>
               <text>检测日期：{{traceData.pesticideTest.testDate}}</text>
             </view>
           </view>
         </view>
+
+        <!-- 操作按钮组：保存 / 转发 / 验真 -->
+        <view class="test-action-buttons">
+          <view class="action-btn" bindtap="saveReportToAlbum">
+            <text class="action-icon">📸</text>
+            <text class="action-text">保存相册</text>
+          </view>
+          <view class="action-btn" bindtap="shareReport">
+            <text class="action-icon">📤</text>
+            <text class="action-text">转发好友</text>
+          </view>
+          <view class="action-btn" bindtap="openVerifyModal">
+            <text class="action-icon">✅</text>
+            <text class="action-text">报告验真</text>
+          </view>
+        </view>
+
+        <!-- 国标对比总览 -->
+        <view class="standard-overview">
+          <view class="overview-label">
+            <text class="overview-icon">📊</text>
+            <text>国标 GB 2763-2021 对比</text>
+          </view>
+          <view class="overview-badge {{testChartData.overallPass ? 'pass' : 'fail'}}">
+            {{testChartData.overallPass ? '全部达标' : '部分超标'}}
+          </view>
+        </view>
         
-        <!-- 茶叶检测结果 -->
+        <!-- 茶叶检测结果：国标对比进度条图表 -->
         <view class="test-results">
           <view class="test-category">
             <text class="category-icon">🍃</text>
             <text>茶叶农残检测</text>
           </view>
-          <view class="test-table">
-            <view class="table-header">
-              <text class="th-item">检测项</text>
-              <text class="th-value">检测值</text>
-              <text class="th-limit">国标限值</text>
-              <text class="th-status">结果</text>
-            </view>
+          
+          <!-- 进度条图表 -->
+          <view class="progress-chart">
             <view 
-              wx:for="{{traceData.pesticideTest.teaTests}}" 
+              wx:for="{{testChartData.teaTests}}" 
               wx:key="item"
-              class="table-row"
+              class="progress-item {{item.level}}"
             >
-              <text class="td-item">{{item.item}}</text>
-              <text class="td-value">{{item.value}}{{item.unit}}</text>
-              <text class="td-limit">{{item.limit}}{{item.unit}}</text>
-              <text class="td-status pass">{{item.status}}</text>
+              <view class="progress-header">
+                <text class="progress-name">{{item.item}}</text>
+                <view class="progress-status {{item.isPass ? 'pass' : 'fail'}}">
+                  {{item.status}}
+                </view>
+              </view>
+              <view class="progress-bar-container">
+                <view class="progress-bar-bg">
+                  <view class="progress-bar-fill {{item.level}}" style="width: {{item.percent}}%;"></view>
+                  <view class="progress-limit-line" style="left: 100%;"></view>
+                </view>
+                <view class="progress-labels">
+                  <text class="progress-value">检测值：{{item.displayValue}}{{item.unit}}</text>
+                  <text class="progress-limit">限值：{{item.limit}}{{item.unit}}</text>
+                </view>
+                <view class="progress-multiple" wx:if="{{item.isPass}}">
+                  <text class="multiple-label">低于限值</text>
+                  <text class="multiple-value">{{item.multiple}}倍</text>
+                </view>
+              </view>
+              <!-- 异常说明 -->
+              <view class="abnormal-desc" wx:if="{{!item.isPass && item.description}}">
+                <text class="desc-icon">⚠️</text>
+                <text class="desc-text">{{item.description}}</text>
+              </view>
             </view>
           </view>
         </view>
         
-        <!-- 桂花检测结果 -->
+        <!-- 桂花检测结果：国标对比进度条图表 -->
         <view class="test-results">
           <view class="test-category">
             <text class="category-icon">🌸</text>
             <text>桂花农残检测</text>
           </view>
-          <view class="test-table">
-            <view class="table-header">
-              <text class="th-item">检测项</text>
-              <text class="th-value">检测值</text>
-              <text class="th-limit">国标限值</text>
-              <text class="th-status">结果</text>
-            </view>
+          
+          <!-- 进度条图表 -->
+          <view class="progress-chart">
             <view 
-              wx:for="{{traceData.pesticideTest.osmanthusTests}}" 
+              wx:for="{{testChartData.osmanthusTests}}" 
               wx:key="item"
-              class="table-row"
+              class="progress-item {{item.level}}"
             >
-              <text class="td-item">{{item.item}}</text>
-              <text class="td-value">{{item.value}}{{item.unit}}</text>
-              <text class="td-limit">{{item.limit}}{{item.unit}}</text>
-              <text class="td-status pass">{{item.status}}</text>
+              <view class="progress-header">
+                <text class="progress-name">{{item.item}}</text>
+                <view class="progress-status {{item.isPass ? 'pass' : 'fail'}}">
+                  {{item.status}}
+                </view>
+              </view>
+              <view class="progress-bar-container">
+                <view class="progress-bar-bg">
+                  <view class="progress-bar-fill {{item.level}}" style="width: {{item.percent}}%;"></view>
+                  <view class="progress-limit-line" style="left: 100%;"></view>
+                </view>
+                <view class="progress-labels">
+                  <text class="progress-value">检测值：{{item.displayValue}}{{item.unit}}</text>
+                  <text class="progress-limit">限值：{{item.limit}}{{item.unit}}</text>
+                </view>
+                <view class="progress-multiple" wx:if="{{item.isPass}}">
+                  <text class="multiple-label">低于限值</text>
+                  <text class="multiple-value">{{item.multiple}}倍</text>
+                </view>
+              </view>
+              <!-- 异常说明 -->
+              <view class="abnormal-desc" wx:if="{{!item.isPass && item.description}}">
+                <text class="desc-icon">⚠️</text>
+                <text class="desc-text">{{item.description}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 历史检测报告时间轴 -->
+        <view class="history-reports-section" wx:if="{{traceData.pesticideTest.historyReports && traceData.pesticideTest.historyReports.length > 0}}">
+          <view class="history-header" bindtap="toggleHistoryTimeline">
+            <view class="history-title">
+              <text class="history-icon">📅</text>
+              <text>历次检测记录</text>
+              <text class="history-count">共 {{traceData.pesticideTest.historyReports.length}} 份</text>
+            </view>
+            <view class="history-toggle {{showHistoryTimeline ? 'expanded' : ''}}">
+              <text>▾</text>
+            </view>
+          </view>
+          <view class="history-timeline {{showHistoryTimeline ? 'show' : ''}}">
+            <view 
+              wx:for="{{traceData.pesticideTest.historyReports}}" 
+              wx:key="reportNo"
+              class="timeline-item {{index === 0 ? 'latest' : ''}} {{item.status === '不合格' ? 'abnormal' : ''}}"
+              bindtap="viewHistoryReport"
+              data-report="{{item}}"
+            >
+              <view class="timeline-dot {{item.status === '不合格' ? 'danger' : (item.statusLevel === '优秀' ? 'excellent' : 'good')}}"></view>
+              <view class="timeline-line" wx:if="{{index < traceData.pesticideTest.historyReports.length - 1}}"></view>
+              <view class="timeline-content">
+                <view class="timeline-date">{{item.testDate}}</view>
+                <view class="timeline-info">
+                  <text class="timeline-report-no">{{item.reportNo}}</text>
+                  <view class="timeline-status {{item.status === '不合格' ? 'danger' : (item.statusLevel === '优秀' ? 'excellent' : 'good')}}">
+                    {{item.status}}
+                  </view>
+                </view>
+                <view class="timeline-meta">
+                  <text>{{item.institution}}</text>
+                  <text wx:if="{{item.batchNo}}">批次：{{item.batchNo}}</text>
+                </view>
+                <view class="timeline-tag" wx:if="{{index === 0}}">最新</view>
+              </view>
             </view>
           </view>
         </view>
         
         <!-- 国标对比提示 -->
-        <view class="standard-tip">
-          <text class="tip-icon">✅</text>
+        <view class="standard-tip {{testChartData.overallPass ? '' : 'danger'}}">
+          <text class="tip-icon">{{testChartData.overallPass ? '✅' : '⚠️'}}</text>
           <text class="tip-text">{{traceData.pesticideTest.comparisonTip}}</text>
         </view>
         
@@ -646,7 +759,7 @@
   <!-- ==================== PDF报告弹窗 ==================== -->
   <view class="pdf-modal {{showPdfModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closePdfModal">
     <view class="pdf-content" catchtap="preventBubble" catchtouchmove="preventBubble">
-      <view class="pdf-header">
+      <view class="pdf-header {{testChartData.overallPass ? '' : 'danger-header'}}">
         <text class="pdf-title">农残检测报告</text>
         <view class="pdf-close" bindtap="closePdfModal">×</view>
       </view>
@@ -669,22 +782,118 @@
             <text class="pdf-value">{{traceData.pesticideTest.standard}}</text>
           </view>
         </view>
+
+        <!-- PDF 异常警告 -->
+        <view class="pdf-abnormal-warning" wx:if="{{!testChartData.overallPass}}">
+          <text class="pdf-warning-icon">⚠️</text>
+          <text class="pdf-warning-text">本次检测存在不合格项</text>
+        </view>
+
         <view class="pdf-divider"></view>
         <view class="pdf-results">
           <view class="pdf-section-title">茶叶检测项目</view>
-          <view wx:for="{{traceData.pesticideTest.teaTests}}" wx:key="item" class="pdf-result-item">
-            <text>{{item.item}}：{{item.value}}{{item.unit}}（限值{{item.limit}}{{item.unit}}）</text>
-            <text class="pdf-pass">✓合格</text>
+          <view wx:for="{{testChartData.teaTests}}" wx:key="item" class="pdf-result-item {{item.isPass ? '' : 'abnormal-item'}}">
+            <text>{{item.item}}：{{item.displayValue}}{{item.unit}}（限值{{item.limit}}{{item.unit}}）</text>
+            <text class="pdf-result-tag {{item.isPass ? 'pdf-pass' : 'pdf-fail'}}">{{item.isPass ? '✓合格' : '✗不合格'}}</text>
           </view>
           <view class="pdf-section-title" style="margin-top: 24rpx;">桂花检测项目</view>
-          <view wx:for="{{traceData.pesticideTest.osmanthusTests}}" wx:key="item" class="pdf-result-item">
-            <text>{{item.item}}：{{item.value}}{{item.unit}}（限值{{item.limit}}{{item.unit}}）</text>
-            <text class="pdf-pass">✓合格</text>
+          <view wx:for="{{testChartData.osmanthusTests}}" wx:key="item" class="pdf-result-item {{item.isPass ? '' : 'abnormal-item'}}">
+            <text>{{item.item}}：{{item.displayValue}}{{item.unit}}（限值{{item.limit}}{{item.unit}}）</text>
+            <text class="pdf-result-tag {{item.isPass ? 'pdf-pass' : 'pdf-fail'}}">{{item.isPass ? '✓合格' : '✗不合格'}}</text>
           </view>
         </view>
         <view class="pdf-footer">
-          <view class="pdf-stamp">检验合格</view>
+          <view class="pdf-stamp {{testChartData.overallPass ? '' : 'pdf-stamp-danger'}}">{{testChartData.overallPass ? '检验合格' : '存在异常'}}</view>
           <view class="pdf-conclusion">{{traceData.pesticideTest.comparisonTip}}</view>
+          
+          <!-- PDF 操作按钮 -->
+          <view class="pdf-action-row">
+            <view class="pdf-action-btn" bindtap="saveReportToAlbum" catchtap="saveReportToAlbum">
+              <text>📸 保存相册</text>
+            </view>
+            <view class="pdf-action-btn" bindtap="shareReport" catchtap="shareReport">
+              <text>📤 转发</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 报告验真弹窗 ==================== -->
+  <view class="verify-modal {{showVerifyModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeVerifyModal">
+    <view class="verify-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="verify-header">
+        <text class="verify-title">🔍 检测报告验真</text>
+        <view class="verify-close" bindtap="closeVerifyModal">×</view>
+      </view>
+      <view class="verify-body">
+        <!-- 输入区域 -->
+        <view class="verify-input-section">
+          <text class="verify-label">请输入报告编号</text>
+          <view class="verify-input-wrapper">
+            <input 
+              class="verify-input" 
+              placeholder="如 NTQC-2025-09876" 
+              value="{{verifyInput}}"
+              bindinput="onVerifyInputChange"
+            />
+          </view>
+          <view class="verify-buttons">
+            <view class="verify-btn primary" bindtap="doVerifyReport">
+              <text wx:if="{{!verifying}}">立即验真</text>
+              <text wx:else>验真中...</text>
+            </view>
+            <view class="verify-btn secondary" bindtap="openVerifyWebsite">
+              <text>官网验真</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 验真结果 -->
+        <view class="verify-result" wx:if="{{verifyResult}}">
+          <view class="verify-result-header {{verifyResult.valid ? 'valid' : 'invalid'}}">
+            <text class="verify-result-icon">{{verifyResult.valid ? '✅' : '❌'}}</text>
+            <text class="verify-result-title">{{verifyResult.valid ? '验真通过' : '验真失败'}}</text>
+          </view>
+          <view class="verify-result-body" wx:if="{{verifyResult.valid}}">
+            <view class="verify-row">
+              <text class="verify-row-label">报告编号</text>
+              <text class="verify-row-value">{{verifyResult.reportNo}}</text>
+            </view>
+            <view class="verify-row">
+              <text class="verify-row-label">产品名称</text>
+              <text class="verify-row-value">{{verifyResult.productName}}</text>
+            </view>
+            <view class="verify-row">
+              <text class="verify-row-label">批次号</text>
+              <text class="verify-row-value">{{verifyResult.batchNo}}</text>
+            </view>
+            <view class="verify-row">
+              <text class="verify-row-label">检测机构</text>
+              <text class="verify-row-value">{{verifyResult.institution}}</text>
+            </view>
+            <view class="verify-row">
+              <text class="verify-row-label">检测日期</text>
+              <text class="verify-row-value">{{verifyResult.testDate}}</text>
+            </view>
+            <view class="verify-row">
+              <text class="verify-row-label">检测结果</text>
+              <text class="verify-row-value {{verifyResult.status === '存在异常项' ? 'danger-text' : ''}}">{{verifyResult.status}}</text>
+            </view>
+            <view class="verify-row">
+              <text class="verify-row-label">验真时间</text>
+              <text class="verify-row-value">{{verifyResult.verifyTime}}</text>
+            </view>
+          </view>
+          <view class="verify-result-body invalid-body" wx:else>
+            <text class="verify-invalid-msg">{{verifyResult.message}}</text>
+          </view>
+        </view>
+
+        <view class="verify-tip">
+          <text class="verify-tip-icon">💡</text>
+          <text class="verify-tip-text">报告编号可在检测报告右上角或本页面找到</text>
         </view>
       </view>
     </view>
