@@ -1,0 +1,68 @@
+<!--
+  桂花茶溯源小程序 - 扫码结果确认页
+  功能：展示产品缩略信息，用户确认后进入详情页
+-->
+
+<view class="page-container">
+  
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-icon">🔍</view>
+    <view class="loading-text">正在识别产品信息...</view>
+  </view>
+
+  <!-- 产品信息展示 -->
+  <view wx:else class="result-container">
+    
+    <!-- 扫码成功图标 -->
+    <view class="success-icon-wrapper">
+      <view class="success-icon">✓</view>
+      <view class="scan-type-badge">{{scanType === 'barCode' ? '条形码' : '二维码'}}</view>
+    </view>
+
+    <!-- 产品卡片 -->
+    <view class="product-card">
+      <!-- 产品缩略图 -->
+      <view class="product-image-wrapper">
+        <image 
+          class="product-image" 
+          src="{{productInfo.thumbnail}}" 
+          mode="aspectFill"
+        />
+      </view>
+      
+      <!-- 产品信息 -->
+      <view class="product-info">
+        <view class="product-name">{{productInfo.productName}}</view>
+        <view class="product-spec">规格：{{productInfo.specification}}</view>
+        <view class="product-trace-id">溯源ID：{{productInfo.traceId}}</view>
+        <view class="product-batch">批次号：{{productInfo.batchNo}}</view>
+        <view class="product-date">出厂日期：{{productInfo.productionTime}}</view>
+      </view>
+    </view>
+
+    <!-- 提示信息 -->
+    <view class="tip-section">
+      <view class="tip-icon">📋</view>
+      <view class="tip-text">确认查看该产品的完整溯源信息？</view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button class="btn-confirm" bindtap="confirmToDetail">
+        查看溯源详情
+      </button>
+      <button class="btn-cancel" bindtap="cancelAndBack">
+        取消
+      </button>
+    </view>
+
+    <!-- 重新扫码 -->
+    <view class="rescan-section" bindtap="rescan">
+      <text class="rescan-icon">📷</text>
+      <text class="rescan-text">重新扫码</text>
+    </view>
+
+  </view>
+
+</view>

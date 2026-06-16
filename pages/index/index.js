@@ -1,87 +1,137 @@
 /**
  * 桂花茶溯源小程序 - 首页
- * 功能：扫码溯源、手动输入溯源ID查询
+ * 功能：扫码溯源、手动输入溯源ID查询、扫码历史、批量查询、剪贴板识别
  * 页面路径：pages/index/index
  */
 
-// 引入模拟数据模块
 const mockData = require('../../utils/mockData.js');
+const storage = require('../../utils/storage.js');
 
 Page({
-  /**
-   * 页面数据
-   */
   data: {
-    // 用户输入的溯源ID
     inputTraceId: '',
-    // 是否显示输入区域
     showInputArea: false,
-    // 可用的测试ID（用于提示）
-    testIds: ['G001', 'G002'],
-    // 品牌名称
+    showBatchArea: false,
+    inputBatchNo: '',
+    testIds: ['G001', 'G002', 'G003', 'G004'],
+    testBatchNos: ['GH202503', 'GH202504'],
     brandName: '一茶一品・桂花茶溯源',
-    // 页面加载动画
-    pageLoaded: false
+    pageLoaded: false,
+    scanHistory: [],
+    showHistory: false,
+    showClipboardModal: false,
+    clipboardTraceId: ''
   },
 
-  /**
-   * 生命周期函数 - 页面加载
-   */
   onLoad: function(options) {
     console.log('首页加载，参数：', options);
     
-    // 页面加载动画延迟
     setTimeout(() => {
       this.setData({ pageLoaded: true });
     }, 100);
     
-    // 如果从分享链接进入，带有溯源ID参数
     if (options.traceId) {
       this.queryTraceInfo(options.traceId);
+      return;
     }
+    
+    if (options.scene) {
+      const traceId = mockData.parseSceneParam(options.scene);
+      if (traceId) {
+        this.queryTraceInfo(traceId);
+        return;
+      }
+    }
+    
+    this.loadScanHistory();
   },
 
-  /**
-   * 生命周期函数 - 页面显示
-   */
   onShow: function() {
-    // 每次显示页面时重置输入框
-    this.setData({ inputTraceId: '' });
+    this.setData({ inputTraceId: '', inputBatchNo: '' });
+    this.loadScanHistory();
+    this.checkClipboard();
   },
 
-  /**
-   * ==================== 核心功能：扫码溯源 ====================
-   * 调用微信原生扫码API（wx.scanCode）
-   * 解析二维码中的唯一溯源ID
-   */
+  loadScanHistory: function() {
+    const history = storage.getScanHistory();
+    const formattedHistory = history.map(item => ({
+      ...item,
+      formatTime: storage.formatTime(item.timestamp)
+    }));
+    this.setData({ 
+      scanHistory: formattedHistory,
+      showHistory: formattedHistory.length > 0
+    });
+  },
+
+  checkClipboard: function() {
+    const that = this;
+    
+    wx.getClipboardData({
+      success: function(res) {
+        const clipboardContent = res.data && res.data.trim();
+        console.log('剪贴板内容:', clipboardContent);
+        
+        if (!clipboardContent) return;
+        
+        const traceId = that.parseTraceId(clipboardContent);
+        if (traceId && mockData.validateTraceId(traceId)) {
+          const traceData = mockData.getTraceData(traceId);
+          if (traceData) {
+            that.setData({
+              showClipboardModal: true,
+              clipboardTraceId: traceId
+            });
+          }
+        }
+      },
+      fail: function(err) {
+        console.log('获取剪贴板失败:', err);
+      }
+    });
+  },
+
+  handleClipboardConfirm: function() {
+    const traceId = this.data.clipboardTraceId;
+    this.setData({ showClipboardModal: false });
+    this.queryTraceInfo(traceId);
+  },
+
+  handleClipboardCancel: function() {
+    this.setData({ showClipboardModal: false });
+  },
+
+  preventBubble: function() {
+  },
+
   handleScanCode: function() {
     const that = this;
     
-    // 显示加载提示
     wx.showLoading({
       title: '正在启动扫码...',
       mask: true
     });
 
-    // 调用微信扫码API
     wx.scanCode({
-      // 只识别二维码
-      scanType: ['qrCode'],
+      scanType: ['qrCode', 'barCode'],
       success: function(res) {
         console.log('扫码成功，结果：', res);
         wx.hideLoading();
         
-        // 获取扫码结果
         const scanResult = res.result;
+        const scanType = res.scanType;
         
-        // 解析溯源ID（支持多种格式）
-        const traceId = that.parseTraceId(scanResult);
+        let traceId = null;
+        
+        if (scanType === 'barCode') {
+          traceId = mockData.getTraceIdFromBarcode(scanResult);
+        } else {
+          traceId = that.parseTraceId(scanResult);
+        }
         
         if (traceId) {
-          // 查询溯源信息
-          that.queryTraceInfo(traceId);
+          that.navigateToScanResult(traceId, scanType);
         } else {
-          // 扫码结果无效
           wx.showToast({
             title: '未识别到有效溯源码',
             icon: 'none',
@@ -93,7 +143,6 @@ Page({
         wx.hideLoading();
         console.error('扫码失败：', err);
         
-        // 用户取消扫码不提示错误
         if (err.errMsg.indexOf('cancel') === -1) {
           wx.showToast({
             title: '扫码失败，请重试',
@@ -105,28 +154,43 @@ Page({
     });
   },
 
-  /**
-   * 解析扫码结果，提取溯源ID
-   * @param {string} scanResult - 扫码原始结果
-   * @returns {string|null} - 溯源ID或null
-   * 
-   * 支持的扫码格式：
-   * 1. 纯ID：G001
-   * 2. URL格式：https://trace.example.com/query?id=G001
-   * 3. JSON格式：{"traceId": "G001"}
-   */
+  navigateToScanResult: function(traceId, scanType) {
+    const that = this;
+    
+    const traceData = mockData.getTraceData(traceId);
+    if (traceData) {
+      storage.addScanRecord({
+        traceId: traceId,
+        productName: traceData.basicInfo.productName
+      });
+    }
+    
+    wx.navigateTo({
+      url: `/pages/scanResult/scanResult?traceId=${traceId}&scanType=${scanType}`,
+      success: function() {
+        console.log('跳转扫码结果页成功');
+        that.loadScanHistory();
+      },
+      fail: function(err) {
+        console.error('跳转失败：', err);
+        wx.showToast({
+          title: '页面跳转失败',
+          icon: 'none'
+        });
+      }
+    });
+  },
+
   parseTraceId: function(scanResult) {
     if (!scanResult) return null;
     
     let traceId = null;
     
-    // 格式1：URL参数格式
     if (scanResult.includes('?')) {
       const urlParams = new URLSearchParams(scanResult.split('?')[1]);
       traceId = urlParams.get('id') || urlParams.get('traceId');
     }
     
-    // 格式2：JSON格式
     if (!traceId && scanResult.startsWith('{')) {
       try {
         const jsonData = JSON.parse(scanResult);
@@ -136,9 +200,7 @@ Page({
       }
     }
     
-    // 格式3：纯ID格式（默认）
     if (!traceId) {
-      // 验证是否符合溯源ID格式
       if (mockData.validateTraceId(scanResult)) {
         traceId = scanResult;
       }
@@ -147,35 +209,35 @@ Page({
     return traceId;
   },
 
-  /**
-   * ==================== 核心功能：手动输入查询 ====================
-   */
-  
-  /**
-   * 切换显示手动输入区域
-   */
   toggleInputArea: function() {
     this.setData({
-      showInputArea: !this.data.showInputArea
+      showInputArea: !this.data.showInputArea,
+      showBatchArea: false
     });
   },
 
-  /**
-   * 监听输入框变化
-   */
+  toggleBatchArea: function() {
+    this.setData({
+      showBatchArea: !this.data.showBatchArea,
+      showInputArea: false
+    });
+  },
+
   onInputChange: function(e) {
     this.setData({
       inputTraceId: e.detail.value
     });
   },
 
-  /**
-   * 点击手动查询按钮
-   */
+  onBatchInputChange: function(e) {
+    this.setData({
+      inputBatchNo: e.detail.value
+    });
+  },
+
   handleManualQuery: function() {
     const traceId = this.data.inputTraceId.trim();
     
-    // 输入为空检查
     if (!traceId) {
       wx.showToast({
         title: '请输入溯源ID',
@@ -185,7 +247,6 @@ Page({
       return;
     }
     
-    // 格式验证
     if (!mockData.validateTraceId(traceId)) {
       wx.showToast({
         title: 'ID格式不正确，请检查',
@@ -195,55 +256,130 @@ Page({
       return;
     }
     
-    // 执行查询
     this.queryTraceInfo(traceId);
   },
 
-  /**
-   * 快速填入测试ID
-   */
+  handleBatchQuery: function() {
+    const batchNo = this.data.inputBatchNo.trim().toUpperCase();
+    
+    if (!batchNo) {
+      wx.showToast({
+        title: '请输入批次号',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+    
+    if (!mockData.validateBatchNo(batchNo)) {
+      wx.showToast({
+        title: '批次号格式不正确',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+    
+    wx.navigateTo({
+      url: `/pages/batchList/batchList?batchNo=${batchNo}`,
+      success: function() {
+        console.log('跳转批次查询页成功');
+      },
+      fail: function(err) {
+        console.error('跳转失败：', err);
+        wx.showToast({
+          title: '页面跳转失败',
+          icon: 'none'
+        });
+      }
+    });
+  },
+
   fillTestId: function(e) {
     const testId = e.currentTarget.dataset.id;
     this.setData({
       inputTraceId: testId,
-      showInputArea: true
+      showInputArea: true,
+      showBatchArea: false
     });
   },
 
-  /**
-   * ==================== 溯源数据查询 ====================
-   * @param {string} traceId - 溯源ID
-   * 
-   * 【后端接口预留】
-   * 当前使用本地模拟数据，实际项目应调用后端接口：
-   * 
-   * wx.request({
-   *   url: `${getApp().globalData.apiBaseUrl}/query`,
-   *   method: 'GET',
-   *   data: { traceId: traceId },
-   *   success: (res) => { ... },
-   *   fail: (err) => { ... }
-   * });
-   */
+  fillTestBatchNo: function(e) {
+    const batchNo = e.currentTarget.dataset.batch;
+    this.setData({
+      inputBatchNo: batchNo,
+      showBatchArea: true,
+      showInputArea: false
+    });
+  },
+
+  viewHistoryItem: function(e) {
+    const traceId = e.currentTarget.dataset.traceid;
+    this.queryTraceInfo(traceId);
+  },
+
+  deleteHistoryItem: function(e) {
+    const that = this;
+    const id = e.currentTarget.dataset.id;
+    
+    wx.showModal({
+      title: '删除记录',
+      content: '确定删除该条扫码记录吗？',
+      success: function(res) {
+        if (res.confirm) {
+          storage.removeScanRecord(id);
+          that.loadScanHistory();
+          wx.showToast({
+            title: '已删除',
+            icon: 'success',
+            duration: 1500
+          });
+        }
+      }
+    });
+  },
+
+  clearAllHistory: function() {
+    const that = this;
+    
+    wx.showModal({
+      title: '清空历史',
+      content: '确定清空所有扫码历史吗？此操作不可恢复。',
+      confirmColor: '#ff4d4f',
+      success: function(res) {
+        if (res.confirm) {
+          storage.clearScanHistory();
+          that.loadScanHistory();
+          wx.showToast({
+            title: '已清空',
+            icon: 'success',
+            duration: 1500
+          });
+        }
+      }
+    });
+  },
+
   queryTraceInfo: function(traceId) {
     const that = this;
     
-    // 显示加载动画
     wx.showLoading({
       title: '正在查询...',
       mask: true
     });
     
-    // 模拟网络请求延迟（实际项目中为真实API调用）
     setTimeout(() => {
       wx.hideLoading();
       
-      // 从本地模拟数据获取
       const traceData = mockData.getTraceData(traceId);
       
       if (traceData) {
-        // 查询成功，跳转到详情页
-        // 将数据存入全局或通过页面间传递
+        storage.addScanRecord({
+          traceId: traceId,
+          productName: traceData.basicInfo.productName
+        });
+        that.loadScanHistory();
+        
         wx.navigateTo({
           url: `/pages/detail/detail?traceId=${traceId}`,
           success: function() {
@@ -258,24 +394,20 @@ Page({
           }
         });
       } else {
-        // 未找到数据
         wx.showToast({
           title: '未找到该溯源信息',
           icon: 'none',
           duration: 2500
         });
       }
-    }, 800); // 模拟800ms网络延迟
+    }, 800);
   },
 
-  /**
-   * 用户点击右上角分享
-   */
   onShareAppMessage: function() {
     return {
       title: '一茶一品・桂花茶溯源',
       path: '/pages/index/index',
-      imageUrl: '' // 可配置分享图片
+      imageUrl: ''
     };
   }
 });

@@ -1,0 +1,190 @@
+/* 批次查询结果页样式 */
+
+.page-container {
+  min-height: 100vh;
+  background: #F5F5F0;
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 200rpx;
+}
+
+.loading-icon {
+  font-size: 100rpx;
+  margin-bottom: 30rpx;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20rpx); }
+}
+
+.loading-text {
+  font-size: 32rpx;
+  color: #666;
+}
+
+/* 空状态 */
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 150rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-title {
+  font-size: 36rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 50rpx;
+}
+
+.btn-back {
+  width: 200rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #2E8B57;
+  color: white;
+  font-size: 28rpx;
+  border-radius: 40rpx;
+  border: none;
+}
+
+.btn-back::after {
+  border: none;
+}
+
+/* 批次容器 */
+.batch-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 批次头部 */
+.batch-header {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 32rpx;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  border-radius: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.batch-icon {
+  font-size: 60rpx;
+}
+
+.batch-info {
+  flex: 1;
+}
+
+.batch-no {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 8rpx;
+}
+
+.batch-count {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* SKU列表 */
+.sku-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.sku-item {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 24rpx;
+  background: white;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.sku-item:active {
+  transform: scale(0.98);
+}
+
+.sku-image-wrapper {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background: #f0f0f0;
+  flex-shrink: 0;
+}
+
+.sku-image {
+  width: 100%;
+  height: 100%;
+}
+
+.sku-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+
+.sku-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sku-spec,
+.sku-trace-id,
+.sku-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.sku-trace-id {
+  color: #2E8B57;
+}
+
+.sku-arrow {
+  font-size: 40rpx;
+  color: #ccc;
+  flex-shrink: 0;
+}
+
+/* 底部提示 */
+.footer-tip {
+  margin-top: 40rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #999;
+}

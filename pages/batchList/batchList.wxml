@@ -1,0 +1,69 @@
+<!--
+  桂花茶溯源小程序 - 批次查询结果页
+  功能：展示同一批次下的所有SKU列表
+-->
+
+<view class="page-container">
+  
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-icon">📦</view>
+    <view class="loading-text">正在加载批次信息...</view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{empty}}" class="empty-container">
+    <view class="empty-icon">📭</view>
+    <view class="empty-title">未找到该批次</view>
+    <view class="empty-desc">批次号 {{batchNo}} 下暂无产品</view>
+    <button class="btn-back" bindtap="goBack">返回</button>
+  </view>
+
+  <!-- 批次信息 -->
+  <view wx:else class="batch-container">
+    
+    <!-- 批次头部信息 -->
+    <view class="batch-header">
+      <view class="batch-icon">📦</view>
+      <view class="batch-info">
+        <view class="batch-no">批次号：{{batchNo}}</view>
+        <view class="batch-count">共 {{skuList.length}} 个SKU</view>
+      </view>
+    </view>
+
+    <!-- SKU列表 -->
+    <view class="sku-list">
+      <view 
+        class="sku-item" 
+        wx:for="{{skuList}}" 
+        wx:key="traceId"
+        data-traceid="{{item.traceId}}"
+        bindtap="viewSkuDetail"
+      >
+        <view class="sku-image-wrapper">
+          <image 
+            class="sku-image" 
+            src="{{item.thumbnail}}" 
+            mode="aspectFill"
+          />
+        </view>
+        
+        <view class="sku-info">
+          <view class="sku-name">{{item.productName}}</view>
+          <view class="sku-spec">规格：{{item.specification}}</view>
+          <view class="sku-trace-id">溯源ID：{{item.traceId}}</view>
+          <view class="sku-date">出厂：{{item.productionTime}}</view>
+        </view>
+        
+        <view class="sku-arrow">›</view>
+      </view>
+    </view>
+
+    <!-- 底部提示 -->
+    <view class="footer-tip">
+      <text>💡 点击任意SKU查看完整溯源信息</text>
+    </view>
+
+  </view>
+
+</view>

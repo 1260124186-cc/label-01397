@@ -20,7 +20,8 @@ const mockTraceData = {
       pickTime: '2025年9月10日',                  // 采摘时间
       productionTime: '2025年9月25日',            // 出厂时间
       productName: '金桂花茶',                    // 产品名称
-      specification: '100g/罐'                   // 规格
+      specification: '100g/罐',                   // 规格
+      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20golden%20osmanthus%20tea%20tin%20can%20product%20photo&image_size=square'
     },
     
     // 树龄信息（桂花茶核心特色）
@@ -151,8 +152,10 @@ const mockTraceData = {
       pickTime: '2025年9月15日',
       productionTime: '2025年9月30日',
       productName: '银桂花茶',
-      specification: '100g/罐'
+      specification: '100g/罐',
+      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20packaging%20elegant%20product%20photo&image_size=square'
     },
+
     
     // 树龄信息
     treeAge: {
@@ -260,6 +263,258 @@ const mockTraceData = {
       timestamp: '2025-09-30 10:15:42',
       verifyStatus: '已验证'
     }
+  },
+
+  /**
+   * 溯源ID: G003
+   * 品种: 金桂
+   * 特点: 180年茶树龄，精品礼盒装，同一批次GH202503
+   */
+  'G003': {
+    // 基础信息
+    basicInfo: {
+      traceId: 'G003',
+      batchNo: 'GH202503',
+      pickTime: '2025年9月10日',
+      productionTime: '2025年9月25日',
+      productName: '金桂花茶礼盒装',
+      specification: '250g/礼盒',
+      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20golden%20osmanthus%20tea%20gift%20box%20premium%20packaging&image_size=square'
+    },
+    
+    // 树龄信息
+    treeAge: {
+      teaTreeAge: 180,
+      osmanthusTreeAge: 45,
+      teaTreeLocation: '福建省武夷山',
+      osmanthusTreeLocation: '湖北省A市'
+    },
+    
+    // 桂花信息
+    osmanthusInfo: {
+      variety: '金桂',
+      origin: '湖北省A市',
+      pickTime: '2025年9月8日',
+      color: '金黄色',
+      fragrance: '浓郁持久'
+    },
+    
+    // 窨制工艺
+    scentingProcess: {
+      scentingTimes: 6,
+      scentingDuration: 5,
+      temperature: 30,
+      humidity: 72,
+      ratio: '1:4',
+      workshopCleanliness: 'Class 10万级',
+      processSteps: [
+        { step: 1, name: '备料', icon: '📦', desc: '精选优质茶叶与新鲜桂花' },
+        { step: 2, name: '拌花', icon: '🌸', desc: '按配比均匀拌合茶叶与桂花' },
+        { step: 3, name: '窨制', icon: '🫖', desc: '恒温恒湿环境下静置窨香' },
+        { step: 4, name: '通花', icon: '💨', desc: '适时通风散热保持活性' },
+        { step: 5, name: '起花', icon: '🧹', desc: '分离茶叶与桂花残渣' },
+        { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香' }
+      ]
+    },
+    
+    // 绿色溯源
+    greenTrace: {
+      ecoPlanting: {
+        title: '生态种植',
+        icon: '🌱',
+        records: [
+          '无化肥农药种植',
+          '采用自然雨水灌溉',
+          '有机肥施肥'
+        ],
+        certification: '有机产品认证'
+      },
+      ecoPacking: {
+        title: '环保包装',
+        icon: '📦',
+        records: [
+          '高档竹制礼盒',
+          '可重复使用',
+          '植物大豆油墨印刷'
+        ],
+        certification: '绿色包装认证'
+      },
+      ecoLogistics: {
+        title: '绿色物流',
+        icon: '🚚',
+        records: [
+          '采用低碳运输线路',
+          '使用可循环快递袋配送',
+          '碳中和物流合作伙伴'
+        ],
+        carbonReduction: '减少碳排放约15%'
+      }
+    },
+    
+    // 农残检测
+    pesticideTest: {
+      institution: '国家茶叶质量监督检验中心',
+      testDate: '2025年9月20日',
+      reportNo: 'NTQC-2025-09877',
+      standard: 'GB 2763-2021',
+      comparisonTip: '各项农残数值远低于国标 GB 2763-2021 限值，安全放心',
+      teaTests: [
+        { item: '六六六', value: '<0.01', unit: 'mg/kg', limit: '0.1', status: '合格' },
+        { item: '滴滴涕', value: '<0.01', unit: 'mg/kg', limit: '0.2', status: '合格' }
+      ],
+      osmanthusTests: [
+        { item: '联苯菊酯', value: '<0.02', unit: 'mg/kg', limit: '5.0', status: '合格' }
+      ]
+    },
+    
+    // 冲泡建议
+    brewingGuide: {
+      waterTemp: '85℃-90℃',
+      brewingTime: '2分钟',
+      rebrewTimes: '5-6次',
+      waterType: '纯净水或山泉水',
+      teawareType: '玻璃杯或白瓷盖碗',
+      tips: [
+        '先温杯，再投茶',
+        '水温不宜过高，保留桂花清香',
+        '每泡适当延长浸泡时间'
+      ]
+    },
+    
+    // 区块链存证信息
+    blockchainInfo: {
+      chainName: '溯源链',
+      blockHeight: 1892348,
+      txHash: '0x9a4b2c...d8e3f2',
+      timestamp: '2025-09-25 14:35:22',
+      verifyStatus: '已验证'
+    }
+  },
+
+  /**
+   * 溯源ID: G004
+   * 品种: 金桂
+   * 特点: 150年茶树龄，便携装，同一批次GH202503
+   */
+  'G004': {
+    // 基础信息
+    basicInfo: {
+      traceId: 'G004',
+      batchNo: 'GH202503',
+      pickTime: '2025年9月10日',
+      productionTime: '2025年9月25日',
+      productName: '金桂花茶便携装',
+      specification: '3g*12袋/盒',
+      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20portable%20sachet%20packaging%20convenient&image_size=square'
+    },
+    
+    // 树龄信息
+    treeAge: {
+      teaTreeAge: 150,
+      osmanthusTreeAge: 35,
+      teaTreeLocation: '福建省武夷山',
+      osmanthusTreeLocation: '湖北省A市'
+    },
+    
+    // 桂花信息
+    osmanthusInfo: {
+      variety: '金桂',
+      origin: '湖北省A市',
+      pickTime: '2025年9月8日',
+      color: '金黄色',
+      fragrance: '清新自然'
+    },
+    
+    // 窨制工艺
+    scentingProcess: {
+      scentingTimes: 4,
+      scentingDuration: 5,
+      temperature: 30,
+      humidity: 72,
+      ratio: '1:5',
+      workshopCleanliness: 'Class 10万级',
+      processSteps: [
+        { step: 1, name: '备料', icon: '📦', desc: '精选优质茶叶与新鲜桂花' },
+        { step: 2, name: '拌花', icon: '🌸', desc: '按配比均匀拌合茶叶与桂花' },
+        { step: 3, name: '窨制', icon: '🫖', desc: '恒温恒湿环境下静置窨香' },
+        { step: 4, name: '通花', icon: '💨', desc: '适时通风散热保持活性' },
+        { step: 5, name: '起花', icon: '🧹', desc: '分离茶叶与桂花残渣' },
+        { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香' }
+      ]
+    },
+    
+    // 绿色溯源
+    greenTrace: {
+      ecoPlanting: {
+        title: '生态种植',
+        icon: '🌱',
+        records: [
+          '无化肥农药种植',
+          '采用自然雨水灌溉',
+          '有机肥施肥'
+        ],
+        certification: '有机产品认证'
+      },
+      ecoPacking: {
+        title: '环保包装',
+        icon: '📦',
+        records: [
+          '独立铝箔小包装',
+          '食品级可降解材料',
+          '植物大豆油墨印刷'
+        ],
+        certification: '绿色包装认证'
+      },
+      ecoLogistics: {
+        title: '绿色物流',
+        icon: '🚚',
+        records: [
+          '采用低碳运输线路',
+          '使用可循环快递袋配送',
+          '碳中和物流合作伙伴'
+        ],
+        carbonReduction: '减少碳排放约15%'
+      }
+    },
+    
+    // 农残检测
+    pesticideTest: {
+      institution: '国家茶叶质量监督检验中心',
+      testDate: '2025年9月20日',
+      reportNo: 'NTQC-2025-09878',
+      standard: 'GB 2763-2021',
+      comparisonTip: '各项农残数值远低于国标 GB 2763-2021 限值，安全放心',
+      teaTests: [
+        { item: '六六六', value: '<0.01', unit: 'mg/kg', limit: '0.1', status: '合格' },
+        { item: '滴滴涕', value: '<0.01', unit: 'mg/kg', limit: '0.2', status: '合格' }
+      ],
+      osmanthusTests: [
+        { item: '联苯菊酯', value: '<0.02', unit: 'mg/kg', limit: '5.0', status: '合格' }
+      ]
+    },
+    
+    // 冲泡建议
+    brewingGuide: {
+      waterTemp: '85℃-90℃',
+      brewingTime: '3分钟',
+      rebrewTimes: '2-3次',
+      waterType: '纯净水或山泉水',
+      teawareType: '玻璃杯或马克杯',
+      tips: [
+        '一袋一杯，方便快捷',
+        '水温不宜过高，保留桂花清香',
+        '适合办公室、出行使用'
+      ]
+    },
+    
+    // 区块链存证信息
+    blockchainInfo: {
+      chainName: '溯源链',
+      blockHeight: 1892349,
+      txHash: '0x1b3d5f...a9c7e4',
+      timestamp: '2025-09-25 14:38:45',
+      verifyStatus: '已验证'
+    }
   }
 };
 
@@ -327,10 +582,127 @@ function getAvailableTraceIds() {
   return Object.keys(mockTraceData);
 }
 
+/**
+ * 验证批次号格式是否有效
+ * @param {string} batchNo - 批次号
+ * @returns {boolean} - 格式是否有效
+ */
+function validateBatchNo(batchNo) {
+  if (!batchNo || typeof batchNo !== 'string') {
+    return false;
+  }
+  
+  // 批次号格式：GH开头，后跟8位数字，如 GH202503
+  const pattern = /^GH\d{6}$/;
+  return pattern.test(batchNo.trim().toUpperCase());
+}
+
+/**
+ * 根据批次号获取该批次下的所有SKU
+ * @param {string} batchNo - 批次号（如 GH202503）
+ * @returns {array|null} - 返回该批次的所有SKU基础信息数组，未找到则返回 null
+ */
+function getBatchSkus(batchNo) {
+  if (!validateBatchNo(batchNo)) {
+    return null;
+  }
+  
+  const normalizedBatchNo = batchNo.trim().toUpperCase();
+  const skus = [];
+  
+  // 遍历所有溯源数据，找到匹配批次号的产品
+  for (const traceId in mockTraceData) {
+    const data = mockTraceData[traceId];
+    if (data.basicInfo && data.basicInfo.batchNo === normalizedBatchNo) {
+      skus.push({
+        traceId: data.basicInfo.traceId,
+        productName: data.basicInfo.productName,
+        specification: data.basicInfo.specification,
+        thumbnail: data.basicInfo.thumbnail,
+        pickTime: data.basicInfo.pickTime,
+        productionTime: data.basicInfo.productionTime
+      });
+    }
+  }
+  
+  return skus.length > 0 ? skus : null;
+}
+
+/**
+ * 根据条形码获取溯源ID
+ * @param {string} barcode - 条形码内容
+ * @returns {string|null} - 溯源ID或null
+ */
+function getTraceIdFromBarcode(barcode) {
+  if (!barcode || typeof barcode !== 'string') {
+    return null;
+  }
+  
+  // 条形码格式示例：6901234567890-G001
+  // 支持 条形码-溯源ID 格式
+  const parts = barcode.split('-');
+  if (parts.length === 2) {
+    const traceId = parts[1].trim().toUpperCase();
+    if (validateTraceId(traceId) && mockTraceData[traceId]) {
+      return traceId;
+    }
+  }
+  
+  // 支持纯数字条形码映射（模拟条码库查询）
+  const barcodeMapping = {
+    '6901234567890': 'G001',
+    '6901234567891': 'G002',
+    '6901234567892': 'G003',
+    '6901234567893': 'G004'
+  };
+  
+  return barcodeMapping[barcode.trim()] || null;
+}
+
+/**
+ * 解析小程序码 scene 参数
+ * @param {string} scene - 小程序码 scene 参数（URL编码）
+ * @returns {string|null} - 溯源ID或null
+ */
+function parseSceneParam(scene) {
+  if (!scene || typeof scene !== 'string') {
+    return null;
+  }
+  
+  try {
+    // scene 参数通常是 URL 编码的
+    const decodedScene = decodeURIComponent(scene);
+    console.log('解析 scene 参数:', decodedScene);
+    
+    // 支持格式：traceId=G001 或 id=G001 或直接 G001
+    if (decodedScene.includes('=')) {
+      const params = new URLSearchParams(decodedScene);
+      const traceId = params.get('traceId') || params.get('id');
+      if (traceId && validateTraceId(traceId)) {
+        return traceId.toUpperCase();
+      }
+    }
+    
+    // 直接是溯源ID格式
+    if (validateTraceId(decodedScene)) {
+      return decodedScene.toUpperCase();
+    }
+    
+    return null;
+  } catch (e) {
+    console.error('解析 scene 参数失败:', e);
+    return null;
+  }
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
   validateTraceId,
   getAvailableTraceIds,
-  mockTraceData
+  mockTraceData,
+  validateBatchNo,
+  getBatchSkus,
+  getTraceIdFromBarcode,
+  parseSceneParam
 };

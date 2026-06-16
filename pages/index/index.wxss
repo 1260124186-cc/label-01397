@@ -468,3 +468,248 @@
   font-size: 22rpx;
   color: #999999;
 }
+
+/* ==================== 剪贴板弹窗 ==================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  z-index: 9999;
+}
+
+.modal-content {
+  width: 600rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  overflow: hidden;
+  animation: modalIn 0.3s ease;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48rpx 32rpx 24rpx;
+}
+
+.modal-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.modal-body {
+  padding: 0 32rpx 32rpx;
+  text-align: center;
+}
+
+.modal-body text {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.6;
+}
+
+.clipboard-id {
+  display: inline-block;
+  margin: 20rpx 0;
+  padding: 16rpx 32rpx;
+  background: rgba(46, 139, 87, 0.1);
+  color: #2E8B57;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 12rpx;
+  letter-spacing: 2rpx;
+}
+
+.modal-tip {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 2rpx solid #F0F0F0;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 100rpx;
+  line-height: 100rpx;
+  font-size: 30rpx;
+  border: none;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+.modal-btn::after {
+  border: none;
+}
+
+.modal-btn-cancel {
+  color: #999999;
+  border-right: 2rpx solid #F0F0F0;
+}
+
+.modal-btn-confirm {
+  color: #2E8B57;
+  font-weight: 600;
+}
+
+/* ==================== 批量查询按钮 ==================== */
+.batch-btn {
+  background: linear-gradient(135deg, #2E8B57, #3CB371) !important;
+  width: 220rpx !important;
+}
+
+.batch-test-btn {
+  background: rgba(46, 139, 87, 0.1);
+  color: #2E8B57;
+}
+
+.batch-test-btn:active {
+  background: rgba(46, 139, 87, 0.2);
+}
+
+/* ==================== 扫码历史区域 ==================== */
+.history-section {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.history-section .section-title {
+  position: relative;
+}
+
+.clear-history-btn {
+  position: absolute;
+  right: 0;
+  font-size: 24rpx;
+  color: #ff4d4f;
+  font-weight: 400;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  background: rgba(255, 77, 79, 0.1);
+}
+
+.clear-history-btn:active {
+  background: rgba(255, 77, 79, 0.2);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  background: #FAFAFA;
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.history-item:active {
+  background: #F5F5F5;
+}
+
+.history-icon {
+  width: 72rpx;
+  height: 72rpx;
+  background: linear-gradient(135deg, #FFE4B5, #FFD700);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.history-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.history-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333333;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-meta {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.history-id {
+  font-size: 24rpx;
+  color: #2E8B57;
+}
+
+.history-time {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.history-actions {
+  margin-right: 16rpx;
+}
+
+.delete-btn {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #ccc;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:active {
+  background: rgba(255, 77, 79, 0.1);
+  color: #ff4d4f;
+}
+
+.history-arrow {
+  font-size: 36rpx;
+  color: #CCCCCC;
+  flex-shrink: 0;
+}

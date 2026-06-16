@@ -1,28 +1,42 @@
 <!--
   桂花茶溯源小程序 - 首页
-  功能：品牌展示、扫码溯源、手动输入查询
+  功能：品牌展示、扫码溯源、手动输入查询、批量查询、扫码历史
 -->
 
 <view class="page-container {{pageLoaded ? 'page-loaded' : ''}}">
   
+  <!-- 剪贴板识别弹窗 -->
+  <view wx:if="{{showClipboardModal}}" class="modal-overlay" catchtap="handleClipboardCancel">
+    <view class="modal-content" catchtap="preventBubble">
+      <view class="modal-header">
+        <view class="modal-icon">📋</view>
+        <view class="modal-title">检测到溯源ID</view>
+      </view>
+      <view class="modal-body">
+        <text>剪贴板中检测到有效溯源ID：</text>
+        <view class="clipboard-id">{{clipboardTraceId}}</view>
+        <text class="modal-tip">是否立即查询该产品的溯源信息？</text>
+      </view>
+      <view class="modal-footer">
+        <button class="modal-btn modal-btn-cancel" bindtap="handleClipboardCancel">取消</button>
+        <button class="modal-btn modal-btn-confirm" bindtap="handleClipboardConfirm">立即查询</button>
+      </view>
+    </view>
+  </view>
+
   <!-- ==================== 顶部品牌视觉区域 ==================== -->
   <view class="header-section">
-    <!-- 品牌装饰背景 -->
     <view class="header-bg">
       <view class="header-pattern"></view>
     </view>
     
-    <!-- 品牌主视觉 -->
     <view class="brand-container">
-      <!-- 桂花图标 -->
       <view class="brand-icon">
         <text class="osmanthus-icon">🌼</text>
       </view>
       
-      <!-- 品牌名称 -->
       <view class="brand-title">{{brandName}}</view>
       
-      <!-- 品牌副标题 -->
       <view class="brand-subtitle">
         <text class="eco-leaf">🍃</text>
         <text>追溯每一片茶叶的绿色旅程</text>
@@ -38,7 +52,6 @@
     <view class="scan-card" bindtap="handleScanCode">
       <view class="scan-icon-wrapper">
         <view class="scan-icon">
-          <!-- 扫码图标 -->
           <view class="scan-icon-inner">
             <view class="scan-corner scan-corner-tl"></view>
             <view class="scan-corner scan-corner-tr"></view>
@@ -50,20 +63,18 @@
       </view>
       <view class="scan-text">
         <text class="scan-title">桂花茶扫码溯源</text>
-        <text class="scan-desc">扫描产品二维码，查看完整溯源信息</text>
+        <text class="scan-desc">扫描二维码/条形码，支持小程序码</text>
       </view>
       <view class="scan-arrow">›</view>
     </view>
 
     <!-- 手动输入区域 -->
     <view class="manual-section">
-      <!-- 展开/收起切换 -->
       <view class="manual-toggle" bindtap="toggleInputArea">
         <text class="manual-toggle-text">手动输入溯源ID</text>
         <text class="manual-toggle-icon {{showInputArea ? 'rotate' : ''}}">▼</text>
       </view>
       
-      <!-- 输入区域（可展开） -->
       <view class="manual-input-area {{showInputArea ? 'show' : ''}}">
         <view class="input-wrapper">
           <input 
@@ -80,7 +91,6 @@
           <button class="query-btn" bindtap="handleManualQuery">查询</button>
         </view>
         
-        <!-- 测试ID快捷按钮 -->
         <view class="test-ids">
           <text class="test-label">测试ID：</text>
           <view class="test-id-btns">
@@ -96,6 +106,80 @@
       </view>
     </view>
 
+    <!-- 批量查询区域 -->
+    <view class="manual-section">
+      <view class="manual-toggle" bindtap="toggleBatchArea">
+        <text class="manual-toggle-text">📦 按批次号查询</text>
+        <text class="manual-toggle-icon {{showBatchArea ? 'rotate' : ''}}">▼</text>
+      </view>
+      
+      <view class="manual-input-area {{showBatchArea ? 'show' : ''}}">
+        <view class="input-wrapper">
+          <input 
+            class="trace-input" 
+            type="text" 
+            placeholder="请输入批次号（如：GH202503）"
+            placeholder-class="input-placeholder"
+            value="{{inputBatchNo}}"
+            bindinput="onBatchInputChange"
+            maxlength="10"
+            confirm-type="search"
+            bindconfirm="handleBatchQuery"
+          />
+          <button class="query-btn batch-btn" bindtap="handleBatchQuery">查询批次</button>
+        </view>
+        
+        <view class="test-ids">
+          <text class="test-label">测试批次：</text>
+          <view class="test-id-btns">
+            <view 
+              wx:for="{{testBatchNos}}" 
+              wx:key="*this" 
+              class="test-id-btn batch-test-btn"
+              data-batch="{{item}}"
+              bindtap="fillTestBatchNo"
+            >{{item}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ==================== 扫码历史区域 ==================== -->
+    <view wx:if="{{showHistory}}" class="history-section">
+      <view class="section-title">
+        <view class="title-icon">⏰</view>
+        <text>扫码历史</text>
+        <view class="clear-history-btn" bindtap="clearAllHistory">清空</view>
+      </view>
+      
+      <view class="history-list">
+        <view 
+          class="history-item" 
+          wx:for="{{scanHistory}}" 
+          wx:key="id"
+          data-traceid="{{item.traceId}}"
+          bindtap="viewHistoryItem"
+        >
+          <view class="history-icon">🌼</view>
+          <view class="history-info">
+            <view class="history-name">{{item.productName}}</view>
+            <view class="history-meta">
+              <text class="history-id">{{item.traceId}}</text>
+              <text class="history-time">{{item.formatTime}}</text>
+            </view>
+          </view>
+          <view class="history-actions">
+            <view 
+              class="delete-btn" 
+              catchtap="deleteHistoryItem"
+              data-id="{{item.id}}"
+            >×</view>
+          </view>
+          <view class="history-arrow">›</view>
+        </view>
+      </view>
+    </view>
+
     <!-- ==================== 功能说明卡片 ==================== -->
     <view class="feature-section">
       <view class="section-title">
@@ -104,7 +188,6 @@
       </view>
       
       <view class="feature-grid">
-        <!-- 功能1：产地溯源 -->
         <view class="feature-item">
           <view class="feature-icon" style="background: linear-gradient(135deg, #2E8B57, #3CB371);">
             <text>🌱</text>
@@ -113,7 +196,6 @@
           <view class="feature-desc">茶树与桂花产地信息</view>
         </view>
         
-        <!-- 功能2：工艺追踪 -->
         <view class="feature-item">
           <view class="feature-icon" style="background: linear-gradient(135deg, #DAA520, #F0C75E);">
             <text>🫖</text>
@@ -122,7 +204,6 @@
           <view class="feature-desc">窨制工艺全流程</view>
         </view>
         
-        <!-- 功能3：绿色认证 -->
         <view class="feature-item">
           <view class="feature-icon" style="background: linear-gradient(135deg, #52C41A, #95DE64);">
             <text>♻️</text>
@@ -131,7 +212,6 @@
           <view class="feature-desc">生态种植与环保包装</view>
         </view>
         
-        <!-- 功能4：检测报告 -->
         <view class="feature-item">
           <view class="feature-icon" style="background: linear-gradient(135deg, #1890FF, #69C0FF);">
             <text>📋</text>
