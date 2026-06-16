@@ -3,7 +3,55 @@
   功能：完整展示溯源信息（基础信息、树龄、窨制工艺、绿色溯源、农残检测、冲泡建议）
 -->
 
-<view class="page-container {{showPdfModal ? 'no-scroll' : ''}}" style="{{showPdfModal ? 'top: -' + scrollTop + 'px;' : ''}}" wx:if="{{!loading && traceData}}">
+<!-- ==================== 阅读进度条 ==================== -->
+<view class="reading-progress" wx:if="{{!skeletonLoading}}">
+  <view class="progress-bar" style="width: {{readingProgress}}%;"></view>
+</view>
+
+<!-- ==================== 骨架屏 ==================== -->
+<view class="skeleton-container" wx:if="{{skeletonLoading}}">
+  <view class="skeleton-header">
+    <view class="skeleton-avatar shimmer"></view>
+    <view class="skeleton-title shimmer" style="width: 200rpx;"></view>
+    <view class="skeleton-subtitle shimmer" style="width: 160rpx;"></view>
+  </view>
+  
+  <view class="skeleton-content">
+    <view class="skeleton-card">
+      <view class="skeleton-line shimmer" style="width: 40%;"></view>
+      <view class="skeleton-grid">
+        <view class="skeleton-grid-item shimmer"></view>
+        <view class="skeleton-grid-item shimmer"></view>
+        <view class="skeleton-grid-item shimmer"></view>
+        <view class="skeleton-grid-item shimmer"></view>
+      </view>
+    </view>
+    
+    <view class="skeleton-card">
+      <view class="skeleton-line shimmer" style="width: 30%;"></view>
+      <view class="skeleton-line shimmer" style="width: 80%;"></view>
+      <view class="skeleton-line shimmer" style="width: 60%;"></view>
+    </view>
+    
+    <view class="skeleton-card">
+      <view class="skeleton-line shimmer" style="width: 35%;"></view>
+      <view class="skeleton-params">
+        <view class="skeleton-param shimmer"></view>
+        <view class="skeleton-param shimmer"></view>
+        <view class="skeleton-param shimmer"></view>
+        <view class="skeleton-param shimmer"></view>
+      </view>
+    </view>
+    
+    <view class="skeleton-card">
+      <view class="skeleton-line shimmer" style="width: 45%;"></view>
+      <view class="skeleton-image shimmer"></view>
+      <view class="skeleton-line shimmer" style="width: 70%;"></view>
+    </view>
+  </view>
+</view>
+
+<view class="page-container {{showPdfModal ? 'no-scroll' : ''}}" style="{{showPdfModal ? 'top: -' + scrollTop + 'px;' : ''}}" wx:if="{{!skeletonLoading && traceData}}">
   
   <!-- ==================== 顶部产品概览 ==================== -->
   <view class="product-header">
@@ -28,378 +76,527 @@
     </view>
   </view>
 
+  <!-- ==================== 锚点 Tab 导航栏 ==================== -->
+  <view class="anchor-tab-bar {{anchorSticky ? 'sticky' : ''}}" id="anchor-tab-bar">
+    <scroll-view scroll-x="true" class="anchor-scroll" enhanced show-scrollbar="{{false}}">
+      <view class="anchor-tabs">
+        <view 
+          wx:for="{{anchorTabs}}" 
+          wx:key="key"
+          class="anchor-tab-item {{activeAnchor === item.key ? 'active' : ''}}"
+          data-key="{{item.key}}"
+          data-index="{{index}}"
+          bindtap="onAnchorTap"
+        >
+          <text class="anchor-tab-icon">{{item.icon}}</text>
+          <text class="anchor-tab-label">{{item.label}}</text>
+          <view class="anchor-tab-indicator" wx:if="{{activeAnchor === item.key}}"></view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
   <!-- ==================== 主要内容区域 ==================== -->
   <view class="main-content">
     
     <!-- ========== 模块1：基础信息 ========== -->
-    <view class="card animate-card" style="animation-delay: 0.1s;">
-      <view class="card-title">
-        <text class="title-icon">📋</text>
-        <text>基础信息</text>
+    <view class="card animate-card module-card" id="anchor-basic" style="animation-delay: 0.1s;">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="basic">
+        <view class="title-left">
+          <text class="title-icon">📋</text>
+          <text>基础信息</text>
+        </view>
+        <view class="module-toggle {{moduleCollapsed.basic ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
+        </view>
       </view>
-      <view class="info-grid">
-        <view class="info-item">
-          <view class="info-label">溯源ID</view>
-          <view class="info-value highlight" bindtap="copyTraceId">
-            {{traceData.basicInfo.traceId}}
-            <text class="copy-icon">📋</text>
+      <view class="module-content {{moduleCollapsed.basic ? 'hidden' : ''}}">
+        <view class="info-grid">
+          <view class="info-item">
+            <view class="info-label">溯源ID</view>
+            <view class="info-value highlight" bindtap="copyTraceId">
+              {{traceData.basicInfo.traceId}}
+              <text class="copy-icon">📋</text>
+            </view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">批次号</view>
+            <view class="info-value">{{traceData.basicInfo.batchNo}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">采摘时间</view>
+            <view class="info-value">{{traceData.basicInfo.pickTime}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">出厂时间</view>
+            <view class="info-value">{{traceData.basicInfo.productionTime}}</view>
           </view>
         </view>
-        <view class="info-item">
-          <view class="info-label">批次号</view>
-          <view class="info-value">{{traceData.basicInfo.batchNo}}</view>
-        </view>
-        <view class="info-item">
-          <view class="info-label">采摘时间</view>
-          <view class="info-value">{{traceData.basicInfo.pickTime}}</view>
-        </view>
-        <view class="info-item">
-          <view class="info-label">出厂时间</view>
-          <view class="info-value">{{traceData.basicInfo.productionTime}}</view>
+        
+        <!-- 产地图片（懒加载） -->
+        <view class="module-image-wrapper" id="img-origin">
+          <block wx:if="{{lazyImageMap.originImage}}">
+            <image 
+              class="module-image" 
+              src="{{traceData.images.originImage}}" 
+              mode="aspectFill"
+              lazy-load="true"
+            />
+            <view class="image-caption">📍 产地实拍</view>
+          </block>
+          <view wx:else class="image-placeholder shimmer">
+            <text class="placeholder-icon">🖼️</text>
+          </view>
         </view>
       </view>
     </view>
 
     <!-- ========== 模块2：树龄信息（核心特色） ========== -->
-    <view class="card animate-card tree-age-card" style="animation-delay: 0.15s;">
-      <view class="card-title">
-        <text class="title-icon">🌳</text>
-        <text>树龄信息</text>
-        <view class="title-badge">核心特色</view>
+    <view class="card animate-card tree-age-card module-card" id="anchor-treeAge" style="animation-delay: 0.15s;">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="treeAge">
+        <view class="title-left">
+          <text class="title-icon">🌳</text>
+          <text>树龄信息</text>
+          <view class="title-badge">核心特色</view>
+        </view>
+        <view class="module-toggle {{moduleCollapsed.treeAge ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
+        </view>
       </view>
-      <view class="tree-age-content">
-        <view class="tree-item">
-          <view class="tree-icon tea-tree">🍃</view>
-          <view class="tree-info">
-            <view class="tree-type">茶树龄</view>
-            <view class="tree-age">
-              <text class="age-number">{{traceData.treeAge.teaTreeAge}}</text>
-              <text class="age-unit">年</text>
+      <view class="module-content {{moduleCollapsed.treeAge ? 'hidden' : ''}}">
+        <view class="tree-age-content">
+          <view class="tree-item">
+            <view class="tree-icon tea-tree">🍃</view>
+            <view class="tree-info">
+              <view class="tree-type">茶树龄</view>
+              <view class="tree-age">
+                <text class="age-number">{{traceData.treeAge.teaTreeAge}}</text>
+                <text class="age-unit">年</text>
+              </view>
+              <view class="tree-location">产地：{{traceData.treeAge.teaTreeLocation}}</view>
             </view>
-            <view class="tree-location">产地：{{traceData.treeAge.teaTreeLocation}}</view>
+          </view>
+          <view class="tree-divider"></view>
+          <view class="tree-item">
+            <view class="tree-icon osmanthus-tree">🌼</view>
+            <view class="tree-info">
+              <view class="tree-type">桂花树龄</view>
+              <view class="tree-age">
+                <text class="age-number">{{traceData.treeAge.osmanthusTreeAge}}</text>
+                <text class="age-unit">年</text>
+              </view>
+              <view class="tree-location">产地：{{traceData.treeAge.osmanthusTreeLocation}}</view>
+            </view>
           </view>
         </view>
-        <view class="tree-divider"></view>
-        <view class="tree-item">
-          <view class="tree-icon osmanthus-tree">🌼</view>
-          <view class="tree-info">
-            <view class="tree-type">桂花树龄</view>
-            <view class="tree-age">
-              <text class="age-number">{{traceData.treeAge.osmanthusTreeAge}}</text>
-              <text class="age-unit">年</text>
-            </view>
-            <view class="tree-location">产地：{{traceData.treeAge.osmanthusTreeLocation}}</view>
+        
+        <!-- 茶树产地图片（懒加载） -->
+        <view class="module-image-wrapper" id="img-tea-origin">
+          <block wx:if="{{lazyImageMap.teaOriginImage}}">
+            <image 
+              class="module-image" 
+              src="{{traceData.images.teaOriginImage}}" 
+              mode="aspectFill"
+              lazy-load="true"
+            />
+            <view class="image-caption">🍃 百年茶树产地</view>
+          </block>
+          <view wx:else class="image-placeholder shimmer">
+            <text class="placeholder-icon">🍃</text>
           </view>
         </view>
       </view>
     </view>
 
     <!-- ========== 模块3：桂花信息 ========== -->
-    <view class="card animate-card" style="animation-delay: 0.2s;">
-      <view class="card-title">
-        <text class="title-icon">🌸</text>
-        <text>桂花信息</text>
+    <view class="card animate-card module-card" style="animation-delay: 0.2s;">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="osmanthus">
+        <view class="title-left">
+          <text class="title-icon">🌸</text>
+          <text>桂花信息</text>
+        </view>
+        <view class="module-toggle {{moduleCollapsed.osmanthus ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
+        </view>
       </view>
-      <view class="osmanthus-content">
-        <view class="osmanthus-variety">
-          <view class="variety-badge {{traceData.osmanthusInfo.variety === '金桂' ? 'golden' : 'silver'}}">
-            {{traceData.osmanthusInfo.variety}}
+      <view class="module-content {{moduleCollapsed.osmanthus ? 'hidden' : ''}}">
+        <view class="osmanthus-content">
+          <view class="osmanthus-variety">
+            <view class="variety-badge {{traceData.osmanthusInfo.variety === '金桂' ? 'golden' : 'silver'}}">
+              {{traceData.osmanthusInfo.variety}}
+            </view>
+          </view>
+          <view class="info-grid">
+            <view class="info-item">
+              <view class="info-label">产地</view>
+              <view class="info-value">{{traceData.osmanthusInfo.origin}}</view>
+            </view>
+            <view class="info-item">
+              <view class="info-label">采摘时间</view>
+              <view class="info-value">{{traceData.osmanthusInfo.pickTime}}</view>
+            </view>
+            <view class="info-item">
+              <view class="info-label">花色</view>
+              <view class="info-value">{{traceData.osmanthusInfo.color}}</view>
+            </view>
+            <view class="info-item">
+              <view class="info-label">香气特点</view>
+              <view class="info-value">{{traceData.osmanthusInfo.fragrance}}</view>
+            </view>
           </view>
         </view>
-        <view class="info-grid">
-          <view class="info-item">
-            <view class="info-label">产地</view>
-            <view class="info-value">{{traceData.osmanthusInfo.origin}}</view>
-          </view>
-          <view class="info-item">
-            <view class="info-label">采摘时间</view>
-            <view class="info-value">{{traceData.osmanthusInfo.pickTime}}</view>
-          </view>
-          <view class="info-item">
-            <view class="info-label">花色</view>
-            <view class="info-value">{{traceData.osmanthusInfo.color}}</view>
-          </view>
-          <view class="info-item">
-            <view class="info-label">香气特点</view>
-            <view class="info-value">{{traceData.osmanthusInfo.fragrance}}</view>
+        
+        <!-- 桂花产地图片（懒加载） -->
+        <view class="module-image-wrapper" id="img-osmanthus-origin">
+          <block wx:if="{{lazyImageMap.osmanthusOriginImage}}">
+            <image 
+              class="module-image" 
+              src="{{traceData.images.osmanthusOriginImage}}" 
+              mode="aspectFill"
+              lazy-load="true"
+            />
+            <view class="image-caption">🌸 桂花产地</view>
+          </block>
+          <view wx:else class="image-placeholder shimmer">
+            <text class="placeholder-icon">🌸</text>
           </view>
         </view>
       </view>
     </view>
 
     <!-- ========== 模块4：窨制工艺（核心模块） ========== -->
-    <view class="card animate-card" style="animation-delay: 0.25s;">
-      <view class="card-title">
-        <text class="title-icon">🫖</text>
-        <text>窨制工艺</text>
-        <view class="title-badge gold">核心工艺</view>
-      </view>
-      
-      <!-- 工艺参数 -->
-      <view class="process-params">
-        <view class="param-item">
-          <view class="param-value">{{traceData.scentingProcess.scentingTimes}}</view>
-          <view class="param-label">窨制次数</view>
+    <view class="card animate-card module-card" id="anchor-process" style="animation-delay: 0.25s;">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="process">
+        <view class="title-left">
+          <text class="title-icon">🫖</text>
+          <text>窨制工艺</text>
+          <view class="title-badge gold">核心工艺</view>
         </view>
-        <view class="param-divider"></view>
-        <view class="param-item">
-          <view class="param-value">{{traceData.scentingProcess.scentingDuration}}h</view>
-          <view class="param-label">每次时长</view>
-        </view>
-        <view class="param-divider"></view>
-        <view class="param-item">
-          <view class="param-value">{{traceData.scentingProcess.temperature}}℃</view>
-          <view class="param-label">窨制温度</view>
-        </view>
-        <view class="param-divider"></view>
-        <view class="param-item">
-          <view class="param-value">{{traceData.scentingProcess.ratio}}</view>
-          <view class="param-label">花茶配比</view>
+        <view class="module-toggle {{moduleCollapsed.process ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
         </view>
       </view>
-      
-      <!-- 环境参数 -->
-      <view class="env-params">
-        <view class="env-item">
-          <text class="env-icon">💧</text>
-          <text>湿度：{{traceData.scentingProcess.humidity}}%</text>
-        </view>
-        <view class="env-item">
-          <text class="env-icon">✨</text>
-          <text>洁净度：{{traceData.scentingProcess.workshopCleanliness}}</text>
-        </view>
-      </view>
-      
-      <!-- 工艺流程图 -->
-      <view class="process-flow">
-        <view class="flow-title">工艺流程图</view>
-        <view class="flow-steps">
-          <view 
-            wx:for="{{traceData.scentingProcess.processSteps}}" 
-            wx:key="step"
-            class="flow-step {{activeProcessStep === index ? 'active' : ''}}"
-            data-index="{{index}}"
-            bindtap="toggleProcessStep"
-          >
-            <view class="step-icon">{{item.icon}}</view>
-            <view class="step-name">{{item.name}}</view>
-            <view class="step-arrow" wx:if="{{index < traceData.scentingProcess.processSteps.length - 1}}">→</view>
+      <view class="module-content {{moduleCollapsed.process ? 'hidden' : ''}}">
+        
+        <!-- 工艺参数 -->
+        <view class="process-params">
+          <view class="param-item">
+            <view class="param-value">{{traceData.scentingProcess.scentingTimes}}</view>
+            <view class="param-label">窨制次数</view>
+          </view>
+          <view class="param-divider"></view>
+          <view class="param-item">
+            <view class="param-value">{{traceData.scentingProcess.scentingDuration}}h</view>
+            <view class="param-label">每次时长</view>
+          </view>
+          <view class="param-divider"></view>
+          <view class="param-item">
+            <view class="param-value">{{traceData.scentingProcess.temperature}}℃</view>
+            <view class="param-label">窨制温度</view>
+          </view>
+          <view class="param-divider"></view>
+          <view class="param-item">
+            <view class="param-value">{{traceData.scentingProcess.ratio}}</view>
+            <view class="param-label">花茶配比</view>
           </view>
         </view>
-        <!-- 步骤详情（点击展开） -->
-        <view class="step-detail" wx:if="{{activeProcessStep >= 0}}">
-          <view class="detail-icon">{{traceData.scentingProcess.processSteps[activeProcessStep].icon}}</view>
-          <view class="detail-text">
-            <view class="detail-name">{{traceData.scentingProcess.processSteps[activeProcessStep].name}}</view>
-            <view class="detail-desc">{{traceData.scentingProcess.processSteps[activeProcessStep].desc}}</view>
+        
+        <!-- 环境参数 -->
+        <view class="env-params">
+          <view class="env-item">
+            <text class="env-icon">💧</text>
+            <text>湿度：{{traceData.scentingProcess.humidity}}%</text>
+          </view>
+          <view class="env-item">
+            <text class="env-icon">✨</text>
+            <text>洁净度：{{traceData.scentingProcess.workshopCleanliness}}</text>
+          </view>
+        </view>
+        
+        <!-- 工艺图片（懒加载） -->
+        <view class="module-image-wrapper" id="img-process">
+          <block wx:if="{{lazyImageMap.processImage}}">
+            <image 
+              class="module-image" 
+              src="{{traceData.images.processImage}}" 
+              mode="aspectFill"
+              lazy-load="true"
+            />
+            <view class="image-caption">🫖 窨制工艺车间</view>
+          </block>
+          <view wx:else class="image-placeholder shimmer">
+            <text class="placeholder-icon">🫖</text>
+          </view>
+        </view>
+        
+        <!-- 工艺流程图 -->
+        <view class="process-flow">
+          <view class="flow-title">工艺流程图</view>
+          <view class="flow-steps">
+            <view 
+              wx:for="{{traceData.scentingProcess.processSteps}}" 
+              wx:key="step"
+              class="flow-step {{activeProcessStep === index ? 'active' : ''}}"
+              data-index="{{index}}"
+              bindtap="toggleProcessStep"
+            >
+              <view class="step-icon">{{item.icon}}</view>
+              <view class="step-name">{{item.name}}</view>
+              <view class="step-arrow" wx:if="{{index < traceData.scentingProcess.processSteps.length - 1}}">→</view>
+            </view>
+          </view>
+          <!-- 步骤详情（点击展开） -->
+          <view class="step-detail" wx:if="{{activeProcessStep >= 0}}">
+            <view class="detail-icon">{{traceData.scentingProcess.processSteps[activeProcessStep].icon}}</view>
+            <view class="detail-text">
+              <view class="detail-name">{{traceData.scentingProcess.processSteps[activeProcessStep].name}}</view>
+              <view class="detail-desc">{{traceData.scentingProcess.processSteps[activeProcessStep].desc}}</view>
+            </view>
           </view>
         </view>
       </view>
     </view>
 
     <!-- ========== 模块5：绿色溯源（新增核心模块） ========== -->
-    <view class="card animate-card green-card" style="animation-delay: 0.3s;">
-      <view class="card-title">
-        <text class="title-icon">♻️</text>
-        <text>绿色溯源</text>
-        <view class="title-badge green">环保认证</view>
-      </view>
-      
-      <!-- 生态种植 -->
-      <view class="green-section">
-        <view class="green-header">
-          <text class="green-icon">{{traceData.greenTrace.ecoPlanting.icon}}</text>
-          <text class="green-title">{{traceData.greenTrace.ecoPlanting.title}}</text>
-          <view class="green-cert">{{traceData.greenTrace.ecoPlanting.certification}}</view>
+    <view class="card animate-card green-card module-card" id="anchor-green" style="animation-delay: 0.3s;">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="green">
+        <view class="title-left">
+          <text class="title-icon">♻️</text>
+          <text>绿色溯源</text>
+          <view class="title-badge green">环保认证</view>
         </view>
-        <view class="green-records">
-          <view 
-            wx:for="{{traceData.greenTrace.ecoPlanting.records}}" 
-            wx:key="*this"
-            class="record-item"
-          >
-            <text class="record-check">✓</text>
-            <text>{{item}}</text>
+        <view class="module-toggle {{moduleCollapsed.green ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
+        </view>
+      </view>
+      <view class="module-content {{moduleCollapsed.green ? 'hidden' : ''}}">
+        
+        <!-- 认证证书图片（懒加载） -->
+        <view class="module-image-wrapper" id="img-cert">
+          <block wx:if="{{lazyImageMap.certImage}}">
+            <image 
+              class="module-image" 
+              src="{{traceData.images.certImage}}" 
+              mode="aspectFill"
+              lazy-load="true"
+            />
+            <view class="image-caption">📜 环保认证证书</view>
+          </block>
+          <view wx:else class="image-placeholder shimmer">
+            <text class="placeholder-icon">📜</text>
           </view>
         </view>
-      </view>
-      
-      <!-- 环保包装 -->
-      <view class="green-section">
-        <view class="green-header">
-          <text class="green-icon">{{traceData.greenTrace.ecoPacking.icon}}</text>
-          <text class="green-title">{{traceData.greenTrace.ecoPacking.title}}</text>
-          <view class="green-cert">{{traceData.greenTrace.ecoPacking.certification}}</view>
-        </view>
-        <view class="green-records">
-          <view 
-            wx:for="{{traceData.greenTrace.ecoPacking.records}}" 
-            wx:key="*this"
-            class="record-item"
-          >
-            <text class="record-check">✓</text>
-            <text>{{item}}</text>
+        
+        <!-- 生态种植 -->
+        <view class="green-section">
+          <view class="green-header">
+            <text class="green-icon">{{traceData.greenTrace.ecoPlanting.icon}}</text>
+            <text class="green-title">{{traceData.greenTrace.ecoPlanting.title}}</text>
+            <view class="green-cert">{{traceData.greenTrace.ecoPlanting.certification}}</view>
+          </view>
+          <view class="green-records">
+            <view 
+              wx:for="{{traceData.greenTrace.ecoPlanting.records}}" 
+              wx:key="*this"
+              class="record-item"
+            >
+              <text class="record-check">✓</text>
+              <text>{{item}}</text>
+            </view>
           </view>
         </view>
-      </view>
-      
-      <!-- 绿色物流 -->
-      <view class="green-section">
-        <view class="green-header">
-          <text class="green-icon">{{traceData.greenTrace.ecoLogistics.icon}}</text>
-          <text class="green-title">{{traceData.greenTrace.ecoLogistics.title}}</text>
-          <view class="green-reduction">{{traceData.greenTrace.ecoLogistics.carbonReduction}}</view>
-        </view>
-        <view class="green-records">
-          <view 
-            wx:for="{{traceData.greenTrace.ecoLogistics.records}}" 
-            wx:key="*this"
-            class="record-item"
-          >
-            <text class="record-check">✓</text>
-            <text>{{item}}</text>
+        
+        <!-- 环保包装 -->
+        <view class="green-section">
+          <view class="green-header">
+            <text class="green-icon">{{traceData.greenTrace.ecoPacking.icon}}</text>
+            <text class="green-title">{{traceData.greenTrace.ecoPacking.title}}</text>
+            <view class="green-cert">{{traceData.greenTrace.ecoPacking.certification}}</view>
+          </view>
+          <view class="green-records">
+            <view 
+              wx:for="{{traceData.greenTrace.ecoPacking.records}}" 
+              wx:key="*this"
+              class="record-item"
+            >
+              <text class="record-check">✓</text>
+              <text>{{item}}</text>
+            </view>
           </view>
         </view>
-      </view>
-      
-      <!-- 数据安全提示 -->
-      <view class="privacy-notice">
-        <text class="privacy-icon">🔒</text>
-        <text class="privacy-text">数据加密存储，不收集无关个人信息，符合《个人信息保护法》</text>
+        
+        <!-- 绿色物流 -->
+        <view class="green-section">
+          <view class="green-header">
+            <text class="green-icon">{{traceData.greenTrace.ecoLogistics.icon}}</text>
+            <text class="green-title">{{traceData.greenTrace.ecoLogistics.title}}</text>
+            <view class="green-reduction">{{traceData.greenTrace.ecoLogistics.carbonReduction}}</view>
+          </view>
+          <view class="green-records">
+            <view 
+              wx:for="{{traceData.greenTrace.ecoLogistics.records}}" 
+              wx:key="*this"
+              class="record-item"
+            >
+              <text class="record-check">✓</text>
+              <text>{{item}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 数据安全提示 -->
+        <view class="privacy-notice">
+          <text class="privacy-icon">🔒</text>
+          <text class="privacy-text">数据加密存储，不收集无关个人信息，符合《个人信息保护法》</text>
+        </view>
       </view>
     </view>
 
     <!-- ========== 模块6：农残检测 ========== -->
-    <view class="card animate-card" style="animation-delay: 0.35s;">
-      <view class="card-title">
-        <text class="title-icon">🔬</text>
-        <text>农残检测</text>
-      </view>
-      
-      <!-- 检测机构信息 -->
-      <view class="test-institution">
-        <view class="institution-icon">🏛️</view>
-        <view class="institution-info">
-          <view class="institution-name">{{traceData.pesticideTest.institution}}</view>
-          <view class="institution-meta">
-            <text>报告编号：{{traceData.pesticideTest.reportNo}}</text>
-            <text>检测日期：{{traceData.pesticideTest.testDate}}</text>
-          </view>
+    <view class="card animate-card module-card" id="anchor-test" style="animation-delay: 0.35s;">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="test">
+        <view class="title-left">
+          <text class="title-icon">🔬</text>
+          <text>农残检测</text>
+        </view>
+        <view class="module-toggle {{moduleCollapsed.test ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
         </view>
       </view>
-      
-      <!-- 茶叶检测结果 -->
-      <view class="test-results">
-        <view class="test-category">
-          <text class="category-icon">🍃</text>
-          <text>茶叶农残检测</text>
-        </view>
-        <view class="test-table">
-          <view class="table-header">
-            <text class="th-item">检测项</text>
-            <text class="th-value">检测值</text>
-            <text class="th-limit">国标限值</text>
-            <text class="th-status">结果</text>
-          </view>
-          <view 
-            wx:for="{{traceData.pesticideTest.teaTests}}" 
-            wx:key="item"
-            class="table-row"
-          >
-            <text class="td-item">{{item.item}}</text>
-            <text class="td-value">{{item.value}}{{item.unit}}</text>
-            <text class="td-limit">{{item.limit}}{{item.unit}}</text>
-            <text class="td-status pass">{{item.status}}</text>
+      <view class="module-content {{moduleCollapsed.test ? 'hidden' : ''}}">
+        
+        <!-- 检测机构信息 -->
+        <view class="test-institution">
+          <view class="institution-icon">🏛️</view>
+          <view class="institution-info">
+            <view class="institution-name">{{traceData.pesticideTest.institution}}</view>
+            <view class="institution-meta">
+              <text>报告编号：{{traceData.pesticideTest.reportNo}}</text>
+              <text>检测日期：{{traceData.pesticideTest.testDate}}</text>
+            </view>
           </view>
         </view>
-      </view>
-      
-      <!-- 桂花检测结果 -->
-      <view class="test-results">
-        <view class="test-category">
-          <text class="category-icon">🌸</text>
-          <text>桂花农残检测</text>
-        </view>
-        <view class="test-table">
-          <view class="table-header">
-            <text class="th-item">检测项</text>
-            <text class="th-value">检测值</text>
-            <text class="th-limit">国标限值</text>
-            <text class="th-status">结果</text>
+        
+        <!-- 茶叶检测结果 -->
+        <view class="test-results">
+          <view class="test-category">
+            <text class="category-icon">🍃</text>
+            <text>茶叶农残检测</text>
           </view>
-          <view 
-            wx:for="{{traceData.pesticideTest.osmanthusTests}}" 
-            wx:key="item"
-            class="table-row"
-          >
-            <text class="td-item">{{item.item}}</text>
-            <text class="td-value">{{item.value}}{{item.unit}}</text>
-            <text class="td-limit">{{item.limit}}{{item.unit}}</text>
-            <text class="td-status pass">{{item.status}}</text>
+          <view class="test-table">
+            <view class="table-header">
+              <text class="th-item">检测项</text>
+              <text class="th-value">检测值</text>
+              <text class="th-limit">国标限值</text>
+              <text class="th-status">结果</text>
+            </view>
+            <view 
+              wx:for="{{traceData.pesticideTest.teaTests}}" 
+              wx:key="item"
+              class="table-row"
+            >
+              <text class="td-item">{{item.item}}</text>
+              <text class="td-value">{{item.value}}{{item.unit}}</text>
+              <text class="td-limit">{{item.limit}}{{item.unit}}</text>
+              <text class="td-status pass">{{item.status}}</text>
+            </view>
           </view>
         </view>
-      </view>
-      
-      <!-- 国标对比提示 -->
-      <view class="standard-tip">
-        <text class="tip-icon">✅</text>
-        <text class="tip-text">{{traceData.pesticideTest.comparisonTip}}</text>
-      </view>
-      
-      <!-- 查看完整报告按钮 -->
-      <view class="view-report-btn" bindtap="showPdfReport">
-        <text class="btn-icon">📄</text>
-        <text>查看完整报告（PDF样式）</text>
+        
+        <!-- 桂花检测结果 -->
+        <view class="test-results">
+          <view class="test-category">
+            <text class="category-icon">🌸</text>
+            <text>桂花农残检测</text>
+          </view>
+          <view class="test-table">
+            <view class="table-header">
+              <text class="th-item">检测项</text>
+              <text class="th-value">检测值</text>
+              <text class="th-limit">国标限值</text>
+              <text class="th-status">结果</text>
+            </view>
+            <view 
+              wx:for="{{traceData.pesticideTest.osmanthusTests}}" 
+              wx:key="item"
+              class="table-row"
+            >
+              <text class="td-item">{{item.item}}</text>
+              <text class="td-value">{{item.value}}{{item.unit}}</text>
+              <text class="td-limit">{{item.limit}}{{item.unit}}</text>
+              <text class="td-status pass">{{item.status}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 国标对比提示 -->
+        <view class="standard-tip">
+          <text class="tip-icon">✅</text>
+          <text class="tip-text">{{traceData.pesticideTest.comparisonTip}}</text>
+        </view>
+        
+        <!-- 查看完整报告按钮 -->
+        <view class="view-report-btn" bindtap="showPdfReport">
+          <text class="btn-icon">📄</text>
+          <text>查看完整报告（PDF样式）</text>
+        </view>
       </view>
     </view>
 
     <!-- ========== 模块7：冲泡建议 ========== -->
-    <view class="card animate-card" style="animation-delay: 0.4s;">
-      <view class="card-title">
-        <text class="title-icon">☕</text>
-        <text>冲泡建议</text>
+    <view class="card animate-card module-card" id="anchor-brew" style="animation-delay: 0.4s;">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="brew">
+        <view class="title-left">
+          <text class="title-icon">☕</text>
+          <text>冲泡建议</text>
+        </view>
+        <view class="module-toggle {{moduleCollapsed.brew ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
+        </view>
       </view>
-      
-      <view class="brewing-content">
-        <view class="brewing-params">
-          <view class="brewing-item">
-            <view class="brewing-icon">🌡️</view>
-            <view class="brewing-label">水温</view>
-            <view class="brewing-value">{{traceData.brewingGuide.waterTemp}}</view>
-          </view>
-          <view class="brewing-item">
-            <view class="brewing-icon">⏱️</view>
-            <view class="brewing-label">冲泡时长</view>
-            <view class="brewing-value">{{traceData.brewingGuide.brewingTime}}</view>
-          </view>
-          <view class="brewing-item">
-            <view class="brewing-icon">🔄</view>
-            <view class="brewing-label">续泡次数</view>
-            <view class="brewing-value">{{traceData.brewingGuide.rebrewTimes}}</view>
-          </view>
-        </view>
+      <view class="module-content {{moduleCollapsed.brew ? 'hidden' : ''}}">
         
-        <view class="brewing-extra">
-          <view class="extra-item">
-            <text class="extra-label">推荐用水：</text>
-            <text class="extra-value">{{traceData.brewingGuide.waterType}}</text>
+        <view class="brewing-content">
+          <view class="brewing-params">
+            <view class="brewing-item">
+              <view class="brewing-icon">🌡️</view>
+              <view class="brewing-label">水温</view>
+              <view class="brewing-value">{{traceData.brewingGuide.waterTemp}}</view>
+            </view>
+            <view class="brewing-item">
+              <view class="brewing-icon">⏱️</view>
+              <view class="brewing-label">冲泡时长</view>
+              <view class="brewing-value">{{traceData.brewingGuide.brewingTime}}</view>
+            </view>
+            <view class="brewing-item">
+              <view class="brewing-icon">🔄</view>
+              <view class="brewing-label">续泡次数</view>
+              <view class="brewing-value">{{traceData.brewingGuide.rebrewTimes}}</view>
+            </view>
           </view>
-          <view class="extra-item">
-            <text class="extra-label">推荐茶具：</text>
-            <text class="extra-value">{{traceData.brewingGuide.teawareType}}</text>
+          
+          <view class="brewing-extra">
+            <view class="extra-item">
+              <text class="extra-label">推荐用水：</text>
+              <text class="extra-value">{{traceData.brewingGuide.waterType}}</text>
+            </view>
+            <view class="extra-item">
+              <text class="extra-label">推荐茶具：</text>
+              <text class="extra-value">{{traceData.brewingGuide.teawareType}}</text>
+            </view>
           </view>
-        </view>
-        
-        <view class="brewing-tips">
-          <view class="tips-title">冲泡小贴士</view>
-          <view class="tips-list">
-            <view 
-              wx:for="{{traceData.brewingGuide.tips}}" 
-              wx:key="*this"
-              class="tip-item"
-            >
-              <text class="tip-num">{{index + 1}}</text>
-              <text class="tip-text">{{item}}</text>
+          
+          <view class="brewing-tips">
+            <view class="tips-title">冲泡小贴士</view>
+            <view class="tips-list">
+              <view 
+                wx:for="{{traceData.brewingGuide.tips}}" 
+                wx:key="*this"
+                class="tip-item"
+              >
+                <text class="tip-num">{{index + 1}}</text>
+                <text class="tip-text">{{item}}</text>
+              </view>
             </view>
           </view>
         </view>
@@ -407,27 +604,34 @@
     </view>
 
     <!-- ========== 区块链存证详情 ========== -->
-    <view class="card animate-card blockchain-card" style="animation-delay: 0.45s;" wx:if="{{traceData.blockchainInfo}}">
-      <view class="card-title">
-        <text class="title-icon">🔗</text>
-        <text>区块链存证信息</text>
+    <view class="card animate-card blockchain-card module-card" id="anchor-blockchain" style="animation-delay: 0.45s;" wx:if="{{traceData.blockchainInfo}}">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="blockchain">
+        <view class="title-left">
+          <text class="title-icon">🔗</text>
+          <text>区块链存证信息</text>
+        </view>
+        <view class="module-toggle {{moduleCollapsed.blockchain ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
+        </view>
       </view>
-      <view class="blockchain-detail">
-        <view class="blockchain-item">
-          <text class="bc-label">存证链</text>
-          <text class="bc-value">{{traceData.blockchainInfo.chainName}}</text>
-        </view>
-        <view class="blockchain-item">
-          <text class="bc-label">区块高度</text>
-          <text class="bc-value">{{traceData.blockchainInfo.blockHeight}}</text>
-        </view>
-        <view class="blockchain-item">
-          <text class="bc-label">交易哈希</text>
-          <text class="bc-value hash">{{traceData.blockchainInfo.txHash}}</text>
-        </view>
-        <view class="blockchain-item">
-          <text class="bc-label">存证时间</text>
-          <text class="bc-value">{{traceData.blockchainInfo.timestamp}}</text>
+      <view class="module-content {{moduleCollapsed.blockchain ? 'hidden' : ''}}">
+        <view class="blockchain-detail">
+          <view class="blockchain-item">
+            <text class="bc-label">存证链</text>
+            <text class="bc-value">{{traceData.blockchainInfo.chainName}}</text>
+          </view>
+          <view class="blockchain-item">
+            <text class="bc-label">区块高度</text>
+            <text class="bc-value">{{traceData.blockchainInfo.blockHeight}}</text>
+          </view>
+          <view class="blockchain-item">
+            <text class="bc-label">交易哈希</text>
+            <text class="bc-value hash">{{traceData.blockchainInfo.txHash}}</text>
+          </view>
+          <view class="blockchain-item">
+            <text class="bc-label">存证时间</text>
+            <text class="bc-value">{{traceData.blockchainInfo.timestamp}}</text>
+          </view>
         </view>
       </view>
     </view>
@@ -488,8 +692,8 @@
 
 </view>
 
-<!-- ==================== 加载状态 ==================== -->
-<view class="loading-container" wx:if="{{loading}}">
+<!-- ==================== 加载状态（降级，骨架屏优先） ==================== -->
+<view class="loading-container" wx:if="{{loading && skeletonLoading}}">
   <view class="loading-spinner"></view>
   <text class="loading-text">正在加载溯源信息...</text>
 </view>

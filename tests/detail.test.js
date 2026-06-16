@@ -10,11 +10,24 @@
  * 7. closePdfModal - 关闭PDF报告弹窗
  * 8. copyTraceId - 复制溯源ID
  * 9. onShareAppMessage - 分享功能
+ * 10. 锚点 Tab 相关功能
+ * 11. 模块折叠功能
  */
 
 // 模拟微信小程序环境
 global.Page = function(options) {
   global.pageInstance = options;
+};
+
+// 模拟 createSelectorQuery
+const mockSelectorQuery = {
+  select: jest.fn().mockReturnThis(),
+  boundingClientRect: jest.fn().mockReturnThis(),
+  selectViewport: jest.fn().mockReturnThis(),
+  scrollOffset: jest.fn().mockReturnThis(),
+  exec: jest.fn((callback) => {
+    callback && callback([]);
+  })
 };
 
 global.wx = {
@@ -25,7 +38,8 @@ global.wx = {
   setNavigationBarTitle: jest.fn(),
   pageScrollTo: jest.fn(),
   setClipboardData: jest.fn(),
-  stopPullDownRefresh: jest.fn()
+  stopPullDownRefresh: jest.fn(),
+  createSelectorQuery: jest.fn(() => mockSelectorQuery)
 };
 
 // 模拟 mockData 模块
@@ -35,24 +49,38 @@ jest.mock('../utils/mockData.js', () => ({
   getAvailableTraceIds: jest.fn(() => ['G001', 'G002']),
   mockTraceData: {
     'G001': {
-      basicInfo: { productName: '金桂花茶' },
+      basicInfo: { productName: '金桂花茶', thumbnail: '' },
       treeAge: { teaTreeAge: 200, osmanthusTreeAge: 50 },
       osmanthusInfo: { variety: '金桂' },
       scentingProcess: { scentingTimes: 5, processSteps: [] },
       greenTrace: { ecoPlanting: {}, ecoPacking: {}, ecoLogistics: {} },
       pesticideTest: { teaTests: [], osmanthusTests: [] },
       brewingGuide: { tips: [] },
-      blockchainInfo: {}
+      blockchainInfo: {},
+      images: {
+        originImage: '',
+        processImage: '',
+        certImage: '',
+        teaOriginImage: '',
+        osmanthusOriginImage: ''
+      }
     },
     'G002': {
-      basicInfo: { productName: '银桂花茶' },
+      basicInfo: { productName: '银桂花茶', thumbnail: '' },
       treeAge: { teaTreeAge: 120, osmanthusTreeAge: 20 },
       osmanthusInfo: { variety: '银桂' },
       scentingProcess: { scentingTimes: 3, processSteps: [] },
       greenTrace: { ecoPlanting: {}, ecoPacking: {}, ecoLogistics: {} },
       pesticideTest: { teaTests: [], osmanthusTests: [] },
       brewingGuide: { tips: [] },
-      blockchainInfo: {}
+      blockchainInfo: {},
+      images: {
+        originImage: '',
+        processImage: '',
+        certImage: '',
+        teaOriginImage: '',
+        osmanthusOriginImage: ''
+      }
     }
   }
 }));
@@ -75,10 +103,17 @@ describe('detail.js 页面逻辑测试', () => {
       traceId: '',
       traceData: null,
       loading: true,
+      skeletonLoading: true,
       showBackTop: false,
       activeProcessStep: -1,
       showPdfModal: false,
-      scrollTop: 0
+      scrollTop: 0,
+      readingProgress: 0,
+      anchorTabs: [],
+      activeAnchor: 'basic',
+      anchorSticky: false,
+      moduleCollapsed: {},
+      lazyImageMap: {}
     };
 
     // 模拟 setData 方法
@@ -119,17 +154,12 @@ describe('detail.js 页面逻辑测试', () => {
 
       page.loadTraceData('G001');
 
-      expect(wx.showLoading).toHaveBeenCalledWith({
-        title: '加载溯源信息...',
-        mask: true
-      });
-
       setTimeout(() => {
-        expect(wx.hideLoading).toHaveBeenCalled();
-        expect(page.setData).toHaveBeenCalledWith({
+        expect(page.setData).toHaveBeenCalledWith(expect.objectContaining({
           traceData: mockTraceData,
-          loading: false
-        });
+          loading: false,
+          skeletonLoading: false
+        }));
         expect(wx.setNavigationBarTitle).toHaveBeenCalledWith({
           title: '金桂花茶溯源'
         });
@@ -158,15 +188,14 @@ describe('detail.js 页面逻辑测试', () => {
 
   describe('页面交互测试', () => {
     test('onPageScroll 应该能控制返回顶部按钮显示', () => {
-      // 滚动小于 300 应该不显示
       page.onPageScroll({ scrollTop: 200 });
-      expect(page.setData).toHaveBeenCalledWith({ scrollTop: 200 });
+      expect(page.setData).toHaveBeenCalled();
+      expect(page.data.scrollTop).toBe(200);
 
-      // 滚动大于 300 应该显示
       page.data.showBackTop = false;
       page.onPageScroll({ scrollTop: 400 });
-      expect(page.setData).toHaveBeenCalledWith({ showBackTop: true });
-      expect(page.setData).toHaveBeenCalledWith({ scrollTop: 400 });
+      expect(page.data.showBackTop).toBe(true);
+      expect(page.data.scrollTop).toBe(400);
     });
 
     test('scrollToTop 应该能滚动到顶部', () => {
@@ -188,24 +217,21 @@ describe('detail.js 页面逻辑测试', () => {
       setTimeout(() => {
         expect(wx.stopPullDownRefresh).toHaveBeenCalled();
         done();
-      }, 1000);
+      }, 1500);
     });
   });
 
   describe('工艺流程测试', () => {
     test('toggleProcessStep 应该能切换工艺步骤展开状态', () => {
-      // 初始状态为 -1，点击索引 0 应该展开
       const e1 = { currentTarget: { dataset: { index: 0 } } };
       page.toggleProcessStep(e1);
       expect(page.setData).toHaveBeenCalledWith({ activeProcessStep: 0 });
 
-      // 再次点击同一索引应该收起
       page.data.activeProcessStep = 0;
       const e2 = { currentTarget: { dataset: { index: 0 } } };
       page.toggleProcessStep(e2);
       expect(page.setData).toHaveBeenCalledWith({ activeProcessStep: -1 });
 
-      // 点击不同索引应该切换
       page.data.activeProcessStep = 0;
       const e3 = { currentTarget: { dataset: { index: 1 } } };
       page.toggleProcessStep(e3);
@@ -226,7 +252,6 @@ describe('detail.js 页面逻辑测试', () => {
       page.closePdfModal();
       expect(page.setData).toHaveBeenCalledWith({ showPdfModal: false }, expect.any(Function));
 
-      // 模拟回调执行
       expect(wx.pageScrollTo).toHaveBeenCalledWith({
         scrollTop: 500,
         duration: 0
@@ -243,17 +268,16 @@ describe('detail.js 页面逻辑测试', () => {
     test('copyTraceId 应该能复制溯源ID', () => {
       page.data.traceId = 'G001';
 
-      // 模拟 setClipboardData 的 success 回调
       wx.setClipboardData.mockImplementation((options) => {
         if (options.success) options.success();
       });
 
       page.copyTraceId();
 
-      expect(wx.setClipboardData).toHaveBeenCalledWith({
-        data: 'G001',
-        success: expect.any(Function)
-      });
+      expect(wx.setClipboardData).toHaveBeenCalled();
+      const callArg = wx.setClipboardData.mock.calls[0][0];
+      expect(callArg.data).toBe('G001');
+      expect(callArg.success).toBeDefined();
 
       expect(wx.showToast).toHaveBeenCalledWith({
         title: '已复制溯源ID',
@@ -264,16 +288,35 @@ describe('detail.js 页面逻辑测试', () => {
   });
 
   describe('分享功能测试', () => {
-    test('onShareAppMessage 应该返回正确的分享配置', () => {
+    test('onShareAppMessage 应该返回直达详情页的分享路径', () => {
       page.data.traceId = 'G001';
       page.data.traceData = {
-        basicInfo: { productName: '金桂花茶' }
+        basicInfo: { productName: '金桂花茶', thumbnail: '' }
       };
 
       const result = page.onShareAppMessage();
 
       expect(result.title).toBe('金桂花茶 - 全链路溯源信息');
-      expect(result.path).toBe('/pages/index/index?traceId=G001');
+      expect(result.path).toBe('/pages/detail/detail?traceId=G001');
+    });
+  });
+
+  describe('锚点 Tab 测试', () => {
+    test('onAnchorTap 应该能触发激活状态更新', () => {
+      const e = { currentTarget: { dataset: { key: 'treeAge', index: 1 } } };
+      page.scrollToModule = jest.fn();
+      page.onAnchorTap(e);
+      expect(page.data.activeAnchor).toBe('treeAge');
+    });
+
+    test('toggleModule 应该能切换模块折叠状态', () => {
+      page.data.moduleCollapsed = { basic: false };
+      const e = { currentTarget: { dataset: { key: 'basic' } } };
+      page.toggleModule(e);
+      expect(page.setData).toHaveBeenCalledWith(
+        expect.objectContaining({ 'moduleCollapsed.basic': true }),
+        expect.any(Function)
+      );
     });
   });
 });

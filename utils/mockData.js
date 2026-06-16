@@ -136,6 +136,15 @@ const mockTraceData = {
       txHash: '0x8f9a3b...c7d2e1',
       timestamp: '2025-09-25 14:32:18',
       verifyStatus: '已验证'
+    },
+    
+    // 配图（用于懒加载）
+    images: {
+      originImage: 'https://picsum.photos/id/1018/750/400',
+      teaOriginImage: 'https://picsum.photos/id/1039/750/400',
+      osmanthusOriginImage: 'https://picsum.photos/id/1044/750/400',
+      processImage: 'https://picsum.photos/id/1036/750/400',
+      certImage: 'https://picsum.photos/id/1025/750/400'
     }
   },
 
@@ -262,6 +271,15 @@ const mockTraceData = {
       txHash: '0x2e7c4a...f8b9d3',
       timestamp: '2025-09-30 10:15:42',
       verifyStatus: '已验证'
+    },
+    
+    // 配图（用于懒加载）
+    images: {
+      originImage: 'https://picsum.photos/id/1015/750/400',
+      teaOriginImage: 'https://picsum.photos/id/1036/750/400',
+      osmanthusOriginImage: 'https://picsum.photos/id/1018/750/400',
+      processImage: 'https://picsum.photos/id/1039/750/400',
+      certImage: 'https://picsum.photos/id/1025/750/400'
     }
   },
 
@@ -388,6 +406,15 @@ const mockTraceData = {
       txHash: '0x9a4b2c...d8e3f2',
       timestamp: '2025-09-25 14:35:22',
       verifyStatus: '已验证'
+    },
+    
+    // 配图（用于懒加载）
+    images: {
+      originImage: 'https://picsum.photos/id/1044/750/400',
+      teaOriginImage: 'https://picsum.photos/id/1018/750/400',
+      osmanthusOriginImage: 'https://picsum.photos/id/1039/750/400',
+      processImage: 'https://picsum.photos/id/1015/750/400',
+      certImage: 'https://picsum.photos/id/1025/750/400'
     }
   },
 
@@ -514,6 +541,15 @@ const mockTraceData = {
       txHash: '0x1b3d5f...a9c7e4',
       timestamp: '2025-09-25 14:38:45',
       verifyStatus: '已验证'
+    },
+    
+    // 配图（用于懒加载）
+    images: {
+      originImage: 'https://picsum.photos/id/1039/750/400',
+      teaOriginImage: 'https://picsum.photos/id/1015/750/400',
+      osmanthusOriginImage: 'https://picsum.photos/id/1036/750/400',
+      processImage: 'https://picsum.photos/id/1044/750/400',
+      certImage: 'https://picsum.photos/id/1025/750/400'
     }
   }
 };

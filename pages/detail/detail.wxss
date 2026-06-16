@@ -18,6 +18,148 @@
   z-index: 1;
 }
 
+/* ==================== 阅读进度条 ==================== */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6rpx;
+  background: rgba(0, 0, 0, 0.05);
+  z-index: 9999;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #2E8B57 0%, #52C41A 50%, #DAA520 100%);
+  border-radius: 0 3rpx 3rpx 0;
+  transition: width 0.15s ease-out;
+  box-shadow: 0 0 8rpx rgba(46, 139, 87, 0.4);
+}
+
+/* ==================== 骨架屏 ==================== */
+.skeleton-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #F5F5F0 0%, #FAFAF5 100%);
+  padding-bottom: 40rpx;
+}
+
+.skeleton-header {
+  position: relative;
+  padding: 48rpx 32rpx 72rpx;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 50%, #228B22 100%);
+  border-radius: 0 0 48rpx 48rpx;
+  text-align: center;
+}
+
+.skeleton-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  margin: 0 auto 20rpx;
+}
+
+.skeleton-title {
+  height: 40rpx;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8rpx;
+  margin: 0 auto 16rpx;
+}
+
+.skeleton-subtitle {
+  height: 28rpx;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6rpx;
+  margin: 0 auto;
+}
+
+.skeleton-content {
+  padding: 32rpx;
+  margin-top: -32rpx;
+  position: relative;
+  z-index: 2;
+}
+
+.skeleton-card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.skeleton-line {
+  height: 32rpx;
+  background: #F0F0F0;
+  border-radius: 8rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-top: 12rpx;
+}
+
+.skeleton-grid-item {
+  height: 80rpx;
+  background: #F5F5F5;
+  border-radius: 12rpx;
+}
+
+.skeleton-params {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 16rpx;
+  margin-top: 12rpx;
+}
+
+.skeleton-param {
+  flex: 1;
+  height: 80rpx;
+  background: #F5F5F5;
+  border-radius: 12rpx;
+}
+
+.skeleton-image {
+  height: 280rpx;
+  background: #F5F5F5;
+  border-radius: 16rpx;
+  margin: 20rpx 0;
+}
+
+/* shimmer 闪光动画 */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* ==================== 顶部产品概览 ==================== */
 .product-header {
   position: relative;
@@ -117,10 +259,88 @@
   border-radius: 20rpx;
 }
 
+/* ==================== 锚点 Tab 导航栏 ==================== */
+.anchor-tab-bar {
+  position: relative;
+  background: #FFFFFF;
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.anchor-tab-bar.sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.anchor-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.anchor-tabs {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 16rpx;
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+.anchor-tab-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 24rpx;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.anchor-tab-icon {
+  font-size: 28rpx;
+  margin-bottom: 4rpx;
+}
+
+.anchor-tab-label {
+  font-size: 24rpx;
+  color: #666666;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.anchor-tab-item.active .anchor-tab-label {
+  color: #2E8B57;
+  font-weight: 600;
+}
+
+.anchor-tab-indicator {
+  position: absolute;
+  bottom: 8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32rpx;
+  height: 6rpx;
+  background: linear-gradient(90deg, #2E8B57, #52C41A);
+  border-radius: 3rpx;
+  animation: indicatorIn 0.2s ease;
+}
+
+@keyframes indicatorIn {
+  from {
+    opacity: 0;
+    width: 0;
+  }
+  to {
+    opacity: 1;
+    width: 32rpx;
+  }
+}
+
 /* ==================== 主要内容区域 ==================== */
 .main-content {
   padding: 32rpx;
-  margin-top: -32rpx;
   position: relative;
   z-index: 2;
 }
@@ -132,6 +352,7 @@
   padding: 32rpx;
   margin-bottom: 24rpx;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  overflow: hidden;
 }
 
 .animate-card {
@@ -158,13 +379,31 @@
   border-bottom: 1rpx solid #F0F0F0;
 }
 
+/* 模块标题行（可折叠） */
+.module-header {
+  margin-bottom: 0;
+  padding-bottom: 20rpx;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.module-header:active {
+  opacity: 0.8;
+}
+
+.title-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
 .title-icon {
   margin-right: 12rpx;
   font-size: 36rpx;
 }
 
 .title-badge {
-  margin-left: auto;
+  margin-left: 16rpx;
   background: linear-gradient(135deg, #2E8B57, #3CB371);
   color: #FFFFFF;
   font-size: 22rpx;
@@ -179,6 +418,42 @@
 
 .title-badge.green {
   background: linear-gradient(135deg, #52C41A, #95DE64);
+}
+
+/* 模块折叠按钮 */
+.module-toggle {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  transition: transform 0.3s ease;
+}
+
+.module-toggle.collapsed {
+  transform: rotate(-90deg);
+}
+
+.toggle-icon {
+  font-size: 28rpx;
+  color: #999999;
+}
+
+/* 模块内容区域 */
+.module-content {
+  margin-top: 24rpx;
+  max-height: 5000rpx;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
+}
+
+.module-content.hidden {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  pointer-events: none;
 }
 
 /* ==================== 信息网格布局 ==================== */
@@ -216,6 +491,60 @@
   font-size: 24rpx;
   margin-left: 8rpx;
   opacity: 0.6;
+}
+
+/* ==================== 模块图片（懒加载） ==================== */
+.module-image-wrapper {
+  margin-top: 24rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.module-image {
+  width: 100%;
+  height: 320rpx;
+  display: block;
+  border-radius: 16rpx;
+  animation: imageFadeIn 0.4s ease;
+}
+
+@keyframes imageFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 320rpx;
+  background: #F5F5F5;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-icon {
+  font-size: 64rpx;
+  opacity: 0.3;
+}
+
+.image-caption {
+  position: absolute;
+  left: 20rpx;
+  bottom: 20rpx;
+  background: rgba(0, 0, 0, 0.6);
+  color: #FFFFFF;
+  font-size: 22rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  backdrop-filter: blur(8rpx);
 }
 
 /* ==================== 树龄信息模块 ==================== */
@@ -667,6 +996,12 @@
   border-radius: 16rpx;
   font-size: 28rpx;
   font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.view-report-btn:active {
+  opacity: 0.9;
+  transform: scale(0.98);
 }
 
 .btn-icon {
@@ -835,6 +1170,10 @@
 .back-top.show {
   opacity: 1;
   transform: scale(1);
+}
+
+.back-top:active {
+  transform: scale(0.92);
 }
 
 .back-top-icon {
