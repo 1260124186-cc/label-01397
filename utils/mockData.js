@@ -1086,6 +1086,321 @@ function getScentingComparison() {
   };
 }
 
+var greenTraceExtended = {
+  'G001': {
+    certificates: [
+      {
+        id: 'CERT-ORG-2025-001',
+        name: '有机产品认证证书',
+        type: 'organic',
+        thumbnail: 'https://picsum.photos/id/1082/200/200',
+        fullImage: 'https://picsum.photos/id/1082/750/1000',
+        issueOrg: '中国有机产品认证中心',
+        issueDate: '2025年3月1日',
+        validUntil: '2026年2月28日',
+        certNo: 'ORG-CERT-2025-GH001',
+        status: '有效'
+      },
+      {
+        id: 'CERT-GP-2025-001',
+        name: '绿色包装认证证书',
+        type: 'greenPacking',
+        thumbnail: 'https://picsum.photos/id/1080/200/200',
+        fullImage: 'https://picsum.photos/id/1080/750/1000',
+        issueOrg: '中国绿色包装研究院',
+        issueDate: '2025年4月15日',
+        validUntil: '2027年4月14日',
+        certNo: 'GP-CERT-2025-GH001',
+        status: '有效'
+      }
+    ],
+    carbonFootprint: {
+      totalEmission: 2.8,
+      unit: 'kg CO₂e/罐',
+      stages: [
+        { name: '种植', value: 0.56, percent: 20, color: '#52C41A' },
+        { name: '加工', value: 0.84, percent: 30, color: '#1890FF' },
+        { name: '包装', value: 0.7, percent: 25, color: '#DAA520' },
+        { name: '物流', value: 0.7, percent: 25, color: '#722ED1' }
+      ],
+      industryAvg: {
+        totalEmission: 4.2,
+        unit: 'kg CO₂e/罐',
+        stages: [
+          { name: '种植', value: 0.84, percent: 20 },
+          { name: '加工', value: 1.47, percent: 35 },
+          { name: '包装', value: 1.05, percent: 25 },
+          { name: '物流', value: 0.84, percent: 20 }
+        ]
+      },
+      reductionPercent: 33.3,
+      comparisonNote: '本产品碳排放较行业均值低33.3%，每罐减少1.4kg CO₂排放'
+    },
+    recyclingGuide: {
+      materialType: '食品级可降解牛皮纸',
+      recyclable: true,
+      steps: [
+        { step: 1, title: '分离组件', desc: '将罐盖与罐身分离，去除密封铝箔', icon: '🔄' },
+        { step: 2, title: '清洁处理', desc: '用清水冲洗罐身，去除残留茶叶', icon: '💧' },
+        { step: 3, title: '分类投放', desc: '罐身投入可回收物垃圾桶（纸类）', icon: '♻️' },
+        { step: 4, title: '标签处理', desc: '标签使用植物大豆油墨，可连同罐身一起回收', icon: '🏷️' }
+      ],
+      nearbyPoints: [
+        { name: 'A市垃圾分类回收站（东湖社区）', address: '湖北省A市东湖路128号', lat: 30.5928, lng: 114.3055, distance: '1.2km' },
+        { name: '绿色回收便民点（光谷广场）', address: '湖北省A市光谷大道88号', lat: 30.5039, lng: 114.4243, distance: '2.5km' },
+        { name: '环保驿站（南湖小区）', address: '湖北省A市南湖路56号', lat: 30.4912, lng: 114.3612, distance: '3.8km' }
+      ]
+    }
+  },
+  'G002': {
+    certificates: [
+      {
+        id: 'CERT-GF-2025-001',
+        name: '绿色食品认证证书',
+        type: 'greenFood',
+        thumbnail: 'https://picsum.photos/id/312/200/200',
+        fullImage: 'https://picsum.photos/id/312/750/1000',
+        issueOrg: '中国绿色食品发展中心',
+        issueDate: '2025年5月1日',
+        validUntil: '2028年4月30日',
+        certNo: 'GF-CERT-2025-GH002',
+        status: '有效'
+      },
+      {
+        id: 'CERT-RC-2025-001',
+        name: '可回收标识认证',
+        type: 'recyclable',
+        thumbnail: 'https://picsum.photos/id/401/200/200',
+        fullImage: 'https://picsum.photos/id/401/750/1000',
+        issueOrg: '中国循环经济协会',
+        issueDate: '2025年6月1日',
+        validUntil: '2027年5月31日',
+        certNo: 'RC-CERT-2025-GH002',
+        status: '有效'
+      }
+    ],
+    carbonFootprint: {
+      totalEmission: 3.2,
+      unit: 'kg CO₂e/罐',
+      stages: [
+        { name: '种植', value: 0.64, percent: 20, color: '#52C41A' },
+        { name: '加工', value: 0.96, percent: 30, color: '#1890FF' },
+        { name: '包装', value: 0.96, percent: 30, color: '#DAA520' },
+        { name: '物流', value: 0.64, percent: 20, color: '#722ED1' }
+      ],
+      industryAvg: {
+        totalEmission: 4.2,
+        unit: 'kg CO₂e/罐',
+        stages: [
+          { name: '种植', value: 0.84, percent: 20 },
+          { name: '加工', value: 1.47, percent: 35 },
+          { name: '包装', value: 1.05, percent: 25 },
+          { name: '物流', value: 0.84, percent: 20 }
+        ]
+      },
+      reductionPercent: 23.8,
+      comparisonNote: '本产品碳排放较行业均值低23.8%，每罐减少1.0kg CO₂排放'
+    },
+    recyclingGuide: {
+      materialType: '可回收PET包装',
+      recyclable: true,
+      steps: [
+        { step: 1, title: '冲洗干净', desc: '用清水冲洗PET罐内外，确保无残留', icon: '💧' },
+        { step: 2, title: '去除标签', desc: '撕除外部标签，标签为植物油墨可降解', icon: '🏷️' },
+        { step: 3, title: '压扁投放', desc: '将PET罐压扁后投入可回收物垃圾桶（塑料类）', icon: '♻️' },
+        { step: 4, title: '二次利用', desc: 'PET材质支持二次利用，可做收纳容器', icon: '🔄' }
+      ],
+      nearbyPoints: [
+        { name: 'A市垃圾分类回收站（东湖社区）', address: '湖北省A市东湖路128号', lat: 30.5928, lng: 114.3055, distance: '1.2km' },
+        { name: '环保驿站（南湖小区）', address: '湖北省A市南湖路56号', lat: 30.4912, lng: 114.3612, distance: '3.8km' }
+      ]
+    }
+  },
+  'G003': {
+    certificates: [
+      {
+        id: 'CERT-ORG-2025-003',
+        name: '有机产品认证证书',
+        type: 'organic',
+        thumbnail: 'https://picsum.photos/id/1082/200/200',
+        fullImage: 'https://picsum.photos/id/1082/750/1000',
+        issueOrg: '中国有机产品认证中心',
+        issueDate: '2025年3月1日',
+        validUntil: '2026年2月28日',
+        certNo: 'ORG-CERT-2025-GH003',
+        status: '有效'
+      },
+      {
+        id: 'CERT-GP-2025-003',
+        name: '绿色包装认证证书',
+        type: 'greenPacking',
+        thumbnail: 'https://picsum.photos/id/580/200/200',
+        fullImage: 'https://picsum.photos/id/580/750/1000',
+        issueOrg: '中国绿色包装研究院',
+        issueDate: '2025年4月15日',
+        validUntil: '2027年4月14日',
+        certNo: 'GP-CERT-2025-GH003',
+        status: '有效'
+      }
+    ],
+    carbonFootprint: {
+      totalEmission: 5.6,
+      unit: 'kg CO₂e/礼盒',
+      stages: [
+        { name: '种植', value: 1.12, percent: 20, color: '#52C41A' },
+        { name: '加工', value: 1.68, percent: 30, color: '#1890FF' },
+        { name: '包装', value: 1.4, percent: 25, color: '#DAA520' },
+        { name: '物流', value: 1.4, percent: 25, color: '#722ED1' }
+      ],
+      industryAvg: {
+        totalEmission: 8.4,
+        unit: 'kg CO₂e/礼盒',
+        stages: [
+          { name: '种植', value: 1.68, percent: 20 },
+          { name: '加工', value: 2.94, percent: 35 },
+          { name: '包装', value: 2.1, percent: 25 },
+          { name: '物流', value: 1.68, percent: 20 }
+        ]
+      },
+      reductionPercent: 33.3,
+      comparisonNote: '本礼盒碳排放较行业均值低33.3%，每盒减少2.8kg CO₂排放'
+    },
+    recyclingGuide: {
+      materialType: '高档竹制礼盒',
+      recyclable: true,
+      steps: [
+        { step: 1, title: '取出内胆', desc: '取出内部茶叶罐和防震填充物', icon: '📦' },
+        { step: 2, title: '清洁礼盒', desc: '用干布擦拭竹制礼盒内外', icon: '🧹' },
+        { step: 3, title: '二次利用', desc: '竹制礼盒可重复使用，适合收纳或送礼', icon: '🎁' },
+        { step: 4, title: '降解处理', desc: '如需丢弃，竹制品可自然降解', icon: '🌱' }
+      ],
+      nearbyPoints: [
+        { name: 'A市垃圾分类回收站（东湖社区）', address: '湖北省A市东湖路128号', lat: 30.5928, lng: 114.3055, distance: '1.2km' },
+        { name: '绿色回收便民点（光谷广场）', address: '湖北省A市光谷大道88号', lat: 30.5039, lng: 114.4243, distance: '2.5km' }
+      ]
+    }
+  },
+  'G004': {
+    certificates: [
+      {
+        id: 'CERT-ORG-2025-004',
+        name: '有机产品认证证书',
+        type: 'organic',
+        thumbnail: 'https://picsum.photos/id/1082/200/200',
+        fullImage: 'https://picsum.photos/id/1082/750/1000',
+        issueOrg: '中国有机产品认证中心',
+        issueDate: '2025年3月1日',
+        validUntil: '2026年2月28日',
+        certNo: 'ORG-CERT-2025-GH004',
+        status: '有效'
+      },
+      {
+        id: 'CERT-GP-2025-004',
+        name: '绿色包装认证证书',
+        type: 'greenPacking',
+        thumbnail: 'https://picsum.photos/id/1080/200/200',
+        fullImage: 'https://picsum.photos/id/1080/750/1000',
+        issueOrg: '中国绿色包装研究院',
+        issueDate: '2025年4月15日',
+        validUntil: '2027年4月14日',
+        certNo: 'GP-CERT-2025-GH004',
+        status: '有效'
+      }
+    ],
+    carbonFootprint: {
+      totalEmission: 1.2,
+      unit: 'kg CO₂e/盒',
+      stages: [
+        { name: '种植', value: 0.24, percent: 20, color: '#52C41A' },
+        { name: '加工', value: 0.36, percent: 30, color: '#1890FF' },
+        { name: '包装', value: 0.3, percent: 25, color: '#DAA520' },
+        { name: '物流', value: 0.3, percent: 25, color: '#722ED1' }
+      ],
+      industryAvg: {
+        totalEmission: 1.8,
+        unit: 'kg CO₂e/盒',
+        stages: [
+          { name: '种植', value: 0.36, percent: 20 },
+          { name: '加工', value: 0.63, percent: 35 },
+          { name: '包装', value: 0.45, percent: 25 },
+          { name: '物流', value: 0.36, percent: 20 }
+        ]
+      },
+      reductionPercent: 33.3,
+      comparisonNote: '本产品碳排放较行业均值低33.3%，每盒减少0.6kg CO₂排放'
+    },
+    recyclingGuide: {
+      materialType: '食品级可降解材料',
+      recyclable: true,
+      steps: [
+        { step: 1, title: '取出茶包', desc: '取出铝箔小包装中的茶包', icon: '📦' },
+        { step: 2, title: '分类处理', desc: '铝箔包装投入可回收物，外盒投入纸类回收', icon: '♻️' },
+        { step: 3, title: '降解处理', desc: '茶包可连同茶叶渣一起堆肥降解', icon: '🌱' },
+        { step: 4, title: '环保利用', desc: '外盒可做收纳盒或创意手工', icon: '🎨' }
+      ],
+      nearbyPoints: [
+        { name: 'A市垃圾分类回收站（东湖社区）', address: '湖北省A市东湖路128号', lat: 30.5928, lng: 114.3055, distance: '1.2km' },
+        { name: '环保驿站（南湖小区）', address: '湖北省A市南湖路56号', lat: 30.4912, lng: 114.3612, distance: '3.8km' }
+      ]
+    }
+  }
+};
+
+var greenPointsConfig = {
+  pointsRules: [
+    { action: 'viewTrace', points: 10, desc: '查看溯源信息', dailyLimit: 50 },
+    { action: 'viewCarbon', points: 5, desc: '查看碳足迹', dailyLimit: 25 },
+    { action: 'viewRecycling', points: 5, desc: '查看回收指引', dailyLimit: 25 },
+    { action: 'viewCertificate', points: 3, desc: '查看认证证书', dailyLimit: 15 },
+    { action: 'shareGreen', points: 15, desc: '分享绿色溯源', dailyLimit: 45 }
+  ],
+  levelConfig: [
+    { level: 1, name: '环保新手', minPoints: 0, icon: '🌱' },
+    { level: 2, name: '环保达人', minPoints: 100, icon: '🌿' },
+    { level: 3, name: '环保先锋', minPoints: 500, icon: '🌳' },
+    { level: 4, name: '环保大使', minPoints: 1000, icon: '🌍' }
+  ]
+};
+
+function getGreenTraceExtended(traceId) {
+  if (!traceId) return null;
+  var id = traceId.toUpperCase().trim();
+  return greenTraceExtended[id] || null;
+}
+
+function getGreenPointsConfig() {
+  return greenPointsConfig;
+}
+
+function verifyCertificate(certNo) {
+  if (!certNo || typeof certNo !== 'string') return { valid: false, message: '请输入有效的证书编号' };
+  var normalizedCertNo = certNo.trim().toUpperCase();
+  for (var traceId in greenTraceExtended) {
+    var data = greenTraceExtended[traceId];
+    if (data.certificates) {
+      for (var i = 0; i < data.certificates.length; i++) {
+        var cert = data.certificates[i];
+        if (cert.certNo === normalizedCertNo) {
+          var traceData = mockTraceData[traceId];
+          return {
+            valid: true,
+            certNo: cert.certNo,
+            certName: cert.name,
+            issueOrg: cert.issueOrg,
+            issueDate: cert.issueDate,
+            validUntil: cert.validUntil,
+            status: cert.status,
+            productName: traceData ? traceData.basicInfo.productName : '',
+            batchNo: traceData ? traceData.basicInfo.batchNo : '',
+            verifyTime: new Date().toLocaleString('zh-CN')
+          };
+        }
+      }
+    }
+  }
+  return { valid: false, certNo: normalizedCertNo, message: '未找到该证书编号，请核实后重试' };
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -1098,5 +1413,8 @@ module.exports = {
   parseSceneParam,
   verifyReport,
   calculateTestPercent,
-  getScentingComparison
+  getScentingComparison,
+  getGreenTraceExtended,
+  getGreenPointsConfig,
+  verifyCertificate
 };

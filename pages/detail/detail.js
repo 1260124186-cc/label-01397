@@ -546,6 +546,12 @@ Page({
     });
   },
 
+  goGreenTrace: function() {
+    wx.navigateTo({
+      url: '/pages/greenTrace/greenTrace?traceId=' + this.data.traceId
+    });
+  },
+
   /**
    * 用户点击右上角分享
    * 修改为直达详情页路径，减少跳转步骤

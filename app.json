@@ -3,7 +3,8 @@
     "pages/index/index",
     "pages/detail/detail",
     "pages/scanResult/scanResult",
-    "pages/batchList/batchList"
+    "pages/batchList/batchList",
+    "pages/greenTrace/greenTrace"
   ],
   "window": {
     "backgroundTextStyle": "dark",

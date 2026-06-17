@@ -852,6 +852,57 @@
   font-weight: 600;
 }
 
+.green-trace-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #F0FFF0, #F8FFF8);
+  border: 2rpx solid rgba(46, 139, 87, 0.2);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.green-trace-entry:active {
+  transform: scale(0.98);
+  background: #E8F8E8;
+}
+
+.green-trace-entry-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+}
+
+.green-trace-entry-icon {
+  font-size: 40rpx;
+}
+
+.green-trace-entry-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.green-trace-entry-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2E8B57;
+}
+
+.green-trace-entry-desc {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.green-trace-entry-arrow {
+  font-size: 40rpx;
+  color: #2E8B57;
+  flex-shrink: 0;
+}
+
 /* 隐私提示 */
 .privacy-notice {
   display: flex;

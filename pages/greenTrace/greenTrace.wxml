@@ -1,0 +1,433 @@
+<view class="page-container">
+
+  <view class="product-banner">
+    <view class="banner-bg"></view>
+    <view class="banner-content">
+      <view class="banner-icon">🍃</view>
+      <view class="banner-title">绿色溯源</view>
+      <view class="banner-subtitle">{{productName}}</view>
+    </view>
+  </view>
+
+  <view class="tab-bar">
+    <view 
+      wx:for="{{tabs}}" 
+      wx:key="key"
+      class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="switchTab"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-label">{{item.label}}</text>
+      <view class="tab-indicator" wx:if="{{activeTab === item.key}}"></view>
+    </view>
+  </view>
+
+  <view class="tab-content">
+
+    <!-- ========== 认证证书 ========== -->
+    <view class="cert-section" wx:if="{{activeTab === 'certificate'}}">
+      <view class="section-header">
+        <text class="section-icon">📜</text>
+        <text class="section-title">认证证书</text>
+      </view>
+      <view class="section-desc">点击证书缩略图查看大图，支持证书编号验真</view>
+
+      <view class="cert-grid">
+        <view 
+          wx:for="{{certificates}}" 
+          wx:key="id"
+          class="cert-card"
+          data-cert="{{item}}"
+          bindtap="showCertDetail"
+        >
+          <view class="cert-thumb-wrapper">
+            <image class="cert-thumb" src="{{item.thumbnail}}" mode="aspectFill" />
+            <view class="cert-type-badge {{item.type}}">{{item.type === 'organic' ? '有机' : item.type === 'greenPacking' ? '绿包' : item.type === 'greenFood' ? '绿食' : '回收'}}</view>
+          </view>
+          <view class="cert-info">
+            <view class="cert-name">{{item.name}}</view>
+            <view class="cert-meta">
+              <text class="cert-status {{item.status === '有效' ? 'valid' : 'expired'}}">{{item.status}}</text>
+              <text class="cert-org">{{item.issueOrg}}</text>
+            </view>
+          </view>
+          <view class="cert-arrow">›</view>
+        </view>
+      </view>
+
+      <view class="cert-verify-entry" bindtap="openCertVerifyModal">
+        <text class="verify-entry-icon">🔍</text>
+        <text class="verify-entry-text">证书编号验真</text>
+      </view>
+    </view>
+
+    <!-- ========== 碳足迹计算器 ========== -->
+    <view class="carbon-section" wx:if="{{activeTab === 'carbon' && carbonFootprint}}">
+      <view class="section-header">
+        <text class="section-icon">🌍</text>
+        <text class="section-title">碳足迹计算器</text>
+      </view>
+
+      <view class="carbon-overview">
+        <view class="carbon-total">
+          <view class="carbon-total-value">{{carbonFootprint.totalEmission}}</view>
+          <view class="carbon-total-unit">{{carbonFootprint.unit}}</view>
+        </view>
+        <view class="carbon-reduction">
+          <view class="reduction-badge">
+            <text class="reduction-icon">📉</text>
+            <text class="reduction-value">-{{carbonFootprint.reductionPercent}}%</text>
+          </view>
+          <view class="reduction-desc">较行业均值</view>
+        </view>
+      </view>
+
+      <view class="carbon-chart-card">
+        <view class="chart-title">各环节碳排放占比</view>
+        <view class="chart-wrapper">
+          <canvas type="2d" id="carbonCanvas" class="carbon-canvas"></canvas>
+        </view>
+
+        <view class="chart-legend">
+          <view 
+            wx:for="{{carbonFootprint.stages}}" 
+            wx:key="name"
+            class="legend-item"
+          >
+            <view class="legend-dot" style="background-color: {{item.color}};"></view>
+            <text class="legend-name">{{item.name}}</text>
+            <text class="legend-value">{{item.value}}kg</text>
+            <text class="legend-percent">{{item.percent}}%</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="industry-comparison">
+        <view class="comparison-header">
+          <text class="comparison-icon">📊</text>
+          <text class="comparison-title">与行业均值对比</text>
+        </view>
+        <view class="comparison-bars">
+          <view 
+            wx:for="{{carbonFootprint.stages}}" 
+            wx:key="name"
+            class="comparison-item"
+          >
+            <view class="comp-label">{{item.name}}</view>
+            <view class="comp-bar-group">
+              <view class="comp-bar-row">
+                <text class="comp-bar-label">本产品</text>
+                <view class="comp-bar-track">
+                  <view class="comp-bar-fill product" style="width: {{(item.value / carbonFootprint.industryAvg.totalEmission) * 100}}%; background-color: {{item.color}};"></view>
+                </view>
+                <text class="comp-bar-value">{{item.value}}</text>
+              </view>
+              <view class="comp-bar-row">
+                <text class="comp-bar-label industry">行业均值</text>
+                <view class="comp-bar-track">
+                  <view class="comp-bar-fill industry" style="width: {{(carbonFootprint.industryAvg.stages[index].value / carbonFootprint.industryAvg.totalEmission) * 100}}%;"></view>
+                </view>
+                <text class="comp-bar-value">{{carbonFootprint.industryAvg.stages[index].value}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="carbon-note">
+        <text class="note-icon">💡</text>
+        <text class="note-text">{{carbonFootprint.comparisonNote}}</text>
+      </view>
+    </view>
+
+    <!-- ========== 包装回收指引 ========== -->
+    <view class="recycling-section" wx:if="{{activeTab === 'recycling' && recyclingGuide}}">
+      <view class="section-header">
+        <text class="section-icon">♻️</text>
+        <text class="section-title">包装回收指引</text>
+      </view>
+
+      <view class="material-card">
+        <view class="material-icon">📦</view>
+        <view class="material-info">
+          <view class="material-type">包装材质：{{recyclingGuide.materialType}}</view>
+          <view class="material-recyclable {{recyclingGuide.recyclable ? 'yes' : 'no'}}">
+            {{recyclingGuide.recyclable ? '✓ 可回收' : '✗ 不可回收'}}
+          </view>
+        </view>
+      </view>
+
+      <view class="recycling-steps">
+        <view class="steps-title">分类回收步骤</view>
+        <view 
+          wx:for="{{recyclingGuide.steps}}" 
+          wx:key="step"
+          class="step-item"
+        >
+          <view class="step-number-wrapper">
+            <view class="step-number">{{item.step}}</view>
+            <view class="step-line" wx:if="{{index < recyclingGuide.steps.length - 1}}"></view>
+          </view>
+          <view class="step-content">
+            <view class="step-header">
+              <text class="step-icon">{{item.icon}}</text>
+              <text class="step-title">{{item.title}}</text>
+            </view>
+            <view class="step-desc">{{item.desc}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="nearby-section">
+        <view class="nearby-header">
+          <text class="nearby-icon">📍</text>
+          <text class="nearby-title">附近回收点</text>
+        </view>
+        <view class="nearby-list">
+          <view 
+            wx:for="{{recyclingGuide.nearbyPoints}}" 
+            wx:key="name"
+            class="nearby-item"
+            data-point="{{item}}"
+            bindtap="openRecyclingPoint"
+          >
+            <view class="nearby-info">
+              <view class="nearby-name">{{item.name}}</view>
+              <view class="nearby-address">{{item.address}}</view>
+            </view>
+            <view class="nearby-action">
+              <view class="nearby-distance">{{item.distance}}</view>
+              <view class="nearby-nav-btn">
+                <text>导航</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ========== 绿色积分 ========== -->
+    <view class="points-section" wx:if="{{activeTab === 'points'}}">
+      <view class="section-header">
+        <text class="section-icon">🌟</text>
+        <text class="section-title">绿色积分</text>
+      </view>
+
+      <view class="points-card" wx:if="{{userLevel}}">
+        <view class="points-level-section">
+          <view class="level-icon-wrapper">
+            <text class="level-icon">{{userLevel.icon}}</text>
+          </view>
+          <view class="level-info">
+            <view class="level-name">{{userLevel.name}}</view>
+            <view class="level-progress-bar">
+              <view class="level-progress-fill" style="width: {{userLevel.progress}}%;"></view>
+            </view>
+            <view class="level-next" wx:if="{{userLevel.nextLevel}}">
+              距离{{userLevel.nextLevel}}还需{{userLevel.nextLevelPoints - userLevel.currentPoints}}积分
+            </view>
+            <view class="level-max" wx:else>
+              已达最高等级
+            </view>
+          </view>
+        </view>
+        <view class="points-total-section">
+          <view class="points-total-value">{{greenPointsData.totalPoints}}</view>
+          <view class="points-total-label">环保积分</view>
+        </view>
+      </view>
+
+      <view class="points-rules-card">
+        <view class="rules-title">积分规则</view>
+        <view class="rules-list">
+          <view class="rule-item">
+            <view class="rule-action">📋 查看溯源信息</view>
+            <view class="rule-points">+10积分/次</view>
+            <view class="rule-limit">每日上限50</view>
+          </view>
+          <view class="rule-item">
+            <view class="rule-action">🌍 查看碳足迹</view>
+            <view class="rule-points">+5积分/次</view>
+            <view class="rule-limit">每日上限25</view>
+          </view>
+          <view class="rule-item">
+            <view class="rule-action">♻️ 查看回收指引</view>
+            <view class="rule-points">+5积分/次</view>
+            <view class="rule-limit">每日上限25</view>
+          </view>
+          <view class="rule-item">
+            <view class="rule-action">📜 查看认证证书</view>
+            <view class="rule-points">+3积分/次</view>
+            <view class="rule-limit">每日上限15</view>
+          </view>
+          <view class="rule-item">
+            <view class="rule-action">📤 分享绿色溯源</view>
+            <view class="rule-points">+15积分/次</view>
+            <view class="rule-limit">每日上限45</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="level-config-card">
+        <view class="level-config-title">会员等级</view>
+        <view class="level-config-list">
+          <view class="level-config-item {{userLevel && userLevel.level === 1 ? 'current' : ''}}">
+            <text class="lc-icon">🌱</text>
+            <text class="lc-name">环保新手</text>
+            <text class="lc-points">0积分</text>
+          </view>
+          <view class="level-config-item {{userLevel && userLevel.level === 2 ? 'current' : ''}}">
+            <text class="lc-icon">🌿</text>
+            <text class="lc-name">环保达人</text>
+            <text class="lc-points">100积分</text>
+          </view>
+          <view class="level-config-item {{userLevel && userLevel.level === 3 ? 'current' : ''}}">
+            <text class="lc-icon">🌳</text>
+            <text class="lc-name">环保先锋</text>
+            <text class="lc-points">500积分</text>
+          </view>
+          <view class="level-config-item {{userLevel && userLevel.level === 4 ? 'current' : ''}}">
+            <text class="lc-icon">🌍</text>
+            <text class="lc-name">环保大使</text>
+            <text class="lc-points">1000积分</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="points-history-section">
+        <view class="history-header" bindtap="togglePointsDetail">
+          <text class="history-title">积分记录</text>
+          <text class="history-toggle {{showPointsDetail ? 'expanded' : ''}}">▾</text>
+        </view>
+        <view class="history-list {{showPointsDetail ? 'show' : ''}}" wx:if="{{pointsHistory.length > 0}}">
+          <view 
+            wx:for="{{pointsHistory}}" 
+            wx:key="timestamp"
+            class="history-item"
+          >
+            <view class="history-desc">{{item.desc}}</view>
+            <view class="history-meta">
+              <text class="history-time">{{item.timestamp}}</text>
+              <text class="history-points +{{item.points}}">+{{item.points}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="history-empty" wx:else>
+          <text>暂无积分记录</text>
+        </view>
+      </view>
+    </view>
+
+  </view>
+
+  <!-- 证书详情弹窗 -->
+  <view class="modal-overlay" wx:if="{{showCertModal}}" catchtap="closeCertModal">
+    <view class="cert-modal-content" catchtap="preventBubble">
+      <view class="cert-modal-header">
+        <text class="cert-modal-title">证书详情</text>
+        <view class="cert-modal-close" bindtap="closeCertModal">×</view>
+      </view>
+      <view class="cert-modal-body" wx:if="{{selectedCert}}">
+        <view class="cert-modal-image-wrapper" data-url="{{selectedCert.fullImage}}" bindtap="previewCertImage">
+          <image class="cert-modal-image" src="{{selectedCert.fullImage}}" mode="aspectFit" />
+          <view class="cert-modal-zoom-hint">点击查看大图</view>
+        </view>
+        <view class="cert-modal-detail">
+          <view class="cert-detail-row">
+            <text class="cert-detail-label">证书名称</text>
+            <text class="cert-detail-value">{{selectedCert.name}}</text>
+          </view>
+          <view class="cert-detail-row">
+            <text class="cert-detail-label">证书编号</text>
+            <text class="cert-detail-value cert-no" bindtap="copyCertNo">{{selectedCert.certNo}} 📋</text>
+          </view>
+          <view class="cert-detail-row">
+            <text class="cert-detail-label">颁发机构</text>
+            <text class="cert-detail-value">{{selectedCert.issueOrg}}</text>
+          </view>
+          <view class="cert-detail-row">
+            <text class="cert-detail-label">颁发日期</text>
+            <text class="cert-detail-value">{{selectedCert.issueDate}}</text>
+          </view>
+          <view class="cert-detail-row">
+            <text class="cert-detail-label">有效期至</text>
+            <text class="cert-detail-value">{{selectedCert.validUntil}}</text>
+          </view>
+          <view class="cert-detail-row">
+            <text class="cert-detail-label">证书状态</text>
+            <text class="cert-detail-value {{selectedCert.status === '有效' ? 'valid' : 'expired'}}">{{selectedCert.status}}</text>
+          </view>
+        </view>
+        <view class="cert-modal-actions">
+          <view class="cert-verify-btn" bindtap="openCertVerifyModal">
+            <text>🔍 证书验真</text>
+          </view>
+          <view class="cert-copy-btn" bindtap="copyCertNo">
+            <text>📋 复制编号</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 证书验真弹窗 -->
+  <view class="modal-overlay" wx:if="{{showVerifyCertModal}}" catchtap="closeVerifyCertModal">
+    <view class="verify-modal-content" catchtap="preventBubble">
+      <view class="verify-modal-header">
+        <text class="verify-modal-title">🔍 证书编号验真</text>
+        <view class="verify-modal-close" bindtap="closeVerifyCertModal">×</view>
+      </view>
+      <view class="verify-modal-body">
+        <view class="verify-input-section">
+          <text class="verify-label">请输入证书编号</text>
+          <view class="verify-input-wrapper">
+            <input 
+              class="verify-input" 
+              placeholder="如 ORG-CERT-2025-GH001" 
+              value="{{certVerifyInput}}"
+              bindinput="onCertVerifyInputChange"
+            />
+          </view>
+          <view class="verify-buttons">
+            <view class="verify-btn primary" bindtap="doVerifyCertificate">
+              <text>{{certVerifying ? '验证中...' : '立即验真'}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="verify-result" wx:if="{{certVerifyResult}}">
+          <view class="verify-result-header {{certVerifyResult.valid ? 'valid' : 'invalid'}}">
+            <text class="verify-result-icon">{{certVerifyResult.valid ? '✅' : '❌'}}</text>
+            <text class="verify-result-title">{{certVerifyResult.valid ? '验证通过' : '验证未通过'}}</text>
+          </view>
+          <view class="verify-result-body" wx:if="{{certVerifyResult.valid}}">
+            <view class="verify-row">
+              <text class="verify-row-label">证书编号</text>
+              <text class="verify-row-value">{{certVerifyResult.certNo}}</text>
+            </view>
+            <view class="verify-row">
+              <text class="verify-row-label">证书名称</text>
+              <text class="verify-row-value">{{certVerifyResult.certName}}</text>
+            </view>
+            <view class="verify-row">
+              <text class="verify-row-label">颁发机构</text>
+              <text class="verify-row-value">{{certVerifyResult.issueOrg}}</text>
+            </view>
+            <view class="verify-row">
+              <text class="verify-row-label">关联产品</text>
+              <text class="verify-row-value">{{certVerifyResult.productName}}</text>
+            </view>
+            <view class="verify-row">
+              <text class="verify-row-label">验证时间</text>
+              <text class="verify-row-value">{{certVerifyResult.verifyTime}}</text>
+            </view>
+          </view>
+          <view class="verify-result-body invalid-body" wx:else>
+            <text class="verify-invalid-msg">{{certVerifyResult.message}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+</view>

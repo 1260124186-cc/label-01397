@@ -733,6 +733,17 @@
           </view>
         </view>
         
+        <view class="green-trace-entry" bindtap="goGreenTrace">
+          <view class="green-trace-entry-left">
+            <text class="green-trace-entry-icon">🍃</text>
+            <view class="green-trace-entry-text">
+              <text class="green-trace-entry-title">查看详细绿色溯源</text>
+              <text class="green-trace-entry-desc">认证证书 · 碳足迹 · 回收指引 · 绿色积分</text>
+            </view>
+          </view>
+          <text class="green-trace-entry-arrow">›</text>
+        </view>
+        
         <!-- 数据安全提示 -->
         <view class="privacy-notice">
           <text class="privacy-icon">🔒</text>
