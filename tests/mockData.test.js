@@ -277,4 +277,135 @@ describe('mockData 模块测试', () => {
       expect(g001.scentingProcess.scentingTimes).not.toBe(g002.scentingProcess.scentingTimes);
     });
   });
+
+  describe('窨制工艺深化功能测试', () => {
+    test('G001 应该包含5次窨制独立记录', () => {
+      const data = mockData.mockTraceData['G001'];
+      expect(data.scentingProcess.scentingRecords).toBeDefined();
+      expect(Array.isArray(data.scentingProcess.scentingRecords)).toBe(true);
+      expect(data.scentingProcess.scentingRecords.length).toBe(5);
+    });
+
+    test('G002 应该包含3次窨制独立记录', () => {
+      const data = mockData.mockTraceData['G002'];
+      expect(data.scentingProcess.scentingRecords).toBeDefined();
+      expect(Array.isArray(data.scentingProcess.scentingRecords)).toBe(true);
+      expect(data.scentingProcess.scentingRecords.length).toBe(3);
+    });
+
+    test('每次窨制记录应该包含完整字段', () => {
+      const data = mockData.mockTraceData['G001'];
+      const records = data.scentingProcess.scentingRecords;
+      
+      records.forEach((record, index) => {
+        expect(record.round).toBe(index + 1);
+        expect(record.duration).toBeDefined();
+        expect(typeof record.duration).toBe('number');
+        expect(record.temperature).toBeDefined();
+        expect(typeof record.temperature).toBe('number');
+        expect(record.operator).toBeDefined();
+        expect(typeof record.operator).toBe('string');
+        expect(record.timestamp).toBeDefined();
+        expect(typeof record.timestamp).toBe('string');
+        expect(record.humidity).toBeDefined();
+        expect(typeof record.humidity).toBe('number');
+        expect(record.note).toBeDefined();
+        expect(typeof record.note).toBe('string');
+      });
+    });
+
+    test('工艺步骤应该包含多媒体信息', () => {
+      const data = mockData.mockTraceData['G001'];
+      const steps = data.scentingProcess.processSteps;
+      
+      steps.forEach(step => {
+        expect(step.mediaType).toBeDefined();
+        expect(step.mediaUrl).toBeDefined();
+        expect(typeof step.mediaUrl).toBe('string');
+        expect(step.mediaUrl.length).toBeGreaterThan(0);
+      });
+    });
+
+    test('G003 应该包含6次窨制记录', () => {
+      const data = mockData.mockTraceData['G003'];
+      expect(data.scentingProcess.scentingRecords.length).toBe(6);
+    });
+
+    test('G004 应该包含4次窨制记录', () => {
+      const data = mockData.mockTraceData['G004'];
+      expect(data.scentingProcess.scentingRecords.length).toBe(4);
+    });
+  });
+
+  describe('getScentingComparison 函数测试', () => {
+    test('应该能获取工艺对比数据', () => {
+      const comparison = mockData.getScentingComparison();
+      expect(comparison).not.toBeNull();
+      expect(comparison).toBeDefined();
+    });
+
+    test('对比数据应该包含完整结构', () => {
+      const comparison = mockData.getScentingComparison();
+      
+      expect(comparison.title).toBeDefined();
+      expect(comparison.summary).toBeDefined();
+      expect(comparison.summary.golden).toBeDefined();
+      expect(comparison.summary.silver).toBeDefined();
+      expect(comparison.comparisonItems).toBeDefined();
+      expect(Array.isArray(comparison.comparisonItems)).toBe(true);
+      expect(comparison.recordsComparison).toBeDefined();
+      expect(comparison.differenceExplanation).toBeDefined();
+    });
+
+    test('金桂对比数据应该正确', () => {
+      const comparison = mockData.getScentingComparison();
+      const golden = comparison.summary.golden;
+      
+      expect(golden.name).toBe('金桂花茶');
+      expect(golden.variety).toBe('金桂');
+      expect(golden.scentingTimes).toBe(5);
+      expect(golden.totalDuration).toBe(25);
+      expect(golden.avgTemperature).toBe(28.8);
+    });
+
+    test('银桂对比数据应该正确', () => {
+      const comparison = mockData.getScentingComparison();
+      const silver = comparison.summary.silver;
+      
+      expect(silver.name).toBe('银桂花茶');
+      expect(silver.variety).toBe('银桂');
+      expect(silver.scentingTimes).toBe(3);
+      expect(silver.totalDuration).toBe(18);
+      expect(silver.avgTemperature).toBe(27);
+    });
+
+    test('对比项应该包含9个维度', () => {
+      const comparison = mockData.getScentingComparison();
+      expect(comparison.comparisonItems.length).toBe(9);
+      
+      comparison.comparisonItems.forEach(item => {
+        expect(item.category).toBeDefined();
+        expect(item.golden).toBeDefined();
+        expect(item.silver).toBeDefined();
+        expect(item.difference).toBeDefined();
+        expect(['golden', 'silver', 'neutral']).toContain(item.advantage);
+      });
+    });
+
+    test('窨制记录对比应该正确', () => {
+      const comparison = mockData.getScentingComparison();
+      
+      expect(comparison.recordsComparison.golden.length).toBe(5);
+      expect(comparison.recordsComparison.silver.length).toBe(3);
+    });
+
+    test('差异说明应该包含三个部分', () => {
+      const comparison = mockData.getScentingComparison();
+      const explanation = comparison.differenceExplanation;
+      
+      expect(explanation).toContain('金桂5次窨制特点');
+      expect(explanation).toContain('银桂3次窨制特点');
+      expect(explanation).toContain('核心差异总结');
+    });
+  });
 });

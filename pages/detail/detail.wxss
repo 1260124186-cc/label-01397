@@ -2192,3 +2192,835 @@
   color: #666666;
   line-height: 1.5;
 }
+
+/* ==================== 窨制工艺深化功能样式 ==================== */
+
+/* 工艺模块 Tab 导航 */
+.process-tab-bar {
+  display: flex;
+  background: #F8F8F8;
+  border-radius: 16rpx;
+  padding: 8rpx;
+  margin-top: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.process-tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 12rpx;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.process-tab-item.active {
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  box-shadow: 0 4rpx 12rpx rgba(46, 139, 87, 0.3);
+}
+
+.process-tab-item.active .tab-icon,
+.process-tab-item.active .tab-label {
+  color: #FFFFFF;
+}
+
+.tab-icon {
+  font-size: 32rpx;
+  margin-bottom: 4rpx;
+}
+
+.tab-label {
+  font-size: 22rpx;
+  color: #666666;
+  font-weight: 500;
+}
+
+.process-tab-content {
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 窨制记录标题 */
+.records-title,
+.timeline-section-title,
+.comparison-section-title,
+.media-section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.records-title-icon,
+.timeline-title-icon,
+.comparison-title-icon,
+.media-title-icon {
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+
+.records-title-text,
+.timeline-title-text,
+.comparison-title-text,
+.media-title-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* 窨制记录时间轴 */
+.scenting-records-timeline {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20rpx 0;
+  margin-bottom: 24rpx;
+  position: relative;
+}
+
+.record-timeline-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.record-round-badge {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #F0F0F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid #E0E0E0;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.record-timeline-item.active .record-round-badge {
+  background: linear-gradient(135deg, #DAA520, #F0C75E);
+  border-color: #DAA520;
+  box-shadow: 0 0 0 8rpx rgba(218, 165, 32, 0.15);
+  transform: scale(1.1);
+}
+
+.round-num {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #999999;
+}
+
+.record-timeline-item.active .round-num {
+  color: #FFFFFF;
+}
+
+.record-line {
+  position: absolute;
+  top: 32rpx;
+  left: 50%;
+  width: 100%;
+  height: 4rpx;
+  background: linear-gradient(90deg, #E0E0E0, #F0F0F0);
+  z-index: 1;
+}
+
+/* 窨制记录详情卡片 */
+.record-detail-card {
+  background: linear-gradient(135deg, #FFFEF5, #FFFDF0);
+  border: 2rpx solid rgba(218, 165, 32, 0.2);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  animation: cardSlideIn 0.3s ease;
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.record-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx dashed rgba(218, 165, 32, 0.3);
+}
+
+.record-round-tag {
+  background: linear-gradient(135deg, #DAA520, #F0C75E);
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 600;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+.record-note {
+  font-size: 24rpx;
+  color: #DAA520;
+  font-weight: 500;
+}
+
+.record-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.record-detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12rpx;
+}
+
+.detail-item-icon {
+  font-size: 32rpx;
+  margin-bottom: 8rpx;
+}
+
+.detail-item-label {
+  font-size: 22rpx;
+  color: #999999;
+  margin-bottom: 4rpx;
+}
+
+.detail-item-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.record-detail-footer {
+  text-align: center;
+  padding-top: 12rpx;
+  border-top: 1rpx dashed rgba(218, 165, 32, 0.2);
+}
+
+.record-timestamp {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+/* 工艺多媒体展示 */
+.process-media-section {
+  margin-top: 24rpx;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+}
+
+.media-item {
+  position: relative;
+  border-radius: 16rpx;
+  overflow: hidden;
+  aspect-ratio: 1;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.media-item:active {
+  transform: scale(0.96);
+}
+
+.media-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.media-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: 20rpx 12rpx 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.media-step-icon {
+  font-size: 28rpx;
+  margin-bottom: 4rpx;
+}
+
+.media-step-name {
+  font-size: 20rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+/* 横向时间轴动画 */
+.timeline-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+  padding: 16rpx;
+  background: linear-gradient(135deg, #F8FFF8, #F5F5F0);
+  border-radius: 16rpx;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72rpx;
+  height: 72rpx;
+  background: #FFFFFF;
+  border-radius: 50%;
+  border: 2rpx solid #E8E8E8;
+  font-size: 28rpx;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.control-btn:active {
+  transform: scale(0.92);
+  background: #F5F5F5;
+}
+
+.control-btn.primary {
+  width: auto;
+  padding: 0 32rpx;
+  border-radius: 36rpx;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  border-color: transparent;
+  color: #FFFFFF;
+  font-size: 26rpx;
+  font-weight: 500;
+  gap: 8rpx;
+}
+
+.control-btn.speed-btn {
+  flex-direction: column;
+  width: auto;
+  padding: 8rpx 16rpx;
+  height: auto;
+  border-radius: 12rpx;
+  font-size: 20rpx;
+}
+
+.speed-label {
+  font-size: 18rpx;
+  color: #666666;
+  margin-top: 2rpx;
+}
+
+/* 横向时间轴 */
+.horizontal-timeline {
+  margin-bottom: 24rpx;
+  padding: 20rpx 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.timeline-track {
+  display: flex;
+  align-items: flex-start;
+  min-width: max-content;
+  padding: 0 40rpx;
+  position: relative;
+}
+
+.timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 0 24rpx;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.timeline-step-dot {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: #F0F0F0;
+  border: 4rpx solid #E0E0E0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.timeline-step.completed .timeline-step-dot {
+  background: linear-gradient(135deg, #52C41A, #95DE64);
+  border-color: #52C41A;
+}
+
+.timeline-step.active .timeline-step-dot {
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  border-color: #2E8B57;
+  box-shadow: 0 0 0 12rpx rgba(46, 139, 87, 0.15);
+  transform: scale(1.15);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 12rpx rgba(46, 139, 87, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 20rpx rgba(46, 139, 87, 0.05);
+  }
+}
+
+.step-dot-icon {
+  font-size: 36rpx;
+}
+
+.timeline-step.completed .step-dot-icon,
+.timeline-step.active .step-dot-icon {
+  filter: brightness(0) invert(1);
+}
+
+.timeline-step-label {
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: #999999;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.timeline-step.completed .timeline-step-label,
+.timeline-step.active .timeline-step-label {
+  color: #2E8B57;
+  font-weight: 600;
+}
+
+.timeline-connector {
+  position: absolute;
+  top: 40rpx;
+  left: calc(50% + 40rpx);
+  width: calc(100% - 80rpx);
+  height: 6rpx;
+  background: #E0E0E0;
+  z-index: 1;
+  transition: background 0.3s ease;
+}
+
+.timeline-step.completed .timeline-connector {
+  background: linear-gradient(90deg, #52C41A, #95DE64);
+}
+
+/* 时间轴步骤详情卡片 */
+.timeline-step-detail {
+  display: flex;
+  align-items: stretch;
+  background: linear-gradient(135deg, #F8FFF8, #FFFFFF);
+  border: 2rpx solid rgba(46, 139, 87, 0.2);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  animation: detailSlideIn 0.4s ease;
+  gap: 20rpx;
+}
+
+@keyframes detailSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10rpx);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.timeline-detail-icon {
+  font-size: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  border-radius: 20rpx;
+  flex-shrink: 0;
+}
+
+.timeline-detail-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.timeline-detail-step {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8rpx;
+}
+
+.step-number {
+  font-size: 22rpx;
+  color: #2E8B57;
+  font-weight: 600;
+  margin-bottom: 4rpx;
+}
+
+.step-name-large {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #333333;
+}
+
+.timeline-detail-desc {
+  font-size: 24rpx;
+  color: #666666;
+  line-height: 1.5;
+}
+
+.timeline-detail-image {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.timeline-detail-image:active {
+  transform: scale(0.96);
+}
+
+.timeline-tip {
+  display: flex;
+  align-items: center;
+  background: rgba(46, 139, 87, 0.06);
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+}
+
+.timeline-tip .tip-icon {
+  font-size: 28rpx;
+  margin-right: 10rpx;
+}
+
+.timeline-tip .tip-text {
+  font-size: 22rpx;
+  color: #666666;
+  line-height: 1.5;
+}
+
+/* 工艺对比模块 */
+.comparison-overview {
+  display: flex;
+  align-items: stretch;
+  background: linear-gradient(135deg, #FFF8E1, #FFFEF5);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  gap: 16rpx;
+}
+
+.comparison-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.comparison-col.golden {
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), rgba(255, 255, 255, 0.8));
+  border-radius: 16rpx;
+  padding: 16rpx;
+}
+
+.comparison-col.silver {
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(255, 255, 255, 0.8));
+  border-radius: 16rpx;
+  padding: 16rpx;
+}
+
+.col-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.col-icon {
+  font-size: 36rpx;
+  margin-right: 8rpx;
+}
+
+.col-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.col-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  width: 100%;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8rpx;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 10rpx;
+}
+
+.stat-value {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #DAA520;
+}
+
+.comparison-col.silver .stat-value {
+  color: #666666;
+}
+
+.stat-label {
+  font-size: 20rpx;
+  color: #999999;
+  margin-top: 2rpx;
+}
+
+.comparison-vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #DAA520;
+  background: #FFFFFF;
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  align-self: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 对比表格 */
+.comparison-table {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 24rpx;
+  border: 1rpx solid #E8E8E8;
+}
+
+.comparison-table-header {
+  display: flex;
+  background: linear-gradient(135deg, #F5F5F0, #F0F0E8);
+}
+
+.table-cell {
+  flex: 1;
+  padding: 16rpx 12rpx;
+  text-align: center;
+  font-size: 24rpx;
+}
+
+.header-cell {
+  font-weight: 600;
+  color: #333333;
+}
+
+.header-cell.golden {
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), rgba(218, 165, 32, 0.05));
+  color: #DAA520;
+}
+
+.header-cell.silver {
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.15), rgba(192, 192, 192, 0.05));
+  color: #666666;
+}
+
+.comparison-table-row {
+  display: flex;
+  border-top: 1rpx solid #F0F0F0;
+  transition: background 0.2s ease;
+}
+
+.comparison-table-row.golden {
+  background: rgba(218, 165, 32, 0.03);
+}
+
+.category-cell {
+  font-weight: 500;
+  color: #666666;
+  text-align: left;
+  padding-left: 20rpx;
+}
+
+.value-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
+}
+
+.value-text {
+  color: #333333;
+}
+
+.advantage-icon {
+  font-size: 20rpx;
+}
+
+/* 差异说明 */
+.comparison-difference {
+  background: linear-gradient(135deg, #F8FFF8, #F5F5F0);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.diff-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.diff-icon {
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+
+.diff-title-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.diff-content {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12rpx;
+  padding: 20rpx;
+}
+
+.diff-text {
+  font-size: 24rpx;
+  color: #666666;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+/* 窨制记录对比 */
+.records-comparison {
+  background: #FAFAFA;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.records-comp-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.comp-title-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.comp-title-text {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.records-comp-content {
+  display: flex;
+  gap: 16rpx;
+}
+
+.records-col {
+  flex: 1;
+}
+
+.records-col-header {
+  text-align: center;
+  padding: 12rpx;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.records-col-header.golden {
+  background: linear-gradient(135deg, #DAA520, #F0C75E);
+  color: #FFFFFF;
+}
+
+.records-col-header.silver {
+  background: linear-gradient(135deg, #C0C0C0, #E8E8E8);
+  color: #666666;
+}
+
+.comp-record-item {
+  padding: 12rpx;
+  border-radius: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.golden-record {
+  background: rgba(218, 165, 32, 0.1);
+  border-left: 4rpx solid #DAA520;
+}
+
+.silver-record {
+  background: rgba(192, 192, 192, 0.1);
+  border-left: 4rpx solid #C0C0C0;
+}
+
+.comp-record-round {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 6rpx;
+}
+
+.comp-record-info {
+  display: flex;
+  gap: 12rpx;
+  font-size: 20rpx;
+  color: #666666;
+  margin-bottom: 4rpx;
+}
+
+.comp-record-operator {
+  font-size: 20rpx;
+  color: #999999;
+}

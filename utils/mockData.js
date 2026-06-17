@@ -49,14 +49,22 @@ const mockTraceData = {
       humidity: 72,                              // 湿度（%）
       ratio: '1:5',                              // 桂花与茶叶配比
       workshopCleanliness: 'Class 10万级',       // 车间洁净度
-      // 工艺流程步骤
+      // 每次窨制独立记录
+      scentingRecords: [
+        { round: 1, duration: 5, temperature: 30, operator: '李师傅', timestamp: '2025-09-12 08:00:00', humidity: 72, note: '头窨，花香浓郁' },
+        { round: 2, duration: 5, temperature: 29, operator: '李师傅', timestamp: '2025-09-13 08:30:00', humidity: 71, note: '二窨，香气渐入' },
+        { round: 3, duration: 5, temperature: 30, operator: '王师傅', timestamp: '2025-09-14 09:00:00', humidity: 73, note: '三窨，醇厚层叠' },
+        { round: 4, duration: 5, temperature: 28, operator: '李师傅', timestamp: '2025-09-15 08:15:00', humidity: 70, note: '四窨，幽香入骨' },
+        { round: 5, duration: 5, temperature: 27, operator: '王师傅', timestamp: '2025-09-16 10:00:00', humidity: 72, note: '五窨，提香收尾' }
+      ],
+      // 工艺流程步骤（含多媒体）
       processSteps: [
-        { step: 1, name: '备料', icon: '📦', desc: '精选优质茶叶与新鲜桂花' },
-        { step: 2, name: '拌花', icon: '🌸', desc: '按配比均匀拌合茶叶与桂花' },
-        { step: 3, name: '窨制', icon: '🫖', desc: '恒温恒湿环境下静置窨香' },
-        { step: 4, name: '通花', icon: '💨', desc: '适时通风散热保持活性' },
-        { step: 5, name: '起花', icon: '🧹', desc: '分离茶叶与桂花残渣' },
-        { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香' }
+        { step: 1, name: '备料', icon: '📦', desc: '精选优质茶叶与新鲜桂花', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20raw%20materials%20preparation%20tea%20leaves%20and%20fresh%20golden%20osmanthus%20flowers&image_size=square' },
+        { step: 2, name: '拌花', icon: '🌸', desc: '按配比均匀拌合茶叶与桂花', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mixing%20osmanthus%20flowers%20with%20tea%20leaves%20traditional%20Chinese%20tea%20processing&image_size=square' },
+        { step: 3, name: '窨制', icon: '🫖', desc: '恒温恒湿环境下静置窨香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20scenting%20process%20constant%20temperature%20humidity%20room%20traditional%20workshop&image_size=square' },
+        { step: 4, name: '通花', icon: '💨', desc: '适时通风散热保持活性', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ventilating%20tea%20during%20scenting%20process%20cooling%20down%20tea%20leaves&image_size=square' },
+        { step: 5, name: '起花', icon: '🧹', desc: '分离茶叶与桂花残渣', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=separating%20osmanthus%20flowers%20from%20tea%20leaves%20traditional%20sieving%20process&image_size=square' },
+        { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=low%20temperature%20drying%20osmanthus%20tea%20preserving%20fragrance&image_size=square' }
       ]
     },
     
@@ -222,13 +230,20 @@ const mockTraceData = {
       humidity: 70,
       ratio: '1:5',
       workshopCleanliness: 'Class 10万级',
+      // 每次窨制独立记录
+      scentingRecords: [
+        { round: 1, duration: 6, temperature: 28, operator: '张师傅', timestamp: '2025-09-17 08:00:00', humidity: 70, note: '头窨，清雅淡香' },
+        { round: 2, duration: 6, temperature: 27, operator: '张师傅', timestamp: '2025-09-18 09:00:00', humidity: 69, note: '二窨，香气平衡' },
+        { round: 3, duration: 6, temperature: 26, operator: '刘师傅', timestamp: '2025-09-19 08:30:00', humidity: 71, note: '三窨，提香收尾' }
+      ],
+      // 工艺流程步骤（含多媒体）
       processSteps: [
-        { step: 1, name: '备料', icon: '📦', desc: '精选优质茶叶与新鲜桂花' },
-        { step: 2, name: '拌花', icon: '🌸', desc: '按配比均匀拌合茶叶与桂花' },
-        { step: 3, name: '窨制', icon: '🫖', desc: '恒温恒湿环境下静置窨香' },
-        { step: 4, name: '通花', icon: '💨', desc: '适时通风散热保持活性' },
-        { step: 5, name: '起花', icon: '🧹', desc: '分离茶叶与桂花残渣' },
-        { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香' }
+        { step: 1, name: '备料', icon: '📦', desc: '精选优质茶叶与新鲜桂花', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20raw%20materials%20preparation%20tea%20leaves%20and%20white%20osmanthus%20flowers&image_size=square' },
+        { step: 2, name: '拌花', icon: '🌸', desc: '按配比均匀拌合茶叶与桂花', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mixing%20silver%20osmanthus%20flowers%20with%20tea%20leaves%20gentle%20process&image_size=square' },
+        { step: 3, name: '窨制', icon: '🫖', desc: '恒温恒湿环境下静置窨香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20scenting%20process%20for%20silver%20osmanthus%20temperature%20control%20room&image_size=square' },
+        { step: 4, name: '通花', icon: '💨', desc: '适时通风散热保持活性', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ventilating%20silver%20osmanthus%20tea%20during%20scenting%20delicate%20process&image_size=square' },
+        { step: 5, name: '起花', icon: '🧹', desc: '分离茶叶与桂花残渣', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=separating%20silver%20osmanthus%20flowers%20from%20tea%20leaves%20fine%20sieving&image_size=square' },
+        { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=low%20temperature%20drying%20silver%20osmanthus%20tea%20preserving%20light%20fragrance&image_size=square' }
       ]
     },
     
@@ -410,13 +425,23 @@ const mockTraceData = {
       humidity: 72,
       ratio: '1:4',
       workshopCleanliness: 'Class 10万级',
+      // 每次窨制独立记录
+      scentingRecords: [
+        { round: 1, duration: 5, temperature: 30, operator: '李师傅', timestamp: '2025-09-12 08:00:00', humidity: 72, note: '头窨，花香浓郁' },
+        { round: 2, duration: 5, temperature: 29, operator: '李师傅', timestamp: '2025-09-13 08:30:00', humidity: 71, note: '二窨，香气渐入' },
+        { round: 3, duration: 5, temperature: 30, operator: '王师傅', timestamp: '2025-09-14 09:00:00', humidity: 73, note: '三窨，醇厚层叠' },
+        { round: 4, duration: 5, temperature: 28, operator: '李师傅', timestamp: '2025-09-15 08:15:00', humidity: 70, note: '四窨，幽香入骨' },
+        { round: 5, duration: 5, temperature: 27, operator: '王师傅', timestamp: '2025-09-16 10:00:00', humidity: 72, note: '五窨，香气绵密' },
+        { round: 6, duration: 4, temperature: 26, operator: '李师傅', timestamp: '2025-09-17 09:30:00', humidity: 71, note: '六窨，提香收尾' }
+      ],
+      // 工艺流程步骤（含多媒体）
       processSteps: [
-        { step: 1, name: '备料', icon: '📦', desc: '精选优质茶叶与新鲜桂花' },
-        { step: 2, name: '拌花', icon: '🌸', desc: '按配比均匀拌合茶叶与桂花' },
-        { step: 3, name: '窨制', icon: '🫖', desc: '恒温恒湿环境下静置窨香' },
-        { step: 4, name: '通花', icon: '💨', desc: '适时通风散热保持活性' },
-        { step: 5, name: '起花', icon: '🧹', desc: '分离茶叶与桂花残渣' },
-        { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香' }
+        { step: 1, name: '备料', icon: '📦', desc: '精选优质茶叶与新鲜桂花', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20golden%20osmanthus%20tea%20raw%20materials%20gift%20box%20edition&image_size=square' },
+        { step: 2, name: '拌花', icon: '🌸', desc: '按配比均匀拌合茶叶与桂花', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=artisan%20mixing%20premium%20osmanthus%20with%20tea%20leaves%20traditional%20craft&image_size=square' },
+        { step: 3, name: '窨制', icon: '🫖', desc: '恒温恒湿环境下静置窨香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20tea%20scenting%20chamber%20precision%20temperature%20control&image_size=square' },
+        { step: 4, name: '通花', icon: '💨', desc: '适时通风散热保持活性', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=master%20artisan%20ventilating%20premium%20osmanthus%20tea%20traditional%20skill&image_size=square' },
+        { step: 5, name: '起花', icon: '🧹', desc: '分离茶叶与桂花残渣', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=fine%20sieving%20premium%20osmanthus%20tea%20separating%20flowers%20from%20leaves&image_size=square' },
+        { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=precision%20low%20temperature%20drying%20premium%20osmanthus%20tea%20preserving%20aroma&image_size=square' }
       ]
     },
     
@@ -565,13 +590,21 @@ const mockTraceData = {
       humidity: 72,
       ratio: '1:5',
       workshopCleanliness: 'Class 10万级',
+      // 每次窨制独立记录
+      scentingRecords: [
+        { round: 1, duration: 5, temperature: 30, operator: '李师傅', timestamp: '2025-09-12 08:00:00', humidity: 72, note: '头窨，花香浓郁' },
+        { round: 2, duration: 5, temperature: 29, operator: '王师傅', timestamp: '2025-09-13 08:30:00', humidity: 71, note: '二窨，香气渐入' },
+        { round: 3, duration: 5, temperature: 28, operator: '李师傅', timestamp: '2025-09-14 09:00:00', humidity: 70, note: '三窨，醇厚层叠' },
+        { round: 4, duration: 5, temperature: 27, operator: '王师傅', timestamp: '2025-09-15 08:15:00', humidity: 72, note: '四窨，提香收尾' }
+      ],
+      // 工艺流程步骤（含多媒体）
       processSteps: [
-        { step: 1, name: '备料', icon: '📦', desc: '精选优质茶叶与新鲜桂花' },
-        { step: 2, name: '拌花', icon: '🌸', desc: '按配比均匀拌合茶叶与桂花' },
-        { step: 3, name: '窨制', icon: '🫖', desc: '恒温恒湿环境下静置窨香' },
-        { step: 4, name: '通花', icon: '💨', desc: '适时通风散热保持活性' },
-        { step: 5, name: '起花', icon: '🧹', desc: '分离茶叶与桂花残渣' },
-        { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香' }
+        { step: 1, name: '备料', icon: '📦', desc: '精选优质茶叶与新鲜桂花', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=portable%20osmanthus%20tea%20sachet%20raw%20materials%20preparation&image_size=square' },
+        { step: 2, name: '拌花', icon: '🌸', desc: '按配比均匀拌合茶叶与桂花', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mixing%20osmanthus%20flowers%20with%20tea%20for%20portable%20sachets&image_size=square' },
+        { step: 3, name: '窨制', icon: '🫖', desc: '恒温恒湿环境下静置窨香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20scenting%20process%20for%20portable%20osmanthus%20tea%20sachets&image_size=square' },
+        { step: 4, name: '通花', icon: '💨', desc: '适时通风散热保持活性', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ventilating%20osmanthus%20tea%20during%20scenting%20for%20sachet%20production&image_size=square' },
+        { step: 5, name: '起花', icon: '🧹', desc: '分离茶叶与桂花残渣', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=separating%20osmanthus%20flowers%20from%20tea%20for%20portable%20sachets&image_size=square' },
+        { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=low%20temperature%20drying%20osmanthus%20tea%20for%20portable%20sachet%20packaging&image_size=square' }
       ]
     },
     
@@ -925,6 +958,134 @@ function calculateTestPercent(value, limit) {
   return Math.min(Math.round(percent * 10) / 10, 100);
 }
 
+/**
+ * 获取金桂（G001）与银桂（G002）窨制工艺对比数据
+ * @returns {object} - 工艺对比数据对象
+ */
+function getScentingComparison() {
+  const golden = mockTraceData['G001'];
+  const silver = mockTraceData['G002'];
+  
+  if (!golden || !silver) {
+    return null;
+  }
+  
+  return {
+    title: '金桂 vs 银桂 窨制工艺对比',
+    summary: {
+      golden: {
+        name: '金桂花茶',
+        variety: '金桂',
+        scentingTimes: golden.scentingProcess.scentingTimes,
+        totalDuration: golden.scentingProcess.scentingRecords.reduce((sum, r) => sum + r.duration, 0),
+        avgTemperature: Math.round(golden.scentingProcess.scentingRecords.reduce((sum, r) => sum + r.temperature, 0) / golden.scentingProcess.scentingRecords.length * 10) / 10,
+        fragrance: golden.osmanthusInfo.fragrance,
+        color: golden.osmanthusInfo.color,
+        teaTreeAge: golden.treeAge.teaTreeAge
+      },
+      silver: {
+        name: '银桂花茶',
+        variety: '银桂',
+        scentingTimes: silver.scentingProcess.scentingTimes,
+        totalDuration: silver.scentingProcess.scentingRecords.reduce((sum, r) => sum + r.duration, 0),
+        avgTemperature: Math.round(silver.scentingProcess.scentingRecords.reduce((sum, r) => sum + r.temperature, 0) / silver.scentingProcess.scentingRecords.length * 10) / 10,
+        fragrance: silver.osmanthusInfo.fragrance,
+        color: silver.osmanthusInfo.color,
+        teaTreeAge: silver.treeAge.teaTreeAge
+      }
+    },
+    // 详细对比项
+    comparisonItems: [
+      {
+        category: '窨制次数',
+        golden: `${golden.scentingProcess.scentingTimes}次`,
+        silver: `${silver.scentingProcess.scentingTimes}次`,
+        difference: '金桂多2次窨制，香气更浓郁持久',
+        advantage: 'golden'
+      },
+      {
+        category: '总窨制时长',
+        golden: `${golden.scentingProcess.scentingRecords.reduce((sum, r) => sum + r.duration, 0)}小时`,
+        silver: `${silver.scentingProcess.scentingRecords.reduce((sum, r) => sum + r.duration, 0)}小时`,
+        difference: '金桂窨制时间更长，茶叶吸香更充分',
+        advantage: 'golden'
+      },
+      {
+        category: '每次窨制时长',
+        golden: `${golden.scentingProcess.scentingDuration}小时/次`,
+        silver: `${silver.scentingProcess.scentingDuration}小时/次`,
+        difference: '银桂单次窨制时间更长，香气更柔和',
+        advantage: 'neutral'
+      },
+      {
+        category: '窨制温度',
+        golden: `${golden.scentingProcess.temperature}℃`,
+        silver: `${silver.scentingProcess.temperature}℃`,
+        difference: '金桂温度略高，促进花香物质释放',
+        advantage: 'neutral'
+      },
+      {
+        category: '花茶配比',
+        golden: golden.scentingProcess.ratio,
+        silver: silver.scentingProcess.ratio,
+        difference: '两者配比相同，均为1:5',
+        advantage: 'neutral'
+      },
+      {
+        category: '香气特点',
+        golden: golden.osmanthusInfo.fragrance,
+        silver: silver.osmanthusInfo.fragrance,
+        difference: '金桂浓郁热烈，银桂清雅淡香，各有千秋',
+        advantage: 'neutral'
+      },
+      {
+        category: '茶树龄',
+        golden: `${golden.treeAge.teaTreeAge}年`,
+        silver: `${silver.treeAge.teaTreeAge}年`,
+        difference: '金桂茶树龄更长，茶叶底蕴更醇厚',
+        advantage: 'golden'
+      },
+      {
+        category: '桂花树龄',
+        golden: `${golden.treeAge.osmanthusTreeAge}年`,
+        silver: `${silver.treeAge.osmanthusTreeAge}年`,
+        difference: '金桂桂花树龄更长，花香更纯正',
+        advantage: 'golden'
+      },
+      {
+        category: '适用场景',
+        golden: '送礼、资深茶友、收藏',
+        silver: '日常饮用、入门尝鲜',
+        difference: '金桂定位高端，银桂性价比高',
+        advantage: 'neutral'
+      }
+    ],
+    // 窨制记录对比（逐次）
+    recordsComparison: {
+      golden: golden.scentingProcess.scentingRecords,
+      silver: silver.scentingProcess.scentingRecords
+    },
+    // 差异说明
+    differenceExplanation: `
+【金桂5次窨制特点】
+• 窨制次数多（5次），茶叶充分吸收桂花香气
+• 温度控制在27-30℃，促进花香物质充分释放
+• 层次感强，香气浓郁持久，口齿留香
+• 适合喜欢浓郁花香的茶友，具有收藏价值
+
+【银桂3次窨制特点】
+• 窨制次数适中（3次），香气清雅不浓烈
+• 单次窨制时间更长（6小时），香气更柔和
+• 温度略低（26-28℃），保留银桂特有的清甜
+• 性价比高，适合日常饮用和入门尝鲜
+
+【核心差异总结】
+金桂5窨：浓郁持久、层次感强、高端品质
+银桂3窨：清雅淡香、口感柔和、性价比之选
+`.trim()
+  };
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -936,5 +1097,6 @@ module.exports = {
   getTraceIdFromBarcode,
   parseSceneParam,
   verifyReport,
-  calculateTestPercent
+  calculateTestPercent,
+  getScentingComparison
 };

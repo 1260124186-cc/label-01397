@@ -47,12 +47,30 @@ jest.mock('../utils/mockData.js', () => ({
   getTraceData: jest.fn(),
   validateTraceId: jest.fn(),
   getAvailableTraceIds: jest.fn(() => ['G001', 'G002']),
+  getScentingComparison: jest.fn(),
   mockTraceData: {
     'G001': {
       basicInfo: { productName: '金桂花茶', thumbnail: '' },
       treeAge: { teaTreeAge: 200, osmanthusTreeAge: 50 },
       osmanthusInfo: { variety: '金桂' },
-      scentingProcess: { scentingTimes: 5, processSteps: [] },
+      scentingProcess: {
+        scentingTimes: 5,
+        processSteps: [
+          { step: 1, name: '备料', icon: '📦', desc: '准备茶坯和鲜花', mediaType: 'image', mediaUrl: 'https://example.com/1.jpg' },
+          { step: 2, name: '窨花', icon: '🌸', desc: '茶花混合窨制', mediaType: 'video', mediaUrl: 'https://example.com/2.mp4' },
+          { step: 3, name: '通花', icon: '🔄', desc: '翻动散热', mediaType: 'image', mediaUrl: 'https://example.com/3.jpg' },
+          { step: 4, name: '起花', icon: '⚖️', desc: '筛出花渣', mediaType: 'image', mediaUrl: 'https://example.com/4.jpg' },
+          { step: 5, name: '烘焙', icon: '🔥', desc: '低温烘干', mediaType: 'video', mediaUrl: 'https://example.com/5.mp4' },
+          { step: 6, name: '提花', icon: '✨', desc: '最后一次窨制', mediaType: 'image', mediaUrl: 'https://example.com/6.jpg' }
+        ],
+        scentingRecords: [
+          { round: 1, duration: 5, temperature: 30, operator: '李师傅', timestamp: '2025-09-12 08:00:00', humidity: 72, note: '头窨，花香浓郁' },
+          { round: 2, duration: 5, temperature: 29, operator: '李师傅', timestamp: '2025-09-13 08:00:00', humidity: 70, note: '二窨，香气深入' },
+          { round: 3, duration: 5, temperature: 28, operator: '王师傅', timestamp: '2025-09-14 08:00:00', humidity: 68, note: '三窨，香气醇厚' },
+          { round: 4, duration: 5, temperature: 28, operator: '李师傅', timestamp: '2025-09-15 08:00:00', humidity: 65, note: '四窨，香气持久' },
+          { round: 5, duration: 5, temperature: 29, operator: '王师傅', timestamp: '2025-09-16 08:00:00', humidity: 62, note: '五窨，提花收尾' }
+        ]
+      },
       greenTrace: { ecoPlanting: {}, ecoPacking: {}, ecoLogistics: {} },
       pesticideTest: { teaTests: [], osmanthusTests: [] },
       brewingGuide: { tips: [] },
@@ -69,7 +87,22 @@ jest.mock('../utils/mockData.js', () => ({
       basicInfo: { productName: '银桂花茶', thumbnail: '' },
       treeAge: { teaTreeAge: 120, osmanthusTreeAge: 20 },
       osmanthusInfo: { variety: '银桂' },
-      scentingProcess: { scentingTimes: 3, processSteps: [] },
+      scentingProcess: {
+        scentingTimes: 3,
+        processSteps: [
+          { step: 1, name: '备料', icon: '📦', desc: '准备茶坯和鲜花', mediaType: 'image', mediaUrl: 'https://example.com/1.jpg' },
+          { step: 2, name: '窨花', icon: '🌸', desc: '茶花混合窨制', mediaType: 'image', mediaUrl: 'https://example.com/2.jpg' },
+          { step: 3, name: '通花', icon: '🔄', desc: '翻动散热', mediaType: 'image', mediaUrl: 'https://example.com/3.jpg' },
+          { step: 4, name: '起花', icon: '⚖️', desc: '筛出花渣', mediaType: 'image', mediaUrl: 'https://example.com/4.jpg' },
+          { step: 5, name: '烘焙', icon: '🔥', desc: '低温烘干', mediaType: 'image', mediaUrl: 'https://example.com/5.jpg' },
+          { step: 6, name: '提花', icon: '✨', desc: '最后一次窨制', mediaType: 'image', mediaUrl: 'https://example.com/6.jpg' }
+        ],
+        scentingRecords: [
+          { round: 1, duration: 6, temperature: 28, operator: '张师傅', timestamp: '2025-09-12 08:00:00', humidity: 70, note: '头窨，清香淡雅' },
+          { round: 2, duration: 6, temperature: 27, operator: '张师傅', timestamp: '2025-09-13 08:00:00', humidity: 68, note: '二窨，香气适中' },
+          { round: 3, duration: 6, temperature: 26, operator: '张师傅', timestamp: '2025-09-14 08:00:00', humidity: 65, note: '三窨，提花收尾' }
+        ]
+      },
       greenTrace: { ecoPlanting: {}, ecoPacking: {}, ecoLogistics: {} },
       pesticideTest: { teaTests: [], osmanthusTests: [] },
       brewingGuide: { tips: [] },
@@ -113,7 +146,15 @@ describe('detail.js 页面逻辑测试', () => {
       activeAnchor: 'basic',
       anchorSticky: false,
       moduleCollapsed: {},
-      lazyImageMap: {}
+      lazyImageMap: {},
+      activeProcessTab: 'records',
+      activeScentingRecord: 0,
+      timelinePlaying: false,
+      timelineActiveStep: -1,
+      timelineSpeed: 2000,
+      processComparisonData: null,
+      showRecordDetailModal: false,
+      selectedRecordDetail: null
     };
 
     // 模拟 setData 方法
@@ -317,6 +358,263 @@ describe('detail.js 页面逻辑测试', () => {
         expect.objectContaining({ 'moduleCollapsed.basic': true }),
         expect.any(Function)
       );
+    });
+  });
+
+  describe('窨制工艺深化功能测试', () => {
+    beforeEach(() => {
+      page.data.traceData = mockData.mockTraceData['G001'];
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+      if (page.timelineTimer) {
+        clearInterval(page.timelineTimer);
+        page.timelineTimer = null;
+      }
+    });
+
+    describe('工艺 Tab 切换测试', () => {
+      test('switchProcessTab 应该能切换到 records Tab', () => {
+        page.data.activeProcessTab = 'timeline';
+        const e = { currentTarget: { dataset: { tab: 'records' } } };
+        page.switchProcessTab(e);
+        expect(page.data.activeProcessTab).toBe('records');
+      });
+
+      test('switchProcessTab 应该能切换到 timeline Tab', () => {
+        page.data.activeProcessTab = 'records';
+        const e = { currentTarget: { dataset: { tab: 'timeline' } } };
+        page.switchProcessTab(e);
+        expect(page.data.activeProcessTab).toBe('timeline');
+      });
+
+      test('switchProcessTab 切换到 comparison 时应加载对比数据', () => {
+        page.loadProcessComparison = jest.fn();
+        const e = { currentTarget: { dataset: { tab: 'comparison' } } };
+        page.switchProcessTab(e);
+        expect(page.data.activeProcessTab).toBe('comparison');
+        expect(page.loadProcessComparison).toHaveBeenCalled();
+      });
+
+      test('switchProcessTab 切换到 timeline 时应重置动画状态', () => {
+        page.resetTimelineAnimation = jest.fn();
+        const e = { currentTarget: { dataset: { tab: 'timeline' } } };
+        page.switchProcessTab(e);
+        expect(page.resetTimelineAnimation).toHaveBeenCalled();
+      });
+    });
+
+    describe('窨制记录选择测试', () => {
+      test('selectScentingRecord 应该能选择指定记录', () => {
+        const e = { currentTarget: { dataset: { index: 2 } } };
+        page.selectScentingRecord(e);
+        expect(page.data.activeScentingRecord).toBe(2);
+      });
+
+      test('selectScentingRecord 不应选择负数索引', () => {
+        page.data.activeScentingRecord = 0;
+        const e = { currentTarget: { dataset: { index: -1 } } };
+        page.selectScentingRecord(e);
+        expect(page.data.activeScentingRecord).toBe(0);
+      });
+
+      test('selectScentingRecord 不应选择超出范围的索引', () => {
+        page.data.activeScentingRecord = 0;
+        const e = { currentTarget: { dataset: { index: 10 } } };
+        page.selectScentingRecord(e);
+        expect(page.data.activeScentingRecord).toBe(0);
+      });
+    });
+
+    describe('时间轴动画控制测试', () => {
+      test('startTimelineAnimation 应该能开始自动播放', () => {
+        page.startTimelineAnimation();
+        expect(page.data.timelinePlaying).toBe(true);
+        expect(page.data.timelineActiveStep).toBe(0);
+        expect(page.timelineTimer).toBeDefined();
+      });
+
+      test('startTimelineAnimation 应该能循环播放', () => {
+        page.startTimelineAnimation();
+        const steps = page.data.traceData.scentingProcess.processSteps;
+        const totalSteps = steps.length;
+
+        expect(page.data.timelineActiveStep).toBe(0);
+
+        for (let i = 1; i < totalSteps; i++) {
+          jest.advanceTimersByTime(page.data.timelineSpeed);
+          expect(page.data.timelineActiveStep).toBe(i);
+        }
+
+        jest.advanceTimersByTime(page.data.timelineSpeed);
+        expect(page.data.timelineActiveStep).toBe(0);
+        expect(page.data.timelinePlaying).toBe(true);
+
+        jest.advanceTimersByTime(page.data.timelineSpeed);
+        expect(page.data.timelineActiveStep).toBe(1);
+      });
+
+      test('pauseTimelineAnimation 应该能暂停动画', () => {
+        page.startTimelineAnimation();
+        page.pauseTimelineAnimation();
+        expect(page.data.timelinePlaying).toBe(false);
+        expect(page.timelineTimer).toBeNull();
+      });
+
+      test('pauseTimelineAnimation 在未播放时不应出错', () => {
+        page.data.timelinePlaying = false;
+        expect(() => page.pauseTimelineAnimation()).not.toThrow();
+      });
+
+      test('resetTimelineAnimation 应该能重置动画状态', () => {
+        page.startTimelineAnimation();
+        page.data.timelineActiveStep = 3;
+        page.resetTimelineAnimation();
+        expect(page.data.timelinePlaying).toBe(false);
+        expect(page.data.timelineActiveStep).toBe(-1);
+        expect(page.timelineTimer).toBeNull();
+      });
+
+      test('prevTimelineStep 应该能切换到上一步', () => {
+        page.data.timelineActiveStep = 2;
+        page.prevTimelineStep();
+        expect(page.data.timelineActiveStep).toBe(1);
+      });
+
+      test('prevTimelineStep 在第一步时不应继续后退', () => {
+        page.data.timelineActiveStep = 0;
+        page.prevTimelineStep();
+        expect(page.data.timelineActiveStep).toBe(0);
+      });
+
+      test('nextTimelineStep 应该能切换到下一步', () => {
+        page.data.timelineActiveStep = 1;
+        page.nextTimelineStep();
+        expect(page.data.timelineActiveStep).toBe(2);
+      });
+
+      test('nextTimelineStep 在最后一步时不应继续前进', () => {
+        const steps = page.data.traceData.scentingProcess.processSteps;
+        page.data.timelineActiveStep = steps.length - 1;
+        page.nextTimelineStep();
+        expect(page.data.timelineActiveStep).toBe(steps.length - 1);
+      });
+
+      test('changeTimelineSpeed 应该能切换到慢速', () => {
+        page.data.timelineSpeed = 2000;
+        const e = { currentTarget: { dataset: { speed: 'slow' } } };
+        page.changeTimelineSpeed(e);
+        expect(page.data.timelineSpeed).toBe(3000);
+      });
+
+      test('changeTimelineSpeed 应该能切换到快速', () => {
+        page.data.timelineSpeed = 2000;
+        const e = { currentTarget: { dataset: { speed: 'fast' } } };
+        page.changeTimelineSpeed(e);
+        expect(page.data.timelineSpeed).toBe(1000);
+      });
+
+      test('changeTimelineSpeed 应该能切换到正常速度', () => {
+        page.data.timelineSpeed = 1000;
+        const e = { currentTarget: { dataset: { speed: 'normal' } } };
+        page.changeTimelineSpeed(e);
+        expect(page.data.timelineSpeed).toBe(2000);
+      });
+
+      test('changeTimelineSpeed 播放时切换速度应重启定时器', () => {
+        page.startTimelineAnimation();
+        const oldTimer = page.timelineTimer;
+        const e = { currentTarget: { dataset: { speed: 'fast' } } };
+        page.changeTimelineSpeed(e);
+        expect(page.timelineTimer).not.toBe(oldTimer);
+        expect(page.data.timelinePlaying).toBe(true);
+      });
+
+      test('onTimelineStepTap 应该能跳转到指定步骤', () => {
+        const e = { currentTarget: { dataset: { index: 3 } } };
+        page.onTimelineStepTap(e);
+        expect(page.data.timelineActiveStep).toBe(3);
+      });
+
+      test('onTimelineStepTap 播放时点击应暂停', () => {
+        page.startTimelineAnimation();
+        const e = { currentTarget: { dataset: { index: 2 } } };
+        page.onTimelineStepTap(e);
+        expect(page.data.timelinePlaying).toBe(false);
+        expect(page.data.timelineActiveStep).toBe(2);
+      });
+    });
+
+    describe('工艺对比测试', () => {
+      test('loadProcessComparison 应该能加载对比数据', () => {
+        const mockComparison = {
+          title: '金桂 vs 银桂 窨制工艺对比',
+          summary: { golden: {}, silver: {} },
+          comparisonItems: [],
+          recordsComparison: { golden: [], silver: [] },
+          differenceExplanation: '测试说明'
+        };
+        mockData.getScentingComparison.mockReturnValue(mockComparison);
+
+        page.loadProcessComparison();
+
+        expect(page.setData).toHaveBeenCalledWith({
+          processComparisonData: mockComparison
+        });
+      });
+
+      test('loadProcessComparison 已有数据时不应重复加载', () => {
+        page.data.processComparisonData = { title: '已加载' };
+        mockData.getScentingComparison.mockClear();
+
+        page.loadProcessComparison();
+
+        expect(mockData.getScentingComparison).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('记录详情弹窗测试', () => {
+      test('viewScentingRecordDetail 应该能显示详情弹窗', () => {
+        global.wx.showModal = jest.fn();
+        const record = page.data.traceData.scentingProcess.scentingRecords[0];
+        const e = { currentTarget: { dataset: { record: record } } };
+        page.viewScentingRecordDetail(e);
+        expect(wx.showModal).toHaveBeenCalled();
+        const callArg = wx.showModal.mock.calls[0][0];
+        expect(callArg.title).toContain('第1次窨制详情');
+        expect(callArg.content).toContain('李师傅');
+        expect(callArg.content).toContain('30');
+      });
+    });
+
+    describe('工艺图片预览测试', () => {
+      test('previewProcessImage 应该能预览图片', () => {
+        global.wx.previewImage = jest.fn();
+        const steps = page.data.traceData.scentingProcess.processSteps;
+        const allUrls = steps.map(s => s.mediaUrl);
+        const e = { currentTarget: { dataset: { url: allUrls[0] } } };
+        page.previewProcessImage(e);
+        expect(wx.previewImage).toHaveBeenCalledWith({
+          urls: allUrls,
+          current: allUrls[0]
+        });
+      });
+    });
+
+    describe('资源清理测试', () => {
+      test('onUnload 应该能清除定时器', () => {
+        page.startTimelineAnimation();
+        expect(page.timelineTimer).toBeDefined();
+        page.onUnload();
+        expect(page.timelineTimer).toBeNull();
+      });
+
+      test('onUnload 在无定时器时不应出错', () => {
+        page.timelineTimer = null;
+        expect(() => page.onUnload()).not.toThrow();
+      });
     });
   });
 });

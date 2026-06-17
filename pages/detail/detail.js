@@ -77,7 +77,18 @@ Page({
     // 历史报告时间轴展开状态
     showHistoryTimeline: false,
     // 当前选中的历史报告
-    activeHistoryIndex: 0
+    activeHistoryIndex: 0,
+    // 工艺模块当前Tab
+    activeProcessTab: 'records',
+    // 窨制记录当前选中索引
+    activeScentingRecord: 0,
+    // 时间轴动画控制
+    timelinePlaying: false,
+    timelineActiveStep: -1,
+    timelineSpeed: 2000,
+    // 工艺对比数据
+    showProcessComparison: false,
+    processComparisonData: null
   },
 
   /**
@@ -772,5 +783,196 @@ Page({
       showCancel: false,
       confirmText: '知道了'
     });
+  },
+
+  /**
+   * ==================== 窨制工艺深化功能 ====================
+   */
+
+  /**
+   * 切换工艺模块 Tab
+   */
+  switchProcessTab: function(e) {
+    const tab = e.currentTarget.dataset.tab;
+    this.setData({ activeProcessTab: tab });
+    
+    if (tab === 'timeline') {
+      this.resetTimelineAnimation();
+    } else if (tab === 'comparison' && !this.data.processComparisonData) {
+      this.loadProcessComparison();
+    }
+  },
+
+  /**
+   * 选择窨制记录
+   */
+  selectScentingRecord: function(e) {
+    const index = e.currentTarget.dataset.index;
+    const records = this.data.traceData.scentingProcess.scentingRecords;
+    
+    if (index < 0 || index >= records.length) {
+      return;
+    }
+    
+    this.setData({ activeScentingRecord: index });
+  },
+
+  /**
+   * 开始时间轴动画自动播放
+   */
+  startTimelineAnimation: function() {
+    const that = this;
+    const steps = this.data.traceData.scentingProcess.processSteps;
+    const totalSteps = steps.length;
+    
+    if (this.data.timelinePlaying) return;
+    
+    this.setData({ timelinePlaying: true, timelineActiveStep: 0 });
+    
+    this.timelineTimer = setInterval(function() {
+      const nextStep = (that.data.timelineActiveStep + 1) % totalSteps;
+      that.setData({ timelineActiveStep: nextStep });
+    }, this.data.timelineSpeed);
+  },
+
+  /**
+   * 暂停时间轴动画
+   */
+  pauseTimelineAnimation: function() {
+    if (this.timelineTimer) {
+      clearInterval(this.timelineTimer);
+      this.timelineTimer = null;
+    }
+    this.setData({ timelinePlaying: false });
+  },
+
+  /**
+   * 重置时间轴动画
+   */
+  resetTimelineAnimation: function() {
+    if (this.timelineTimer) {
+      clearInterval(this.timelineTimer);
+      this.timelineTimer = null;
+    }
+    this.setData({ timelinePlaying: false, timelineActiveStep: -1 });
+  },
+
+  /**
+   * 上一步
+   */
+  prevTimelineStep: function() {
+    const currentStep = this.data.timelineActiveStep;
+    if (currentStep > 0) {
+      this.setData({ timelineActiveStep: currentStep - 1 });
+    }
+  },
+
+  /**
+   * 下一步
+   */
+  nextTimelineStep: function() {
+    const steps = this.data.traceData.scentingProcess.processSteps;
+    const currentStep = this.data.timelineActiveStep;
+    if (currentStep < steps.length - 1) {
+      this.setData({ timelineActiveStep: currentStep + 1 });
+    }
+  },
+
+  /**
+   * 切换播放速度
+   */
+  changeTimelineSpeed: function(e) {
+    const speedMap = { fast: 1000, normal: 2000, slow: 3000 };
+    let nextSpeed;
+    
+    if (e && e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.speed) {
+      const targetSpeed = e.currentTarget.dataset.speed;
+      nextSpeed = speedMap[targetSpeed] || 2000;
+    } else {
+      const currentSpeed = this.data.timelineSpeed;
+      const speeds = [1000, 2000, 3000];
+      const currentIndex = speeds.indexOf(currentSpeed);
+      const nextIndex = (currentIndex + 1) % speeds.length;
+      nextSpeed = speeds[nextIndex];
+    }
+    
+    this.setData({ timelineSpeed: nextSpeed });
+    
+    const speedLabels = { 1000: '快', 2000: '中', 3000: '慢' };
+    wx.showToast({
+      title: `播放速度：${speedLabels[nextSpeed]}`,
+      icon: 'none',
+      duration: 1000
+    });
+    
+    if (this.data.timelinePlaying) {
+      this.pauseTimelineAnimation();
+      this.startTimelineAnimation();
+    }
+  },
+
+  /**
+   * 点击时间轴步骤
+   */
+  onTimelineStepTap: function(e) {
+    const index = e.currentTarget.dataset.index;
+    this.pauseTimelineAnimation();
+    this.setData({ timelineActiveStep: index });
+  },
+
+  /**
+   * 加载工艺对比数据
+   */
+  loadProcessComparison: function() {
+    if (this.data.processComparisonData) {
+      return;
+    }
+    const comparisonData = mockData.getScentingComparison();
+    this.setData({ processComparisonData: comparisonData });
+  },
+
+  /**
+   * 切换工艺对比显示
+   */
+  toggleProcessComparison: function() {
+    if (!this.data.processComparisonData) {
+      this.loadProcessComparison();
+    }
+    this.setData({ showProcessComparison: !this.data.showProcessComparison });
+  },
+
+  /**
+   * 查看窨制记录详情
+   */
+  viewScentingRecordDetail: function(e) {
+    const record = e.currentTarget.dataset.record;
+    wx.showModal({
+      title: `第${record.round}次窨制详情`,
+      content: `窨制时长：${record.duration}小时\n窨制温度：${record.temperature}℃\n环境湿度：${record.humidity}%\n操作人：${record.operator}\n时间：${record.timestamp}\n备注：${record.note}`,
+      showCancel: false,
+      confirmText: '知道了'
+    });
+  },
+
+  /**
+   * 预览工艺图片
+   */
+  previewProcessImage: function(e) {
+    const url = e.currentTarget.dataset.url;
+    const urls = this.data.traceData.scentingProcess.processSteps.map(s => s.mediaUrl);
+    wx.previewImage({
+      current: url,
+      urls: urls
+    });
+  },
+
+  /**
+   * 生命周期函数 - 页面卸载
+   */
+  onUnload: function() {
+    if (this.timelineTimer) {
+      clearInterval(this.timelineTimer);
+      this.timelineTimer = null;
+    }
   }
 });

@@ -329,28 +329,317 @@
           </view>
         </view>
         
-        <!-- 工艺流程图 -->
-        <view class="process-flow">
-          <view class="flow-title">工艺流程图</view>
-          <view class="flow-steps">
+        <!-- 工艺模块 Tab 导航 -->
+        <view class="process-tab-bar">
+          <view 
+            class="process-tab-item {{activeProcessTab === 'records' ? 'active' : ''}}"
+            data-tab="records"
+            bindtap="switchProcessTab"
+          >
+            <text class="tab-icon">📋</text>
+            <text class="tab-label">窨制记录</text>
+          </view>
+          <view 
+            class="process-tab-item {{activeProcessTab === 'flow' ? 'active' : ''}}"
+            data-tab="flow"
+            bindtap="switchProcessTab"
+          >
+            <text class="tab-icon">🎬</text>
+            <text class="tab-label">工艺流程</text>
+          </view>
+          <view 
+            class="process-tab-item {{activeProcessTab === 'comparison' ? 'active' : ''}}"
+            data-tab="comparison"
+            bindtap="switchProcessTab"
+          >
+            <text class="tab-icon">⚖️</text>
+            <text class="tab-label">工艺对比</text>
+          </view>
+        </view>
+        
+        <!-- Tab 1：窨制独立记录 -->
+        <view class="process-tab-content" wx:if="{{activeProcessTab === 'records'}}">
+          <view class="records-title">
+            <text class="records-title-icon">📝</text>
+            <text class="records-title-text">每次窨制独立记录</text>
+          </view>
+          
+          <!-- 窨制记录时间轴 -->
+          <view class="scenting-records-timeline">
             <view 
-              wx:for="{{traceData.scentingProcess.processSteps}}" 
-              wx:key="step"
-              class="flow-step {{activeProcessStep === index ? 'active' : ''}}"
+              wx:for="{{traceData.scentingProcess.scentingRecords}}" 
+              wx:key="round"
+              class="record-timeline-item {{activeScentingRecord === index ? 'active' : ''}}"
               data-index="{{index}}"
-              bindtap="toggleProcessStep"
+              data-record="{{item}}"
+              bindtap="selectScentingRecord"
+              bindlongpress="viewScentingRecordDetail"
             >
-              <view class="step-icon">{{item.icon}}</view>
-              <view class="step-name">{{item.name}}</view>
-              <view class="step-arrow" wx:if="{{index < traceData.scentingProcess.processSteps.length - 1}}">→</view>
+              <view class="record-round-badge">
+                <text class="round-num">{{item.round}}</text>
+              </view>
+              <view class="record-line" wx:if="{{index < traceData.scentingProcess.scentingRecords.length - 1}}"></view>
             </view>
           </view>
-          <!-- 步骤详情（点击展开） -->
-          <view class="step-detail" wx:if="{{activeProcessStep >= 0}}">
-            <view class="detail-icon">{{traceData.scentingProcess.processSteps[activeProcessStep].icon}}</view>
-            <view class="detail-text">
-              <view class="detail-name">{{traceData.scentingProcess.processSteps[activeProcessStep].name}}</view>
-              <view class="detail-desc">{{traceData.scentingProcess.processSteps[activeProcessStep].desc}}</view>
+          
+          <!-- 当前选中记录详情卡片 -->
+          <view class="record-detail-card" wx:if="{{traceData.scentingProcess.scentingRecords[activeScentingRecord]}}">
+            <view class="record-detail-header">
+              <view class="record-round-tag">第{{traceData.scentingProcess.scentingRecords[activeScentingRecord].round}}次窨制</view>
+              <view class="record-note">{{traceData.scentingProcess.scentingRecords[activeScentingRecord].note}}</view>
+            </view>
+            <view class="record-detail-grid">
+              <view class="record-detail-item">
+                <text class="detail-item-icon">⏱️</text>
+                <text class="detail-item-label">窨制时长</text>
+                <text class="detail-item-value">{{traceData.scentingProcess.scentingRecords[activeScentingRecord].duration}}小时</text>
+              </view>
+              <view class="record-detail-item">
+                <text class="detail-item-icon">🌡️</text>
+                <text class="detail-item-label">窨制温度</text>
+                <text class="detail-item-value">{{traceData.scentingProcess.scentingRecords[activeScentingRecord].temperature}}℃</text>
+              </view>
+              <view class="record-detail-item">
+                <text class="detail-item-icon">💧</text>
+                <text class="detail-item-label">环境湿度</text>
+                <text class="detail-item-value">{{traceData.scentingProcess.scentingRecords[activeScentingRecord].humidity}}%</text>
+              </view>
+              <view class="record-detail-item">
+                <text class="detail-item-icon">👤</text>
+                <text class="detail-item-label">操作人</text>
+                <text class="detail-item-value">{{traceData.scentingProcess.scentingRecords[activeScentingRecord].operator}}</text>
+              </view>
+            </view>
+            <view class="record-detail-footer">
+              <text class="record-timestamp">📅 {{traceData.scentingProcess.scentingRecords[activeScentingRecord].timestamp}}</text>
+            </view>
+          </view>
+          
+          <!-- 工艺多媒体展示 -->
+          <view class="process-media-section">
+            <view class="media-section-title">
+              <text class="media-title-icon">🖼️</text>
+              <text class="media-title-text">工艺多媒体</text>
+            </view>
+            <view class="media-grid">
+              <view 
+                wx:for="{{traceData.scentingProcess.processSteps}}" 
+                wx:key="step"
+                class="media-item"
+                data-url="{{item.mediaUrl}}"
+                bindtap="previewProcessImage"
+              >
+                <image class="media-image" src="{{item.mediaUrl}}" mode="aspectFill" />
+                <view class="media-overlay">
+                  <text class="media-step-icon">{{item.icon}}</text>
+                  <text class="media-step-name">{{item.name}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+        
+        <!-- Tab 2：横向时间轴动画 -->
+        <view class="process-tab-content" wx:if="{{activeProcessTab === 'flow'}}">
+          <view class="timeline-section-title">
+            <text class="timeline-title-icon">🎬</text>
+            <text class="timeline-title-text">工艺流程图 - 动画演示</text>
+          </view>
+          
+          <!-- 时间轴控制栏 -->
+          <view class="timeline-controls">
+            <view class="control-btn" bindtap="prevTimelineStep">
+              <text>⏮️</text>
+            </view>
+            <view class="control-btn primary" bindtap="{{timelinePlaying ? 'pauseTimelineAnimation' : 'startTimelineAnimation'}}">
+              <text wx:if="{{!timelinePlaying}}">▶️ 播放</text>
+              <text wx:else>⏸️ 暂停</text>
+            </view>
+            <view class="control-btn" bindtap="nextTimelineStep">
+              <text>⏭️</text>
+            </view>
+            <view class="control-btn" bindtap="resetTimelineAnimation">
+              <text>🔄</text>
+            </view>
+            <view class="control-btn speed-btn" bindtap="changeTimelineSpeed">
+              <text>⚡</text>
+              <text class="speed-label">{{timelineSpeed === 1000 ? '快' : timelineSpeed === 2000 ? '中' : '慢'}}</text>
+            </view>
+          </view>
+          
+          <!-- 横向时间轴 -->
+          <view class="horizontal-timeline">
+            <view class="timeline-track">
+              <view 
+                wx:for="{{traceData.scentingProcess.processSteps}}" 
+                wx:key="step"
+                class="timeline-step {{timelineActiveStep === index ? 'active' : ''}} {{timelineActiveStep > index ? 'completed' : ''}}"
+                data-index="{{index}}"
+                bindtap="onTimelineStepTap"
+              >
+                <view class="timeline-step-dot">
+                  <text class="step-dot-icon">{{item.icon}}</text>
+                </view>
+                <view class="timeline-step-label">{{item.name}}</view>
+                <view class="timeline-connector" wx:if="{{index < traceData.scentingProcess.processSteps.length - 1}}"></view>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 当前步骤详情卡片（带动画） -->
+          <view class="timeline-step-detail" wx:if="{{timelineActiveStep >= 0}}">
+            <view class="timeline-detail-icon">{{traceData.scentingProcess.processSteps[timelineActiveStep].icon}}</view>
+            <view class="timeline-detail-content">
+              <view class="timeline-detail-step">
+                <text class="step-number">步骤 {{timelineActiveStep + 1}}/{{traceData.scentingProcess.processSteps.length}}</text>
+                <text class="step-name-large">{{traceData.scentingProcess.processSteps[timelineActiveStep].name}}</text>
+              </view>
+              <view class="timeline-detail-desc">{{traceData.scentingProcess.processSteps[timelineActiveStep].desc}}</view>
+            </view>
+            <image 
+              class="timeline-detail-image" 
+              src="{{traceData.scentingProcess.processSteps[timelineActiveStep].mediaUrl}}" 
+              mode="aspectFill"
+              data-url="{{traceData.scentingProcess.processSteps[timelineActiveStep].mediaUrl}}"
+              bindtap="previewProcessImage"
+            />
+          </view>
+          
+          <!-- 提示信息 -->
+          <view class="timeline-tip">
+            <text class="tip-icon">💡</text>
+            <text class="tip-text">点击步骤可跳转到对应位置，长按窨制记录可查看详情</text>
+          </view>
+        </view>
+        
+        <!-- Tab 3：工艺对比 -->
+        <view class="process-tab-content" wx:if="{{activeProcessTab === 'comparison' && processComparisonData}}">
+          <view class="comparison-section-title">
+            <text class="comparison-title-icon">⚖️</text>
+            <text class="comparison-title-text">{{processComparisonData.title}}</text>
+          </view>
+          
+          <!-- 对比概览卡片 -->
+          <view class="comparison-overview">
+            <view class="comparison-col golden">
+              <view class="col-header">
+                <text class="col-icon">🌼</text>
+                <text class="col-name">{{processComparisonData.summary.golden.name}}</text>
+              </view>
+              <view class="col-stats">
+                <view class="stat-item">
+                  <text class="stat-value">{{processComparisonData.summary.golden.scentingTimes}}</text>
+                  <text class="stat-label">窨制次数</text>
+                </view>
+                <view class="stat-item">
+                  <text class="stat-value">{{processComparisonData.summary.golden.totalDuration}}h</text>
+                  <text class="stat-label">总时长</text>
+                </view>
+                <view class="stat-item">
+                  <text class="stat-value">{{processComparisonData.summary.golden.avgTemperature}}℃</text>
+                  <text class="stat-label">平均温度</text>
+                </view>
+              </view>
+            </view>
+            <view class="comparison-vs">
+              <text>VS</text>
+            </view>
+            <view class="comparison-col silver">
+              <view class="col-header">
+                <text class="col-icon">🌸</text>
+                <text class="col-name">{{processComparisonData.summary.silver.name}}</text>
+              </view>
+              <view class="col-stats">
+                <view class="stat-item">
+                  <text class="stat-value">{{processComparisonData.summary.silver.scentingTimes}}</text>
+                  <text class="stat-label">窨制次数</text>
+                </view>
+                <view class="stat-item">
+                  <text class="stat-value">{{processComparisonData.summary.silver.totalDuration}}h</text>
+                  <text class="stat-label">总时长</text>
+                </view>
+                <view class="stat-item">
+                  <text class="stat-value">{{processComparisonData.summary.silver.avgTemperature}}℃</text>
+                  <text class="stat-label">平均温度</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 详细对比表格 -->
+          <view class="comparison-table">
+            <view class="comparison-table-header">
+              <view class="table-cell header-cell">对比项</view>
+              <view class="table-cell header-cell golden">金桂</view>
+              <view class="table-cell header-cell silver">银桂</view>
+            </view>
+            <view 
+              wx:for="{{processComparisonData.comparisonItems}}" 
+              wx:key="category"
+              class="comparison-table-row {{item.advantage}}"
+            >
+              <view class="table-cell category-cell">{{item.category}}</view>
+              <view class="table-cell value-cell">
+                <text class="value-text">{{item.golden}}</text>
+                <text class="advantage-icon" wx:if="{{item.advantage === 'golden'}}">⭐</text>
+              </view>
+              <view class="table-cell value-cell">
+                <text class="value-text">{{item.silver}}</text>
+                <text class="advantage-icon" wx:if="{{item.advantage === 'silver'}}">⭐</text>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 差异说明 -->
+          <view class="comparison-difference">
+            <view class="diff-title">
+              <text class="diff-icon">📖</text>
+              <text class="diff-title-text">差异说明</text>
+            </view>
+            <view class="diff-content">
+              <text class="diff-text">{{processComparisonData.differenceExplanation}}</text>
+            </view>
+          </view>
+          
+          <!-- 窨制记录对比时间轴 -->
+          <view class="records-comparison">
+            <view class="records-comp-title">
+              <text class="comp-title-icon">📊</text>
+              <text class="comp-title-text">窨制记录对比</text>
+            </view>
+            <view class="records-comp-content">
+              <view class="records-col">
+                <view class="records-col-header golden">金桂（{{processComparisonData.recordsComparison.golden.length}}次）</view>
+                <view 
+                  wx:for="{{processComparisonData.recordsComparison.golden}}" 
+                  wx:for-item="record"
+                  wx:key="round"
+                  class="comp-record-item golden-record"
+                >
+                  <view class="comp-record-round">第{{record.round}}窨</view>
+                  <view class="comp-record-info">
+                    <text>⏱️ {{record.duration}}h</text>
+                    <text>🌡️ {{record.temperature}}℃</text>
+                  </view>
+                  <view class="comp-record-operator">👤 {{record.operator}}</view>
+                </view>
+              </view>
+              <view class="records-col">
+                <view class="records-col-header silver">银桂（{{processComparisonData.recordsComparison.silver.length}}次）</view>
+                <view 
+                  wx:for="{{processComparisonData.recordsComparison.silver}}" 
+                  wx:for-item="record"
+                  wx:key="round"
+                  class="comp-record-item silver-record"
+                >
+                  <view class="comp-record-round">第{{record.round}}窨</view>
+                  <view class="comp-record-info">
+                    <text>⏱️ {{record.duration}}h</text>
+                    <text>🌡️ {{record.temperature}}℃</text>
+                  </view>
+                  <view class="comp-record-operator">👤 {{record.operator}}</view>
+                </view>
+              </view>
             </view>
           </view>
         </view>
