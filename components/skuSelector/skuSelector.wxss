@@ -1,0 +1,249 @@
+.sku-mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.sku-mask.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sku-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.sku-panel.show {
+  transform: translateY(0);
+}
+
+.sku-header {
+  position: relative;
+  padding: 30rpx 30rpx 20rpx 30rpx;
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.sku-image {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 12rpx;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.sku-info {
+  flex: 1;
+  padding-top: 10rpx;
+}
+
+.sku-price {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 12rpx;
+}
+
+.price-symbol {
+  font-size: 28rpx;
+  color: #ff4d4f;
+  font-weight: bold;
+}
+
+.price-value {
+  font-size: 44rpx;
+  color: #ff4d4f;
+  font-weight: bold;
+  margin-right: 12rpx;
+}
+
+.member-tag {
+  font-size: 20rpx;
+  color: #fff;
+  background: linear-gradient(135deg, #DAA520 0%, #FFD700 100%);
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  margin-right: 10rpx;
+}
+
+.original-price {
+  font-size: 24rpx;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.sku-stock {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.sku-selected {
+  font-size: 26rpx;
+  color: #333;
+}
+
+.sku-close {
+  position: absolute;
+  top: 24rpx;
+  right: 24rpx;
+  width: 50rpx;
+  height: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #999;
+}
+
+.sku-body {
+  flex: 1;
+  padding: 0 30rpx;
+  overflow-y: auto;
+}
+
+.spec-group {
+  padding: 30rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.spec-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 20rpx;
+}
+
+.spec-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.spec-item {
+  min-width: 140rpx;
+  height: 64rpx;
+  padding: 0 24rpx;
+  line-height: 64rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #333;
+  background: #f5f5f5;
+  border-radius: 8rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.spec-item.active {
+  color: #2E8B57;
+  background: #e8f5e9;
+  border-color: #2E8B57;
+}
+
+.quantity-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.quantity-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+}
+
+.qty-btn {
+  width: 60rpx;
+  height: 60rpx;
+  line-height: 56rpx;
+  text-align: center;
+  font-size: 36rpx;
+  color: #333;
+  background: #f5f5f5;
+  border-radius: 8rpx;
+}
+
+.qty-btn.disabled {
+  color: #ccc;
+}
+
+.qty-input {
+  width: 100rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #333;
+  margin: 0 16rpx;
+  background: #f9f9f9;
+  border-radius: 8rpx;
+}
+
+.service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  padding: 30rpx 0;
+}
+
+.service-tag {
+  font-size: 22rpx;
+  color: #666;
+  background: #f9f9f9;
+  padding: 8rpx 16rpx;
+  border-radius: 6rpx;
+}
+
+.sku-footer {
+  display: flex;
+  padding: 20rpx 30rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  gap: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+  background: #fff;
+}
+
+.sku-btn {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  font-size: 30rpx;
+  border-radius: 44rpx;
+  font-weight: 500;
+}
+
+.sku-btn-cart {
+  color: #2E8B57;
+  background: #e8f5e9;
+  border: 2rpx solid #2E8B57;
+}
+
+.sku-btn-buy {
+  color: #fff;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+}

@@ -8,6 +8,7 @@
 const mockData = require('../../utils/mockData.js');
 const shareUtil = require('../../utils/share.js');
 const i18n = require('../../utils/i18n/index.js');
+const shop = require('../../utils/shop.js');
 
 // 锚点 Tab 配置（将在运行时根据语言填充 label）
 const ANCHOR_TABS_BASE = [
@@ -198,7 +199,10 @@ Page({
     certGenerating: false,
     certImage: '',
     showRewardModal: false,
-    lastRewardResult: null
+    lastRewardResult: null,
+
+    // ========== 商城与购买功能 ==========
+    cartCount: 0
   },
 
   /**
@@ -237,6 +241,7 @@ Page({
     this.refreshA11yData();
     this.refreshI18nTexts();
     this.setData({ anchorTabs: buildAnchorTabs() });
+    this.refreshCartCount();
   },
 
   // ===== i18n 与无障碍 =====
@@ -2033,6 +2038,63 @@ Page({
       query: `traceId=${traceId}&invite=1`,
       imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || ''
     };
+  },
+
+  /**
+   * ==================== 商城与购买功能 ====================
+   */
+
+  refreshCartCount: function() {
+    var count = shop.getCartCount();
+    this.setData({ cartCount: count });
+  },
+
+  goToShopHome: function() {
+    wx.switchTab({
+      url: '/pages/shop/list'
+    });
+  },
+
+  goToCart: function() {
+    wx.switchTab({
+      url: '/pages/shop/cart'
+    });
+  },
+
+  buySameStyle: function() {
+    var traceId = this.data.traceId;
+    if (!traceId) {
+      wx.showToast({ title: '参数错误', icon: 'none' });
+      return;
+    }
+
+    var product = mockData.getShopProduct(traceId);
+    if (!product) {
+      wx.showToast({ title: '商品已下架', icon: 'none' });
+      return;
+    }
+
+    wx.navigateTo({
+      url: '/pages/shop/detail?traceId=' + traceId
+    });
+  },
+
+  buyAgain: function() {
+    var traceId = this.data.traceId;
+    if (!traceId) {
+      wx.showToast({ title: '参数错误', icon: 'none' });
+      return;
+    }
+
+    var product = mockData.getShopProduct(traceId);
+    if (!product) {
+      wx.showToast({ title: '商品已下架', icon: 'none' });
+      return;
+    }
+
+    wx.navigateTo({
+      url: '/pages/shop/detail?traceId=' + traceId + '&buyNow=1'
+    });
   },
 
   /**

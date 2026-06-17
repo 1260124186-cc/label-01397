@@ -1,0 +1,65 @@
+<view class="sku-mask {{show ? 'show' : ''}}" catchtap="onClose">
+  <view class="sku-panel {{show ? 'show' : ''}}" catchtap="preventBubble">
+    <view class="sku-header">
+      <image class="sku-image" src="{{product.thumbnail}}" mode="aspectFill"></image>
+      <view class="sku-info">
+        <view class="sku-price">
+          <text class="price-symbol">¥</text>
+          <text class="price-value">{{isMember ? currentMemberPrice : currentPrice}}</text>
+          <text wx:if="{{isMember}}" class="member-tag">会员价</text>
+          <text wx:if="{{isMember && currentPrice > currentMemberPrice}}" class="original-price">¥{{currentPrice}}</text>
+        </view>
+        <view class="sku-stock">库存 {{currentStock}} 件</view>
+        <view class="sku-selected">已选：{{selectedSpecs.join(' / ')}}</view>
+      </view>
+      <view class="sku-close" catchtap="onClose">✕</view>
+    </view>
+
+    <scroll-view class="sku-body" scroll-y>
+      <block wx:for="{{product.specs}}" wx:for-item="spec" wx:key="id">
+        <view class="spec-group">
+          <view class="spec-title">{{spec.name}}</view>
+          <view class="spec-values">
+            <view 
+              wx:for="{{spec.values}}" 
+              wx:for-item="value" 
+              wx:for-index="valueIndex"
+              wx:key="*this"
+              class="spec-item {{selectedSpecs[index] === value ? 'active' : ''}}"
+              data-spec-index="{{index}}"
+              data-value-index="{{valueIndex}}"
+              catchtap="onSpecTap"
+            >
+              {{value}}
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <view class="quantity-group">
+        <view class="quantity-title">购买数量</view>
+        <view class="quantity-control">
+          <view class="qty-btn {{quantity <= 1 ? 'disabled' : ''}}" catchtap="onDecrease">−</view>
+          <input 
+            class="qty-input" 
+            type="number" 
+            value="{{quantity}}" 
+            bindinput="onQuantityInput"
+          />
+          <view class="qty-btn {{quantity >= currentStock ? 'disabled' : ''}}" catchtap="onIncrease">+</view>
+        </view>
+      </view>
+
+      <view class="service-tags" wx:if="{{product.serviceTags}}">
+        <view class="service-tag" wx:for="{{product.serviceTags}}" wx:key="*this">
+          ✓ {{item}}
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="sku-footer">
+      <view class="sku-btn sku-btn-cart" catchtap="onAddToCart">加入购物车</view>
+      <view class="sku-btn sku-btn-buy" catchtap="onBuyNow">立即购买</view>
+    </view>
+  </view>
+</view>

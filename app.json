@@ -1,8 +1,12 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/shop/list",
+    "pages/shop/cart",
     "pages/profile/profile",
     "pages/detail/detail",
+    "pages/shop/detail",
+    "pages/shop/orderTrace",
     "pages/scanResult/scanResult",
     "pages/reportProduct/reportProduct",
     "pages/batchList/batchList",
@@ -32,6 +36,14 @@
       {
         "pagePath": "pages/index/index",
         "text": "溯源"
+      },
+      {
+        "pagePath": "pages/shop/list",
+        "text": "商城"
+      },
+      {
+        "pagePath": "pages/shop/cart",
+        "text": "购物车"
       },
       {
         "pagePath": "pages/profile/profile",

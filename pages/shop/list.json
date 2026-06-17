@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "桂花茶商城",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "sku-selector": "/components/skuSelector/skuSelector"
+  }
+}

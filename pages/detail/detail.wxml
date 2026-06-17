@@ -1941,6 +1941,25 @@
     <text class="back-top-icon" aria-hidden="true">↑</text>
   </view>
 
+  <!-- ==================== 底部购买操作栏 ==================== -->
+  <view class="detail-buy-bar" wx:if="{{traceData}}">
+    <view class="buy-bar-item" bindtap="goToShopHome">
+      <text class="buy-bar-icon">🏠</text>
+      <text class="buy-bar-text">商城首页</text>
+    </view>
+    <view class="buy-bar-item" bindtap="goToCart">
+      <text class="buy-bar-icon">🛒</text>
+      <text class="buy-bar-text">购物车</text>
+      <view class="buy-bar-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</view>
+    </view>
+    <view class="buy-btn buy-btn-same" bindtap="buySameStyle">
+      <text>购买同款</text>
+    </view>
+    <view class="buy-btn buy-btn-again" bindtap="buyAgain">
+      <text>再次购买</text>
+    </view>
+  </view>
+
   <!-- ==================== PDF报告弹窗 ==================== -->
   <view class="pdf-modal {{showPdfModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closePdfModal">
     <view class="pdf-content" catchtap="preventBubble" catchtouchmove="preventBubble">

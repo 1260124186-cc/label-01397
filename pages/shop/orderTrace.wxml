@@ -1,0 +1,157 @@
+<view class="page-container">
+  <!-- 未验证状态 -->
+  <view class="verify-section" wx:if="{{!verified}}">
+    <view class="verify-header">
+      <text class="verify-icon">🔐</text>
+      <view class="verify-title">订单溯源验证</view>
+      <view class="verify-subtitle">输入订单号和溯源码，验证商品真伪</view>
+    </view>
+
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label">订单号</text>
+        <input 
+          class="form-input" 
+          placeholder="请输入订单号"
+          value="{{orderNo}}"
+          bindinput="onOrderNoInput"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">溯源码</text>
+        <view class="input-with-btn">
+          <input 
+            class="form-input" 
+            placeholder="请输入或扫码输入溯源码"
+            value="{{traceCode}}"
+            bindinput="onTraceCodeInput"
+          />
+          <view class="scan-btn" bindtap="onScanCode">
+            <text>扫码</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="verify-btn {{orderNo && traceCode ? 'active' : ''}}" bindtap="onVerify">
+      {{verifying ? '验证中...' : '立即验证'}}
+    </view>
+
+    <view class="tips-section">
+      <view class="tips-title">验证说明</view>
+      <view class="tips-item">1. 订单号可在"我的订单"中查看</view>
+      <view class="tips-item">2. 溯源码位于商品包装底部，刮开涂层可见</view>
+      <view class="tips-item">3. 每个溯源码仅可验证一次，请妥善保管</view>
+      <view class="tips-item">4. 如有疑问请联系客服：400-888-9999</view>
+    </view>
+  </view>
+
+  <!-- 验证结果 -->
+  <view class="result-section" wx:if="{{verified && order}}">
+    <view class="result-header success">
+      <text class="result-icon">✓</text>
+      <view class="result-title">验证通过</view>
+      <view class="result-subtitle">该商品为正品，请放心饮用</view>
+    </view>
+
+    <!-- 订单信息 -->
+    <view class="info-card">
+      <view class="card-title">订单信息</view>
+      <view class="info-row">
+        <text class="info-label">订单号</text>
+        <text class="info-value">{{order.orderNo}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">下单时间</text>
+        <text class="info-value">{{order.createTime}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">商品名称</text>
+        <text class="info-value">{{order.items[0].productName}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">商品规格</text>
+        <text class="info-value">{{order.items[0].specValues.join(' / ')}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">购买数量</text>
+        <text class="info-value">{{order.items[0].quantity}}件</text>
+      </view>
+    </view>
+
+    <!-- 批次信息 -->
+    <view class="info-card" wx:if="{{batchInfo}}">
+      <view class="card-title">生产批次</view>
+      <view class="info-row">
+        <text class="info-label">批次号</text>
+        <text class="info-value">{{batchInfo.batchNo}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">生产日期</text>
+        <text class="info-value">{{batchInfo.produceDate}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">保质期至</text>
+        <text class="info-value">{{batchInfo.expireDate}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">产地</text>
+        <text class="info-value">{{batchInfo.origin}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">供应商</text>
+        <text class="info-value">{{batchInfo.supplier}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">质量等级</text>
+        <text class="info-value">{{batchInfo.qualityGrade}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">检验员</text>
+        <text class="info-value">{{batchInfo.inspector}}</text>
+      </view>
+    </view>
+
+    <!-- 区块链存证 -->
+    <view class="blockchain-card">
+      <view class="bc-header">
+        <text class="bc-icon">⛓️</text>
+        <text class="bc-title">区块链存证</text>
+        <text class="bc-badge">已上链</text>
+      </view>
+      <view class="bc-info">
+        <view class="bc-row">
+          <text class="bc-label">存证哈希</text>
+          <text class="bc-value">0x7a3f...8c2d</text>
+        </view>
+        <view class="bc-row">
+          <text class="bc-label">区块高度</text>
+          <text class="bc-value">1,234,567</text>
+        </view>
+        <view class="bc-row">
+          <text class="bc-label">存证时间</text>
+          <text class="bc-value">{{order.createTime}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-btns">
+      <view class="action-btn" bindtap="goToTrace">
+        <text class="action-icon">🔍</text>
+        <text class="action-text">查看溯源</text>
+      </view>
+      <view class="action-btn primary" bindtap="onBuyAgain">
+        <text class="action-icon">🛒</text>
+        <text class="action-text">再次购买</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-page" wx:if="{{loading && !verified}}">
+    <view class="loading-spinner"></view>
+    <text>正在验证...</text>
+  </view>
+</view>

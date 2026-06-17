@@ -63,7 +63,7 @@ const mockTraceData = {
       specification: '100g/罐',                   // 规格
       thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20golden%20osmanthus%20tea%20tin%20can%20product%20photo&image_size=square'
     },
-    
+
     // 树龄信息（桂花茶核心特色）
     treeAge: {
       teaTreeAge: 200,                           // 茶树龄（年）
@@ -71,7 +71,7 @@ const mockTraceData = {
       teaTreeLocation: '福建省武夷山',            // 茶树产地
       osmanthusTreeLocation: '湖北省A市'          // 桂花树产地
     },
-    
+
     // 桂花信息
     osmanthusInfo: {
       variety: '金桂',                           // 品种
@@ -80,7 +80,7 @@ const mockTraceData = {
       color: '金黄色',                           // 花色
       fragrance: '浓郁持久'                      // 香气特点
     },
-    
+
     // 窨制工艺（核心模块）
     scentingProcess: {
       scentingTimes: 5,                          // 窨制次数
@@ -107,7 +107,7 @@ const mockTraceData = {
         { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=low%20temperature%20drying%20osmanthus%20tea%20preserving%20fragrance&image_size=square' }
       ]
     },
-    
+
     // 绿色溯源（新增核心模块）
     greenTrace: {
       // 生态种植记录
@@ -144,7 +144,7 @@ const mockTraceData = {
         carbonReduction: '减少碳排放约15%'
       }
     },
-    
+
     // 农残检测
     pesticideTest: {
       institution: '国家茶叶质量监督检验中心',
@@ -193,7 +193,7 @@ const mockTraceData = {
         }
       ]
     },
-    
+
     // 冲泡建议
     brewingGuide: {
       waterTemp: '85℃-90℃',                     // 水温
@@ -207,7 +207,7 @@ const mockTraceData = {
         '每泡适当延长浸泡时间'
       ]
     },
-    
+
     // 区块链存证信息
     blockchainInfo: {
       chainName: '溯源链',
@@ -256,7 +256,7 @@ const mockTraceData = {
         verifyUrl: 'https://tsa.cfca.com.cn/verify?sn=TSA-CERT-2025-0925-001'
       }
     },
-    
+
     // 产地地理信息（地图模块）
     locationMap: {
       title: '产地地理信息',
@@ -459,7 +459,7 @@ const mockTraceData = {
       thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20packaging%20elegant%20product%20photo&image_size=square'
     },
 
-    
+
     // 树龄信息
     treeAge: {
       teaTreeAge: 120,
@@ -467,7 +467,7 @@ const mockTraceData = {
       teaTreeLocation: '福建省武夷山',
       osmanthusTreeLocation: '湖北省A市'
     },
-    
+
     // 桂花信息
     osmanthusInfo: {
       variety: '银桂',
@@ -476,7 +476,7 @@ const mockTraceData = {
       color: '乳白色',
       fragrance: '清雅淡香'
     },
-    
+
     // 窨制工艺
     scentingProcess: {
       scentingTimes: 3,
@@ -501,7 +501,7 @@ const mockTraceData = {
         { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=low%20temperature%20drying%20silver%20osmanthus%20tea%20preserving%20light%20fragrance&image_size=square' }
       ]
     },
-    
+
     // 绿色溯源
     greenTrace: {
       ecoPlanting: {
@@ -535,7 +535,7 @@ const mockTraceData = {
         carbonReduction: '减少碳排放约20%'
       }
     },
-    
+
     // 农残检测
     pesticideTest: {
       institution: '湖北省农产品质量安全检测中心',
@@ -546,33 +546,33 @@ const mockTraceData = {
       verifyUrl: 'https://www.hbagri.gov.cn/verify',
       hasAbnormal: true,
       teaTests: [
-        { 
-          item: '氯氰菊酯', 
-          value: 25.5, 
-          displayValue: '25.5', 
-          unit: 'mg/kg', 
-          limit: 20, 
-          status: '不合格', 
+        {
+          item: '氯氰菊酯',
+          value: 25.5,
+          displayValue: '25.5',
+          unit: 'mg/kg',
+          limit: 20,
+          status: '不合格',
           description: '超出国标限值27.5%，建议停止食用并联系供应商'
         },
-        { 
-          item: '六六六', 
-          value: 0.005, 
-          displayValue: '<0.01', 
-          unit: 'mg/kg', 
-          limit: 0.1, 
-          status: '合格', 
+        {
+          item: '六六六',
+          value: 0.005,
+          displayValue: '<0.01',
+          unit: 'mg/kg',
+          limit: 0.1,
+          status: '合格',
           description: ''
         }
       ],
       osmanthusTests: [
-        { 
-          item: '氯氟氰菊酯', 
-          value: 0.005, 
-          displayValue: '<0.01', 
-          unit: 'mg/kg', 
-          limit: 2.0, 
-          status: '合格', 
+        {
+          item: '氯氟氰菊酯',
+          value: 0.005,
+          displayValue: '<0.01',
+          unit: 'mg/kg',
+          limit: 2.0,
+          status: '合格',
           description: ''
         }
       ],
@@ -604,7 +604,7 @@ const mockTraceData = {
         }
       ]
     },
-    
+
     // 冲泡建议
     brewingGuide: {
       waterTemp: '85℃-90℃',
@@ -618,7 +618,7 @@ const mockTraceData = {
         '银桂香气清淡，可适当延长浸泡'
       ]
     },
-    
+
     // 区块链存证信息
     blockchainInfo: {
       chainName: '溯源链',
@@ -666,7 +666,7 @@ const mockTraceData = {
         verifyUrl: 'https://tsa.cfca.com.cn/verify?sn=TSA-CERT-2025-0930-002'
       }
     },
-    
+
     // 产地地理信息（地图模块）
     locationMap: {
       title: '产地地理信息',
@@ -845,7 +845,7 @@ const mockTraceData = {
       specification: '250g/礼盒',
       thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20golden%20osmanthus%20tea%20gift%20box%20premium%20packaging&image_size=square'
     },
-    
+
     // 树龄信息
     treeAge: {
       teaTreeAge: 180,
@@ -853,7 +853,7 @@ const mockTraceData = {
       teaTreeLocation: '福建省武夷山',
       osmanthusTreeLocation: '湖北省A市'
     },
-    
+
     // 桂花信息
     osmanthusInfo: {
       variety: '金桂',
@@ -862,7 +862,7 @@ const mockTraceData = {
       color: '金黄色',
       fragrance: '浓郁持久'
     },
-    
+
     // 窨制工艺
     scentingProcess: {
       scentingTimes: 6,
@@ -890,7 +890,7 @@ const mockTraceData = {
         { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=precision%20low%20temperature%20drying%20premium%20osmanthus%20tea%20preserving%20aroma&image_size=square' }
       ]
     },
-    
+
     // 绿色溯源
     greenTrace: {
       ecoPlanting: {
@@ -924,7 +924,7 @@ const mockTraceData = {
         carbonReduction: '减少碳排放约15%'
       }
     },
-    
+
     // 农残检测
     pesticideTest: {
       institution: '国家茶叶质量监督检验中心',
@@ -960,7 +960,7 @@ const mockTraceData = {
         }
       ]
     },
-    
+
     // 冲泡建议
     brewingGuide: {
       waterTemp: '85℃-90℃',
@@ -974,7 +974,7 @@ const mockTraceData = {
         '每泡适当延长浸泡时间'
       ]
     },
-    
+
     // 区块链存证信息
     blockchainInfo: {
       chainName: '溯源链',
@@ -1021,7 +1021,7 @@ const mockTraceData = {
         verifyUrl: 'https://tsa.cfca.com.cn/verify?sn=TSA-CERT-2025-0925-003'
       }
     },
-    
+
     // 产地与故事数据（后续通过引用复用 G001）
     locationMap: null,
     scenicPhotos: null,
@@ -1054,7 +1054,7 @@ const mockTraceData = {
       specification: '3g*12袋/盒',
       thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20portable%20sachet%20packaging%20convenient&image_size=square'
     },
-    
+
     // 树龄信息
     treeAge: {
       teaTreeAge: 150,
@@ -1062,7 +1062,7 @@ const mockTraceData = {
       teaTreeLocation: '福建省武夷山',
       osmanthusTreeLocation: '湖北省A市'
     },
-    
+
     // 桂花信息
     osmanthusInfo: {
       variety: '金桂',
@@ -1071,7 +1071,7 @@ const mockTraceData = {
       color: '金黄色',
       fragrance: '清新自然'
     },
-    
+
     // 窨制工艺
     scentingProcess: {
       scentingTimes: 4,
@@ -1097,7 +1097,7 @@ const mockTraceData = {
         { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=low%20temperature%20drying%20osmanthus%20tea%20for%20portable%20sachet%20packaging&image_size=square' }
       ]
     },
-    
+
     // 绿色溯源
     greenTrace: {
       ecoPlanting: {
@@ -1131,7 +1131,7 @@ const mockTraceData = {
         carbonReduction: '减少碳排放约15%'
       }
     },
-    
+
     // 农残检测
     pesticideTest: {
       institution: '国家茶叶质量监督检验中心',
@@ -1167,7 +1167,7 @@ const mockTraceData = {
         }
       ]
     },
-    
+
     // 冲泡建议
     brewingGuide: {
       waterTemp: '85℃-90℃',
@@ -1181,7 +1181,7 @@ const mockTraceData = {
         '适合办公室、出行使用'
       ]
     },
-    
+
     // 区块链存证信息
     blockchainInfo: {
       chainName: '溯源链',
@@ -1228,7 +1228,7 @@ const mockTraceData = {
         verifyUrl: 'https://tsa.cfca.com.cn/verify?sn=TSA-CERT-2025-0925-004'
       }
     },
-    
+
     // 产地与故事数据（后续通过引用复用 G001）
     locationMap: null,
     scenicPhotos: null,
@@ -1603,10 +1603,10 @@ const mockTraceData = {
  * 根据溯源ID获取溯源数据
  * @param {string} traceId - 溯源ID（如 G001、G002）
  * @returns {object|null} - 返回溯源数据对象，未找到则返回 null
- * 
+ *
  * 【后端接口预留说明】
  * 实际项目中，此函数应改为调用后端API：
- * 
+ *
  * function getTraceData(traceId) {
  *   return new Promise((resolve, reject) => {
  *     wx.request({
@@ -1631,12 +1631,12 @@ const mockTraceData = {
 function getTraceData(traceId) {
   // 转换为大写，兼容用户输入
   const id = traceId.toUpperCase().trim();
-  
+
   // 从本地模拟数据中查找
   if (mockTraceData[id]) {
     return mockTraceData[id];
   }
-  
+
   return null;
 }
 
@@ -1649,7 +1649,7 @@ function validateTraceId(traceId) {
   if (!traceId || typeof traceId !== 'string') {
     return false;
   }
-  
+
   // 溯源ID格式：字母开头，后跟数字，长度4-20位
   const pattern = /^[A-Za-z][A-Za-z0-9]{3,19}$/;
   return pattern.test(traceId.trim());
@@ -1672,7 +1672,7 @@ function validateBatchNo(batchNo) {
   if (!batchNo || typeof batchNo !== 'string') {
     return false;
   }
-  
+
   // 批次号格式：GH开头，后跟8位数字，如 GH202503
   const pattern = /^GH\d{6}$/;
   return pattern.test(batchNo.trim().toUpperCase());
@@ -1687,10 +1687,10 @@ function getBatchSkus(batchNo) {
   if (!validateBatchNo(batchNo)) {
     return null;
   }
-  
+
   const normalizedBatchNo = batchNo.trim().toUpperCase();
   const skus = [];
-  
+
   // 遍历所有溯源数据，找到匹配批次号的产品
   for (const traceId in mockTraceData) {
     const data = mockTraceData[traceId];
@@ -1705,7 +1705,7 @@ function getBatchSkus(batchNo) {
       });
     }
   }
-  
+
   return skus.length > 0 ? skus : null;
 }
 
@@ -1718,7 +1718,7 @@ function getTraceIdFromBarcode(barcode) {
   if (!barcode || typeof barcode !== 'string') {
     return null;
   }
-  
+
   // 条形码格式示例：6901234567890-G001
   // 支持 条形码-溯源ID 格式
   const parts = barcode.split('-');
@@ -1728,7 +1728,7 @@ function getTraceIdFromBarcode(barcode) {
       return traceId;
     }
   }
-  
+
   // 支持纯数字条形码映射（模拟条码库查询）
   const barcodeMapping = {
     '6901234567890': 'G001',
@@ -1736,7 +1736,7 @@ function getTraceIdFromBarcode(barcode) {
     '6901234567892': 'G003',
     '6901234567893': 'G004'
   };
-  
+
   return barcodeMapping[barcode.trim()] || null;
 }
 
@@ -1749,12 +1749,12 @@ function parseSceneParam(scene) {
   if (!scene || typeof scene !== 'string') {
     return null;
   }
-  
+
   try {
     // scene 参数通常是 URL 编码的
     const decodedScene = decodeURIComponent(scene);
     console.log('解析 scene 参数:', decodedScene);
-    
+
     // 支持格式：traceId=G001 或 id=G001 或直接 G001
     if (decodedScene.includes('=')) {
       const params = new URLSearchParams(decodedScene);
@@ -1763,12 +1763,12 @@ function parseSceneParam(scene) {
         return traceId.toUpperCase();
       }
     }
-    
+
     // 直接是溯源ID格式
     if (validateTraceId(decodedScene)) {
       return decodedScene.toUpperCase();
     }
-    
+
     return null;
   } catch (e) {
     console.error('解析 scene 参数失败:', e);
@@ -1785,9 +1785,9 @@ function verifyReport(reportNo) {
   if (!reportNo || typeof reportNo !== 'string') {
     return null;
   }
-  
+
   const normalizedReportNo = reportNo.trim().toUpperCase();
-  
+
   for (const traceId in mockTraceData) {
     const data = mockTraceData[traceId];
     if (data.pesticideTest && data.pesticideTest.reportNo === normalizedReportNo) {
@@ -1804,7 +1804,7 @@ function verifyReport(reportNo) {
         traceId: traceId
       };
     }
-    
+
     if (data.pesticideTest && data.pesticideTest.historyReports) {
       const historyReport = data.pesticideTest.historyReports.find(
         r => r.reportNo === normalizedReportNo
@@ -1825,7 +1825,7 @@ function verifyReport(reportNo) {
       }
     }
   }
-  
+
   return {
     valid: false,
     reportNo: normalizedReportNo,
@@ -1852,11 +1852,11 @@ function calculateTestPercent(value, limit) {
 function getScentingComparison() {
   const golden = mockTraceData['G001'];
   const silver = mockTraceData['G002'];
-  
+
   if (!golden || !silver) {
     return null;
   }
-  
+
   return {
     title: '金桂 vs 银桂 窨制工艺对比',
     summary: {
@@ -2604,6 +2604,467 @@ function getShareThemeConfig() {
   };
 }
 
+// ==================== 商城产品数据 ====================
+
+var shopProducts = {
+  'G001': {
+    traceId: 'G001',
+    productName: '金桂花茶',
+    subtitle: '200年古树茶底 · 五窨一提',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20golden%20osmanthus%20tea%20tin%20can%20product%20photo&image_size=square',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=golden%20osmanthus%20tea%20product%20photo%20main&image_size=square',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=golden%20osmanthus%20tea%20leaves%20closeup&image_size=square',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20brewing%20in%20glass%20cup&image_size=square'
+    ],
+    category: '金桂系列',
+    tags: ['热销', '有机认证', '百年古树'],
+    sales: 2580,
+    stock: 156,
+    description: '精选武夷山200年古茶树鲜叶为底，配以咸宁金桂，经非遗窨制工艺五窨一提，花香浓郁持久，口感醇厚回甘。',
+    specs: [
+      { id: 'spec-1', name: '规格', values: ['100g/罐', '200g/罐', '250g/礼盒装'] }
+    ],
+    skuList: [
+      { skuId: 'G001-S01', specValues: ['100g/罐'], price: 128.00, memberPrice: 108.00, stock: 80, barcode: '6901234567001' },
+      { skuId: 'G001-S02', specValues: ['200g/罐'], price: 228.00, memberPrice: 198.00, stock: 50, barcode: '6901234567002' },
+      { skuId: 'G001-S03', specValues: ['250g/礼盒装'], price: 368.00, memberPrice: 328.00, stock: 26, barcode: '6901234567003' }
+    ],
+    defaultSkuIndex: 0,
+    freight: 0,
+    freightFreeAmount: 99,
+    afterSale: '7天无理由退换',
+    serviceTags: ['正品保障', '极速发货', '顺丰包邮', '溯源可查']
+  },
+  'G002': {
+    traceId: 'G002',
+    productName: '银桂花茶',
+    subtitle: '120年茶树龄 · 三窨一提',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20packaging%20elegant%20product%20photo&image_size=square',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20product%20photo%20elegant&image_size=square',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20leaves%20closeup&image_size=square'
+    ],
+    category: '银桂系列',
+    tags: ['性价比', '绿色食品'],
+    sales: 3890,
+    stock: 320,
+    description: '选用武夷山120年生态茶园茶叶，搭配咸宁银桂，清雅淡香，口感柔和，适合日常饮用。',
+    specs: [
+      { id: 'spec-1', name: '规格', values: ['100g/罐', '200g/罐'] }
+    ],
+    skuList: [
+      { skuId: 'G002-S01', specValues: ['100g/罐'], price: 68.00, memberPrice: 58.00, stock: 200, barcode: '6901234567011' },
+      { skuId: 'G002-S02', specValues: ['200g/罐'], price: 118.00, memberPrice: 108.00, stock: 120, barcode: '6901234567012' }
+    ],
+    defaultSkuIndex: 0,
+    freight: 8,
+    freightFreeAmount: 99,
+    afterSale: '7天无理由退换',
+    serviceTags: ['正品保障', '极速发货', '溯源可查']
+  },
+  'G003': {
+    traceId: 'G003',
+    productName: '金桂花茶礼盒装',
+    subtitle: '180年古树 · 六窨一提 · 竹制礼盒',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20golden%20osmanthus%20tea%20gift%20box%20premium%20packaging&image_size=square',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20osmanthus%20tea%20gift%20box%20luxury%20packaging&image_size=square',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20gift%20box%20open%20unboxing&image_size=square',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20tea%20tasting%20ceremony%20elegant&image_size=square'
+    ],
+    category: '金桂系列',
+    tags: ['新品', '礼盒装', '送礼佳品', '有机认证'],
+    sales: 860,
+    stock: 78,
+    description: '臻选武夷山180年古茶树春茶芽叶，六窨一提，香气绵密悠长。高档竹制礼盒包装，送礼佳品，附专属溯源证书。',
+    specs: [
+      { id: 'spec-1', name: '规格', values: ['250g/礼盒', '500g/豪华礼盒'] }
+    ],
+    skuList: [
+      { skuId: 'G003-S01', specValues: ['250g/礼盒'], price: 588.00, memberPrice: 528.00, stock: 50, barcode: '6901234567021' },
+      { skuId: 'G003-S02', specValues: ['500g/豪华礼盒'], price: 1088.00, memberPrice: 988.00, stock: 28, barcode: '6901234567022' }
+    ],
+    defaultSkuIndex: 0,
+    freight: 0,
+    freightFreeAmount: 0,
+    afterSale: '7天无理由退换',
+    serviceTags: ['正品保障', '顺丰包邮', '精美包装', '附溯源证书']
+  },
+  'G004': {
+    traceId: 'G004',
+    productName: '金桂花茶便携装',
+    subtitle: '150年茶树 · 四窨一提 · 独立小包装',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20portable%20sachet%20packaging%20convenient&image_size=square',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=portable%20osmanthus%20tea%20sachets%20product%20photo&image_size=square',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20sachet%20brewing%20in%20cup&image_size=square'
+    ],
+    category: '金桂系列',
+    tags: ['便携', '上班族', '独立包装'],
+    sales: 5260,
+    stock: 500,
+    description: '独立小包装设计，方便携带，随时随地享用一杯好茶。每袋3g，一杯一袋，品质如一。',
+    specs: [
+      { id: 'spec-1', name: '规格', values: ['3g*12袋/盒', '3g*24袋/盒', '3g*36袋/家庭装'] }
+    ],
+    skuList: [
+      { skuId: 'G004-S01', specValues: ['3g*12袋/盒'], price: 45.00, memberPrice: 38.00, stock: 200, barcode: '6901234567031' },
+      { skuId: 'G004-S02', specValues: ['3g*24袋/盒'], price: 78.00, memberPrice: 68.00, stock: 180, barcode: '6901234567032' },
+      { skuId: 'G004-S03', specValues: ['3g*36袋/家庭装'], price: 108.00, memberPrice: 95.00, stock: 120, barcode: '6901234567033' }
+    ],
+    defaultSkuIndex: 0,
+    freight: 8,
+    freightFreeAmount: 99,
+    afterSale: '7天无理由退换',
+    serviceTags: ['正品保障', '极速发货', '便携装']
+  }
+};
+
+function getShopProduct(traceId) {
+  if (!traceId) return null;
+  var id = traceId.toUpperCase().trim();
+  var product = shopProducts[id];
+  if (!product) return null;
+  return JSON.parse(JSON.stringify(product));
+}
+
+function getShopProductList(options) {
+  var list = [];
+  for (var traceId in shopProducts) {
+    list.push(JSON.parse(JSON.stringify(shopProducts[traceId])));
+  }
+
+  if (options && options.category) {
+    list = list.filter(function(p) { return p.category === options.category; });
+  }
+
+  if (options && options.sortBy) {
+    if (options.sortBy === 'sales') {
+      list.sort(function(a, b) { return b.sales - a.sales; });
+    } else if (options.sortBy === 'priceAsc') {
+      list.sort(function(a, b) {
+        var pa = a.skuList[0].price;
+        var pb = b.skuList[0].price;
+        return pa - pb;
+      });
+    } else if (options.sortBy === 'priceDesc') {
+      list.sort(function(a, b) {
+        var pa = a.skuList[0].price;
+        var pb = b.skuList[0].price;
+        return pb - pa;
+      });
+    }
+  }
+
+  return list;
+}
+
+function getSkuBySpec(traceId, specValues) {
+  var product = shopProducts[traceId];
+  if (!product) return null;
+
+  for (var i = 0; i < product.skuList.length; i++) {
+    var sku = product.skuList[i];
+    var match = true;
+    for (var j = 0; j < specValues.length; j++) {
+      if (sku.specValues.indexOf(specValues[j]) === -1) {
+        match = false;
+        break;
+      }
+    }
+    if (match) {
+      return JSON.parse(JSON.stringify(sku));
+    }
+  }
+  return null;
+}
+
+function getSkuById(traceId, skuId) {
+  var product = shopProducts[traceId];
+  if (!product) return null;
+
+  for (var i = 0; i < product.skuList.length; i++) {
+    if (product.skuList[i].skuId === skuId) {
+      return JSON.parse(JSON.stringify(product.skuList[i]));
+    }
+  }
+  return null;
+}
+
+// ==================== 会员等级 ====================
+
+var memberLevels = [
+  { level: 1, name: '普通会员', minPoints: 0, discount: 1.0, icon: '🌱', benefits: ['基础价格购买', '积分累计'] },
+  { level: 2, name: '银卡会员', minPoints: 500, discount: 0.95, icon: '🥈', benefits: ['9.5折会员价', '专属优惠券', '积分1.2倍'] },
+  { level: 3, name: '金卡会员', minPoints: 2000, discount: 0.88, icon: '🥇', benefits: ['8.8折会员价', '专属优惠券', '积分1.5倍', '生日双倍积分', '优先发货'] },
+  { level: 4, name: '钻石会员', minPoints: 5000, discount: 0.8, icon: '💎', benefits: ['8折会员价', '专属大礼包', '积分2倍', '生日3倍积分', '专属客服', '免费试用'] }
+];
+
+function getMemberLevels() {
+  return memberLevels;
+}
+
+function getMemberLevelByPoints(points) {
+  var level = memberLevels[0];
+  for (var i = 0; i < memberLevels.length; i++) {
+    if (points >= memberLevels[i].minPoints) {
+      level = memberLevels[i];
+    }
+  }
+  return level;
+}
+
+// ==================== 满减活动 ====================
+
+var promotionActivities = [
+  {
+    id: 'PROMO-001',
+    name: '满99减10',
+    type: 'fullReduce',
+    fullAmount: 99,
+    reduceAmount: 10,
+    desc: '全场满99元立减10元',
+    startTime: '2025-09-01 00:00:00',
+    endTime: '2025-12-31 23:59:59',
+    status: 'active'
+  },
+  {
+    id: 'PROMO-002',
+    name: '满199减25',
+    type: 'fullReduce',
+    fullAmount: 199,
+    reduceAmount: 25,
+    desc: '全场满199元立减25元',
+    startTime: '2025-09-01 00:00:00',
+    endTime: '2025-12-31 23:59:59',
+    status: 'active'
+  },
+  {
+    id: 'PROMO-003',
+    name: '满299减50',
+    type: 'fullReduce',
+    fullAmount: 299,
+    reduceAmount: 50,
+    desc: '全场满299元立减50元',
+    startTime: '2025-09-01 00:00:00',
+    endTime: '2025-12-31 23:59:59',
+    status: 'active'
+  },
+  {
+    id: 'PROMO-004',
+    name: '中秋特惠满499减100',
+    type: 'fullReduce',
+    fullAmount: 499,
+    reduceAmount: 100,
+    desc: '全场满499元立减100元，中秋特惠',
+    startTime: '2025-09-15 00:00:00',
+    endTime: '2025-09-30 23:59:59',
+    status: 'active',
+    tag: '限时'
+  }
+];
+
+function getActivePromotions() {
+  return promotionActivities.filter(function(p) { return p.status === 'active'; });
+}
+
+function getBestPromotion(totalAmount) {
+  var activeList = getActivePromotions();
+  var best = null;
+  for (var i = 0; i < activeList.length; i++) {
+    var promo = activeList[i];
+    if (totalAmount >= promo.fullAmount) {
+      if (!best || promo.reduceAmount > best.reduceAmount) {
+        best = promo;
+      }
+    }
+  }
+  return best;
+}
+
+function calculatePromotionDiscount(totalAmount) {
+  var best = getBestPromotion(totalAmount);
+  if (!best) return { discount: 0, promotion: null };
+  return { discount: best.reduceAmount, promotion: best };
+}
+
+// ==================== 订单数据 ====================
+
+var mockOrders = [
+  {
+    orderId: 'ORD202509150001',
+    orderNo: '2025091512345678',
+    status: 'delivered',
+    statusText: '已收货',
+    createTime: '2025-09-15 14:30:22',
+    payTime: '2025-09-15 14:32:10',
+    deliverTime: '2025-09-16 10:15:00',
+    receiveTime: '2025-09-18 16:20:00',
+    totalAmount: 256.00,
+    payAmount: 218.00,
+    freight: 0,
+    discount: 38.00,
+    couponDiscount: 10.00,
+    promotionDiscount: 25.00,
+    memberDiscount: 3.00,
+    items: [
+      {
+        traceId: 'G001',
+        skuId: 'G001-S01',
+        productName: '金桂花茶',
+        specValues: ['100g/罐'],
+        price: 128.00,
+        memberPrice: 108.00,
+        quantity: 2,
+        subtotal: 216.00,
+        thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20golden%20osmanthus%20tea%20tin%20can%20product%20photo&image_size=square',
+        batchNo: 'GH202503',
+        traceCode: 'G001-GH202503-08765'
+      }
+    ],
+    address: {
+      name: '张女士',
+      phone: '138****5678',
+      province: '湖北省',
+      city: 'A市',
+      district: '洪山区',
+      detail: '东湖路128号桂花小区3栋2单元501'
+    },
+    logistics: {
+      company: '顺丰速运',
+      trackingNo: 'SF1234567890123',
+      status: 'signed'
+    },
+    couponId: 'TPL-001',
+    traceability: {
+      hasTrace: true,
+      totalItems: 2,
+      verifiedItems: 0
+    }
+  },
+  {
+    orderId: 'ORD202509100002',
+    orderNo: '2025091098765432',
+    status: 'shipped',
+    statusText: '运输中',
+    createTime: '2025-09-10 09:15:33',
+    payTime: '2025-09-10 09:18:20',
+    deliverTime: '2025-09-11 08:30:00',
+    receiveTime: null,
+    totalAmount: 588.00,
+    payAmount: 488.00,
+    freight: 0,
+    discount: 100.00,
+    couponDiscount: 50.00,
+    promotionDiscount: 50.00,
+    memberDiscount: 0,
+    items: [
+      {
+        traceId: 'G003',
+        skuId: 'G003-S01',
+        productName: '金桂花茶礼盒装',
+        specValues: ['250g/礼盒'],
+        price: 588.00,
+        memberPrice: 528.00,
+        quantity: 1,
+        subtotal: 528.00,
+        thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20golden%20osmanthus%20tea%20gift%20box%20premium%20packaging&image_size=square',
+        batchNo: 'GH202503',
+        traceCode: 'G003-GH202503-01234'
+      }
+    ],
+    address: {
+      name: '李先生',
+      phone: '139****1234',
+      province: '北京市',
+      city: '北京市',
+      district: '朝阳区',
+      detail: '建国路88号SOHO现代城A座1203'
+    },
+    logistics: {
+      company: '顺丰速运',
+      trackingNo: 'SF9876543210987',
+      status: 'transit'
+    },
+    couponId: 'TPL-005',
+    traceability: {
+      hasTrace: true,
+      totalItems: 1,
+      verifiedItems: 0
+    }
+  }
+];
+
+function getMockOrders() {
+  return mockOrders;
+}
+
+function getOrderById(orderId) {
+  for (var i = 0; i < mockOrders.length; i++) {
+    if (mockOrders[i].orderId === orderId) {
+      return JSON.parse(JSON.stringify(mockOrders[i]));
+    }
+  }
+  return null;
+}
+
+function getOrderByNo(orderNo) {
+  for (var i = 0; i < mockOrders.length; i++) {
+    if (mockOrders[i].orderNo === orderNo) {
+      return JSON.parse(JSON.stringify(mockOrders[i]));
+    }
+  }
+  return null;
+}
+
+function getOrdersByStatus(status) {
+  if (!status || status === 'all') {
+    return mockOrders;
+  }
+  return mockOrders.filter(function(o) { return o.status === status; });
+}
+
+// ==================== 购物车数据计算 ====================
+
+function calculateCartSummary(cartItems, isMember) {
+  var totalCount = 0;
+  var totalAmount = 0;
+  var totalMemberAmount = 0;
+  var selectedCount = 0;
+  var selectedAmount = 0;
+  var selectedMemberAmount = 0;
+
+  for (var i = 0; i < cartItems.length; i++) {
+    var item = cartItems[i];
+    totalCount += item.quantity;
+    totalAmount += item.price * item.quantity;
+    totalMemberAmount += item.memberPrice * item.quantity;
+
+    if (item.selected) {
+      selectedCount += item.quantity;
+      selectedAmount += item.price * item.quantity;
+      selectedMemberAmount += item.memberPrice * item.quantity;
+    }
+  }
+
+  var goodsAmount = isMember ? selectedMemberAmount : selectedAmount;
+  var promoResult = calculatePromotionDiscount(goodsAmount);
+
+  return {
+    totalCount: totalCount,
+    totalAmount: Math.round(totalAmount * 100) / 100,
+    totalMemberAmount: Math.round(totalMemberAmount * 100) / 100,
+    selectedCount: selectedCount,
+    selectedAmount: Math.round(selectedAmount * 100) / 100,
+    selectedMemberAmount: Math.round(selectedMemberAmount * 100) / 100,
+    goodsAmount: Math.round(goodsAmount * 100) / 100,
+    promotionDiscount: promoResult.discount,
+    promotion: promoResult.promotion,
+    finalAmount: Math.round((goodsAmount - promoResult.discount) * 100) / 100
+  };
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -2629,5 +3090,19 @@ module.exports = {
   getTsaCertificate,
   getInviteRewardConfig,
   getAvailableCoupons,
-  getShareThemeConfig
+  getShareThemeConfig,
+  getShopProduct,
+  getShopProductList,
+  getSkuBySpec,
+  getSkuById,
+  getMemberLevels,
+  getMemberLevelByPoints,
+  getActivePromotions,
+  getBestPromotion,
+  calculatePromotionDiscount,
+  getMockOrders,
+  getOrderById,
+  getOrderByNo,
+  getOrdersByStatus,
+  calculateCartSummary
 };

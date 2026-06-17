@@ -1,0 +1,158 @@
+<view class="page-container" wx:if="{{product}}">
+  <!-- 商品图片轮播 -->
+  <swiper class="product-swiper" autoplay circular bindchange="onImageChange">
+    <swiper-item wx:for="{{product.images}}" wx:key="*this">
+      <image 
+        class="product-image" 
+        src="{{item}}" 
+        mode="aspectFill"
+        data-url="{{item}}"
+        bindtap="onPreviewImage"
+      ></image>
+    </swiper-item>
+  </swiper>
+  <view class="image-indicator">
+    {{currentImageIndex + 1}}/{{product.images.length}}
+  </view>
+
+  <!-- 价格区域 -->
+  <view class="price-section">
+    <view class="price-row">
+      <view class="price-main">
+        <text class="price-symbol">¥</text>
+        <text class="price-value">{{isMember ? selectedSku.memberPrice : selectedSku.price}}</text>
+        <text wx:if="{{isMember}}" class="member-tag">会员价</text>
+        <text wx:if="{{isMember && selectedSku.price > selectedSku.memberPrice}}" class="original-price">¥{{selectedSku.price}}</text>
+      </view>
+      <view class="sales-info">
+        已售{{product.sales}}件
+      </view>
+    </view>
+    <view class="product-title">{{product.productName}}</view>
+    <view class="product-subtitle">{{product.subtitle}}</view>
+  </view>
+
+  <!-- 促销活动 -->
+  <view class="promo-section" wx:if="{{promotions.length > 0}}">
+    <view class="section-label">活动</view>
+    <view class="promo-list">
+      <view class="promo-item" wx:for="{{promotions}}" wx:key="id" wx:if="{{index < 2}}">
+        <text class="promo-tag" wx:if="{{item.tag}}">{{item.tag}}</text>
+        <text class="promo-text">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 规格选择 -->
+  <view class="spec-section" bindtap="onAddToCart">
+    <view class="section-label">规格</view>
+    <view class="spec-content">
+      <text class="spec-text">{{selectedSpecs.join(' / ')}}</text>
+      <text class="spec-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 服务保障 -->
+  <view class="service-section">
+    <view class="service-item" wx:for="{{product.serviceTags}}" wx:key="*this">
+      <text class="service-icon">✓</text>
+      <text class="service-text">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 溯源入口 -->
+  <view class="trace-section" bindtap="goToTrace">
+    <view class="trace-left">
+      <text class="trace-icon">🔗</text>
+      <view class="trace-info">
+        <view class="trace-title">产品溯源</view>
+        <view class="trace-desc">查看完整溯源信息 · 区块链存证</view>
+      </view>
+    </view>
+    <text class="trace-arrow">›</text>
+  </view>
+
+  <!-- 订单溯源入口 -->
+  <view class="trace-section order-trace" bindtap="goToOrderTrace">
+    <view class="trace-left">
+      <text class="trace-icon">📦</text>
+      <view class="trace-info">
+        <view class="trace-title">订单溯源</view>
+        <view class="trace-desc">订单号关联批次 · 收货扫码验真</view>
+      </view>
+    </view>
+    <text class="trace-arrow">›</text>
+  </view>
+
+  <!-- 商品详情 -->
+  <view class="detail-section">
+    <view class="detail-title">商品详情</view>
+    <view class="detail-content">
+      <view class="detail-desc">{{product.description}}</view>
+      <view class="detail-images">
+        <image 
+          class="detail-image" 
+          wx:for="{{product.images}}" 
+          wx:key="*this"
+          src="{{item}}" 
+          mode="widthFix"
+          data-url="{{item}}"
+          bindtap="onPreviewImage"
+        ></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="bar-item" bindtap="onBackHome">
+      <text class="bar-icon">🏠</text>
+      <text class="bar-text">首页</text>
+    </view>
+    <view class="bar-item" bindtap="onCartTap">
+      <text class="bar-icon">🛒</text>
+      <text class="bar-text">购物车</text>
+      <view class="bar-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</view>
+    </view>
+    <view class="bar-item" bindtap="onShareTap">
+      <text class="bar-icon">📤</text>
+      <text class="bar-text">分享</text>
+    </view>
+    <view class="bar-btn bar-btn-cart" bindtap="onAddToCart">加入购物车</view>
+    <view class="bar-btn bar-btn-buy" bindtap="onBuyNow">立即购买</view>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading-page" wx:if="{{loading}}">
+  <text>加载中...</text>
+</view>
+
+<!-- 规格选择器 -->
+<sku-selector 
+  show="{{showSkuSelector}}"
+  trace-id="{{traceId}}"
+  mode="{{skuMode}}"
+  is-member="{{isMember}}"
+  bind:close="onSkuClose"
+  bind:addcart="onSkuAddCart"
+  bind:buynow="onSkuBuyNow"
+></sku-selector>
+
+<!-- 分享弹窗 -->
+<view class="share-mask {{showShareMenu ? 'show' : ''}}" catchtap="onShareClose">
+  <view class="share-panel {{showShareMenu ? 'show' : ''}}" catchtap="preventBubble">
+    <view class="share-title">分享至</view>
+    <view class="share-options">
+      <button class="share-option" open-type="share">
+        <view class="share-icon-wrap">💬</view>
+        <text class="share-label">微信好友</text>
+      </button>
+      <view class="share-option" bindtap="onShareClose">
+        <view class="share-icon-wrap">⭕</view>
+        <text class="share-label">朋友圈</text>
+      </view>
+    </view>
+    <view class="share-cancel" bindtap="onShareClose">取消</view>
+  </view>
+</view>

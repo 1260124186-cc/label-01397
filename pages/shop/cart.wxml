@@ -1,0 +1,134 @@
+<view class="page-container">
+  <!-- 会员提示 -->
+  <view class="member-bar" wx:if="{{isMember}}">
+    <text class="member-icon">{{memberLevel.icon}}</text>
+    <text class="member-text">{{memberLevel.name}} · 已享会员价优惠</text>
+  </view>
+
+  <!-- 购物车商品列表 -->
+  <view class="cart-list" wx:if="{{cartItems.length > 0}}">
+    <view 
+      class="cart-item"
+      wx:for="{{cartItems}}"
+      wx:key="id"
+      data-traceid="{{item.traceId}}"
+      bindtap="onItemTap"
+    >
+      <view class="item-checkbox" catchtap="onSelectItem" data-id="{{item.id}}">
+        <view class="checkbox {{item.selected ? 'checked' : ''}}">
+          <text wx:if="{{item.selected}}">✓</text>
+        </view>
+      </view>
+      
+      <image class="item-image" src="{{item.thumbnail}}" mode="aspectFill"></image>
+      
+      <view class="item-info">
+        <view class="item-name">{{item.productName}}</view>
+        <view class="item-spec">{{item.specValues.join(' / ')}}</view>
+        <view class="item-bottom">
+          <view class="item-price">
+            <text class="price-symbol">¥</text>
+            <text class="price-value">{{isMember ? item.memberPrice : item.price}}</text>
+            <text wx:if="{{isMember && item.price > item.memberPrice}}" class="original-price">¥{{item.price}}</text>
+          </view>
+          
+          <view class="item-quantity" catchtap="preventBubble">
+            <view class="qty-btn {{item.quantity <= 1 ? 'disabled' : ''}}" catchtap="onDecrease" data-id="{{item.id}}">−</view>
+            <text class="qty-value">{{item.quantity}}</text>
+            <view class="qty-btn {{item.quantity >= item.stock ? 'disabled' : ''}}" catchtap="onIncrease" data-id="{{item.id}}">+</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="item-delete" wx:if="{{editing}}" catchtap="onDeleteItem" data-id="{{item.id}}">
+        删除
+      </view>
+    </view>
+  </view>
+
+  <!-- 满减提示 -->
+  <view class="promo-tip" wx:if="{{cartSummary && cartSummary.promotion}}">
+    <text class="promo-icon">🎉</text>
+    <text class="promo-text">{{cartSummary.promotion.desc}}，已减¥{{cartSummary.promotionDiscount}}</text>
+  </view>
+
+  <!-- 优惠券入口 -->
+  <view class="coupon-entry" wx:if="{{cartItems.length > 0}}" bindtap="goToCoupons">
+    <text class="coupon-icon">🎫</text>
+    <text class="coupon-label">优惠券</text>
+    <view class="coupon-value">
+      <text wx:if="{{selectedCoupon}}">-¥{{selectedCoupon.type === 'cash' ? selectedCoupon.value : '...'}}</text>
+      <text wx:else>选择优惠券</text>
+      <text class="coupon-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 空购物车 -->
+  <view class="empty-cart" wx:if="{{cartItems.length === 0}}">
+    <text class="empty-icon">🛒</text>
+    <text class="empty-text">购物车空空如也</text>
+    <view class="empty-btn" bindtap="goShopping">去逛逛</view>
+  </view>
+
+  <!-- 底部结算栏 -->
+  <view class="bottom-bar" wx:if="{{cartItems.length > 0}}">
+    <view class="bar-left">
+      <view class="select-all" bindtap="onSelectAll">
+        <view class="checkbox {{allSelected ? 'checked' : ''}}">
+          <text wx:if="{{allSelected}}">✓</text>
+        </view>
+        <text class="select-text">全选</text>
+      </view>
+    </view>
+    
+    <view class="bar-right">
+      <view class="total-info">
+        <text class="total-label">合计：</text>
+        <text class="total-symbol">¥</text>
+        <text class="total-value">{{cartSummary.finalAmount}}</text>
+      </view>
+      <view class="total-desc" wx:if="{{cartSummary.promotionDiscount > 0}}">
+        已优惠¥{{cartSummary.promotionDiscount}}
+      </view>
+      <view class="checkout-btn" bindtap="onCheckout">
+        结算({{cartSummary.selectedCount}})
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 优惠券弹窗 -->
+<view class="coupon-mask {{showCouponList ? 'show' : ''}}" catchtap="onCloseCoupons">
+  <view class="coupon-panel {{showCouponList ? 'show' : ''}}" catchtap="preventBubble">
+    <view class="coupon-header">
+      <text class="coupon-title">选择优惠券</text>
+      <text class="coupon-close" catchtap="onCloseCoupons">✕</text>
+    </view>
+    <scroll-view class="coupon-scroll" scroll-y>
+      <view class="coupon-list" wx:if="{{availableCoupons.length > 0}}">
+        <view 
+          class="coupon-card {{selectedCoupon && selectedCoupon.id === item.id ? 'selected' : ''}}"
+          wx:for="{{availableCoupons}}"
+          wx:key="id"
+          data-coupon="{{item}}"
+          catchtap="onSelectCoupon"
+        >
+          <view class="coupon-left">
+            <view class="coupon-amount">
+              <text class="amount-symbol" wx:if="{{item.type === 'cash'}}">¥</text>
+              <text class="amount-value">{{item.type === 'cash' ? item.value : (item.value * 10).toFixed(0) + '折'}}</text>
+            </view>
+            <view class="coupon-condition">满{{item.minAmount}}可用</view>
+          </view>
+          <view class="coupon-right">
+            <view class="coupon-name">{{item.name}}</view>
+            <view class="coupon-desc">{{item.desc}}</view>
+          </view>
+        </view>
+      </view>
+      <view class="no-coupon" wx:else>
+        暂无可用优惠券
+      </view>
+    </scroll-view>
+  </view>
+</view>
