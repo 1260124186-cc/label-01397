@@ -20,7 +20,71 @@ Page({
     scanHistory: [],
     showHistory: false,
     showClipboardModal: false,
-    clipboardTraceId: ''
+    clipboardTraceId: '',
+
+    bannerList: [
+      {
+        id: 1,
+        type: 'newProduct',
+        title: '新品上市',
+        subtitle: '金桂花茶礼盒装・六窨一提',
+        tag: 'NEW',
+        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20golden%20osmanthus%20tea%20gift%20box%20luxury%20packaging%20product%20launch&image_size=landscape_16_9',
+        traceId: 'G003'
+      },
+      {
+        id: 2,
+        type: 'certAward',
+        title: '认证获奖',
+        subtitle: '有机产品认证・绿色包装认证',
+        tag: 'CERT',
+        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=organic%20certification%20award%20ceremony%20tea%20brand%20golden%20trophy&image_size=landscape_16_9',
+        traceId: ''
+      },
+      {
+        id: 3,
+        type: 'pickSeason',
+        title: '采摘季活动',
+        subtitle: '2025金秋桂花采摘体验',
+        tag: 'EVENT',
+        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=autumn%20osmanthus%20flower%20picking%20festival%20people%20harvesting%20golden%20flowers&image_size=landscape_16_9',
+        traceId: ''
+      }
+    ],
+    currentBanner: 0,
+
+    announcementList: [
+      { id: 1, type: 'recall', icon: '⚠️', text: '批次GH202504部分产品农残指标异常，请查看详情', batchNo: 'GH202504', priority: 'high' },
+      { id: 2, type: 'promo', icon: '🎉', text: '中秋桂花茶礼盒限时8折优惠，活动截止9月30日', priority: 'normal' },
+      { id: 3, type: 'info', icon: '📢', text: '2025桂花采摘季即将开始，敬请期待', priority: 'normal' }
+    ],
+    currentAnnouncement: 0,
+    announcementAnimation: false,
+
+    featureCards: [
+      { key: 'origin', icon: '🌱', name: '产地溯源', desc: '茶树与桂花产地信息', anchor: 'anchor-basic', color: '#2E8B57', type: 'detail' },
+      { key: 'process', icon: '🫖', name: '工艺追踪', desc: '窨制工艺全流程', anchor: 'anchor-process', color: '#DAA520', type: 'detail' },
+      { key: 'green', icon: '♻️', name: '绿色认证', desc: '生态种植与环保包装', anchor: 'anchor-green', color: '#52C41A', type: 'detail' },
+      { key: 'report', icon: '📋', name: '检测报告', desc: '农残检测安全保障', anchor: 'anchor-process', color: '#1890FF', type: 'detail' },
+      { key: 'treeAge', icon: '🌳', name: '百年茶树', desc: '古茶树的故事', anchor: 'anchor-treeAge', color: '#8B4513', type: 'detail' },
+      { key: 'brand', icon: '🏯', name: '品牌故事', desc: '一茶一品的前世今生', color: '#B8860B', type: 'brand' }
+    ],
+
+    showScanGuide: false,
+    scanGuideStep: 0,
+    scanGuideSteps: [
+      { step: 1, title: '点击扫码按钮', desc: '在首页找到扫码溯源按钮', icon: '📸' },
+      { step: 2, title: '对准产品二维码', desc: '将二维码放入取景框内', icon: '📱' },
+      { step: 3, title: '查看溯源信息', desc: '自动跳转到溯源详情页', icon: '✅' }
+    ],
+
+    brandVideo: {
+      src: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20brand%20video%20thumbnail%20cinematic%20golden%20flowers%20tea%20field&image_size=landscape_16_9',
+      poster: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20brand%20story%20video%20poster%20cinematic%20golden%20osmanthus%20flowers%20mountain%20tea&image_size=landscape_16_9',
+      title: '一茶一品・桂花茶品牌宣传片',
+      duration: '0:30',
+      playing: false
+    }
   },
 
   onLoad: function(options) {
@@ -44,6 +108,8 @@ Page({
     }
     
     this.loadScanHistory();
+    this.checkFirstVisit();
+    this.startAnnouncementRotation();
   },
 
   onShow: function() {
@@ -409,5 +475,140 @@ Page({
       path: '/pages/index/index',
       imageUrl: ''
     };
+  },
+
+  onBannerChange: function(e) {
+    this.setData({ currentBanner: e.detail.current });
+  },
+
+  onBannerTap: function(e) {
+    const index = e.currentTarget.dataset.index;
+    const banner = this.data.bannerList[index];
+    if (!banner) return;
+
+    if (banner.traceId) {
+      this.queryTraceInfo(banner.traceId);
+    } else if (banner.type === 'certAward') {
+      wx.navigateTo({
+        url: '/pages/greenTrace/greenTrace?traceId=G001&productName=' + encodeURIComponent('金桂花茶')
+      });
+    } else if (banner.type === 'pickSeason') {
+      wx.navigateTo({
+        url: '/pages/brandStory/brandStory'
+      });
+    }
+  },
+
+  onAnnouncementTap: function(e) {
+    const announcement = this.data.announcementList[this.data.currentAnnouncement];
+    if (!announcement) return;
+
+    if (announcement.type === 'recall' && announcement.batchNo) {
+      wx.navigateTo({
+        url: '/pages/batchList/batchList?batchNo=' + announcement.batchNo
+      });
+    } else if (announcement.type === 'promo') {
+      wx.navigateTo({
+        url: '/pages/brandStory/brandStory'
+      });
+    }
+  },
+
+  startAnnouncementRotation: function() {
+    if (this.data.announcementList.length <= 1) return;
+
+    this._announcementTimer = setInterval(() => {
+      const next = (this.data.currentAnnouncement + 1) % this.data.announcementList.length;
+      this.setData({ announcementAnimation: true });
+      setTimeout(() => {
+        this.setData({
+          currentAnnouncement: next,
+          announcementAnimation: false
+        });
+      }, 300);
+    }, 4000);
+  },
+
+  stopAnnouncementRotation: function() {
+    if (this._announcementTimer) {
+      clearInterval(this._announcementTimer);
+      this._announcementTimer = null;
+    }
+  },
+
+  onFeatureCardTap: function(e) {
+    const card = e.currentTarget.dataset.card;
+    if (!card) return;
+
+    if (card.type === 'brand') {
+      wx.navigateTo({
+        url: '/pages/brandStory/brandStory'
+      });
+    } else if (card.type === 'detail') {
+      const defaultTraceId = 'G001';
+      wx.navigateTo({
+        url: '/pages/detail/detail?traceId=' + defaultTraceId + '&anchor=' + card.anchor
+      });
+    }
+  },
+
+  checkFirstVisit: function() {
+    try {
+      const visited = wx.getStorageSync('has_visited_scan_guide');
+      if (!visited) {
+        setTimeout(() => {
+          this.setData({ showScanGuide: true });
+        }, 800);
+      }
+    } catch (e) {
+      console.log('检查首次访问失败:', e);
+    }
+  },
+
+  nextScanGuideStep: function() {
+    const next = this.data.scanGuideStep + 1;
+    if (next >= this.data.scanGuideSteps.length) {
+      this.closeScanGuide();
+    } else {
+      this.setData({ scanGuideStep: next });
+    }
+  },
+
+  closeScanGuide: function() {
+    this.setData({ showScanGuide: false, scanGuideStep: 0 });
+    try {
+      wx.setStorageSync('has_visited_scan_guide', true);
+    } catch (e) {
+      console.log('保存访问记录失败:', e);
+    }
+  },
+
+  onVideoPlay: function() {
+    this.setData({ 'brandVideo.playing': true });
+  },
+
+  onVideoPause: function() {
+    this.setData({ 'brandVideo.playing': false });
+  },
+
+  onVideoEnded: function() {
+    this.setData({ 'brandVideo.playing': false });
+  },
+
+  onVideoTap: function() {
+    const videoContext = wx.createVideoContext('brandVideo', this);
+    if (this.data.brandVideo.playing) {
+      videoContext.pause();
+    } else {
+      videoContext.play();
+    }
+  },
+
+  onHide: function() {
+    this.stopAnnouncementRotation();
+  },
+
+  onUnload: function() {
+    this.stopAnnouncementRotation();
   }
 });

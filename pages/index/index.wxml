@@ -24,6 +24,51 @@
     </view>
   </view>
 
+  <!-- ==================== 扫码引导动画弹窗 ==================== -->
+  <view wx:if="{{showScanGuide}}" class="modal-overlay scan-guide-overlay" catchtap="closeScanGuide">
+    <view class="scan-guide-modal" catchtap="preventBubble">
+      <view class="scan-guide-close" bindtap="closeScanGuide">×</view>
+      <view class="scan-guide-header">
+        <view class="scan-guide-header-icon">📱</view>
+        <view class="scan-guide-header-title">扫码溯源使用指南</view>
+        <view class="scan-guide-header-subtitle">3步轻松查询产品溯源信息</view>
+      </view>
+      <view class="scan-guide-steps">
+        <view 
+          wx:for="{{scanGuideSteps}}" 
+          wx:key="step"
+          class="scan-guide-step {{scanGuideStep >= index ? 'active' : ''}} {{scanGuideStep === index ? 'current' : ''}}"
+        >
+          <view class="step-indicator">
+            <view class="step-dot">{{item.icon}}</view>
+            <view class="step-line" wx:if="{{index < scanGuideSteps.length - 1}}"></view>
+          </view>
+          <view class="step-content-area">
+            <view class="step-title-text">{{item.title}}</view>
+            <view class="step-desc-text">{{item.desc}}</view>
+          </view>
+        </view>
+      </view>
+      <view class="scan-guide-animation">
+        <view class="guide-phone-frame">
+          <view class="guide-phone-screen">
+            <view class="guide-scan-icon-mini">
+              <view class="guide-scan-line-anim"></view>
+            </view>
+            <view class="guide-scan-text-mini">扫码溯源</view>
+          </view>
+        </view>
+      </view>
+      <view class="scan-guide-footer">
+        <view class="scan-guide-btn" bindtap="nextScanGuideStep">
+          <text wx:if="{{scanGuideStep < scanGuideSteps.length - 1}}">下一步</text>
+          <text wx:else>知道了，去扫码</text>
+        </view>
+        <view class="scan-guide-skip" bindtap="closeScanGuide">跳过引导</view>
+      </view>
+    </view>
+  </view>
+
   <!-- ==================== 顶部品牌视觉区域 ==================== -->
   <view class="header-section">
     <view class="header-bg">
@@ -48,6 +93,52 @@
   <!-- ==================== 主要功能区域 ==================== -->
   <view class="main-section">
     
+    <!-- ==================== 轮播 Banner 区域 ==================== -->
+    <view class="banner-section">
+      <swiper 
+        class="banner-swiper" 
+        autoplay="{{true}}" 
+        interval="{{4000}}" 
+        duration="{{500}}" 
+        circular="{{true}}"
+        bindchange="onBannerChange"
+        indicator-dots="{{true}}"
+        indicator-color="rgba(255,255,255,0.4)"
+        indicator-active-color="#FFFFFF"
+      >
+        <swiper-item 
+          wx:for="{{bannerList}}" 
+          wx:key="id"
+          data-index="{{index}}"
+          bindtap="onBannerTap"
+        >
+          <view class="banner-slide">
+            <image class="banner-image" src="{{item.image}}" mode="aspectFill" />
+            <view class="banner-overlay"></view>
+            <view class="banner-content-wrapper">
+              <view class="banner-tag {{item.type}}">{{item.tag}}</view>
+              <view class="banner-title-text">{{item.title}}</view>
+              <view class="banner-subtitle-text">{{item.subtitle}}</view>
+            </view>
+          </view>
+        </swiper-item>
+      </swiper>
+      <view class="banner-counter">{{currentBanner + 1}}/{{bannerList.length}}</view>
+    </view>
+
+    <!-- ==================== 公告栏区域 ==================== -->
+    <view class="announcement-bar" bindtap="onAnnouncementTap">
+      <view class="announcement-icon-row">
+        <view class="announcement-label {{announcementList[currentAnnouncement].type === 'recall' ? 'recall' : ''}}">{{announcementList[currentAnnouncement].icon}}</view>
+      </view>
+      <view class="announcement-scroll {{announcementAnimation ? 'animating' : ''}}">
+        <view class="announcement-text {{announcementList[currentAnnouncement].type === 'recall' ? 'recall' : ''}}">
+          {{announcementList[currentAnnouncement].text}}
+        </view>
+      </view>
+      <view class="announcement-arrow">›</view>
+    </view>
+
     <!-- 扫码溯源主按钮 -->
     <view class="scan-card" bindtap="handleScanCode">
       <view class="scan-icon-wrapper">
@@ -66,6 +157,62 @@
         <text class="scan-desc">扫描二维码/条形码，支持小程序码</text>
       </view>
       <view class="scan-arrow">›</view>
+    </view>
+
+    <!-- ==================== 功能卡片区域（可点击联动） ==================== -->
+    <view class="feature-section">
+      <view class="section-title">
+        <view class="title-icon">🔍</view>
+        <text>溯源功能</text>
+      </view>
+      
+      <view class="feature-grid">
+        <view 
+          wx:for="{{featureCards}}" 
+          wx:key="key"
+          class="feature-item feature-card-clickable"
+          data-card="{{item}}"
+          bindtap="onFeatureCardTap"
+        >
+          <view class="feature-icon" style="background: linear-gradient(135deg, {{item.color}}, {{item.color}}88);">
+            <text>{{item.icon}}</text>
+          </view>
+          <view class="feature-name">{{item.name}}</view>
+          <view class="feature-desc">{{item.desc}}</view>
+          <view class="feature-card-arrow" wx:if="{{item.type === 'brand'}}">›</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ==================== 品牌视频区域 ==================== -->
+    <view class="brand-video-section">
+      <view class="section-title">
+        <view class="title-icon">🎬</view>
+        <text>品牌故事</text>
+      </view>
+      <view class="video-card">
+        <video
+          id="brandVideo"
+          class="brand-video"
+          src="{{brandVideo.src}}"
+          poster="{{brandVideo.poster}}"
+          bindplay="onVideoPlay"
+          bindpause="onVideoPause"
+          bindended="onVideoEnded"
+          show-center-play-btn="{{true}}"
+          show-play-btn="{{true}}"
+          controls="{{true}}"
+          object-fit="cover"
+          enable-progress-gesture="{{true}}"
+          autoplay="{{false}}"
+          loop="{{false}}"
+          muted="{{false}}"
+        ></video>
+        <view class="video-info">
+          <view class="video-title">{{brandVideo.title}}</view>
+          <view class="video-duration">⏱ {{brandVideo.duration}}</view>
+        </view>
+      </view>
     </view>
 
     <!-- 手动输入区域 -->
@@ -176,48 +323,6 @@
             >×</view>
           </view>
           <view class="history-arrow">›</view>
-        </view>
-      </view>
-    </view>
-
-    <!-- ==================== 功能说明卡片 ==================== -->
-    <view class="feature-section">
-      <view class="section-title">
-        <view class="title-icon">🔍</view>
-        <text>溯源功能</text>
-      </view>
-      
-      <view class="feature-grid">
-        <view class="feature-item">
-          <view class="feature-icon" style="background: linear-gradient(135deg, #2E8B57, #3CB371);">
-            <text>🌱</text>
-          </view>
-          <view class="feature-name">产地溯源</view>
-          <view class="feature-desc">茶树与桂花产地信息</view>
-        </view>
-        
-        <view class="feature-item">
-          <view class="feature-icon" style="background: linear-gradient(135deg, #DAA520, #F0C75E);">
-            <text>🫖</text>
-          </view>
-          <view class="feature-name">工艺追踪</view>
-          <view class="feature-desc">窨制工艺全流程</view>
-        </view>
-        
-        <view class="feature-item">
-          <view class="feature-icon" style="background: linear-gradient(135deg, #52C41A, #95DE64);">
-            <text>♻️</text>
-          </view>
-          <view class="feature-name">绿色认证</view>
-          <view class="feature-desc">生态种植与环保包装</view>
-        </view>
-        
-        <view class="feature-item">
-          <view class="feature-icon" style="background: linear-gradient(135deg, #1890FF, #69C0FF);">
-            <text>📋</text>
-          </view>
-          <view class="feature-name">检测报告</view>
-          <view class="feature-desc">农残检测安全保障</view>
         </view>
       </view>
     </view>

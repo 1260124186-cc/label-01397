@@ -1,0 +1,87 @@
+<view class="page-container">
+
+  <view class="hero-section">
+    <image class="hero-image" src="{{heroImage}}" mode="aspectFill" />
+    <view class="hero-overlay"></view>
+    <view class="hero-content">
+      <view class="hero-icon">🌼</view>
+      <view class="hero-brand">{{brandName}}</view>
+      <view class="hero-slogan">{{brandSlogan}}</view>
+    </view>
+  </view>
+
+  <view class="main-content">
+
+    <view class="section-card">
+      <view class="section-header">
+        <view class="section-icon">📖</view>
+        <view class="section-title">品牌历程</view>
+      </view>
+      <view class="timeline">
+        <view 
+          wx:for="{{timelineEvents}}" 
+          wx:key="year"
+          class="timeline-item {{item.type}}"
+        >
+          <view class="timeline-left">
+            <view class="timeline-year">{{item.year}}</view>
+          </view>
+          <view class="timeline-center">
+            <view class="timeline-dot">
+              <text class="dot-icon">{{item.icon}}</text>
+            </view>
+            <view class="timeline-line" wx:if="{{index < timelineEvents.length - 1}}"></view>
+          </view>
+          <view class="timeline-right">
+            <view class="timeline-title">{{item.title}}</view>
+            <view class="timeline-desc">{{item.desc}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="section-header">
+        <view class="section-icon">🫖</view>
+        <view class="section-title">窨制工艺</view>
+      </view>
+      <image class="section-image" src="{{craftImage}}" mode="aspectFill" />
+      <view class="section-text-block">
+        <text class="section-paragraph">一茶一品桂花茶，传承600年非遗窨制技艺。精选武夷山百年古茶树鲜叶为茶底，搭配咸宁金桂产区新鲜桂花，历经5-6次窨制，让花香与茶韵完美融合。</text>
+        <text class="section-paragraph">每一次窨制，都是匠人与自然的对话。恒温恒湿的环境下，茶叶缓缓吸收桂花的精华，从一窨的花香初入，到五窨的香气入骨，最终成就一杯醇厚馥郁的桂花好茶。</text>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="section-header">
+        <view class="section-icon">🌿</view>
+        <view class="section-title">生态理念</view>
+      </view>
+      <image class="section-image" src="{{gardenImage}}" mode="aspectFill" />
+      <view class="values-grid">
+        <view 
+          wx:for="{{brandValues}}" 
+          wx:key="title"
+          class="value-item"
+        >
+          <view class="value-icon">{{item.icon}}</view>
+          <view class="value-title">{{item.title}}</view>
+          <view class="value-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="cta-section">
+      <view class="cta-text">扫码溯源，了解每一杯桂花茶的前世今生</view>
+      <view class="cta-btn" bindtap="goToTrace">立即体验溯源</view>
+    </view>
+  </view>
+
+  <view class="footer-section">
+    <view class="footer-text">
+      <text class="eco-icon">🍃</text>
+      <text>一茶一品 · 品质溯源</text>
+      <text class="eco-icon">🍃</text>
+    </view>
+  </view>
+</view>

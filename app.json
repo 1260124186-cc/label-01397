@@ -5,6 +5,7 @@
     "pages/scanResult/scanResult",
     "pages/batchList/batchList",
     "pages/greenTrace/greenTrace",
+    "pages/brandStory/brandStory",
     "pages/webview/webview"
   ],
   "window": {

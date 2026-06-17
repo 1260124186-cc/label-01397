@@ -713,3 +713,415 @@
   color: #CCCCCC;
   flex-shrink: 0;
 }
+
+/* ==================== 轮播 Banner 区域 ==================== */
+.banner-section {
+  position: relative;
+  margin-bottom: 24rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.banner-swiper {
+  height: 320rpx;
+  border-radius: 24rpx;
+}
+
+.banner-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+}
+
+.banner-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+}
+
+.banner-content-wrapper {
+  position: absolute;
+  bottom: 24rpx;
+  left: 28rpx;
+  right: 80rpx;
+  z-index: 2;
+}
+
+.banner-tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 8rpx;
+}
+
+.banner-tag.newProduct {
+  background: linear-gradient(135deg, #FF6B6B, #EE5A24);
+}
+
+.banner-tag.certAward {
+  background: linear-gradient(135deg, #DAA520, #F0C75E);
+}
+
+.banner-tag.pickSeason {
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+}
+
+.banner-title-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 4rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0,0,0,0.3);
+}
+
+.banner-subtitle-text {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 1rpx 4rpx rgba(0,0,0,0.3);
+}
+
+.banner-counter {
+  position: absolute;
+  bottom: 12rpx;
+  right: 16rpx;
+  background: rgba(0,0,0,0.4);
+  color: #FFFFFF;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  z-index: 3;
+}
+
+/* ==================== 公告栏区域 ==================== */
+.announcement-bar {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.announcement-icon-row {
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.announcement-label {
+  font-size: 28rpx;
+}
+
+.announcement-scroll {
+  flex: 1;
+  overflow: hidden;
+  height: 40rpx;
+  line-height: 40rpx;
+  transition: opacity 0.3s ease;
+}
+
+.announcement-scroll.animating {
+  opacity: 0;
+}
+
+.announcement-text {
+  font-size: 26rpx;
+  color: #666666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.announcement-text.recall {
+  color: #FF4D4F;
+  font-weight: 500;
+}
+
+.announcement-arrow {
+  font-size: 36rpx;
+  color: #CCCCCC;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+}
+
+/* ==================== 功能卡片点击样式 ==================== */
+.feature-card-clickable {
+  position: relative;
+  cursor: pointer;
+}
+
+.feature-card-clickable:active {
+  transform: scale(0.96);
+  background: #F0F0F0;
+}
+
+.feature-card-arrow {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  font-size: 28rpx;
+  color: #B8860B;
+  font-weight: 600;
+}
+
+/* ==================== 品牌视频区域 ==================== */
+.brand-video-section {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.video-card {
+  border-radius: 16rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.brand-video {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 16rpx;
+}
+
+.video-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 4rpx 0;
+}
+
+.video-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333333;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.video-duration {
+  font-size: 24rpx;
+  color: #999999;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+/* ==================== 扫码引导弹窗 ==================== */
+.scan-guide-overlay {
+  z-index: 10000;
+}
+
+.scan-guide-modal {
+  width: 620rpx;
+  background: #FFFFFF;
+  border-radius: 28rpx;
+  padding: 48rpx 36rpx 36rpx;
+  position: relative;
+  animation: modalIn 0.3s ease;
+}
+
+.scan-guide-close {
+  position: absolute;
+  top: 20rpx;
+  right: 24rpx;
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+  color: #999999;
+}
+
+.scan-guide-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.scan-guide-header-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+}
+
+.scan-guide-header-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 8rpx;
+}
+
+.scan-guide-header-subtitle {
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.scan-guide-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  margin-bottom: 36rpx;
+}
+
+.scan-guide-step {
+  display: flex;
+  align-items: flex-start;
+  opacity: 0.4;
+  transition: all 0.3s ease;
+}
+
+.scan-guide-step.active {
+  opacity: 1;
+}
+
+.scan-guide-step.current {
+  opacity: 1;
+}
+
+.step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.step-dot {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  border-radius: 50%;
+  background: #F0F0F0;
+  transition: all 0.3s ease;
+}
+
+.scan-guide-step.active .step-dot {
+  background: rgba(46, 139, 87, 0.15);
+}
+
+.scan-guide-step.current .step-dot {
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  transform: scale(1.1);
+}
+
+.step-line {
+  width: 4rpx;
+  height: 20rpx;
+  background: #E0E0E0;
+  margin: 8rpx 0;
+}
+
+.step-content-area {
+  padding-top: 8rpx;
+}
+
+.step-title-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 4rpx;
+}
+
+.step-desc-text {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.scan-guide-animation {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 36rpx;
+}
+
+.guide-phone-frame {
+  width: 200rpx;
+  height: 360rpx;
+  background: #F5F5F5;
+  border-radius: 24rpx;
+  border: 4rpx solid #E0E0E0;
+  padding: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.guide-phone-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.guide-scan-icon-mini {
+  width: 80rpx;
+  height: 80rpx;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.guide-scan-line-anim {
+  width: 48rpx;
+  height: 4rpx;
+  background: #DAA520;
+  animation: scanMove 2s ease-in-out infinite;
+}
+
+.guide-scan-text-mini {
+  font-size: 18rpx;
+  color: #666666;
+}
+
+.scan-guide-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.scan-guide-btn {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 600;
+  border-radius: 44rpx;
+}
+
+.scan-guide-btn:active {
+  opacity: 0.9;
+}
+
+.scan-guide-skip {
+  font-size: 26rpx;
+  color: #999999;
+  padding: 8rpx 24rpx;
+}

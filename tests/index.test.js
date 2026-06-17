@@ -88,7 +88,38 @@ describe('index.js 页面逻辑测试', () => {
       scanHistory: [],
       showHistory: false,
       showClipboardModal: false,
-      clipboardTraceId: ''
+      clipboardTraceId: '',
+      bannerList: [
+        { id: 1, type: 'newProduct', title: '新品上市', subtitle: '金桂花茶礼盒装', tag: 'NEW', traceId: 'G003' },
+        { id: 2, type: 'certAward', title: '认证获奖', subtitle: '有机认证', tag: 'CERT', traceId: '' },
+        { id: 3, type: 'pickSeason', title: '采摘季活动', subtitle: '2025金秋', tag: 'EVENT', traceId: '' }
+      ],
+      currentBanner: 0,
+      announcementList: [
+        { id: 1, type: 'recall', icon: '⚠️', text: '批次GH202504农残异常', batchNo: 'GH202504', priority: 'high' },
+        { id: 2, type: 'promo', icon: '🎉', text: '中秋礼盒8折优惠', priority: 'normal' },
+        { id: 3, type: 'info', icon: '📢', text: '采摘季即将开始', priority: 'normal' }
+      ],
+      currentAnnouncement: 0,
+      announcementAnimation: false,
+      featureCards: [
+        { key: 'origin', icon: '🌱', name: '产地溯源', desc: '产地信息', anchor: 'anchor-basic', color: '#2E8B57', type: 'detail' },
+        { key: 'brand', icon: '🏯', name: '品牌故事', desc: '品牌故事', color: '#B8860B', type: 'brand' }
+      ],
+      showScanGuide: false,
+      scanGuideStep: 0,
+      scanGuideSteps: [
+        { step: 1, title: '点击扫码', desc: '找扫码按钮', icon: '📸' },
+        { step: 2, title: '对准二维码', desc: '放入取景框', icon: '📱' },
+        { step: 3, title: '查看信息', desc: '跳转详情页', icon: '✅' }
+      ],
+      brandVideo: {
+        src: 'https://example.com/video.mp4',
+        poster: 'https://example.com/poster.jpg',
+        title: '品牌宣传片',
+        duration: '0:30',
+        playing: false
+      }
     };
 
     // 模拟 setData 方法
@@ -721,6 +752,167 @@ describe('index.js 页面逻辑测试', () => {
       const result = page.onShareAppMessage();
       expect(result.title).toBe('一茶一品・桂花茶溯源');
       expect(result.path).toBe('/pages/index/index');
+    });
+  });
+
+  describe('轮播 Banner 功能测试', () => {
+    test('onBannerChange 应该更新当前 Banner 索引', () => {
+      page.onBannerChange({ detail: { current: 1 } });
+      expect(page.setData).toHaveBeenCalledWith({ currentBanner: 1 });
+    });
+
+    test('onBannerTap 带 traceId 的 Banner 应该调用查询', () => {
+      page.queryTraceInfo = jest.fn();
+      const e = { currentTarget: { dataset: { index: 0 } } };
+      page.onBannerTap(e);
+      expect(page.queryTraceInfo).toHaveBeenCalledWith('G003');
+    });
+
+    test('onBannerTap 认证获奖 Banner 应该跳转绿色溯源页', () => {
+      const e = { currentTarget: { dataset: { index: 1 } } };
+      page.onBannerTap(e);
+      expect(wx.navigateTo).toHaveBeenCalledWith({
+        url: '/pages/greenTrace/greenTrace?traceId=G001&productName=' + encodeURIComponent('金桂花茶')
+      });
+    });
+
+    test('onBannerTap 采摘季 Banner 应该跳转品牌故事页', () => {
+      const e = { currentTarget: { dataset: { index: 2 } } };
+      page.onBannerTap(e);
+      expect(wx.navigateTo).toHaveBeenCalledWith({
+        url: '/pages/brandStory/brandStory'
+      });
+    });
+
+    test('onBannerTap 无效索引不应该跳转', () => {
+      const e = { currentTarget: { dataset: { index: 99 } } };
+      page.onBannerTap(e);
+      expect(wx.navigateTo).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('公告栏功能测试', () => {
+    test('onAnnouncementTap 召回公告应该跳转批次列表页', () => {
+      page.data.currentAnnouncement = 0;
+      page.onAnnouncementTap();
+      expect(wx.navigateTo).toHaveBeenCalledWith({
+        url: '/pages/batchList/batchList?batchNo=GH202504'
+      });
+    });
+
+    test('onAnnouncementTap 促销公告应该跳转品牌故事页', () => {
+      page.data.currentAnnouncement = 1;
+      page.onAnnouncementTap();
+      expect(wx.navigateTo).toHaveBeenCalledWith({
+        url: '/pages/brandStory/brandStory'
+      });
+    });
+
+    test('startAnnouncementRotation 多条公告应该启动定时器', (done) => {
+      jest.useFakeTimers();
+      page.startAnnouncementRotation();
+      jest.advanceTimersByTime(4000);
+      expect(page.setData).toHaveBeenCalled();
+      page.stopAnnouncementRotation();
+      jest.useRealTimers();
+      done();
+    });
+
+    test('stopAnnouncementRotation 应该清除定时器', () => {
+      page._announcementTimer = setInterval(() => {}, 1000);
+      page.stopAnnouncementRotation();
+      expect(page._announcementTimer).toBeNull();
+    });
+  });
+
+  describe('功能卡片联动测试', () => {
+    test('onFeatureCardTap 品牌故事卡片应该跳转品牌故事页', () => {
+      const e = { currentTarget: { dataset: { card: { key: 'brand', type: 'brand', name: '品牌故事' } } } };
+      page.onFeatureCardTap(e);
+      expect(wx.navigateTo).toHaveBeenCalledWith({
+        url: '/pages/brandStory/brandStory'
+      });
+    });
+
+    test('onFeatureCardTap 溯源功能卡片应该跳转详情页带锚点', () => {
+      const e = { currentTarget: { dataset: { card: { key: 'origin', type: 'detail', anchor: 'anchor-basic', name: '产地溯源' } } } };
+      page.onFeatureCardTap(e);
+      expect(wx.navigateTo).toHaveBeenCalledWith({
+        url: '/pages/detail/detail?traceId=G001&anchor=anchor-basic'
+      });
+    });
+
+    test('onFeatureCardTap 空卡片不应该跳转', () => {
+      const e = { currentTarget: { dataset: {} } };
+      page.onFeatureCardTap(e);
+      expect(wx.navigateTo).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('扫码引导动画测试', () => {
+    test('checkFirstVisit 首次访问应该显示扫码引导', (done) => {
+      wx.getStorageSync.mockReturnValue(false);
+      page.checkFirstVisit();
+      setTimeout(() => {
+        expect(page.setData).toHaveBeenCalledWith({ showScanGuide: true });
+        done();
+      }, 1000);
+    });
+
+    test('checkFirstVisit 非首次访问不应该显示扫码引导', () => {
+      wx.getStorageSync.mockReturnValue(true);
+      page.checkFirstVisit();
+      expect(page.setData).not.toHaveBeenCalledWith({ showScanGuide: true });
+    });
+
+    test('nextScanGuideStep 应该切换到下一步', () => {
+      page.data.scanGuideStep = 0;
+      page.nextScanGuideStep();
+      expect(page.setData).toHaveBeenCalledWith({ scanGuideStep: 1 });
+    });
+
+    test('nextScanGuideStep 最后一步应该关闭引导', () => {
+      page.data.scanGuideStep = 2;
+      page.nextScanGuideStep();
+      expect(page.setData).toHaveBeenCalledWith({ showScanGuide: false, scanGuideStep: 0 });
+      expect(wx.setStorageSync).toHaveBeenCalledWith('has_visited_scan_guide', true);
+    });
+
+    test('closeScanGuide 应该关闭引导并保存访问记录', () => {
+      page.closeScanGuide();
+      expect(page.setData).toHaveBeenCalledWith({ showScanGuide: false, scanGuideStep: 0 });
+      expect(wx.setStorageSync).toHaveBeenCalledWith('has_visited_scan_guide', true);
+    });
+  });
+
+  describe('品牌视频功能测试', () => {
+    test('onVideoPlay 应该更新播放状态', () => {
+      page.onVideoPlay();
+      expect(page.setData).toHaveBeenCalledWith({ 'brandVideo.playing': true });
+    });
+
+    test('onVideoPause 应该更新播放状态', () => {
+      page.onVideoPause();
+      expect(page.setData).toHaveBeenCalledWith({ 'brandVideo.playing': false });
+    });
+
+    test('onVideoEnded 应该更新播放状态', () => {
+      page.onVideoEnded();
+      expect(page.setData).toHaveBeenCalledWith({ 'brandVideo.playing': false });
+    });
+  });
+
+  describe('页面生命周期增强测试', () => {
+    test('onHide 应该停止公告轮播', () => {
+      page.stopAnnouncementRotation = jest.fn();
+      page.onHide();
+      expect(page.stopAnnouncementRotation).toHaveBeenCalled();
+    });
+
+    test('onUnload 应该停止公告轮播', () => {
+      page.stopAnnouncementRotation = jest.fn();
+      page.onUnload();
+      expect(page.stopAnnouncementRotation).toHaveBeenCalled();
     });
   });
 });
