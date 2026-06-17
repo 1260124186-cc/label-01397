@@ -1,0 +1,142 @@
+<view class="privacy-page">
+  <view class="privacy-banner">
+    <view class="banner-icon">🛡️</view>
+    <view class="banner-text">
+      <view class="banner-title">隐私保护承诺</view>
+      <view class="banner-desc">我们仅收集必要信息，保障您的数据安全</view>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">数据收集权限</view>
+
+    <view class="setting-row">
+      <view class="setting-info">
+        <view class="setting-name">查询记录收集</view>
+        <view class="setting-desc">记录扫码和手动查询历史，方便再次查看</view>
+      </view>
+      <view class="setting-switch {{settings.allowCollection ? 'on' : ''}}" bindtap="onToggleCollection">
+        <view class="switch-dot"></view>
+      </view>
+    </view>
+
+    <view class="setting-row">
+      <view class="setting-info">
+        <view class="setting-name">位置信息</view>
+        <view class="setting-desc">用于产地地图导航，仅在您主动使用时请求</view>
+      </view>
+      <view class="setting-switch {{settings.allowLocation ? 'on' : ''}}" bindtap="onToggleLocation">
+        <view class="switch-dot"></view>
+      </view>
+    </view>
+
+    <view class="setting-row">
+      <view class="setting-info">
+        <view class="setting-name">消息通知</view>
+        <view class="setting-desc">接收溯源提醒、安全通知和活动信息</view>
+      </view>
+      <view class="setting-switch {{settings.allowNotification ? 'on' : ''}}" bindtap="onToggleNotification">
+        <view class="switch-dot"></view>
+      </view>
+    </view>
+
+    <view class="setting-row">
+      <view class="setting-info">
+        <view class="setting-name">保存到相册</view>
+        <view class="setting-desc">保存溯源证书和分享卡片到相册</view>
+      </view>
+      <view class="setting-switch {{settings.allowPhotoSave ? 'on' : ''}}" bindtap="onTogglePhotoSave">
+        <view class="switch-dot"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">数据保留期限</view>
+    <view class="retention-options">
+      <view
+        class="retention-option {{settings.dataRetentionDays === 30 ? 'active' : ''}}"
+        data-days="30"
+        bindtap="onRetentionChange"
+      >30天</view>
+      <view
+        class="retention-option {{settings.dataRetentionDays === 90 ? 'active' : ''}}"
+        data-days="90"
+        bindtap="onRetentionChange"
+      >90天</view>
+      <view
+        class="retention-option {{settings.dataRetentionDays === 180 ? 'active' : ''}}"
+        data-days="180"
+        bindtap="onRetentionChange"
+      >180天</view>
+      <view
+        class="retention-option {{settings.dataRetentionDays === 365 ? 'active' : ''}}"
+        data-days="365"
+        bindtap="onRetentionChange"
+      >1年</view>
+    </view>
+    <view class="retention-hint">超过保留期的查询记录将自动清除</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">数据管理</view>
+
+    <view class="data-row" bindtap="onClearScanHistory">
+      <view class="data-info">
+        <view class="data-name">清除查询历史</view>
+        <view class="data-desc">删除所有扫码查询记录</view>
+      </view>
+      <view class="data-arrow">›</view>
+    </view>
+
+    <view class="data-row" bindtap="onClearFavorites">
+      <view class="data-info">
+        <view class="data-name">清除收藏产品</view>
+        <view class="data-desc">删除所有收藏的产品</view>
+      </view>
+      <view class="data-arrow">›</view>
+    </view>
+
+    <view class="data-row" bindtap="onClearNotes">
+      <view class="data-info">
+        <view class="data-name">清除品鉴笔记</view>
+        <view class="data-desc">删除所有品鉴记录</view>
+      </view>
+      <view class="data-arrow">›</view>
+    </view>
+
+    <view class="data-row danger" bindtap="onClearAllData">
+      <view class="data-info">
+        <view class="data-name">清除所有数据</view>
+        <view class="data-desc">一键清除所有本地数据</view>
+      </view>
+      <view class="data-arrow">›</view>
+    </view>
+  </view>
+
+  <view wx:if="{{storageInfo}}" class="storage-info">
+    <view class="storage-label">本地存储使用情况</view>
+    <view class="storage-detail">
+      存储 {{storageInfo.keys}} 项数据，占用 {{storageInfo.currentSize}}KB / {{storageInfo.limitSize}}KB
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">其他</view>
+
+    <view class="data-row" bindtap="onViewPrivacyPolicy">
+      <view class="data-info">
+        <view class="data-name">查看隐私保护政策</view>
+      </view>
+      <view class="data-arrow">›</view>
+    </view>
+
+    <view class="data-row" bindtap="onResetSettings">
+      <view class="data-info">
+        <view class="data-name">重置隐私设置</view>
+        <view class="data-desc">恢复为默认设置</view>
+      </view>
+      <view class="data-arrow">›</view>
+    </view>
+  </view>
+</view>

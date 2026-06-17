@@ -1,0 +1,99 @@
+<view wx:if="{{show}}" class="privacy-overlay" catchtap="preventBubble">
+  <view class="privacy-modal">
+    <view class="privacy-header">
+      <view class="privacy-header-icon">🛡️</view>
+      <view class="privacy-header-title">隐私保护提示</view>
+      <view class="privacy-header-subtitle">一茶一品·桂花茶溯源</view>
+    </view>
+
+    <scroll-view class="privacy-body" scroll-y enhanced show-scrollbar="{{true}}">
+      <view class="privacy-section">
+        <view class="privacy-section-title">一、我们如何收集和使用您的个人信息</view>
+        <view class="privacy-section-text">
+          为保障桂花茶溯源小程序的核心功能正常运行，我们仅收集以下必要信息：
+        </view>
+        <view class="privacy-item">
+          <view class="privacy-item-dot">•</view>
+          <view class="privacy-item-text">微信授权登录标识（openid）：用于识别用户身份，提供溯源查询、收藏、品鉴笔记等个性化服务</view>
+        </view>
+        <view class="privacy-item">
+          <view class="privacy-item-dot">•</view>
+          <view class="privacy-item-text">扫码溯源记录：用于展示您的查询历史，方便再次查看</view>
+        </view>
+        <view class="privacy-item">
+          <view class="privacy-item-dot">•</view>
+          <view class="privacy-item-text">地理位置（可选）：仅在您主动使用产地导航时请求，用于显示产地地图</view>
+        </view>
+      </view>
+
+      <view class="privacy-section">
+        <view class="privacy-section-title">二、我们不会收集的信息</view>
+        <view class="privacy-item">
+          <view class="privacy-item-dot">•</view>
+          <view class="privacy-item-text">我们不会强制获取您的手机号码</view>
+        </view>
+        <view class="privacy-item">
+          <view class="privacy-item-dot">•</view>
+          <view class="privacy-item-text">我们不会收集您的通讯录、相册等敏感信息</view>
+        </view>
+        <view class="privacy-item">
+          <view class="privacy-item-dot">•</view>
+          <view class="privacy-item-text">我们不会将您的信息出售或分享给第三方</view>
+        </view>
+        <view class="privacy-item">
+          <view class="privacy-item-dot">•</view>
+          <view class="privacy-item-text">所有数据仅存储在您的本地设备，不上传服务器</view>
+        </view>
+      </view>
+
+      <view class="privacy-section">
+        <view class="privacy-section-title">三、您的权利</view>
+        <view class="privacy-item">
+          <view class="privacy-item-dot">•</view>
+          <view class="privacy-item-text">您可以随时在"隐私设置"中关闭数据收集权限</view>
+        </view>
+        <view class="privacy-item">
+          <view class="privacy-item-dot">•</view>
+          <view class="privacy-item-text">您可以随时清除查询历史、收藏和品鉴笔记</view>
+        </view>
+        <view class="privacy-item">
+          <view class="privacy-item-dot">•</view>
+          <view class="privacy-item-text">您可以退出登录并删除所有个人数据</view>
+        </view>
+      </view>
+
+      <view class="privacy-section">
+        <view class="privacy-section-title">四、数据安全</view>
+        <view class="privacy-section-text">
+          我们采用微信小程序本地存储机制保存数据，数据不离开您的设备。溯源验证数据通过区块链存证技术确保真实性和不可篡改性。
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="privacy-agreements">
+      <view class="privacy-agreement-row" bindtap="onToggleTerms">
+        <view class="privacy-checkbox {{agreedToTerms ? 'checked' : ''}}">
+          <text wx:if="{{agreedToTerms}}">✓</text>
+        </view>
+        <view class="privacy-agreement-text">
+          我已阅读并同意
+          <text class="privacy-link" catchtap="onViewTerms">《用户服务协议》</text>
+        </view>
+      </view>
+      <view class="privacy-agreement-row" bindtap="onTogglePrivacy">
+        <view class="privacy-checkbox {{agreedToPrivacy ? 'checked' : ''}}">
+          <text wx:if="{{agreedToPrivacy}}">✓</text>
+        </view>
+        <view class="privacy-agreement-text">
+          我已阅读并同意
+          <text class="privacy-link" catchtap="onViewPrivacy">《隐私保护政策》</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="privacy-footer">
+      <view class="privacy-btn-deny" bindtap="onDeny">拒绝并退出</view>
+      <view class="privacy-btn-confirm {{canConfirm ? '' : 'disabled'}}" bindtap="onConfirm">同意并继续</view>
+    </view>
+  </view>
+</view>

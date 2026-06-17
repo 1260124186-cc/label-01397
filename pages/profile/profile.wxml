@@ -1,0 +1,91 @@
+<view class="profile-page">
+  <privacy-popup
+    show="{{showPrivacyPopup}}"
+    bind:agree="onPrivacyAgree"
+    bind:deny="onPrivacyDeny"
+  ></privacy-popup>
+
+  <view class="profile-header">
+    <view class="profile-header-bg"></view>
+    <view class="profile-header-content">
+      <block wx:if="{{isLoggedIn && userInfo}}">
+        <view class="avatar-wrapper" bindtap="handleGetProfile">
+          <view class="avatar {{userInfo.avatarUrl ? '' : 'avatar-default'}}">
+            <image wx:if="{{userInfo.avatarUrl}}" class="avatar-image" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+            <text wx:else class="avatar-text">{{userInfo.nickname[0] || '茶'}}</text>
+          </view>
+          <view class="avatar-edit-hint">编辑</view>
+        </view>
+        <view class="user-info">
+          <view class="user-name">{{userInfo.nickname || '茶友'}}</view>
+          <view class="user-id">ID: {{userInfo.openid ? userInfo.openid.substr(-8) : ''}}</view>
+        </view>
+        <view class="logout-btn" bindtap="handleLogout">退出</view>
+      </block>
+      <block wx:else>
+        <view class="avatar-wrapper">
+          <view class="avatar avatar-default">
+            <text class="avatar-text">🍵</text>
+          </view>
+        </view>
+        <view class="user-info">
+          <view class="login-btn" bindtap="handleLogin">微信登录</view>
+          <view class="login-hint">登录后享受更多专属服务</view>
+        </view>
+      </block>
+    </view>
+
+    <view class="stats-bar">
+      <view class="stat-item">
+        <view class="stat-value">{{scanCount}}</view>
+        <view class="stat-label">查询次数</view>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <view class="stat-value">{{favoriteCount}}</view>
+        <view class="stat-label">收藏产品</view>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <view class="stat-value">{{noteCount}}</view>
+        <view class="stat-label">品鉴笔记</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="profile-body">
+    <block wx:for="{{menuSections}}" wx:key="title" wx:for-item="section">
+      <view class="menu-section">
+        <view class="menu-section-title">{{section.title}}</view>
+        <view class="menu-list">
+          <view
+            wx:for="{{section.items}}"
+            wx:key="key"
+            wx:for-item="menuItem"
+            class="menu-item"
+            data-item="{{menuItem}}"
+            bindtap="onMenuItemTap"
+          >
+            <view class="menu-item-icon">{{menuItem.icon}}</view>
+            <view class="menu-item-content">
+              <view class="menu-item-name">{{menuItem.name}}</view>
+              <view class="menu-item-desc">{{menuItem.desc}}</view>
+            </view>
+            <view class="menu-item-right">
+              <view wx:if="{{menuItem.badge}}" class="menu-item-badge">{{menuItem.badge}}</view>
+              <view class="menu-item-arrow">›</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <view class="privacy-reminder">
+      <view class="privacy-reminder-icon">🛡️</view>
+      <view class="privacy-reminder-text">
+        <text class="privacy-reminder-title">隐私保护承诺</text>
+        <text class="privacy-reminder-desc">我们仅收集必要信息，所有数据本地存储，不上传服务器</text>
+      </view>
+    </view>
+  </view>
+</view>

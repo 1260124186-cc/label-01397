@@ -1,0 +1,81 @@
+<view class="detail-page">
+  <view class="section-card">
+    <view class="section-label">产品名称</view>
+    <view class="product-name-display">
+      <text wx:if="{{productName}}">{{productName}}</text>
+      <text wx:else class="placeholder-text">请从溯源详情页创建笔记</text>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-label">品鉴评分</view>
+    <view class="rating-row">
+      <view
+        wx:for="{{[1,2,3,4,5]}}"
+        wx:key="*this"
+        class="rating-star {{item <= rating ? 'active' : ''}}"
+        data-rating="{{item}}"
+        bindtap="onRatingTap"
+      >★</view>
+    </view>
+    <view class="rating-hint">
+      <text wx:if="{{rating === 0}}">点击星星评分</text>
+      <text wx:elif="{{rating <= 2}}">一般</text>
+      <text wx:elif="{{rating <= 3}}">不错</text>
+      <text wx:elif="{{rating <= 4}}">很好</text>
+      <text wx:else>极佳</text>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-label">风味标签（最多5个）</view>
+    <view class="preset-tags">
+      <view
+        wx:for="{{presetTags}}"
+        wx:key="*this"
+        class="preset-tag {{tags.indexOf(item) !== -1 ? 'selected' : ''}}"
+        data-tag="{{item}}"
+        bindtap="onPresetTagTap"
+      >{{item}}</view>
+    </view>
+    <view class="custom-tag-input">
+      <input
+        class="tag-input"
+        type="text"
+        placeholder="自定义标签"
+        value="{{inputTag}}"
+        bindinput="onInputTagInput"
+        maxlength="6"
+        bindconfirm="onAddInputTag"
+      />
+      <view class="tag-add-btn" bindtap="onAddInputTag">添加</view>
+    </view>
+    <view wx:if="{{tags.length > 0}}" class="selected-tags">
+      <view
+        wx:for="{{tags}}"
+        wx:key="*this"
+        class="selected-tag"
+      >
+        <text>{{item}}</text>
+        <text class="tag-remove" data-tag="{{item}}" catchtap="onRemoveTag">×</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-label">品鉴内容</view>
+    <textarea
+      class="content-textarea"
+      placeholder="记录你对这款茶的品鉴感受，如外观、汤色、香气、口感、叶底等..."
+      value="{{content}}"
+      bindinput="onContentInput"
+      maxlength="500"
+      auto-height
+    />
+    <view class="content-counter">{{content.length}}/500</view>
+  </view>
+
+  <view class="save-btn {{saving ? 'disabled' : ''}}" bindtap="onSave">
+    {{saving ? '保存中...' : '保存笔记'}}
+  </view>
+</view>

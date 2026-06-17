@@ -1,12 +1,18 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/profile/profile",
     "pages/detail/detail",
     "pages/scanResult/scanResult",
     "pages/batchList/batchList",
     "pages/greenTrace/greenTrace",
     "pages/brandStory/brandStory",
-    "pages/webview/webview"
+    "pages/webview/webview",
+    "pages/favorites/favorites",
+    "pages/tastingNotes/tastingNotes",
+    "pages/tastingNoteDetail/tastingNoteDetail",
+    "pages/notifications/notifications",
+    "pages/privacy/privacy"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -15,6 +21,22 @@
     "navigationBarTextStyle": "white",
     "backgroundColor": "#F5F5F5",
     "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#2E8B57",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "溯源"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
   },
   "permission": {
     "scope.userLocation": {

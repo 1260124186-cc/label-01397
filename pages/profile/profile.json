@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "privacy-popup": "/components/privacyPopup/privacyPopup"
+  },
+  "navigationBarTitleText": "我的"
+}

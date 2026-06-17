@@ -1,0 +1,51 @@
+<view class="favorites-page">
+  <view wx:if="{{isEmpty}}" class="empty-state">
+    <view class="empty-icon">⭐</view>
+    <view class="empty-title">暂无收藏产品</view>
+    <view class="empty-desc">在溯源详情页点击收藏，将喜欢的茶叶加入收藏列表</view>
+    <view class="empty-btn" bindtap="onGoScan">去扫码溯源</view>
+  </view>
+
+  <block wx:else>
+    <view class="favorites-header">
+      <text class="favorites-count">共 {{favorites.length}} 个收藏</text>
+      <view class="favorites-clear" bindtap="onClearAll">清空</view>
+    </view>
+
+    <view class="favorites-list">
+      <view
+        wx:for="{{favorites}}"
+        wx:key="traceId"
+        class="favorite-item"
+        data-traceid="{{item.traceId}}"
+        bindtap="onItemTap"
+      >
+        <view class="favorite-product-img">
+          <image
+            wx:if="{{item.productImage}}"
+            class="product-image"
+            src="{{item.productImage}}"
+            mode="aspectFill"
+          />
+          <view wx:else class="product-image-placeholder">🌼</view>
+        </view>
+        <view class="favorite-info">
+          <view class="favorite-name">{{item.productName || '未知产品'}}</view>
+          <view class="favorite-meta">
+            <text class="favorite-trace-id">溯源ID: {{item.traceId}}</text>
+            <text wx:if="{{item.batchNo}}" class="favorite-batch">批次: {{item.batchNo}}</text>
+          </view>
+          <view class="favorite-time">{{item.formatTime}}</view>
+        </view>
+        <view class="favorite-actions">
+          <view
+            class="remove-btn"
+            catchtap="onRemoveFavorite"
+            data-traceid="{{item.traceId}}"
+          >✕</view>
+        </view>
+        <view class="favorite-arrow">›</view>
+      </view>
+    </view>
+  </block>
+</view>
