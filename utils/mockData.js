@@ -3683,6 +3683,539 @@ function incrementKnowledgeLikeCount(id) {
   return false;
 }
 
+// ==================== 全链路供应链时间轴数据 ====================
+
+function maskOperator(name) {
+  if (!name || name.length <= 1) return name;
+  if (name.length === 2) return name.charAt(0) + '*';
+  return name.charAt(0) + '*'.repeat(name.length - 2) + name.charAt(name.length - 1);
+}
+
+const SUPPLY_CHAIN_TIMELINE = {
+  'G001': {
+    traceId: 'G001',
+    batchNo: 'GH202503',
+    productName: '金桂花茶',
+    timeline: [
+      {
+        id: 'soil-test',
+        type: 'soil_test',
+        title: '土壤检测',
+        icon: '🌱',
+        time: '2025-03-15 09:30:00',
+        location: '福建省武夷山百年茶树园',
+        operator: '王农艺师',
+        operatorMasked: maskOperator('王农艺师'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=soil%20testing%20in%20tea%20garden%20laboratory%20equipment&image_size=square',
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=soil%20sample%20collection%20tea%20plantation&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x1a2b3c...4d5e6f',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          ph: 5.8,
+          organicMatter: '28.5 g/kg',
+          nitrogen: '158 mg/kg',
+          phosphorus: '22.3 mg/kg',
+          potassium: '186 mg/kg',
+          conclusion: '土壤肥力优良，适宜茶树生长'
+        }
+      },
+      {
+        id: 'fertilizer',
+        type: 'fertilizer',
+        title: '施肥记录',
+        icon: '💧',
+        time: '2025-03-20 08:00:00',
+        location: '福建省武夷山百年茶树园',
+        operator: '李师傅',
+        operatorMasked: maskOperator('李师傅'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=organic%20fertilizer%20application%20tea%20garden%20natural&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x7f8e9d...0a1b2c',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          fertilizerType: '腐熟羊粪有机肥',
+          amount: '150 kg/亩',
+          method: '环沟施肥法',
+          note: '配合春季养护，促进春梢萌发'
+        }
+      },
+      {
+        id: 'osmanthus-pick',
+        type: 'osmanthus_pick',
+        title: '桂花采摘',
+        icon: '🌼',
+        time: '2025-09-08 06:30:00',
+        location: '湖北省咸宁市桂花镇百年桂花园',
+        operator: '王氏采摘队',
+        operatorMasked: maskOperator('王氏采摘队'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20flower%20picking%20autumn%20golden%20garden%20workers&image_size=square',
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=fresh%20golden%20osmanthus%20flowers%20harvest%20basket&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x3d4e5f...6a7b8c',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          variety: '金桂',
+          quantity: '42.8 kg',
+          quality: '初开盛花，完整度98%',
+          weather: '晴，18℃~26℃'
+        }
+      },
+      {
+        id: 'tea-pick',
+        type: 'tea_pick',
+        title: '茶叶采摘',
+        icon: '🍃',
+        time: '2025-04-20 07:00:00',
+        location: '福建省武夷山百年茶树园',
+        operator: '李氏家族采茶队',
+        operatorMasked: maskOperator('李氏家族采茶队'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20leaves%20picking%20mountain%20terrace%20morning%20mist&image_size=square',
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=fresh%20tea%20buds%20hand%20picked%20premium%20quality&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x9e0f1a...2b3c4d',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          standard: '一芽二叶',
+          quantity: '10.2 kg（鲜叶）',
+          grade: '特级',
+          weather: '晴转多云，16℃~24℃'
+        }
+      },
+      {
+        id: 'scenting',
+        type: 'scenting',
+        title: '窨制',
+        icon: '🫖',
+        time: '2025-09-12 08:00:00',
+        location: '湖北省武汉市非遗窨制工艺加工厂',
+        operator: '李大师',
+        operatorMasked: maskOperator('李大师'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20scenting%20process%20traditional%20workshop%20osmanthus&image_size=square',
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=master%20artisan%20inspecting%20tea%20scenting%20quality&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x5a6b7c...8d9e0f',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          scentingTimes: 5,
+          totalDuration: '25小时',
+          temperature: '27℃~30℃',
+          humidity: '70%~73%',
+          ratio: '1:5（桂花:茶叶）',
+          note: '传承600年窨制技艺，国家级非遗'
+        }
+      },
+      {
+        id: 'quality-test',
+        type: 'quality_test',
+        title: '质检',
+        icon: '🔬',
+        time: '2025-09-20 10:00:00',
+        location: '国家茶叶质量监督检验中心',
+        operator: '陈检验员',
+        operatorMasked: maskOperator('陈检验员'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20quality%20testing%20laboratory%20scientific%20equipment&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x1e2f3a...4b5c6d',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          reportNo: 'NTQC-2025-09876',
+          standard: 'GB 2763-2021',
+          conclusion: '各项指标合格，农残远低于限值',
+          overallScore: 96,
+          items: [
+            { name: '六六六', result: '<0.01 mg/kg', limit: '0.1 mg/kg', status: '合格' },
+            { name: '滴滴涕', result: '<0.01 mg/kg', limit: '0.2 mg/kg', status: '合格' },
+            { name: '氯氰菊酯', result: '0.05 mg/kg', limit: '20 mg/kg', status: '合格' }
+          ]
+        }
+      },
+      {
+        id: 'packaging',
+        type: 'packaging',
+        title: '包装',
+        icon: '📦',
+        time: '2025-09-23 14:00:00',
+        location: '湖北省武汉市包装车间',
+        operator: '张包装组',
+        operatorMasked: maskOperator('张包装组'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20tea%20packaging%20line%20clean%20workshop&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x7a8b9c...0d1e2f',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          packageType: '食品级可降解牛皮纸罐',
+          specification: '100g/罐',
+          batchNo: 'GH202503',
+          quantity: '5000罐'
+        }
+      },
+      {
+        id: 'outbound',
+        type: 'outbound',
+        title: '出库',
+        icon: '🚚',
+        time: '2025-09-25 09:00:00',
+        location: '湖北省武汉市中心仓储中心',
+        operator: '刘仓管员',
+        operatorMasked: maskOperator('刘仓管员'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=warehouse%20outbound%20logistics%20pallet%20forklift&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x3c4d5e...6f7a8b',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          orderNo: 'WH20250925001',
+          quantity: '5000罐',
+          destination: '北京朝阳分仓',
+          vehicleNo: '鄂A·12345'
+        }
+      },
+      {
+        id: 'logistics',
+        type: 'logistics',
+        title: '物流节点',
+        icon: '📍',
+        time: '2025-09-27 16:30:00',
+        location: '北京市朝阳区转运中心',
+        operator: '京通物流',
+        operatorMasked: maskOperator('京通物流'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=logistics%20distribution%20center%20parcel%20sorting&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x9e0f1a...2b3c4d',
+        isAbnormal: true,
+        abnormalReason: '预计2025-09-26到达，因交通管制延期1天',
+        detail: {
+          waybillNo: 'JT20250925000123',
+          carrier: '京通物流',
+          status: '派送中',
+          estimatedDelivery: '2025-09-28',
+          currentLocation: '北京市朝阳区',
+          transitStops: [
+            { time: '2025-09-25 10:00', location: '武汉出库', status: '已完成' },
+            { time: '2025-09-26 08:00', location: '郑州转运中心', status: '已完成' },
+            { time: '2025-09-27 16:30', location: '北京朝阳转运中心', status: '进行中' },
+            { time: '2025-09-28', location: '客户签收', status: '待完成' }
+          ]
+        }
+      },
+      {
+        id: 'signoff',
+        type: 'signoff',
+        title: '签收',
+        icon: '✅',
+        time: '2025-09-28 14:20:00',
+        location: '北京市朝阳区XX小区',
+        operator: '王先生',
+        operatorMasked: maskOperator('王先生'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=parcel%20delivery%20signature%20customer%20receiving&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x5a6b7c...8d9e0f',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          signMethod: '本人签收',
+          rating: 5,
+          comment: '包装完好，茶香四溢，品质优良',
+          signTime: '2025-09-28 14:20:00'
+        }
+      }
+    ]
+  },
+  'G002': {
+    traceId: 'G002',
+    batchNo: 'GH202504',
+    productName: '银桂花茶',
+    timeline: [
+      {
+        id: 'soil-test',
+        type: 'soil_test',
+        title: '土壤检测',
+        icon: '🌱',
+        time: '2025-03-10 10:00:00',
+        location: '福建省武夷山生态茶园B区',
+        operator: '陈农艺师',
+        operatorMasked: maskOperator('陈农艺师'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=soil%20analysis%20eco%20tea%20garden%20testing&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x2b3c4d...5e6f7a',
+        isAbnormal: true,
+        abnormalReason: '原计划3月5日检测，因连续降雨延期5天',
+        detail: {
+          ph: 6.2,
+          organicMatter: '22.3 g/kg',
+          nitrogen: '135 mg/kg',
+          phosphorus: '18.6 mg/kg',
+          potassium: '165 mg/kg',
+          conclusion: '土壤肥力良好，需适当补充磷钾肥'
+        }
+      },
+      {
+        id: 'fertilizer',
+        type: 'fertilizer',
+        title: '施肥记录',
+        icon: '💧',
+        time: '2025-03-18 09:00:00',
+        location: '福建省武夷山生态茶园B区',
+        operator: '张师傅',
+        operatorMasked: maskOperator('张师傅'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=natural%20fertilizer%20tea%20garden%20organic%20farming&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x8d9e0f...1a2b3c',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          fertilizerType: '菜籽饼有机肥',
+          amount: '120 kg/亩',
+          method: '撒施后覆土',
+          note: '配合降雨，提高肥效'
+        }
+      },
+      {
+        id: 'osmanthus-pick',
+        type: 'osmanthus_pick',
+        title: '桂花采摘',
+        icon: '🌸',
+        time: '2025-09-12 07:00:00',
+        location: '湖北省咸宁市二组种植园',
+        operator: '王氏采摘二队',
+        operatorMasked: maskOperator('王氏采摘二队'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20picking%20white%20flowers%20garden&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x4e5f6a...7b8c9d',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          variety: '银桂',
+          quantity: '38.2 kg',
+          quality: '初开盛花，完整度96%',
+          weather: '多云转晴，17℃~25℃'
+        }
+      },
+      {
+        id: 'tea-pick',
+        type: 'tea_pick',
+        title: '茶叶采摘',
+        icon: '🍃',
+        time: '2025-04-22 08:00:00',
+        location: '福建省武夷山生态茶园B区',
+        operator: '红星村采茶组',
+        operatorMasked: maskOperator('红星村采茶组'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20harvesting%20eco%20garden%20cloudy%20day&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x0a1b2c...3d4e5f',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          standard: '一芽二叶',
+          quantity: '8.5 kg（鲜叶）',
+          grade: '一级',
+          weather: '多云，15℃~22℃'
+        }
+      },
+      {
+        id: 'scenting',
+        type: 'scenting',
+        title: '窨制',
+        icon: '🫖',
+        time: '2025-09-17 08:00:00',
+        location: '湖北省武汉市桂花茶加工二厂',
+        operator: '张师傅',
+        operatorMasked: maskOperator('张师傅'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=automated%20tea%20scenting%20modern%20factory%20equipment&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x6b7c8d...9e0f1a',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          scentingTimes: 3,
+          totalDuration: '18小时',
+          temperature: '26℃~28℃',
+          humidity: '69%~71%',
+          ratio: '1:5（桂花:茶叶）',
+          note: '自动化窨制，品质稳定'
+        }
+      },
+      {
+        id: 'quality-test',
+        type: 'quality_test',
+        title: '质检',
+        icon: '🔬',
+        time: '2025-09-25 11:00:00',
+        location: '湖北省农产品质量安全检测中心',
+        operator: '刘检验员',
+        operatorMasked: maskOperator('刘检验员'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=food%20safety%20laboratory%20pesticide%20testing&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x2c3d4e...5f6a7b',
+        isAbnormal: true,
+        abnormalReason: '氯氰菊酯检出值25.5mg/kg，超出国标限值20mg/kg',
+        detail: {
+          reportNo: 'HBAQ-2025-12345',
+          standard: 'GB 2763-2021',
+          conclusion: '存在1项指标超标',
+          overallScore: 58,
+          items: [
+            { name: '氯氰菊酯', result: '25.5 mg/kg', limit: '20 mg/kg', status: '不合格' },
+            { name: '六六六', result: '<0.01 mg/kg', limit: '0.1 mg/kg', status: '合格' },
+            { name: '氯氟氰菊酯', result: '<0.01 mg/kg', limit: '2.0 mg/kg', status: '合格' }
+          ]
+        }
+      },
+      {
+        id: 'packaging',
+        type: 'packaging',
+        title: '包装',
+        icon: '📦',
+        time: '2025-09-28 10:00:00',
+        location: '湖北省武汉市包装二车间',
+        operator: '李包装组',
+        operatorMasked: maskOperator('李包装组'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20product%20packaging%20line%20PET%20jar&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x8e9f0a...1b2c3d',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          packageType: '可回收PET罐',
+          specification: '100g/罐',
+          batchNo: 'GH202504',
+          quantity: '8000罐'
+        }
+      },
+      {
+        id: 'outbound',
+        type: 'outbound',
+        title: '出库',
+        icon: '🚚',
+        time: '2025-09-30 08:30:00',
+        location: '湖北省武汉市区级仓储中心',
+        operator: '王仓管员',
+        operatorMasked: maskOperator('王仓管员'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=warehouse%20shipping%20goods%20outbound%20logistics&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x4a5b6c...7d8e9f',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          orderNo: 'WH20250930002',
+          quantity: '8000罐',
+          destination: '上海浦东分仓',
+          vehicleNo: '鄂A·67890'
+        }
+      },
+      {
+        id: 'logistics',
+        type: 'logistics',
+        title: '物流节点',
+        icon: '📍',
+        time: '2025-10-02 14:00:00',
+        location: '上海市浦东新区转运中心',
+        operator: '圆通速递',
+        operatorMasked: maskOperator('圆通速递'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=express%20delivery%20sorting%20center%20packages&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x0c1d2e...3f4a5b',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          waybillNo: 'YT20250930000456',
+          carrier: '圆通速递',
+          status: '已派送',
+          estimatedDelivery: '2025-10-03',
+          currentLocation: '上海市浦东新区',
+          transitStops: [
+            { time: '2025-09-30 09:00', location: '武汉出库', status: '已完成' },
+            { time: '2025-10-01 12:00', location: '南京转运中心', status: '已完成' },
+            { time: '2025-10-02 14:00', location: '上海浦东转运中心', status: '已完成' },
+            { time: '2025-10-03 10:30', location: '客户签收', status: '待完成' }
+          ]
+        }
+      },
+      {
+        id: 'signoff',
+        type: 'signoff',
+        title: '签收',
+        icon: '✅',
+        time: '2025-10-03 10:30:00',
+        location: '上海市浦东新区XX大厦',
+        operator: '李女士',
+        operatorMasked: maskOperator('李女士'),
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=office%20delivery%20receiving%20parcel%20signature&image_size=square'
+        ],
+        onChain: true,
+        chainHash: '0x6e7f8a...9b0c1d',
+        isAbnormal: false,
+        abnormalReason: '',
+        detail: {
+          signMethod: '前台代收',
+          rating: 4,
+          comment: '包装完好，香气清雅',
+          signTime: '2025-10-03 10:30:00'
+        }
+      }
+    ]
+  }
+};
+
+function getSupplyChainTimeline(traceId) {
+  if (!traceId) return null;
+  var normalizedId = traceId.trim().toUpperCase();
+  var data = SUPPLY_CHAIN_TIMELINE[normalizedId];
+  if (!data) return null;
+  return JSON.parse(JSON.stringify(data));
+}
+
+function getAllSupplyChainTimeline() {
+  return JSON.parse(JSON.stringify(SUPPLY_CHAIN_TIMELINE));
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -3729,5 +4262,8 @@ module.exports = {
   getKnowledgeArticleByVariety,
   getRelatedKnowledgeArticles,
   incrementKnowledgeReadCount,
-  incrementKnowledgeLikeCount
+  incrementKnowledgeLikeCount,
+  getSupplyChainTimeline,
+  getAllSupplyChainTimeline,
+  maskOperator
 };

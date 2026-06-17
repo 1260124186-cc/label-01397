@@ -19,7 +19,8 @@
     "pages/notifications/notifications",
     "pages/privacy/privacy",
     "pages/knowledge/list",
-    "pages/knowledge/detail"
+    "pages/knowledge/detail",
+    "pages/supplyChainTimeline/supplyChainTimeline"
   ],
   "window": {
     "backgroundTextStyle": "dark",

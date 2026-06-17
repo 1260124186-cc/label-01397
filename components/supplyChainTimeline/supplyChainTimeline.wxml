@@ -1,0 +1,265 @@
+<view class="supply-chain-timeline {{mode}}">
+
+  <view class="timeline-container">
+    <view 
+      wx:for="{{displayTimeline}}" 
+      wx:key="id"
+      class="timeline-node {{item.isAbnormal ? 'abnormal' : ''}} {{expandedNodes[item.id] ? 'expanded' : ''}}"
+    >
+      <view class="node-line" wx:if="{{index < displayTimeline.length - 1}}"></view>
+      
+      <view class="node-header" data-id="{{item.id}}" bindtap="toggleNode">
+        <view class="node-dot {{item.isAbnormal ? 'abnormal' : ''}} {{item.onChain ? 'on-chain' : ''}}">
+          <text class="dot-icon">{{item.icon}}</text>
+          <view class="chain-badge" wx:if="{{item.onChain}}">
+            <text class="chain-icon">🔗</text>
+          </view>
+        </view>
+        
+        <view class="node-time">
+          <text class="time-date">{{item.time}}</text>
+        </view>
+        
+        <view class="node-content">
+          <view class="node-title-row">
+            <text class="node-title">{{item.title}}</text>
+            <view class="abnormal-badge" wx:if="{{item.isAbnormal}}">
+              <text class="abnormal-icon">⚠️</text>
+              <text class="abnormal-text">异常</text>
+            </view>
+          </view>
+          <view class="node-meta">
+            <text class="meta-item">📍 {{item.location}}</text>
+            <text class="meta-item">👤 {{item.operatorMasked}}</text>
+          </view>
+          <view class="abnormal-reason" wx:if="{{item.isAbnormal && item.abnormalReason}}">
+            <text>{{item.abnormalReason}}</text>
+          </view>
+          <view class="node-expand-toggle">
+            <text class="expand-icon">{{expandedNodes[item.id] ? '▲' : '▼'}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="node-detail" wx:if="{{expandedNodes[item.id]}}">
+        <view class="detail-section">
+          <view class="detail-title">详细信息</view>
+          
+          <view class="detail-grid">
+            <view class="detail-item" wx:if="{{item.detail && item.detail.reportNo}}">
+              <text class="detail-label">报告编号</text>
+              <text class="detail-value">{{item.detail.reportNo}}</text>
+            </view>
+            <view class="detail-item" wx:if="{{item.detail && item.detail.standard}}">
+              <text class="detail-label">执行标准</text>
+              <text class="detail-value">{{item.detail.standard}}</text>
+            </view>
+            <view class="detail-item" wx:if="{{item.detail && item.detail.conclusion}}">
+              <text class="detail-label">检测结论</text>
+              <text class="detail-value">{{item.detail.conclusion}}</text>
+            </view>
+            <view class="detail-item" wx:if="{{item.detail && item.detail.overallScore !== undefined}}">
+              <text class="detail-label">综合评分</text>
+              <text class="detail-value score {{item.detail.overallScore >= 90 ? 'excellent' : item.detail.overallScore >= 60 ? 'normal' : 'bad'}}">{{item.detail.overallScore}}分</text>
+            </view>
+          </view>
+          
+          <view class="detail-list" wx:if="{{item.detail && item.detail.items && item.detail.items.length > 0}}">
+            <view class="list-title">检测项目</view>
+            <view 
+              wx:for="{{item.detail.items}}" 
+              wx:for-item="testItem"
+              wx:key="name"
+              class="list-row"
+            >
+              <text class="list-name">{{testItem.name}}</text>
+              <text class="list-result {{testItem.status === '不合格' ? 'fail' : 'pass'}}">{{testItem.result}}</text>
+              <text class="list-limit">限值: {{testItem.limit}}</text>
+              <text class="list-status {{testItem.status === '不合格' ? 'fail' : 'pass'}}">{{testItem.status}}</text>
+            </view>
+          </view>
+          
+          <view class="detail-list" wx:if="{{item.detail && item.detail.transitStops && item.detail.transitStops.length > 0}}">
+            <view class="list-title">物流轨迹</view>
+            <view 
+              wx:for="{{item.detail.transitStops}}" 
+              wx:for-item="stop"
+              wx:key="time"
+              class="list-row"
+            >
+              <text class="list-time">{{stop.time}}</text>
+              <text class="list-location">{{stop.location}}</text>
+              <text class="list-status">{{stop.status}}</text>
+            </view>
+          </view>
+          
+          <view class="photos-section" wx:if="{{item.photos && item.photos.length > 0}}">
+            <view class="photos-title">现场照片</view>
+            <view class="photos-grid">
+              <image 
+                wx:for="{{item.photos}}" 
+                wx:for-item="photo"
+                wx:key="*this"
+                class="photo-item" 
+                src="{{photo}}" 
+                mode="aspectFill"
+                data-url="{{photo}}"
+                data-node="{{item}}"
+                catchtap="showNodeDetail"
+              />
+            </view>
+          </view>
+          
+          <view class="chain-info" wx:if="{{item.onChain}}">
+            <view class="chain-row">
+              <text class="chain-label">区块链存证</text>
+              <text class="chain-status verified">✓ 已上链</text>
+            </view>
+            <view class="chain-row hash-row" data-hash="{{item.chainHash}}" bindtap="copyChainHash">
+              <text class="chain-label">交易哈希</text>
+              <text class="chain-hash">{{item.chainHash}} 📋</text>
+            </view>
+          </view>
+          
+          <view class="detail-actions">
+            <view class="action-btn primary" data-node="{{item}}" catchtap="showNodeDetail">
+              <text>查看详情</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="timeline-empty" wx:if="{{displayTimeline.length === 0}}">
+    <text class="empty-icon">📭</text>
+    <text class="empty-text">暂无时间轴数据</text>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showDetailModal}}" catchtap="closeDetailModal">
+    <view class="detail-modal-content" catchtap="preventBubble">
+      <view class="modal-header">
+        <text class="modal-title">{{selectedNode.title}}</text>
+        <view class="modal-close" bindtap="closeDetailModal">×</view>
+      </view>
+      
+      <scroll-view class="modal-body" scroll-y wx:if="{{selectedNode}}">
+        <view class="modal-status-bar {{selectedNode.isAbnormal ? 'abnormal' : 'normal'}}">
+          <text class="status-icon">{{selectedNode.isAbnormal ? '⚠️' : '✓'}}</text>
+          <text class="status-text">{{selectedNode.isAbnormal ? '存在异常' : '正常'}}</text>
+        </view>
+        
+        <view class="modal-section">
+          <view class="section-title">基本信息</view>
+          <view class="info-grid">
+            <view class="info-item">
+              <text class="info-label">操作时间</text>
+              <text class="info-value">{{selectedNode.time}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">操作地点</text>
+              <text class="info-value">{{selectedNode.location}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">操作人</text>
+              <text class="info-value">{{selectedNode.operatorMasked}}</text>
+            </view>
+            <view class="info-item" wx:if="{{selectedNode.onChain}}">
+              <text class="info-label">上链状态</text>
+              <text class="info-value on-chain">🔗 已上链</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="modal-section" wx:if="{{selectedNode.isAbnormal && selectedNode.abnormalReason}}">
+          <view class="section-title abnormal">异常说明</view>
+          <view class="abnormal-box">
+            <text class="abnormal-content">{{selectedNode.abnormalReason}}</text>
+          </view>
+        </view>
+        
+        <view class="modal-section" wx:if="{{selectedNode.photos && selectedNode.photos.length > 0}}">
+          <view class="section-title">现场照片</view>
+          <view class="modal-photos">
+            <image 
+              wx:for="{{selectedNode.photos}}" 
+              wx:for-item="photo"
+              wx:key="*this"
+              class="modal-photo" 
+              src="{{photo}}" 
+              mode="aspectFill"
+              data-url="{{photo}}"
+              catchtap="previewPhoto"
+            />
+          </view>
+        </view>
+        
+        <view class="modal-section" wx:if="{{selectedNode.detail}}">
+          <view class="section-title">详细数据</view>
+          
+          <view class="data-grid" wx:if="{{selectedNode.detail.items && selectedNode.detail.items.length > 0}}">
+            <view class="data-header">
+              <text class="data-col name">检测项目</text>
+              <text class="data-col result">检测结果</text>
+              <text class="data-col limit">标准限值</text>
+              <text class="data-col status">状态</text>
+            </view>
+            <view 
+              wx:for="{{selectedNode.detail.items}}" 
+              wx:for-item="testItem"
+              wx:key="name"
+              class="data-row"
+            >
+              <text class="data-col name">{{testItem.name}}</text>
+              <text class="data-col result {{testItem.status === '不合格' ? 'fail' : ''}}">{{testItem.result}}</text>
+              <text class="data-col limit">{{testItem.limit}}</text>
+              <text class="data-col status {{testItem.status === '不合格' ? 'fail' : 'pass'}}">{{testItem.status}}</text>
+            </view>
+          </view>
+          
+          <view class="data-grid" wx:if="{{selectedNode.detail.transitStops && selectedNode.detail.transitStops.length > 0}}">
+            <view class="data-header">
+              <text class="data-col time">时间</text>
+              <text class="data-col location">地点</text>
+              <text class="data-col status">状态</text>
+            </view>
+            <view 
+              wx:for="{{selectedNode.detail.transitStops}}" 
+              wx:for-item="stop"
+              wx:key="time"
+              class="data-row"
+            >
+              <text class="data-col time">{{stop.time}}</text>
+              <text class="data-col location">{{stop.location}}</text>
+              <text class="data-col status">{{stop.status}}</text>
+            </view>
+          </view>
+          
+          <view class="detail-extra" wx:for="{{selectedNode.detail}}" wx:for-item="value" wx:for-index="key" wx:key="key">
+            <block wx:if="{{key !== 'items' && key !== 'transitStops'}}">
+              <view class="extra-row">
+                <text class="extra-label">{{key}}</text>
+                <text class="extra-value">{{value}}</text>
+              </view>
+            </block>
+          </view>
+        </view>
+        
+        <view class="modal-section" wx:if="{{selectedNode.onChain}}">
+          <view class="section-title">区块链存证</view>
+          <view class="chain-card">
+            <view class="chain-row">
+              <text class="chain-label">存证状态</text>
+              <text class="chain-value pass">✓ 已验证</text>
+            </view>
+            <view class="chain-row" data-hash="{{selectedNode.chainHash}}" bindtap="copyChainHash">
+              <text class="chain-label">交易哈希</text>
+              <text class="chain-value hash">{{selectedNode.chainHash}} 📋</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+</view>

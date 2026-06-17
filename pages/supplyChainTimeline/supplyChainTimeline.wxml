@@ -1,0 +1,132 @@
+<view class="page-container">
+
+  <view class="page-header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <view class="header-icon">🔗</view>
+      <view class="header-title">全链路供应链时间轴</view>
+      <view class="header-subtitle" bindtap="openProductSelector">
+        <text class="product-name">{{productName}}</text>
+        <text class="product-batch">（{{batchNo}}）</text>
+        <text class="selector-arrow">▼</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="stats-card" wx:if="{{timelineData}}">
+    <view class="stats-row">
+      <view class="stat-item">
+        <view class="stat-value">{{stats.totalNodes}}</view>
+        <view class="stat-label">总环节数</view>
+      </view>
+      <view class="stat-item abnormal">
+        <view class="stat-value">{{stats.abnormalNodes}}</view>
+        <view class="stat-label">异常环节</view>
+      </view>
+      <view class="stat-item onchain">
+        <view class="stat-value">{{stats.onChainNodes}}</view>
+        <view class="stat-label">已上链</view>
+      </view>
+      <view class="stat-item complete">
+        <view class="stat-value">{{stats.completionRate}}%</view>
+        <view class="stat-label">完成率</view>
+      </view>
+    </view>
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{stats.completionRate}}%;"></view>
+    </view>
+  </view>
+
+  <view class="toolbar">
+    <view class="toolbar-left">
+      <view 
+        class="mode-btn {{timelineMode === 'vertical' ? 'active' : ''}}"
+        data-mode="vertical"
+        bindtap="switchMode"
+      >
+        <text class="mode-icon">📋</text>
+        <text class="mode-text">纵向</text>
+      </view>
+      <view 
+        class="mode-btn {{timelineMode === 'horizontal' ? 'active' : ''}}"
+        data-mode="horizontal"
+        bindtap="switchMode"
+      >
+        <text class="mode-icon">📊</text>
+        <text class="mode-text">横向</text>
+      </view>
+    </view>
+    <view 
+      class="filter-btn {{showAbnormalOnly ? 'active' : ''}}"
+      bindtap="toggleAbnormalFilter"
+    >
+      <text class="filter-icon">⚠️</text>
+      <text class="filter-text">{{showAbnormalOnly ? '显示全部' : '仅看异常'}}</text>
+    </view>
+  </view>
+
+  <view class="timeline-wrapper" wx:if="{{!loading && timelineData}}">
+    <supply-chain-timeline 
+      timeline="{{timelineData.timeline}}"
+      mode="{{timelineMode}}"
+      showAbnormalOnly="{{showAbnormalOnly}}"
+    />
+  </view>
+
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <view class="loading-text">加载供应链数据中...</view>
+  </view>
+
+  <view class="empty-wrapper" wx:if="{{!loading && !timelineData}}">
+    <view class="empty-icon">📭</view>
+    <view class="empty-text">暂无供应链时间轴数据</view>
+  </view>
+
+  <view class="legend-card" wx:if="{{!loading && timelineData}}">
+    <view class="legend-title">图例说明</view>
+    <view class="legend-items">
+      <view class="legend-item">
+        <view class="legend-dot normal"></view>
+        <text class="legend-text">正常环节</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-dot abnormal"></view>
+        <text class="legend-text">异常环节</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-dot onchain"></view>
+        <text class="legend-text">已上链</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-chain-badge"></view>
+        <text class="legend-text">区块链存证标识</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showProductSelector}}" catchtap="closeProductSelector">
+    <view class="selector-modal" catchtap="preventBubble">
+      <view class="selector-header">
+        <text class="selector-title">选择产品批次</text>
+        <view class="selector-close" bindtap="closeProductSelector">×</view>
+      </view>
+      <scroll-view class="selector-list" scroll-y>
+        <view 
+          wx:for="{{availableProducts}}" 
+          wx:key="traceId"
+          class="selector-item {{selectedProductIndex === index ? 'selected' : ''}}"
+          data-index="{{index}}"
+          bindtap="selectProduct"
+        >
+          <view class="selector-info">
+            <view class="selector-name">{{item.productName}}</view>
+            <view class="selector-meta">批次: {{item.batchNo}} | 溯源ID: {{item.traceId}}</view>
+          </view>
+          <view class="selector-check" wx:if="{{selectedProductIndex === index}}">✓</view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+</view>

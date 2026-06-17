@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "全链路供应链时间轴",
+  "usingComponents": {
+    "supply-chain-timeline": "/components/supplyChainTimeline/supplyChainTimeline"
+  }
+}
