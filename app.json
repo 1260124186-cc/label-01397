@@ -14,6 +14,20 @@
     "backgroundColor": "#F5F5F5",
     "enablePullDownRefresh": false
   },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置将用于显示产地地图及导航功能"
+    },
+    "scope.userLocationBackground": {
+      "desc": "你的位置将用于产地地图持续导航"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation",
+    "openLocation",
+    "getFuzzyLocation"
+  ],
   "style": "v2",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"

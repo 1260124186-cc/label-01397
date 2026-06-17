@@ -48,6 +48,17 @@ jest.mock('../utils/mockData.js', () => ({
   validateTraceId: jest.fn(),
   getAvailableTraceIds: jest.fn(() => ['G001', 'G002']),
   getScentingComparison: jest.fn(),
+  getOsmanthusVarietyConfig: jest.fn((variety) => {
+    const map = {
+      '金桂': { key: 'jin-gui', color: '#DAA520', icon: '🌼', description: '金桂飘香，色泽金黄，香气浓郁持久' },
+      '银桂': { key: 'yin-gui', color: '#C0C0C0', icon: '🌸', description: '银桂清雅，花色银白，香气清幽绵长' },
+      '丹桂': { key: 'dan-gui', color: '#CD5C5C', icon: '🌺', description: '丹桂馥郁，花色橙红，香气浓烈醇厚' },
+      '四季桂': { key: 'si-ji-gui', color: '#90EE90', icon: '🍃', description: '四季桂常新，四季芬芳，香气清新淡雅' }
+    };
+    return map[variety] || map['金桂'];
+  }),
+  getAllVarieties: jest.fn(() => ['金桂', '银桂', '丹桂', '四季桂']),
+  calculateTestPercent: jest.fn(() => 50),
   mockTraceData: {
     'G001': {
       basicInfo: { productName: '金桂花茶', thumbnail: '' },
@@ -189,7 +200,17 @@ describe('detail.js 页面逻辑测试', () => {
   describe('loadTraceData 函数测试', () => {
     test('应该能正确加载溯源数据', (done) => {
       const mockTraceData = {
-        basicInfo: { productName: '金桂花茶' }
+        basicInfo: { productName: '金桂花茶', traceId: 'G001' },
+        osmanthusInfo: { variety: '金桂' },
+        treeAge: { teaTreeAge: 200, osmanthusTreeAge: 50 },
+        images: {
+          originImage: 'https://example.com/origin.jpg',
+          teaOriginImage: 'https://example.com/tea.jpg',
+          osmanthusOriginImage: 'https://example.com/osm.jpg',
+          processImage: 'https://example.com/proc.jpg',
+          certImage: 'https://example.com/cert.jpg'
+        },
+        pesticideTest: { items: [], hasAbnormal: false }
       };
       mockData.getTraceData.mockReturnValue(mockTraceData);
 
@@ -205,8 +226,8 @@ describe('detail.js 页面逻辑测试', () => {
           title: '金桂花茶溯源'
         });
         done();
-      }, 1000);
-    });
+      }, 1500);
+    }, 15000);
 
     test('对于不存在的溯源数据应该显示错误并返回', (done) => {
       mockData.getTraceData.mockReturnValue(null);

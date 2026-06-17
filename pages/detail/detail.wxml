@@ -57,9 +57,11 @@
   <view class="product-header">
     <view class="header-bg-pattern"></view>
     <view class="product-info">
-      <view class="product-icon">
-        <text wx:if="{{traceData.osmanthusInfo.variety === '金桂'}}">🌼</text>
-        <text wx:else>🌸</text>
+      <view class="product-icon variety-icon-{{varietyStyle.key}}" wx:if="{{varietyStyle}}">
+        <text>{{varietyStyle.icon}}</text>
+      </view>
+      <view class="product-icon" wx:else>
+        <text>🌸</text>
       </view>
       <view class="product-name">{{traceData.basicInfo.productName}}</view>
       <view class="product-batch">批次号：{{traceData.basicInfo.batchNo}}</view>
@@ -205,10 +207,344 @@
             <text class="placeholder-icon">🍃</text>
           </view>
         </view>
+
+        <!-- ========== 树龄故事 Tab ========== -->
+        <view class="tree-story-section" wx:if="{{traceData.treeStory}}">
+          <view class="tree-story-header">
+            <text class="story-title-icon">📖</text>
+            <text class="story-title">{{traceData.treeStory.title}}</text>
+          </view>
+
+          <!-- 故事 Tab 切换 -->
+          <view class="story-tab-bar">
+            <view class="story-tab-item {{activeStoryTab === 'tea' ? 'active' : ''}}" data-tab="tea" bindtap="switchStoryTab">
+              <text class="tab-icon">🍃</text>
+              <text>古茶树</text>
+            </view>
+            <view class="story-tab-item {{activeStoryTab === 'osmanthus' ? 'active' : ''}}" data-tab="osmanthus" bindtap="switchStoryTab">
+              <text class="tab-icon">🌼</text>
+              <text>桂花树</text>
+            </view>
+          </view>
+
+          <!-- 古茶树故事 -->
+          <block wx:if="{{activeStoryTab === 'tea' && traceData.treeStory.teaTree}}">
+            <view class="story-detail-card">
+              <view class="story-meta-grid">
+                <view class="meta-item">
+                  <text class="meta-label">栽植年代</text>
+                  <text class="meta-value highlight">{{traceData.treeStory.teaTree.plantYear}}</text>
+                </view>
+                <view class="meta-item">
+                  <text class="meta-label">树龄</text>
+                  <text class="meta-value">{{traceData.treeStory.teaTree.age}}年</text>
+                </view>
+                <view class="meta-item">
+                  <text class="meta-label">树高</text>
+                  <text class="meta-value">{{traceData.treeStory.teaTree.height}}</text>
+                </view>
+                <view class="meta-item">
+                  <text class="meta-label">冠幅</text>
+                  <text class="meta-value">{{traceData.treeStory.teaTree.crown}}</text>
+                </view>
+              </view>
+              <view class="story-location-tag">
+                <text>📍 {{traceData.treeStory.teaTree.location}}</text>
+              </view>
+              <view class="story-content">
+                <text class="story-text">{{traceData.treeStory.teaTree.story}}</text>
+              </view>
+            </view>
+
+            <!-- 历史事件时间轴 -->
+            <view class="history-timeline-section">
+              <view class="section-sub-title">
+                <text class="sub-icon">📜</text>
+                <text>历史大事记</text>
+              </view>
+              <view class="history-timeline">
+                <view wx:for="{{traceData.treeStory.teaTree.historicalRecords}}" wx:key="year" class="history-timeline-item" data-record="{{item}}" bindtap="viewHistoryEventDetail">
+                  <view class="history-dot" style="background: {{varietyStyle ? varietyStyle.color : '#2E8B57'}};">
+                    <text class="history-dot-icon">{{historyTypeIconMap[item.type] || '📌'}}</text>
+                  </view>
+                  <view class="history-line" wx:if="{{index < traceData.treeStory.teaTree.historicalRecords.length - 1}}"></view>
+                  <view class="history-content">
+                    <text class="history-year">{{item.year}}</text>
+                    <text class="history-event">{{item.event}}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+
+            <!-- 养护记录 -->
+            <view class="maintenance-section">
+              <view class="section-sub-title">
+                <text class="sub-icon">🌿</text>
+                <text>养护记录</text>
+              </view>
+              <view class="maintenance-list">
+                <view wx:for="{{traceData.treeStory.teaTree.maintenanceRecords}}" wx:key="date" class="maintenance-card" data-record="{{item}}" bindtap="viewMaintenanceDetail">
+                  <view class="maint-header">
+                    <text class="maint-date">{{item.date}}</text>
+                    <text class="maint-type-badge" style="border-color: {{varietyStyle ? varietyStyle.borderColor : '#2E8B57'}}; color: {{varietyStyle ? varietyStyle.color : '#2E8B57'}};">{{item.type}}</text>
+                  </view>
+                  <view class="maint-content">{{item.content}}</view>
+                  <view class="maint-footer">
+                    <text class="maint-operator">👤 {{item.operator}}</text>
+                    <text class="maint-photos" wx:if="{{item.photos}}">📷 {{item.photos}}张</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </block>
+
+          <!-- 桂花树故事 -->
+          <block wx:if="{{activeStoryTab === 'osmanthus' && traceData.treeStory.osmanthusTree}}">
+            <view class="story-detail-card osmanthus-card" wx:if="{{varietyStyle}}" style="background: {{varietyStyle.lightBg}};">
+              <view class="story-meta-grid">
+                <view class="meta-item">
+                  <text class="meta-label">栽植年代</text>
+                  <text class="meta-value highlight" style="color: {{varietyStyle.color}};">{{traceData.treeStory.osmanthusTree.plantYear}}</text>
+                </view>
+                <view class="meta-item">
+                  <text class="meta-label">树龄</text>
+                  <text class="meta-value">{{traceData.treeStory.osmanthusTree.age}}年</text>
+                </view>
+                <view class="meta-item">
+                  <text class="meta-label">树高</text>
+                  <text class="meta-value">{{traceData.treeStory.osmanthusTree.height}}</text>
+                </view>
+                <view class="meta-item">
+                  <text class="meta-label">冠幅</text>
+                  <text class="meta-value">{{traceData.treeStory.osmanthusTree.crown}}</text>
+                </view>
+              </view>
+              <view class="story-location-tag">
+                <text>📍 {{traceData.treeStory.osmanthusTree.location}}</text>
+              </view>
+              <view class="story-content">
+                <text class="story-text">{{traceData.treeStory.osmanthusTree.story}}</text>
+              </view>
+            </view>
+
+            <view class="story-detail-card osmanthus-card" wx:else>
+              <view class="story-meta-grid">
+                <view class="meta-item">
+                  <text class="meta-label">栽植年代</text>
+                  <text class="meta-value highlight">{{traceData.treeStory.osmanthusTree.plantYear}}</text>
+                </view>
+                <view class="meta-item">
+                  <text class="meta-label">树龄</text>
+                  <text class="meta-value">{{traceData.treeStory.osmanthusTree.age}}年</text>
+                </view>
+                <view class="meta-item">
+                  <text class="meta-label">树高</text>
+                  <text class="meta-value">{{traceData.treeStory.osmanthusTree.height}}</text>
+                </view>
+                <view class="meta-item">
+                  <text class="meta-label">冠幅</text>
+                  <text class="meta-value">{{traceData.treeStory.osmanthusTree.crown}}</text>
+                </view>
+              </view>
+              <view class="story-location-tag">
+                <text>📍 {{traceData.treeStory.osmanthusTree.location}}</text>
+              </view>
+              <view class="story-content">
+                <text class="story-text">{{traceData.treeStory.osmanthusTree.story}}</text>
+              </view>
+            </view>
+
+            <!-- 桂花树养护记录 -->
+            <view class="maintenance-section">
+              <view class="section-sub-title">
+                <text class="sub-icon">🌿</text>
+                <text>养护与采摘记录</text>
+              </view>
+              <view class="maintenance-list">
+                <view wx:for="{{traceData.treeStory.osmanthusTree.maintenanceRecords}}" wx:key="date" class="maintenance-card" data-record="{{item}}" bindtap="viewMaintenanceDetail">
+                  <view class="maint-header">
+                    <text class="maint-date">{{item.date}}</text>
+                    <text class="maint-type-badge" style="border-color: {{varietyStyle ? varietyStyle.borderColor : '#DAA520'}}; color: {{varietyStyle ? varietyStyle.color : '#DAA520'}};">{{item.type}}</text>
+                  </view>
+                  <view class="maint-content">{{item.content}}</view>
+                  <view class="maint-footer">
+                    <text class="maint-operator">👤 {{item.operator}}</text>
+                    <text class="maint-photos" wx:if="{{item.photos}}">📷 {{item.photos}}张</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </block>
+        </view>
       </view>
     </view>
 
-    <!-- ========== 模块3：桂花信息 ========== -->
+    <!-- ========== 模块3：产地地理信息（新增核心模块） ========== -->
+    <view class="card animate-card location-card module-card" id="anchor-location" style="animation-delay: 0.22s;">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="location">
+        <view class="title-left">
+          <text class="title-icon">📍</text>
+          <text>产地地理信息</text>
+          <view class="title-badge" style="background: {{varietyStyle ? varietyStyle.bgGradient : 'linear-gradient(135deg, #2E8B57, #3CB371)'}};">实景展示</view>
+        </view>
+        <view class="module-toggle {{moduleCollapsed.location ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
+        </view>
+      </view>
+      <view class="module-content {{moduleCollapsed.location ? 'hidden' : ''}}">
+
+        <!-- 卫星/实景照片轮播 -->
+        <view class="scenic-swiper-section" wx:if="{{traceData.scenicPhotos}}">
+          <view class="section-sub-title">
+            <text class="sub-icon">🗺️</text>
+            <text>{{traceData.scenicPhotos.title}}</text>
+          </view>
+          <swiper 
+            class="scenic-swiper" 
+            indicator-dots="{{true}}" 
+            autoplay="{{traceData.scenicPhotos.autoPlay}}" 
+            interval="{{traceData.scenicPhotos.interval}}"
+            circular="{{true}}"
+            bindchange="onScenicChange"
+            indicator-color="rgba(255,255,255,0.4)"
+            indicator-active-color="#FFFFFF"
+          >
+            <swiper-item wx:for="{{traceData.scenicPhotos.photos}}" wx:key="url" data-url="{{item.url}}" bindtap="previewScenicImage">
+              <view class="swiper-slide-item">
+                <image class="scenic-image" src="{{item.url}}" mode="aspectFill" />
+                <view class="scenic-caption">
+                  <text class="caption-type-tag" wx:if="{{item.type === 'aerial'}}">🛰️ 航拍</text>
+                  <text class="caption-type-tag" wx:elif="{{item.type === 'detail'}}">📸 特写</text>
+                  <text class="caption-type-tag" wx:elif="{{item.type === 'people'}}">👤 人文</text>
+                  <text class="caption-text">{{item.caption}}</text>
+                </view>
+              </view>
+            </swiper-item>
+          </swiper>
+          <view class="swiper-counter">
+            {{currentScenicIndex + 1}} / {{traceData.scenicPhotos.photos.length}}
+          </view>
+        </view>
+
+        <!-- 地图模块：map 组件 -->
+        <view class="map-section" wx:if="{{traceData.locationMap}}">
+          <view class="section-sub-title">
+            <text class="sub-icon">🏞️</text>
+            <text>产地地图 · 点击标记查看简介</text>
+            <view class="map-layer-toggle" catchtap="toggleMapLayer">
+              <text>{{mapLayerType === 'standard' ? '🛰️ 切换卫星图' : '🗺️ 切换标准图'}}</text>
+            </view>
+          </view>
+
+          <map
+            id="locationMap"
+            class="trace-map"
+            latitude="{{traceData.locationMap.centerLat}}"
+            longitude="{{traceData.locationMap.centerLng}}"
+            scale="{{traceData.locationMap.scale}}"
+            markers="{{traceData.locationMap.markers}}"
+            show-location="{{false}}"
+            enable-3D="{{true}}"
+            enable-zoom="{{true}}"
+            enable-scroll="{{true}}"
+            enable-rotate="{{false}}"
+            enable-satellite="{{mapLayerType === 'satellite'}}"
+            bindmarkertap="onMapMarkerTap"
+            subkey=""
+          ></map>
+
+          <!-- 地图图例 -->
+          <view class="map-legend" wx:if="{{showMapLegend}}">
+            <view class="legend-item">
+              <view class="legend-dot legend-tea"></view>
+              <text>茶树园</text>
+            </view>
+            <view class="legend-item">
+              <view class="legend-dot legend-osm" style="background: {{varietyStyle ? varietyStyle.color : '#DAA520'}};"></view>
+              <text>{{traceData.osmanthusInfo.variety}}园</text>
+            </view>
+            <view class="legend-item">
+              <view class="legend-dot legend-fac"></view>
+              <text>加工厂</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 采摘当日天气关联 -->
+        <view class="weather-section" wx:if="{{traceData.pickWeather}}">
+          <view class="section-sub-title">
+            <text class="sub-icon">🌤️</text>
+            <text>采摘当日天气 · 增强可信度</text>
+          </view>
+
+          <view class="weather-grid">
+            <!-- 茶叶采摘天气 -->
+            <view class="weather-card" data-type="teaPick" bindtap="viewWeatherDetail">
+              <view class="weather-header">
+                <text class="weather-title-icon">🍃</text>
+                <text class="weather-card-title">茶叶采摘</text>
+              </view>
+              <view class="weather-main">
+                <text class="weather-icon-big">{{traceData.pickWeather.teaPick.weatherIcon}}</text>
+                <view class="weather-info">
+                  <text class="weather-temp">{{traceData.pickWeather.teaPick.temperature}}</text>
+                  <text class="weather-desc">{{traceData.pickWeather.teaPick.weather}}</text>
+                </view>
+              </view>
+              <view class="weather-meta-row">
+                <text class="meta-chip">💧 {{traceData.pickWeather.teaPick.humidity}}</text>
+                <text class="meta-chip">🌬️ {{traceData.pickWeather.teaPick.wind}}</text>
+              </view>
+              <view class="weather-footer">
+                <text class="weather-date">📅 {{traceData.pickWeather.teaPick.date}}</text>
+                <text class="weather-location">📍 {{traceData.pickWeather.teaPick.location}}</text>
+              </view>
+              <view class="weather-quality-bar">
+                <text class="air-quality">{{traceData.pickWeather.teaPick.airQuality}}</text>
+              </view>
+            </view>
+
+            <!-- 桂花采摘天气 -->
+            <view class="weather-card" data-type="osmanthusPick" bindtap="viewWeatherDetail">
+              <view class="weather-header" wx:if="{{varietyStyle}}" style="border-bottom-color: {{varietyStyle.borderColor}};">
+                <text class="weather-title-icon">{{varietyStyle.icon}}</text>
+                <text class="weather-card-title">{{traceData.osmanthusInfo.variety}}采摘</text>
+              </view>
+              <view class="weather-header" wx:else>
+                <text class="weather-title-icon">🌼</text>
+                <text class="weather-card-title">桂花采摘</text>
+              </view>
+              <view class="weather-main">
+                <text class="weather-icon-big">{{traceData.pickWeather.osmanthusPick.weatherIcon}}</text>
+                <view class="weather-info">
+                  <text class="weather-temp">{{traceData.pickWeather.osmanthusPick.temperature}}</text>
+                  <text class="weather-desc">{{traceData.pickWeather.osmanthusPick.weather}}</text>
+                </view>
+              </view>
+              <view class="weather-meta-row">
+                <text class="meta-chip">💧 {{traceData.pickWeather.osmanthusPick.humidity}}</text>
+                <text class="meta-chip">🌬️ {{traceData.pickWeather.osmanthusPick.wind}}</text>
+              </view>
+              <view class="weather-footer">
+                <text class="weather-date">📅 {{traceData.pickWeather.osmanthusPick.date}}</text>
+                <text class="weather-location">📍 {{traceData.pickWeather.osmanthusPick.location}}</text>
+              </view>
+              <view class="weather-quality-bar">
+                <text class="air-quality">{{traceData.pickWeather.osmanthusPick.airQuality}}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="weather-note" wx:if="{{traceData.pickWeather.teaPick.note}}">
+            <text class="note-icon">💡</text>
+            <text class="note-text">{{traceData.pickWeather.teaPick.note}}</text>
+          </view>
+        </view>
+
+      </view>
+    </view>
+
+    <!-- ========== 模块4：桂花信息 ========== -->
     <view class="card animate-card module-card" style="animation-delay: 0.2s;">
       <view class="card-title module-header" bindtap="toggleModule" data-key="osmanthus">
         <view class="title-left">
@@ -222,8 +558,16 @@
       <view class="module-content {{moduleCollapsed.osmanthus ? 'hidden' : ''}}">
         <view class="osmanthus-content">
           <view class="osmanthus-variety">
-            <view class="variety-badge {{traceData.osmanthusInfo.variety === '金桂' ? 'golden' : 'silver'}}">
+            <view class="variety-badge variety-{{varietyStyle.key}}" wx:if="{{varietyStyle}}" style="background: {{varietyStyle.bgGradient}};">
+              <text class="variety-badge-icon">{{varietyStyle.icon}}</text>
               {{traceData.osmanthusInfo.variety}}
+            </view>
+            <view class="variety-badge silver" wx:else>
+              {{traceData.osmanthusInfo.variety}}
+            </view>
+            <view class="variety-description" wx:if="{{varietyStyle}}">
+              <text class="desc-icon">✨</text>
+              {{varietyStyle.description}}
             </view>
           </view>
           <view class="info-grid">
@@ -1194,6 +1538,62 @@
         <view class="verify-tip">
           <text class="verify-tip-icon">💡</text>
           <text class="verify-tip-text">报告编号可在检测报告右上角或本页面找到</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 地图标记简介弹窗 ==================== -->
+  <view class="map-callout-modal {{showMapCalloutModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeMapCallout" wx:if="{{selectedMapMarker}}">
+    <view class="map-callout-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="callout-header" style="background: linear-gradient(135deg, {{selectedMapMarker.color}} 0%, rgba({{selectedMapMarker.color}}, 0.7) 100%);">
+        <view class="callout-icon-box">
+          <text class="callout-big-icon">{{selectedMapMarker.icon}}</text>
+        </view>
+        <view class="callout-title-info">
+          <text class="callout-title">{{selectedMapMarker.callout.title}}</text>
+          <view class="callout-type-tag">
+            <text wx:if="{{selectedMapMarker.type === 'teaGarden'}}">🍃 茶树园</text>
+            <text wx:elif="{{selectedMapMarker.type === 'osmanthusGarden'}}">{{varietyStyle ? varietyStyle.icon : '🌼'}} 桂花园</text>
+            <text wx:elif="{{selectedMapMarker.type === 'factory'}}">🏭 加工厂</text>
+            <text wx:else>📍 地点</text>
+          </view>
+        </view>
+        <view class="callout-close" bindtap="closeMapCallout">×</view>
+      </view>
+
+      <view class="callout-body">
+        <!-- 简介图片 -->
+        <view class="callout-images" wx:if="{{selectedMapMarker.callout.images && selectedMapMarker.callout.images.length > 0}}">
+          <view 
+            wx:for="{{selectedMapMarker.callout.images}}" 
+            wx:key="*this" 
+            class="callout-image-item"
+            data-url="{{item}}"
+            bindtap="previewMapCalloutImage"
+          >
+            <image class="callout-img" src="{{item}}" mode="aspectFill" />
+          </view>
+        </view>
+
+        <!-- 简介内容 -->
+        <view class="callout-desc">
+          <text class="desc-label">📍 位置</text>
+          <text class="desc-value">经度 {{selectedMapMarker.lng}}, 纬度 {{selectedMapMarker.lat}}</text>
+        </view>
+        <view class="callout-desc">
+          <text class="desc-label">📖 简介</text>
+          <text class="desc-value">{{selectedMapMarker.callout.content}}</text>
+        </view>
+
+        <!-- 操作按钮 -->
+        <view class="callout-action-buttons">
+          <view class="callout-btn primary" bindtap="openLocationNavigation">
+            <text>🧭 导航前往</text>
+          </view>
+          <view class="callout-btn secondary" bindtap="closeMapCallout">
+            <text>关闭</text>
+          </view>
         </view>
       </view>
     </view>

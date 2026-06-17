@@ -11,6 +11,7 @@ const mockData = require('../../utils/mockData.js');
 const ANCHOR_TABS = [
   { key: 'basic', label: '基础信息', icon: '📋' },
   { key: 'treeAge', label: '树龄', icon: '🌳' },
+  { key: 'location', label: '产地', icon: '📍' },
   { key: 'process', label: '工艺', icon: '🫖' },
   { key: 'green', label: '绿色', icon: '♻️' },
   { key: 'test', label: '检测', icon: '🔬' },
@@ -88,7 +89,31 @@ Page({
     timelineSpeed: 2000,
     // 工艺对比数据
     showProcessComparison: false,
-    processComparisonData: null
+    processComparisonData: null,
+
+    // ========== 新增功能数据 ==========
+    // 品种样式配置
+    varietyStyle: null,
+    // 照片轮播当前索引
+    currentScenicIndex: 0,
+    // 地图弹窗
+    showMapCalloutModal: false,
+    selectedMapMarker: null,
+    // 地图模式（卫星/标准）
+    mapLayerType: 'standard',
+    // 树龄故事 Tab
+    activeStoryTab: 'tea',
+    // 历史记录类型图标映射
+    historyTypeIconMap: {
+      plant: '🌱',
+      expand: '🏞️',
+      survive: '⚔️',
+      protect: '🛡️',
+      heritage: '🏆',
+      digital: '💾'
+    },
+    // 地图图例
+    showMapLegend: true
   },
 
   /**
@@ -159,13 +184,21 @@ Page({
         // 计算国标对比图表数据
         const testChartData = that.calculateTestChartData(data.pesticideTest);
         
+        // 获取品种样式配置（安全判断，避免 osmanthusInfo 缺失）
+        const variety = (data.osmanthusInfo && data.osmanthusInfo.variety) || '金桂';
+        const varietyStyle = mockData.getOsmanthusVarietyConfig(variety);
+        
+        // 初始化模块收起状态（产地模块默认收起）
+        moduleCollapsed.location = true;
+
         that.setData({
           traceData: data,
           loading: false,
           skeletonLoading: false,
           moduleCollapsed: moduleCollapsed,
           lazyImageMap: lazyImageMap,
-          testChartData: testChartData
+          testChartData: testChartData,
+          varietyStyle: varietyStyle
         });
         
         // 设置导航栏标题
@@ -218,6 +251,7 @@ Page({
     const moduleIds = [
       '#anchor-basic',
       '#anchor-treeAge',
+      '#anchor-location',
       '#anchor-process',
       '#anchor-green',
       '#anchor-test',
@@ -969,6 +1003,156 @@ Page({
     wx.previewImage({
       current: url,
       urls: urls
+    });
+  },
+
+  // ============================================================
+  // ==================== 新增功能方法 ====================
+  // ============================================================
+
+  /**
+   * 实景照片轮播 change 事件
+   */
+  onScenicChange: function(e) {
+    this.setData({ currentScenicIndex: e.detail.current });
+  },
+
+  /**
+   * 点击实景照片预览大图
+   */
+  previewScenicImage: function(e) {
+    const url = e.currentTarget.dataset.url;
+    const photos = this.data.traceData.scenicPhotos.photos;
+    const urls = photos.map(function(p) { return p.url; });
+    wx.previewImage({ current: url, urls: urls });
+  },
+
+  /**
+   * 地图标记点击事件
+   */
+  onMapMarkerTap: function(e) {
+    const markerId = e.detail.markerId;
+    const markers = this.data.traceData.locationMap.markers;
+    const marker = markers.find(function(m) { return m.id === markerId; });
+    if (marker) {
+      this.setData({
+        showMapCalloutModal: true,
+        selectedMapMarker: marker
+      });
+    }
+  },
+
+  /**
+   * 关闭地图弹窗
+   */
+  closeMapCallout: function() {
+    this.setData({
+      showMapCalloutModal: false,
+      selectedMapMarker: null
+    });
+  },
+
+  /**
+   * 切换地图图层类型（标准/卫星）
+   */
+  toggleMapLayer: function() {
+    const newType = this.data.mapLayerType === 'standard' ? 'satellite' : 'standard';
+    const labels = { standard: '标准图', satellite: '卫星图' };
+    this.setData({ mapLayerType: newType });
+    wx.showToast({
+      title: '已切换为' + labels[newType],
+      icon: 'none',
+      duration: 1000
+    });
+  },
+
+  /**
+   * 预览地图标记简介图片
+   */
+  previewMapCalloutImage: function(e) {
+    const url = e.currentTarget.dataset.url;
+    const marker = this.data.selectedMapMarker;
+    if (marker && marker.callout && marker.callout.images) {
+      wx.previewImage({
+        current: url,
+        urls: marker.callout.images
+      });
+    }
+  },
+
+  /**
+   * 切换树龄故事 Tab
+   */
+  switchStoryTab: function(e) {
+    const tab = e.currentTarget.dataset.tab;
+    this.setData({ activeStoryTab: tab });
+  },
+
+  /**
+   * 查看养护记录详情
+   */
+  viewMaintenanceDetail: function(e) {
+    const record = e.currentTarget.dataset.record;
+    wx.showModal({
+      title: record.type + '详情',
+      content: '日期：' + record.date + '\n操作人：' + record.operator + '\n内容：' + record.content + (record.photos ? '\n照片数量：' + record.photos + '张' : ''),
+      showCancel: false,
+      confirmText: '知道了'
+    });
+  },
+
+  /**
+   * 查看历史事件详情
+   */
+  viewHistoryEventDetail: function(e) {
+    const record = e.currentTarget.dataset.record;
+    const typeMap = this.data.historyTypeIconMap;
+    wx.showModal({
+      title: typeMap[record.type] + '  ' + record.year + '年',
+      content: record.event,
+      showCancel: false,
+      confirmText: '知道了'
+    });
+  },
+
+  /**
+   * 打开导航：跳转地图导航
+   */
+  openLocationNavigation: function() {
+    const marker = this.data.selectedMapMarker;
+    if (!marker) return;
+    wx.openLocation({
+      latitude: marker.lat,
+      longitude: marker.lng,
+      name: marker.name,
+      address: marker.callout ? marker.callout.title || marker.name : marker.name,
+      scale: 16
+    });
+  },
+
+  /**
+   * 预览采摘天气详情弹窗
+   */
+  viewWeatherDetail: function(e) {
+    const type = e.currentTarget.dataset.type;
+    const weather = this.data.traceData.pickWeather[type];
+    if (!weather) return;
+
+    const titleMap = { teaPick: '茶叶采摘当日天气', osmanthusPick: '桂花采摘当日天气' };
+
+    wx.showModal({
+      title: titleMap[type] || '天气详情',
+      content: '日期：' + weather.date +
+        '\n地点：' + weather.location +
+        '\n天气：' + weather.weather +
+        '\n温度：' + weather.temperature +
+        '\n湿度：' + weather.humidity +
+        '\n风力：' + weather.wind +
+        '\n空气质量：' + weather.airQuality +
+        '\n日出/日落：' + weather.sunrise + ' / ' + weather.sunset +
+        '\n\n说明：' + weather.note,
+      showCancel: false,
+      confirmText: '知道了'
     });
   },
 

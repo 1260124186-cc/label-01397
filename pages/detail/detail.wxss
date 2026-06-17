@@ -3075,3 +3075,897 @@
   font-size: 20rpx;
   color: #999999;
 }
+
+/* ===================================================== */
+/*  ===== 树龄故事 · Tree Story Section =====            */
+/* ===================================================== */
+
+.tree-story-section {
+  margin-top: 24rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx dashed #E0E8E0;
+}
+
+.tree-story-header {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 0 4rpx 18rpx;
+}
+
+.story-title-icon {
+  font-size: 30rpx;
+}
+
+.story-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1F3A1F;
+  letter-spacing: 0.5rpx;
+}
+
+/* ---- Story Tab Bar ---- */
+.story-tab-bar {
+  display: flex;
+  background: #F5F9F5;
+  border-radius: 14rpx;
+  padding: 6rpx;
+  margin: 0 0 20rpx;
+  border: 1rpx solid #E0EBE0;
+}
+
+.story-tab-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 16rpx 0;
+  border-radius: 10rpx;
+  font-size: 26rpx;
+  color: #667766;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.story-tab-item .tab-icon {
+  font-size: 28rpx;
+}
+
+.story-tab-item.active {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: 0 4rpx 14rpx rgba(46, 139, 87, 0.25);
+}
+
+/* ---- Story Detail Card ---- */
+.story-detail-card {
+  background: #FAFCF9;
+  border-radius: 18rpx;
+  padding: 26rpx 24rpx;
+  border: 1rpx solid #D6E8D6;
+  margin-bottom: 24rpx;
+  position: relative;
+}
+
+.story-detail-card.osmanthus-card {
+  background: #FFFBF0;
+  border-color: #F3E3BE;
+}
+
+.story-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx 20rpx;
+  margin-bottom: 18rpx;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.meta-label {
+  font-size: 22rpx;
+  color: #8AA08A;
+}
+
+.meta-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2F4F2F;
+}
+
+.meta-value.highlight {
+  color: #2E8B57;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.story-location-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 16rpx;
+  background: rgba(46, 139, 87, 0.08);
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  color: #2E8B57;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+
+.story-content {
+  line-height: 1.8;
+}
+
+.story-text {
+  font-size: 26rpx;
+  color: #4A5E4A;
+  text-align: justify;
+}
+
+/* ---- History Timeline ---- */
+.section-sub-title {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 6rpx 4rpx 16rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1F3A1F;
+  position: relative;
+}
+
+.section-sub-title .sub-icon {
+  font-size: 26rpx;
+}
+
+.section-sub-title .map-layer-toggle {
+  margin-left: auto;
+  font-size: 22rpx;
+  color: #2E8B57;
+  background: rgba(46, 139, 87, 0.1);
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  font-weight: 500;
+}
+
+.history-timeline-section {
+  margin-top: 8rpx;
+}
+
+.history-timeline {
+  position: relative;
+  padding-left: 56rpx;
+}
+
+.history-timeline-item {
+  position: relative;
+  padding-bottom: 28rpx;
+  display: flex;
+}
+
+.history-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.history-dot {
+  position: absolute;
+  left: -56rpx;
+  top: 6rpx;
+  width: 54rpx;
+  height: 54rpx;
+  border-radius: 50%;
+  background: #2E8B57;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 4rpx 14rpx rgba(46, 139, 87, 0.3);
+}
+
+.history-dot-icon {
+  font-size: 26rpx;
+}
+
+.history-line {
+  position: absolute;
+  left: -30rpx;
+  top: 62rpx;
+  bottom: -6rpx;
+  width: 4rpx;
+  background: linear-gradient(to bottom, #AED8AE, #E0F0E0);
+  border-radius: 4rpx;
+}
+
+.history-content {
+  flex: 1;
+  background: #FAFCF9;
+  border: 1rpx solid #E0EBE0;
+  border-radius: 14rpx;
+  padding: 16rpx 20rpx;
+}
+
+.history-year {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #2E8B57;
+  margin-bottom: 6rpx;
+}
+
+.history-event {
+  display: block;
+  font-size: 24rpx;
+  color: #4A5E4A;
+  line-height: 1.6;
+}
+
+/* ---- Maintenance List ---- */
+.maintenance-section {
+  margin-top: 10rpx;
+}
+
+.maintenance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.maintenance-card {
+  background: #FFFFFF;
+  border: 1rpx solid #E0E8E0;
+  border-radius: 16rpx;
+  padding: 20rpx 22rpx;
+  box-shadow: 0 2rpx 10rpx rgba(40, 80, 40, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.maintenance-card:active {
+  transform: scale(0.985);
+  box-shadow: 0 1rpx 6rpx rgba(40, 80, 40, 0.08);
+}
+
+.maint-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.maint-date {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #1F3A1F;
+}
+
+.maint-type-badge {
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  border: 2rpx solid #2E8B57;
+  color: #2E8B57;
+  font-weight: 500;
+}
+
+.maint-content {
+  font-size: 24rpx;
+  color: #4A5E4A;
+  line-height: 1.7;
+  margin-bottom: 12rpx;
+}
+
+.maint-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10rpx;
+  border-top: 1rpx dashed #E8F0E8;
+}
+
+.maint-operator {
+  font-size: 22rpx;
+  color: #8AA08A;
+}
+
+.maint-photos {
+  font-size: 22rpx;
+  color: #2E8B57;
+  font-weight: 500;
+}
+
+/* ===================================================== */
+/*  ===== 产地地理信息 · Location Section =====          */
+/* ===================================================== */
+
+.location-card .title-badge {
+  margin-left: 12rpx;
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+/* ---- Scenic Swiper (照片轮播) ---- */
+.scenic-swiper-section {
+  margin-bottom: 28rpx;
+}
+
+.scenic-swiper {
+  width: 100%;
+  height: 380rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 6rpx 20rpx rgba(20, 50, 20, 0.12);
+}
+
+.swiper-slide-item {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.scenic-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.scenic-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 60rpx 24rpx 24rpx;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.25) 55%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+  gap: 12rpx;
+}
+
+.caption-type-tag {
+  flex-shrink: 0;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  background: rgba(255, 255, 255, 0.92);
+  color: #2E8B57;
+  border-radius: 8rpx;
+  font-weight: 600;
+}
+
+.caption-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+  text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.5);
+  line-height: 1.4;
+}
+
+.swiper-counter {
+  margin-top: 14rpx;
+  text-align: right;
+  font-size: 22rpx;
+  color: #8AA08A;
+  font-weight: 500;
+}
+
+/* ---- Map Component ---- */
+.map-section {
+  margin-bottom: 28rpx;
+}
+
+.trace-map {
+  width: 100%;
+  height: 440rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  border: 2rpx solid #E0E8E0;
+  box-shadow: 0 6rpx 20rpx rgba(20, 50, 20, 0.1);
+}
+
+.map-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32rpx;
+  margin-top: 18rpx;
+  padding: 14rpx 18rpx;
+  background: #F5FAF5;
+  border-radius: 14rpx;
+  border: 1rpx solid #E0EBE0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: #4A5E4A;
+  font-weight: 500;
+}
+
+.legend-dot {
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+}
+
+.legend-dot.legend-tea {
+  background: #2E8B57;
+  box-shadow: 0 0 0 3rpx rgba(46, 139, 87, 0.18);
+}
+
+.legend-dot.legend-osm {
+  background: #DAA520;
+  box-shadow: 0 0 0 3rpx rgba(218, 165, 32, 0.18);
+}
+
+.legend-dot.legend-fac {
+  background: #5D6D7E;
+  box-shadow: 0 0 0 3rpx rgba(93, 109, 126, 0.18);
+}
+
+/* ---- Weather Section (采摘天气) ---- */
+.weather-section {
+  margin-bottom: 8rpx;
+}
+
+.weather-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18rpx;
+}
+
+.weather-card {
+  background: #FFFFFF;
+  border: 1rpx solid #E0E8E0;
+  border-radius: 20rpx;
+  padding: 22rpx 20rpx;
+  box-shadow: 0 4rpx 14rpx rgba(20, 50, 20, 0.06);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.weather-card:active {
+  transform: scale(0.975);
+}
+
+.weather-header {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding-bottom: 14rpx;
+  margin-bottom: 16rpx;
+  border-bottom: 2rpx solid #E0E8E0;
+}
+
+.weather-title-icon {
+  font-size: 28rpx;
+}
+
+.weather-card-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #1F3A1F;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-bottom: 14rpx;
+}
+
+.weather-icon-big {
+  font-size: 54rpx;
+  line-height: 1;
+  filter: drop-shadow(0 2rpx 4rpx rgba(0, 0, 0, 0.1));
+}
+
+.weather-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.weather-temp {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #1F3A1F;
+  letter-spacing: -0.5rpx;
+}
+
+.weather-desc {
+  font-size: 22rpx;
+  color: #667766;
+  font-weight: 500;
+}
+
+.weather-meta-row {
+  display: flex;
+  gap: 10rpx;
+  margin-bottom: 14rpx;
+}
+
+.meta-chip {
+  flex: 1;
+  font-size: 20rpx;
+  text-align: center;
+  padding: 8rpx 4rpx;
+  background: #F3F8F3;
+  border-radius: 8rpx;
+  color: #526852;
+  font-weight: 500;
+}
+
+.weather-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  padding-top: 12rpx;
+  border-top: 1rpx dashed #E8F0E8;
+}
+
+.weather-date,
+.weather-location {
+  font-size: 20rpx;
+  color: #8AA08A;
+  line-height: 1.3;
+}
+
+.weather-quality-bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 8rpx 14rpx;
+  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+  border-bottom-left-radius: 16rpx;
+}
+
+.weather-card:nth-child(2) .weather-quality-bar {
+  background: linear-gradient(135deg, #DAA520 0%, #E8C256 100%);
+}
+
+.air-quality {
+  font-size: 18rpx;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.weather-note {
+  margin-top: 20rpx;
+  display: flex;
+  align-items: flex-start;
+  gap: 10rpx;
+  padding: 18rpx 22rpx;
+  background: #FFF8E7;
+  border-radius: 14rpx;
+  border: 1rpx solid #F3E3BE;
+}
+
+.note-icon {
+  font-size: 26rpx;
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.note-text {
+  flex: 1;
+  font-size: 24rpx;
+  color: #8B6914;
+  line-height: 1.7;
+}
+
+/* ===================================================== */
+/*  ===== 地图标记弹窗 · Map Callout Modal =====         */
+/* ===================================================== */
+
+.map-callout-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx 36rpx;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.map-callout-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.map-callout-content {
+  width: 100%;
+  max-height: 88vh;
+  background: #FFFFFF;
+  border-radius: 28rpx;
+  overflow: hidden;
+  transform: translateY(60rpx) scale(0.95);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 20rpx 80rpx rgba(0, 0, 0, 0.3);
+}
+
+.map-callout-modal.show .map-callout-content {
+  transform: translateY(0) scale(1);
+}
+
+.callout-header {
+  position: relative;
+  padding: 36rpx 36rpx 32rpx;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.callout-icon-box {
+  width: 88rpx;
+  height: 88rpx;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6rpx);
+  border: 2rpx solid rgba(255, 255, 255, 0.35);
+  flex-shrink: 0;
+}
+
+.callout-big-icon {
+  font-size: 48rpx;
+}
+
+.callout-title-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+
+.callout-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  letter-spacing: 0.5rpx;
+}
+
+.callout-type-tag {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 6rpx 16rpx;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.callout-close {
+  position: absolute;
+  top: 20rpx;
+  right: 24rpx;
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 48rpx;
+  line-height: 1;
+  opacity: 0.85;
+  z-index: 3;
+}
+
+.callout-body {
+  padding: 28rpx 36rpx 36rpx;
+  max-height: calc(88vh - 200rpx);
+  overflow-y: auto;
+}
+
+.callout-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.callout-image-item {
+  width: 100%;
+  padding-top: 100%;
+  position: relative;
+  border-radius: 14rpx;
+  overflow: hidden;
+  border: 1rpx solid #E8F0E8;
+  box-shadow: 0 2rpx 8rpx rgba(20, 50, 20, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.callout-image-item:active {
+  transform: scale(0.96);
+}
+
+.callout-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.callout-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx dashed #E8F0E8;
+}
+
+.callout-desc:last-of-type {
+  border-bottom: none;
+  padding-bottom: 4rpx;
+}
+
+.desc-label {
+  font-size: 22rpx;
+  color: #8AA08A;
+  font-weight: 500;
+}
+
+.desc-value {
+  font-size: 26rpx;
+  color: #2F4F2F;
+  line-height: 1.7;
+}
+
+.callout-action-buttons {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 32rpx;
+  padding-top: 24rpx;
+  border-top: 2rpx solid #E8F0E8;
+}
+
+.callout-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.callout-btn.primary {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #FFFFFF;
+  box-shadow: 0 6rpx 18rpx rgba(46, 139, 87, 0.3);
+}
+
+.callout-btn.primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 3rpx 10rpx rgba(46, 139, 87, 0.3);
+}
+
+.callout-btn.secondary {
+  background: #F3F8F3;
+  color: #526852;
+  border: 1rpx solid #D0E0D0;
+}
+
+.callout-btn.secondary:active {
+  transform: scale(0.97);
+  background: #E8F0E8;
+}
+
+/* ===================================================== */
+/*  ===== 品种差异化样式 · Variety Styles =====          */
+/* ===================================================== */
+
+/* ---- 金桂 ---- */
+.variety-badge.variety-jin-gui {
+  background: linear-gradient(135deg, #DAA520 0%, #E8C256 100%) !important;
+  border: 2rpx solid #C49518 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 3rpx 10rpx rgba(218, 165, 32, 0.35) !important;
+}
+
+.variety-icon-jin-gui {
+  background: linear-gradient(135deg, #FFF4D6 0%, #FFE7A3 100%) !important;
+  border: 3rpx solid #E8C256 !important;
+}
+
+.variety-icon-jin-gui text {
+  color: #B8860B !important;
+}
+
+/* ---- 银桂 ---- */
+.variety-badge.variety-yin-gui {
+  background: linear-gradient(135deg, #A8B5B0 0%, #D5DBD9 100%) !important;
+  border: 2rpx solid #8A9995 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 3rpx 10rpx rgba(168, 181, 176, 0.35) !important;
+}
+
+.variety-icon-yin-gui {
+  background: linear-gradient(135deg, #F0F3F2 0%, #DCE4E2 100%) !important;
+  border: 3rpx solid #C0C8C6 !important;
+}
+
+.variety-icon-yin-gui text {
+  color: #70807D !important;
+}
+
+/* ---- 丹桂 ---- */
+.variety-badge.variety-dan-gui {
+  background: linear-gradient(135deg, #CD5C5C 0%, #E88B8B 100%) !important;
+  border: 2rpx solid #B04040 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 3rpx 10rpx rgba(205, 92, 92, 0.35) !important;
+}
+
+.variety-icon-dan-gui {
+  background: linear-gradient(135deg, #FFE8E8 0%, #FFD0D0 100%) !important;
+  border: 3rpx solid #E88B8B !important;
+}
+
+.variety-icon-dan-gui text {
+  color: #A52A2A !important;
+}
+
+/* ---- 四季桂 ---- */
+.variety-badge.variety-si-ji-gui {
+  background: linear-gradient(135deg, #6B8E23 0%, #90C040 100%) !important;
+  border: 2rpx solid #556B2F !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 3rpx 10rpx rgba(107, 142, 35, 0.35) !important;
+}
+
+.variety-icon-si-ji-gui {
+  background: linear-gradient(135deg, #EFF8DE 0%, #DCF2B5 100%) !important;
+  border: 3rpx solid #90C040 !important;
+}
+
+.variety-icon-si-ji-gui text {
+  color: #556B2F !important;
+}
+
+/* ---- 品种描述 (品种 Badge 下方) ---- */
+.variety-description {
+  margin-top: 18rpx;
+  padding: 18rpx 22rpx;
+  background: #FFFDF5;
+  border: 1rpx solid #F3E3BE;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: flex-start;
+  gap: 10rpx;
+}
+
+.variety-description .desc-icon {
+  font-size: 28rpx;
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.variety-description text:last-child {
+  font-size: 24rpx;
+  color: #8B6914;
+  line-height: 1.75;
+  flex: 1;
+}

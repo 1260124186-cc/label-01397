@@ -4,6 +4,46 @@
  * 说明：实际项目中应通过 wx.request 从后端获取数据
  */
 
+// ==================== 桂花品种配置（扩展枚举） ====================
+const OSMANTHUS_VARIETIES = {
+  '金桂': {
+    key: 'jin-gui',
+    color: '#DAA520',
+    bgGradient: 'linear-gradient(135deg, #FFD700 0%, #DAA520 100%)',
+    lightBg: '#FFF8E1',
+    borderColor: '#F5C842',
+    icon: '🌼',
+    description: '花色金黄，香气浓郁持久，为桂花之上品'
+  },
+  '银桂': {
+    key: 'yin-gui',
+    color: '#C0C0C0',
+    bgGradient: 'linear-gradient(135deg, #F5F5F5 0%, #C0C0C0 100%)',
+    lightBg: '#FAFAFA',
+    borderColor: '#D0D0D0',
+    icon: '🌸',
+    description: '花色乳白，香气清雅淡远，口感柔和'
+  },
+  '丹桂': {
+    key: 'dan-gui',
+    color: '#CD5C5C',
+    bgGradient: 'linear-gradient(135deg, #FF6B6B 0%, #CD5C5C 100%)',
+    lightBg: '#FFF0F0',
+    borderColor: '#E87373',
+    icon: '🌺',
+    description: '花色橙红，香气馥郁浓烈，为名贵观赏品种'
+  },
+  '四季桂': {
+    key: 'si-ji-gui',
+    color: '#90EE90',
+    bgGradient: 'linear-gradient(135deg, #98FB98 0%, #90EE90 100%)',
+    lightBg: '#F0FFF0',
+    borderColor: '#A8E6A8',
+    icon: '🍃',
+    description: '四季开花，香气清淡悠长，常年可供观赏'
+  }
+};
+
 // ==================== 模拟溯源数据 ====================
 
 const mockTraceData = {
@@ -177,6 +217,181 @@ const mockTraceData = {
       verifyStatus: '已验证'
     },
     
+    // 产地地理信息（地图模块）
+    locationMap: {
+      title: '产地地理信息',
+      centerLat: 27.9879,
+      centerLng: 118.0935,
+      scale: 10,
+      markers: [
+        {
+          id: 1,
+          type: 'teaGarden',
+          name: '武夷山百年茶树园',
+          lat: 27.9879,
+          lng: 118.0935,
+          icon: '🍃',
+          color: '#2E8B57',
+          width: 40,
+          height: 40,
+          callout: {
+            title: '武夷山百年茶树园',
+            content: '海拔800米以上高山云雾茶园，200年以上古茶树500余株，国家级茶树种植保护区',
+            images: [
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20tea%20garden%20in%20wuyi%20mountain%20misty%20terrace&image_size=square',
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=200%20year%20old%20tea%20tree%20mountain%20terrace%20aerial&image_size=square'
+            ]
+          }
+        },
+        {
+          id: 2,
+          type: 'osmanthusGarden',
+          name: '咸宁金桂种植基地',
+          lat: 29.8408,
+          lng: 114.3162,
+          icon: '🌼',
+          color: '#DAA520',
+          width: 40,
+          height: 40,
+          callout: {
+            title: '咸宁金桂种植基地',
+            content: '中国桂花之乡核心产区，50年树龄以上金桂3000余株，有机种植认证基地',
+            images: [
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=golden%20osmanthus%20garden%20in%20full%20bloom%20autumn&image_size=square',
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=aerial%20view%20osmanthus%20tree%20plantation%20autumn%20golden&image_size=square'
+            ]
+          }
+        },
+        {
+          id: 3,
+          type: 'factory',
+          name: '非遗窨制工艺加工厂',
+          lat: 30.5928,
+          lng: 114.3055,
+          icon: '🏭',
+          color: '#1890FF',
+          width: 40,
+          height: 40,
+          callout: {
+            title: '非遗窨制工艺加工厂',
+            content: '传承600年桂花茶窨制技艺，国家级非物质文化遗产示范基地，10万级洁净生产车间',
+            images: [
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20tea%20processing%20factory%20clean%20workshop&image_size=square',
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=artisan%20tea%20scenting%20workshop%20chinese%20traditional&image_size=square'
+            ]
+          }
+        }
+      ]
+    },
+
+    // 卫星/实景照片轮播
+    scenicPhotos: {
+      title: '产地实景航拍',
+      autoPlay: true,
+      interval: 3500,
+      photos: [
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=aerial%20drone%20view%20wuyi%20mountain%20tea%20terraces%20sunrise%20mist&image_size=landscape_16_9',
+          caption: '武夷山茶园航拍 · 清晨云雾缭绕',
+          type: 'aerial'
+        },
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=close%20up%20ancient%20tea%20tree%20trunk%20moss%20lichen%20mountain&image_size=landscape_16_9',
+          caption: '200年古茶树 · 树干青苔斑驳',
+          type: 'detail'
+        },
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=golden%20osmanthus%20flowers%20close%20up%20tree%20autumn%20sunlight&image_size=landscape_16_9',
+          caption: '咸宁金桂基地 · 金秋盛放',
+          type: 'aerial'
+        },
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20pickers%20harvesting%20tea%20leaves%20mountain%20terrace%20traditional&image_size=landscape_16_9',
+          caption: '茶农手工采茶 · 明前嫩芽',
+          type: 'people'
+        },
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20chinese%20tea%20master%20scenting%20osmanthus%20tea%20workshop&image_size=landscape_16_9',
+          caption: '非遗传承人 · 古法窨制',
+          type: 'people'
+        }
+      ]
+    },
+
+    // 树龄故事
+    treeStory: {
+      title: '200年茶树的故事',
+      teaTree: {
+        plantYear: '清嘉庆五年（1800年）',
+        age: 225,
+        height: '5.2米',
+        crown: '4.8米',
+        location: '武夷山核心产区・九龙窠崖壁',
+        story: '此株古茶树种于清嘉庆五年，由当地茶农李氏先祖亲手栽植。历经两个世纪的风雨洗礼，至今仍枝繁叶茂，每年可产特级干茶约2.5公斤。茶树扎根于丹霞地貌的岩缝之中，汲取武夷山独特的岩石矿物精华，造就了其独特的"岩骨花香"韵味。',
+        historicalRecords: [
+          { year: '1800', event: '李氏先祖栽植此茶树，选址于九龙窠向阳崖壁', type: 'plant' },
+          { year: '1850', event: '李氏后人扩建茶园，此树所产茶成为当地贡茶', type: 'expand' },
+          { year: '1938', event: '抗日战争期间，茶园遭破坏，此树幸免于难', type: 'survive' },
+          { year: '1982', event: '被列为武夷山一级保护古茶树，编号WH-001', type: 'protect' },
+          { year: '2006', event: '武夷岩茶制作技艺列入首批国家级非遗名录', type: 'heritage' },
+          { year: '2019', event: '完成古树基因测序，建立专属数字档案', type: 'digital' }
+        ],
+        maintenanceRecords: [
+          { date: '2025-03-15', type: '春季养护', operator: '王师傅（高级农艺师）', content: '修剪枯枝、施加有机肥、病虫害检查，一切正常', photos: 3 },
+          { date: '2025-04-20', type: '明前采摘', operator: '李氏家族采茶队', content: '手工采摘一芽二叶鲜叶，共采得鲜叶10.2公斤', photos: 8 },
+          { date: '2025-06-10', type: '夏季防护', operator: '武夷山古茶树保护站', content: '安装遮阳网、喷淋灌溉系统、土壤湿度检测', photos: 5 },
+          { date: '2025-09-05', type: '秋季养护', operator: '王师傅（高级农艺师）', content: '施加腐熟羊粪、清理周边杂草、树干涂白防虫', photos: 4 }
+        ]
+      },
+      osmanthusTree: {
+        plantYear: '1973年',
+        age: 52,
+        height: '6.8米',
+        crown: '5.5米',
+        location: '咸安区桂花镇・王氏百年桂花园',
+        story: '此株金桂栽于1973年，由当地桂花种植世家王氏第三代传人王老先生亲手栽种。每年中秋前后，满树金黄，香飘数里，所产桂花是窨制桂花茶的上等原料。',
+        maintenanceRecords: [
+          { date: '2025-02-20', type: '整枝修剪', operator: '王师傅', content: '修剪过密枝条、定型树冠，促进花芽分化' },
+          { date: '2025-08-15', type: '花期前养护', operator: '王师傅', content: '施加磷钾肥、防治红蜘蛛、清理落叶' },
+          { date: '2025-09-08', type: '桂花采摘', operator: '王氏采摘队', content: '人工采摘新鲜桂花42.8公斤，均为初开盛花' }
+        ]
+      }
+    },
+
+    // 采摘当日天气
+    pickWeather: {
+      teaPick: {
+        date: '2025年4月20日',
+        location: '福建武夷山',
+        weather: '晴转多云',
+        weatherIcon: '⛅',
+        temperature: '16℃~24℃',
+        avgTemp: 20,
+        humidity: '68%',
+        avgHumidity: 68,
+        wind: '东南风 2级',
+        airQuality: '优（AQI: 38）',
+        sunrise: '05:42',
+        sunset: '18:36',
+        note: '清晨有薄雾，上午9时云雾散去，光照适宜，茶叶内涵物质积累最佳，为明前茶理想采摘天气。'
+      },
+      osmanthusPick: {
+        date: '2025年9月8日',
+        location: '湖北咸宁',
+        weather: '晴',
+        weatherIcon: '☀️',
+        temperature: '18℃~26℃',
+        avgTemp: 22,
+        humidity: '72%',
+        avgHumidity: 72,
+        wind: '东北风 1-2级',
+        airQuality: '优（AQI: 32）',
+        sunrise: '06:08',
+        sunset: '18:22',
+        note: '连续三日晴天，桂花香气物质充分积累；无风无雨，花朵完整无损，为桂花采摘绝佳天气。'
+      }
+    },
+
     // 配图（用于懒加载）
     images: {
       originImage: 'https://picsum.photos/id/1018/750/400',
@@ -373,6 +588,158 @@ const mockTraceData = {
       verifyStatus: '已验证'
     },
     
+    // 产地地理信息（地图模块）
+    locationMap: {
+      title: '产地地理信息',
+      centerLat: 27.9879,
+      centerLng: 118.0935,
+      scale: 10,
+      markers: [
+        {
+          id: 1,
+          type: 'teaGarden',
+          name: '武夷山生态茶园',
+          lat: 27.9512,
+          lng: 118.1088,
+          icon: '🍃',
+          color: '#2E8B57',
+          width: 40,
+          height: 40,
+          callout: {
+            title: '武夷山生态茶园（B区',
+            content: '海拔650米优质茶园，120年以上茶树1200余株，绿色食品认证基地',
+            images: [
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=eco%20tea%20garden%20wuyi%20mountain%20green%20tea%20terrace&image_size=square'
+            ]
+          }
+        },
+        {
+          id: 2,
+          type: 'osmanthusGarden',
+          name: '咸宁银桂种植园',
+          lat: 29.8525,
+          lng: 114.3321,
+          icon: '🌸',
+          color: '#C0C0C0',
+          width: 40,
+          height: 40,
+          callout: {
+            title: '咸宁银桂种植园',
+            content: '20年树龄银桂2500余株，清雅淡香，适合窨制中高端桂花茶',
+            images: [
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20garden%20white%20flowers%20autumn%20gentle&image_size=square'
+            ]
+          }
+        },
+        {
+          id: 3,
+          type: 'factory',
+          name: '桂花茶加工二厂',
+          lat: 30.5828,
+          lng: 114.3255,
+          icon: '🏭',
+          color: '#1890FF',
+          width: 40,
+          height: 40,
+          callout: {
+            title: '桂花茶加工二厂',
+            content: '自动化窨制车间，专注银桂系列产品专线生产',
+            images: [
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20tea%20factory%20automated%20workshop%20clean&image_size=square'
+            ]
+          }
+        }
+      ]
+    },
+
+    scenicPhotos: {
+      title: '产地实景',
+      autoPlay: true,
+      interval: 4000,
+      photos: [
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wuyi%20mountain%20tea%20garden%20morning%20mist%20terraces&image_size=landscape_16_9',
+          caption: '武夷山B区茶园 · 晨曦',
+          type: 'aerial'
+        },
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20white%20osmanthus%20flowering%20tree%20closeup%20delicate&image_size=landscape_16_9',
+          caption: '咸宁银桂 · 清雅绽放',
+          type: 'detail'
+        },
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20processing%20workshop%20automated%20tea%20scenting&image_size=landscape_16_9',
+          caption: '自动化窨制车间',
+          type: 'people'
+        }
+      ]
+    },
+
+    treeStory: {
+      title: '120年茶树的故事',
+      teaTree: {
+        plantYear: '清光绪三十一年（1905年）',
+        age: 120,
+        height: '3.8米',
+        crown: '3.2米',
+        location: '武夷山B区・天游峰南麓',
+        story: '此茶树种于清末光绪年间，至今已逾百年。地处天游峰南麓，土壤肥沃，昼夜温差大，所产茶叶口感醇厚甘甜，为银桂系列茶底原料。',
+        historicalRecords: [
+          { year: '1905', event: '茶农栽植，选址于天游峰南麓', type: 'plant' },
+          { year: '1965', event: '茶园集体化经营，产量提升', type: 'expand' },
+          { year: '2012', event: '列入武夷山二级保护古茶树', type: 'protect' }
+        ],
+        maintenanceRecords: [
+          { date: '2025-03-12', type: '春季养护', operator: '陈师傅', content: '修剪、施肥、病虫害检查', photos: 2 },
+          { date: '2025-04-22', type: '明前采摘', operator: '红星村采茶组', content: '采摘鲜叶8.5公斤', photos: 5 }
+        ]
+      },
+      osmanthusTree: {
+        plantYear: '2005年',
+        age: 20,
+        height: '4.2米',
+        crown: '3.5米',
+        location: '咸安区桂花镇・二组种植园',
+        story: '2005年咸宁桂花产业发展时期大规模种植，是新一代银桂代表植株，花型饱满，香气清雅。',
+        maintenanceRecords: [
+          { date: '2025-09-12', type: '银桂采摘', operator: '王氏采摘队', content: '采摘鲜桂花38.2公斤，品质优良' }
+        ]
+      }
+    },
+
+    pickWeather: {
+      teaPick: {
+        date: '2025年4月22日',
+        location: '福建武夷山',
+        weather: '多云',
+        weatherIcon: '☁️',
+        temperature: '15℃~22℃',
+        avgTemp: 18,
+        humidity: '75%',
+        avgHumidity: 75,
+        wind: '南风 2级',
+        airQuality: '优（AQI: 42）',
+        sunrise: '05:40',
+        sunset: '18:38',
+        note: '多云天气，光照柔和，茶叶内含物积累均匀，适合制作口感清雅型茶底。'
+      },
+      osmanthusPick: {
+        date: '2025年9月12日',
+        location: '湖北咸宁',
+        weather: '多云转晴',
+        weatherIcon: '⛅',
+        temperature: '17℃~25℃',
+        avgTemp: 21,
+        humidity: '70%',
+        avgHumidity: 70,
+        wind: '东风 2级',
+        airQuality: '优（AQI: 36）',
+        sunrise: '06:10',
+        sunset: '18:18',
+        note: '多云间晴，适宜银桂采摘，花朵完整度98%以上。'
+      }
+    },
+
     // 配图（用于懒加载）
     images: {
       originImage: 'https://picsum.photos/id/1015/750/400',
@@ -538,6 +905,12 @@ const mockTraceData = {
       verifyStatus: '已验证'
     },
     
+    // 产地与故事数据（后续通过引用复用 G001）
+    locationMap: null,
+    scenicPhotos: null,
+    treeStory: null,
+    pickWeather: null,
+
     // 配图（用于懒加载）
     images: {
       originImage: 'https://picsum.photos/id/1044/750/400',
@@ -701,6 +1074,12 @@ const mockTraceData = {
       verifyStatus: '已验证'
     },
     
+    // 产地与故事数据（后续通过引用复用 G001）
+    locationMap: null,
+    scenicPhotos: null,
+    treeStory: null,
+    pickWeather: null,
+
     // 配图（用于懒加载）
     images: {
       originImage: 'https://picsum.photos/id/1039/750/400',
@@ -709,8 +1088,323 @@ const mockTraceData = {
       processImage: 'https://picsum.photos/id/1044/750/400',
       certImage: 'https://picsum.photos/id/1025/750/400'
     }
+  },
+
+  /**
+   * 溯源ID: G005
+   * 品种: 丹桂
+   * 特点: 160年茶树龄，丹桂新品种，花色橙红馥郁
+   */
+  'G005': {
+    basicInfo: {
+      traceId: 'G005',
+      batchNo: 'GH202505',
+      pickTime: '2025年9月18日',
+      productionTime: '2025年10月5日',
+      productName: '丹桂窨花茶（典藏版）',
+      specification: '120g/礼盒',
+      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20red%20orange%20dan%20gui%20osmanthus%20tea%20luxury%20gift%20box&image_size=square'
+    },
+
+    treeAge: {
+      teaTreeAge: 160,
+      osmanthusTreeAge: 35,
+      teaTreeLocation: '福建省武夷山',
+      osmanthusTreeLocation: '湖北省咸宁市丹桂种植园'
+    },
+
+    osmanthusInfo: {
+      variety: '丹桂',
+      origin: '湖北省咸宁市丹桂示范基地',
+      pickTime: '2025年9月15日',
+      color: '橙红色',
+      fragrance: '馥郁浓烈、甜香四溢'
+    },
+
+    scentingProcess: {
+      scentingTimes: 6,
+      scentingDuration: 4.5,
+      temperature: 31,
+      humidity: 70,
+      ratio: '1:4',
+      workshopCleanliness: 'Class 10万级',
+      scentingRecords: [
+        { round: 1, duration: 5, temperature: 31, operator: '陈老师傅', timestamp: '2025-09-20 07:30:00', humidity: 70, note: '头窨，丹桂馥郁花香初绽' },
+        { round: 2, duration: 5, temperature: 30, operator: '陈老师傅', timestamp: '2025-09-21 08:00:00', humidity: 69, note: '二窨，甜香层叠' },
+        { round: 3, duration: 4.5, temperature: 31, operator: '陈老师傅', timestamp: '2025-09-22 08:30:00', humidity: 71, note: '三窨，花香入茶骨' },
+        { round: 4, duration: 4.5, temperature: 29, operator: '王师傅', timestamp: '2025-09-23 09:00:00', humidity: 68, note: '四窨，层次丰富' },
+        { round: 5, duration: 4, temperature: 28, operator: '陈老师傅', timestamp: '2025-09-24 08:15:00', humidity: 70, note: '五窨，橙香四溢' },
+        { round: 6, duration: 3.5, temperature: 27, operator: '王师傅', timestamp: '2025-09-25 10:30:00', humidity: 72, note: '六窨，提香收尾，典藏臻品' }
+      ],
+      processSteps: [
+        { step: 1, name: '备料', icon: '📦', desc: '160年古树茶芽+丹桂精品鲜花', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20dan%20gui%20red%20osmanthus%20tea%20raw%20materials%20preparation&image_size=square' },
+        { step: 2, name: '拌花', icon: '🌺', desc: '按1:4高配比均匀拌合丹桂与茶叶', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mixing%20red%20orange%20dan%20gui%20osmanthus%20with%20tea%20leaves%20artisan&image_size=square' },
+        { step: 3, name: '窨制', icon: '🫖', desc: '恒温恒湿六次窨制', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20scenting%20chamber%20six%20times%20scenting%20dan%20gui%20tea&image_size=square' },
+        { step: 4, name: '通花', icon: '💨', desc: '适时通风散热，保持活性', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ventilating%20premium%20dan%20gui%20tea%20during%20scenting%20process&image_size=square' },
+        { step: 5, name: '起花', icon: '🧹', desc: '精细筛分分离茶叶与丹桂残渣', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=fine%20sieving%20separating%20red%20osmanthus%20from%20tea%20leaves%20premium&image_size=square' },
+        { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住橙红甜香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=low%20temperature%20drying%20premium%20dan%20gui%20tea%20preserving%20fragrance&image_size=square' }
+      ]
+    },
+
+    greenTrace: {
+      ecoPlanting: {
+        title: '生态种植',
+        icon: '🌱',
+        records: ['无化肥农药种植', '自然雨水灌溉', '有机肥施肥', '丹桂母树保护培育'],
+        certification: '有机产品认证'
+      },
+      ecoPacking: {
+        title: '环保包装',
+        icon: '📦',
+        records: ['金丝楠木礼盒', '丝绸内衬', '植物大豆油墨印刷'],
+        certification: '绿色包装认证'
+      },
+      ecoLogistics: {
+        title: '绿色物流',
+        icon: '🚚',
+        records: ['冷链保鲜运输', '可循环快递箱', '碳中和物流合作伙伴'],
+        carbonReduction: '减少碳排放约18%'
+      }
+    },
+
+    pesticideTest: {
+      institution: '国家茶叶质量监督检验中心',
+      testDate: '2025年9月28日',
+      reportNo: 'NTQC-2025-09999',
+      standard: 'GB 2763-2021',
+      comparisonTip: '各项农残数值远低于国标 GB 2763-2021 限值，安全放心',
+      verifyUrl: 'https://www.ntqc.org.cn/verify',
+      hasAbnormal: false,
+      teaTests: [
+        { item: '六六六', value: 0.004, displayValue: '<0.01', unit: 'mg/kg', limit: 0.1, status: '合格', description: '' },
+        { item: '滴滴涕', value: 0.006, displayValue: '<0.01', unit: 'mg/kg', limit: 0.2, status: '合格', description: '' }
+      ],
+      osmanthusTests: [
+        { item: '联苯菊酯', value: 0.008, displayValue: '<0.02', unit: 'mg/kg', limit: 5.0, status: '合格', description: '' }
+      ],
+      historyReports: [
+        {
+          reportNo: 'NTQC-2025-09999',
+          testDate: '2025年9月28日',
+          institution: '国家茶叶质量监督检验中心',
+          status: '合格',
+          statusLevel: '优秀',
+          batchNo: 'GH202505'
+        }
+      ]
+    },
+
+    brewingGuide: {
+      waterTemp: '85℃-90℃',
+      brewingTime: '3分钟',
+      rebrewTimes: '5-6次',
+      waterType: '纯净水或山泉水',
+      teawareType: '白瓷盖碗或紫砂壶',
+      tips: [
+        '温杯烫盏，激发茶香',
+        '水温不宜过高，保留丹桂甜香',
+        '典藏臻品，每泡韵味各异'
+      ]
+    },
+
+    blockchainInfo: {
+      chainName: '溯源链',
+      blockHeight: 1896001,
+      txHash: '0x4d2c7e...b1a8f9',
+      timestamp: '2025-10-05 15:20:36',
+      verifyStatus: '已验证'
+    },
+
+    locationMap: {
+      title: '产地地理信息',
+      centerLat: 29.8408,
+      centerLng: 114.3162,
+      scale: 10,
+      markers: [
+        {
+          id: 1,
+          type: 'teaGarden',
+          name: '武夷山丹桂定制茶园',
+          lat: 27.9650,
+          lng: 118.0870,
+          icon: '🍃',
+          color: '#2E8B57',
+          width: 40,
+          height: 40,
+          callout: {
+            title: '武夷山丹桂定制茶园',
+            content: '海拔750米高山云雾茶园，160年以上古茶树300余株，丹桂系列专属茶底基地',
+            images: [
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20tea%20garden%20custom%20for%20dan%20gui%20osmanthus%20wuyi%20mountain&image_size=square'
+            ]
+          }
+        },
+        {
+          id: 2,
+          type: 'osmanthusGarden',
+          name: '咸宁丹桂母树园',
+          lat: 29.8650,
+          lng: 114.3450,
+          icon: '🌺',
+          color: '#CD5C5C',
+          width: 40,
+          height: 40,
+          callout: {
+            title: '咸宁丹桂母树园',
+            content: '中国丹桂之乡核心母株基地，30年以上丹桂古树1500余株，省级名贵花木保护区',
+            images: [
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=red%20orange%20dan%20gui%20osmanthus%20mother%20tree%20garden%20xianning%20autumn&image_size=square',
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=close%20up%20vibrant%20red%20orange%20dan%20gui%20osmanthus%20flowers%20blooming&image_size=square'
+            ]
+          }
+        },
+        {
+          id: 3,
+          type: 'factory',
+          name: '丹桂窨制非遗工坊',
+          lat: 30.5750,
+          lng: 114.3155,
+          icon: '🏭',
+          color: '#1890FF',
+          width: 40,
+          height: 40,
+          callout: {
+            title: '丹桂窨制非遗工坊',
+            content: '丹桂品种专属窨制工坊，六窨提香技艺传承，国家级非遗传人主持',
+            images: [
+              'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=intangible%20cultural%20heritage%20tea%20workshop%20dan%20gui%20osmanthus%20traditional&image_size=square'
+            ]
+          }
+        }
+      ]
+    },
+
+    scenicPhotos: {
+      title: '丹桂产地实景典藏',
+      autoPlay: true,
+      interval: 3800,
+      photos: [
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=aerial%20drone%20view%20xianning%20red%20orange%20dan%20gui%20osmanthus%20plantation%20autumn%20sunset&image_size=landscape_16_9',
+          caption: '咸宁丹桂基地航拍 · 秋日丹红似火',
+          type: 'aerial'
+        },
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=close%20up%20160%20year%20old%20ancient%20tea%20tree%20mountain%20sunlight%20premium&image_size=landscape_16_9',
+          caption: '160年古茶树 · 岩骨生茶',
+          type: 'detail'
+        },
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=macro%20photo%20vibrant%20red%20orange%20dan%20gui%20osmanthus%20flowers%20dewdrops%20autumn&image_size=landscape_16_9',
+          caption: '丹桂特写 · 橙红露珠欲滴',
+          type: 'detail'
+        },
+        {
+          url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=master%20artisan%20inspecting%20dan%20gui%20osmanthus%20tea%20six%20times%20scenting%20traditional%20workshop&image_size=landscape_16_9',
+          caption: '非遗传承人 · 六窨工艺',
+          type: 'people'
+        }
+      ]
+    },
+
+    treeStory: {
+      title: '160年茶树与丹桂母树的故事',
+      teaTree: {
+        plantYear: '清道光十五年（1835年）',
+        age: 190,
+        height: '4.6米',
+        crown: '4.2米',
+        location: '武夷山核心区・隐屏峰北麓',
+        story: '此株古茶树种于清道光年间，历经近两百年风云。隐屏峰北麓独特的丹霞微气候，赋予其独特的岩韵蜜香。为丹桂系列专属定制茶底，仅在每年明前限量采摘。',
+        historicalRecords: [
+          { year: '1835', event: '武夷山隐屏峰道士栽植，供道观饮用', type: 'plant' },
+          { year: '1915', event: '所制茶叶参加巴拿马万国博览会，获荣誉奖章', type: 'expand' },
+          { year: '1958', event: '收归国有，建立茶叶试验站保护基地', type: 'protect' },
+          { year: '2022', event: '选定为丹桂窨花茶专属茶底供应树', type: 'digital' }
+        ],
+        maintenanceRecords: [
+          { date: '2025-03-18', type: '春季养护', operator: '李师傅（特级制茶师）', content: '精细修剪、施加有机饼肥、土壤酸碱度检测', photos: 4 },
+          { date: '2025-04-18', type: '明前采摘', operator: '李氏采茶组（8人）', content: '仅采一芽一叶初展，得鲜叶7.2公斤', photos: 12 },
+          { date: '2025-09-08', type: '秋季养护', operator: '武夷山古茶树保护站', content: '培土护根、树干涂白、生物防虫', photos: 5 }
+        ]
+      },
+      osmanthusTree: {
+        plantYear: '1990年',
+        age: 35,
+        height: '5.6米',
+        crown: '4.8米',
+        location: '咸安区桂花镇・丹桂母树园一号株',
+        story: '此株丹桂由咸宁桂花种植世家王氏从实生苗中选育，花色橙红如朱砂，香气浓郁甜蜜，是丹桂品种中的"状元红"优系母株。年产量仅约50公斤精品鲜花，专供高端窨茶使用。',
+        maintenanceRecords: [
+          { date: '2025-02-15', type: '整形修剪', operator: '王老先生（丹桂育种专家）', content: '疏枝整形、促花芽分化、疏花提高品质' },
+          { date: '2025-08-10', type: '花期精细管理', operator: '丹桂基地技术组', content: '控水控肥、病虫害监测、记录花芽分化进度' },
+          { date: '2025-09-15', type: '丹桂采摘', operator: '王氏精选采摘队', content: '手工精选初开盛花，共得鲜桂花46.5公斤' }
+        ]
+      }
+    },
+
+    pickWeather: {
+      teaPick: {
+        date: '2025年4月18日',
+        location: '福建武夷山',
+        weather: '晴',
+        weatherIcon: '☀️',
+        temperature: '14℃~23℃',
+        avgTemp: 18,
+        humidity: '65%',
+        avgHumidity: 65,
+        wind: '东南风 1-2级',
+        airQuality: '优（AQI: 32）',
+        sunrise: '05:38',
+        sunset: '18:40',
+        note: '清明后第三天，晴空万里，昼夜温差达9℃，茶叶氨基酸与茶多酚比例完美，为丹桂系列定制茶底绝佳采摘日。'
+      },
+      osmanthusPick: {
+        date: '2025年9月15日',
+        location: '湖北咸宁',
+        weather: '晴',
+        weatherIcon: '☀️',
+        temperature: '16℃~25℃',
+        avgTemp: 20,
+        humidity: '68%',
+        avgHumidity: 68,
+        wind: '北风 1级',
+        airQuality: '优（AQI: 28）',
+        sunrise: '06:05',
+        sunset: '18:15',
+        note: '连续四日晴朗，丹桂花色达到最佳橙红度；北风微风，花朵干燥完整无霉变；为丹桂窨茶稀有顶级采摘条件。'
+      }
+    },
+
+    images: {
+      originImage: 'https://picsum.photos/id/1040/750/400',
+      teaOriginImage: 'https://picsum.photos/id/1019/750/400',
+      osmanthusOriginImage: 'https://picsum.photos/id/1027/750/400',
+      processImage: 'https://picsum.photos/id/1041/750/400',
+      certImage: 'https://picsum.photos/id/1025/750/400'
+    }
   }
 };
+
+// 数据复用：G003/G004 与 G001 为同一产地批次，复用产地地理与故事数据
+(function() {
+  var g001 = mockTraceData['G001'];
+  if (!g001) return;
+  var g003 = mockTraceData['G003'];
+  var g004 = mockTraceData['G004'];
+  if (g003) {
+    g003.locationMap = g001.locationMap;
+    g003.scenicPhotos = g001.scenicPhotos;
+    g003.treeStory = g001.treeStory;
+    g003.pickWeather = g001.pickWeather;
+  }
+  if (g004) {
+    g004.locationMap = g001.locationMap;
+    g004.scenicPhotos = g001.scenicPhotos;
+    g004.treeStory = g001.treeStory;
+    g004.pickWeather = g001.pickWeather;
+  }
+})();
 
 /**
  * 根据溯源ID获取溯源数据
@@ -1401,6 +2095,20 @@ function verifyCertificate(certNo) {
   return { valid: false, certNo: normalizedCertNo, message: '未找到该证书编号，请核实后重试' };
 }
 
+function getOsmanthusVarietyConfig(variety) {
+  if (!variety) return null;
+  return OSMANTHUS_VARIETIES[variety] || null;
+}
+
+function getAllVarieties() {
+  return Object.keys(OSMANTHUS_VARIETIES).map(function(key) {
+    return {
+      name: key,
+      ...OSMANTHUS_VARIETIES[key]
+    };
+  });
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -1416,5 +2124,7 @@ module.exports = {
   getScentingComparison,
   getGreenTraceExtended,
   getGreenPointsConfig,
-  verifyCertificate
+  verifyCertificate,
+  getOsmanthusVarietyConfig,
+  getAllVarieties
 };
