@@ -8,9 +8,11 @@ var FAVORITES_KEY = 'user_favorites';
 var NOTES_KEY = 'user_tasting_notes';
 var NOTIFICATIONS_KEY = 'user_notifications';
 var PRIVACY_SETTINGS_KEY = 'user_privacy_settings';
+var KNOWLEDGE_FAVORITES_KEY = 'user_knowledge_favorites';
 var MAX_FAVORITES = 100;
 var MAX_NOTES = 200;
 var MAX_NOTIFICATIONS = 50;
+var MAX_KNOWLEDGE_FAVORITES = 200;
 
 function getFavorites() {
   try {
@@ -299,6 +301,75 @@ function resetPrivacySettings() {
   }
 }
 
+function getKnowledgeFavorites() {
+  try {
+    return wx.getStorageSync(KNOWLEDGE_FAVORITES_KEY) || [];
+  } catch (e) {
+    console.error('[UserStore] 获取知识库收藏列表失败:', e);
+    return [];
+  }
+}
+
+function addKnowledgeFavorite(article) {
+  if (!article || !article.id) return getKnowledgeFavorites();
+  try {
+    var list = getKnowledgeFavorites();
+    var idx = -1;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].id === article.id) { idx = i; break; }
+    }
+    if (idx !== -1) return list;
+    list.unshift({
+      id: article.id,
+      title: article.title || '',
+      subtitle: article.subtitle || '',
+      coverImage: article.coverImage || '',
+      categoryKey: article.categoryKey || '',
+      author: article.author || '',
+      publishTime: article.publishTime || '',
+      addTime: Date.now()
+    });
+    if (list.length > MAX_KNOWLEDGE_FAVORITES) list.splice(MAX_KNOWLEDGE_FAVORITES);
+    wx.setStorageSync(KNOWLEDGE_FAVORITES_KEY, list);
+    console.info('[UserStore] 已收藏知识库文章:', article.id);
+    return list;
+  } catch (e) {
+    console.error('[UserStore] 添加知识库收藏失败:', e);
+    return getKnowledgeFavorites();
+  }
+}
+
+function removeKnowledgeFavorite(articleId) {
+  try {
+    var list = getKnowledgeFavorites();
+    var filtered = list.filter(function(item) { return item.id !== articleId; });
+    wx.setStorageSync(KNOWLEDGE_FAVORITES_KEY, filtered);
+    console.info('[UserStore] 已取消知识库收藏:', articleId);
+    return filtered;
+  } catch (e) {
+    console.error('[UserStore] 取消知识库收藏失败:', e);
+    return getKnowledgeFavorites();
+  }
+}
+
+function isKnowledgeFavorite(articleId) {
+  var list = getKnowledgeFavorites();
+  for (var i = 0; i < list.length; i++) {
+    if (list[i].id === articleId) return true;
+  }
+  return false;
+}
+
+function clearKnowledgeFavorites() {
+  try {
+    wx.setStorageSync(KNOWLEDGE_FAVORITES_KEY, []);
+    return [];
+  } catch (e) {
+    console.error('[UserStore] 清空知识库收藏失败:', e);
+    return getKnowledgeFavorites();
+  }
+}
+
 module.exports = {
   getFavorites: getFavorites,
   addFavorite: addFavorite,
@@ -319,9 +390,15 @@ module.exports = {
   getPrivacySettings: getPrivacySettings,
   updatePrivacySettings: updatePrivacySettings,
   resetPrivacySettings: resetPrivacySettings,
+  getKnowledgeFavorites: getKnowledgeFavorites,
+  addKnowledgeFavorite: addKnowledgeFavorite,
+  removeKnowledgeFavorite: removeKnowledgeFavorite,
+  isKnowledgeFavorite: isKnowledgeFavorite,
+  clearKnowledgeFavorites: clearKnowledgeFavorites,
   DEFAULT_PRIVACY_SETTINGS: DEFAULT_PRIVACY_SETTINGS,
   FAVORITES_KEY: FAVORITES_KEY,
   NOTES_KEY: NOTES_KEY,
   NOTIFICATIONS_KEY: NOTIFICATIONS_KEY,
-  PRIVACY_SETTINGS_KEY: PRIVACY_SETTINGS_KEY
+  PRIVACY_SETTINGS_KEY: PRIVACY_SETTINGS_KEY,
+  KNOWLEDGE_FAVORITES_KEY: KNOWLEDGE_FAVORITES_KEY
 };

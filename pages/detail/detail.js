@@ -778,6 +778,31 @@ Page({
     };
   },
 
+  onJumpKnowledgeDetail: function(e) {
+    const varietyName = e.currentTarget.dataset.variety;
+    if (!varietyName) {
+      wx.navigateTo({ url: '/pages/knowledge/list' });
+      return;
+    }
+    const matchedArticle = mockData.getKnowledgeArticleByVariety(varietyName);
+    if (matchedArticle) {
+      wx.navigateTo({
+        url: '/pages/knowledge/detail?id=' + matchedArticle.id
+      });
+    } else {
+      wx.showToast({
+        title: '暂无该品种百科',
+        icon: 'none',
+        duration: 1500
+      });
+      setTimeout(function() {
+        wx.navigateTo({
+          url: '/pages/knowledge/list?categoryKey=variety'
+        });
+      }, 1500);
+    }
+  },
+
   /**
    * 计算国标对比图表数据（含百分比进度条）
    */

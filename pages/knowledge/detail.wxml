@@ -1,0 +1,164 @@
+<view class="article-detail" wx:if="{{article && !loading}}">
+  <view class="cover-wrap">
+    <image class="cover-image" src="{{article.coverImage}}" mode="aspectFill"></image>
+    <view class="cover-mask"></view>
+    <view class="cover-category" wx:if="{{categoryName}}">{{categoryName}}</view>
+  </view>
+
+  <view class="article-body">
+    <view class="article-header">
+      <view class="article-title">{{article.title}}</view>
+      <view class="article-subtitle">{{article.subtitle}}</view>
+      <view class="article-tags" wx:if="{{article.tags && article.tags.length > 0}}">
+        <text wx:for="{{article.tags}}" wx:key="*this" class="tag-item">#{{item}}</text>
+      </view>
+      <view class="article-meta-row">
+        <view class="meta-left">
+          <text class="meta-author">{{article.author}}</text>
+          <text class="meta-sep">·</text>
+          <text class="meta-time">{{article.publishTime}}</text>
+        </view>
+        <view class="meta-right">
+          <text class="meta-stat">👁 {{readCount}} 阅读</text>
+          <text class="meta-stat">❤️ {{likeCount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="article-divider"></view>
+
+    <view class="article-content">
+      <block wx:for="{{contentNodes}}" wx:key="index">
+        <view wx:if="{{item.type === 'heading'}}" class="content-heading">
+          <view class="heading-bar"></view>
+          <text>{{item.text}}</text>
+        </view>
+
+        <view wx:if="{{item.type === 'paragraph'}}" class="content-paragraph">
+          {{item.text}}
+        </view>
+
+        <view wx:if="{{item.type === 'image'}}" class="content-image-wrap" bindtap="onImagePreview" data-src="{{item.src}}">
+          <image class="content-image" src="{{item.src}}" mode="widthFix" lazy-load="{{true}}"></image>
+          <view wx:if="{{item.caption}}" class="image-caption">{{item.caption}}</view>
+        </view>
+
+        <view wx:if="{{item.type === 'video'}}" class="content-video-wrap">
+          <video
+            class="content-video"
+            src="{{item.src}}"
+            poster="{{item.poster}}"
+            controls="{{true}}"
+            show-center-play-btn="{{true}}"
+            object-fit="cover"
+          ></video>
+          <view wx:if="{{item.caption}}" class="video-caption">{{item.caption}}</view>
+        </view>
+
+        <view wx:if="{{item.type === 'list'}}" class="content-list">
+          <view
+            wx:for="{{item.items}}"
+            wx:for-item="listItem"
+            wx:for-index="listIdx"
+            wx:key="listIdx"
+            class="list-item"
+          >
+            <text class="list-index">{{listIdx + 1}}.</text>
+            <text class="list-text">{{listItem}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{item.type === 'quote'}}" class="content-quote">
+          <view class="quote-bar"></view>
+          <view class="quote-text">{{item.text}}</view>
+          <view wx:if="{{item.author}}" class="quote-author">—— {{item.author}}</view>
+        </view>
+      </block>
+    </view>
+
+    <view class="article-divider"></view>
+
+    <view class="related-products" wx:if="{{relatedProducts.length > 0}}">
+      <view class="section-title">
+        <view class="title-bar"></view>
+        <text>溯源产品推荐</text>
+      </view>
+      <scroll-view class="products-scroll" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+        <view class="products-list">
+          <view
+            wx:for="{{relatedProducts}}"
+            wx:key="id"
+            class="product-card"
+            data-id="{{item.id}}"
+            bindtap="onProductTap"
+          >
+            <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+            <view class="product-info">
+              <view class="product-name">{{item.name}}</view>
+              <view class="product-meta">
+                <text class="product-variety" wx:if="{{item.variety}}">{{item.variety}}</text>
+                <text class="product-price">¥{{item.price}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="related-articles" wx:if="{{relatedArticles.length > 0}}">
+      <view class="section-title">
+        <view class="title-bar"></view>
+        <text>相关推荐</text>
+      </view>
+      <view
+        wx:for="{{relatedArticles}}"
+        wx:key="id"
+        class="related-card"
+        data-id="{{item.id}}"
+        bindtap="onRelatedArticleTap"
+      >
+        <image class="related-cover" src="{{item.coverImage}}" mode="aspectFill"></image>
+        <view class="related-content">
+          <view class="related-title">{{item.title}}</view>
+          <view class="related-subtitle">{{item.subtitle}}</view>
+          <text class="related-read">👁 {{item.readCount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view style="height: 180rpx;"></view>
+  </view>
+
+  <view class="action-bar" style="padding-bottom: {{safeAreaBottom > 0 ? safeAreaBottom : 0}}px;">
+    <view class="action-left">
+      <view class="action-item" bindtap="onFavoriteTap">
+        <text class="action-icon {{isFavorite ? 'active' : ''}}">{{isFavorite ? '★' : '☆'}}</text>
+        <text class="action-label">{{isFavorite ? '已收藏' : '收藏'}}</text>
+      </view>
+      <view class="action-item" bindtap="onLikeTap">
+        <text class="action-icon {{isLiked ? 'active' : ''}}">{{isLiked ? '❤️' : '🤍'}}</text>
+        <text class="action-label">点赞</text>
+      </view>
+      <view class="action-item" bindtap="onGenerateShareCard">
+        <text class="action-icon">🖼</text>
+        <text class="action-label">卡片</text>
+      </view>
+    </view>
+    <view class="action-share" bindtap="onShareTap">
+      <text class="share-icon">↗</text>
+      <text class="share-text">分享</text>
+    </view>
+  </view>
+</view>
+
+<view class="empty-state" wx:if="{{!article && !loading}}">
+  <text class="empty-icon">📖</text>
+  <view class="empty-title">文章未找到</view>
+  <view class="empty-desc">该文章可能已被删除或链接无效</view>
+  <button class="back-btn" bindtap="onBackToList">返回列表</button>
+</view>
+
+<view class="loading-state" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+  <text class="loading-text">文章加载中...</text>
+</view>

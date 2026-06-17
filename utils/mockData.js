@@ -3065,6 +3065,624 @@ function calculateCartSummary(cartItems, isMember) {
   };
 }
 
+// ==================== 茶文化知识库 ====================
+
+const KNOWLEDGE_CATEGORIES = [
+  {
+    key: 'variety',
+    name: '桂花品种科普',
+    icon: '🌼',
+    color: '#DAA520',
+    description: '四大桂花品种详解，认识金桂、银桂、丹桂、四季桂'
+  },
+  {
+    key: 'scenting',
+    name: '窨制工艺解读',
+    icon: '🫖',
+    color: '#2E8B57',
+    description: '非遗窨制技艺全流程，了解六窨一提的奥秘'
+  },
+  {
+    key: 'brewing',
+    name: '冲泡技巧',
+    icon: '🍵',
+    color: '#1890FF',
+    description: '水温、时长、茶具的完美搭配，泡出最佳风味'
+  },
+  {
+    key: 'solar-term',
+    name: '节气饮茶',
+    icon: '🌿',
+    color: '#52C41A',
+    description: '顺应二十四节气，选对茶喝对时'
+  },
+  {
+    key: 'origin',
+    name: '产地风土',
+    icon: '📍',
+    color: '#722ED1',
+    description: '武夷山茶园与咸宁桂花之乡的风土人情'
+  }
+];
+
+const KNOWLEDGE_ARTICLES = [
+  {
+    id: 'KNOW-VAR-001',
+    categoryKey: 'variety',
+    varietyName: '金桂',
+    title: '金桂：桂花茶中的上品之选',
+    subtitle: '花色金黄，香气浓郁持久，窨制桂花茶的首选品种',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=golden%20osmanthus%20flowers%20closeup%20autumn%20sunlight%20premium&image_size=landscape_16_9',
+    author: '茶文化研究中心',
+    publishTime: '2025-09-15',
+    readCount: 12580,
+    likeCount: 892,
+    tags: ['金桂', '品种科普', '窨茶首选'],
+    content: [
+      { type: 'heading', level: 2, text: '一、金桂的形态特征' },
+      {
+        type: 'paragraph',
+        text: '金桂（Osmanthus fragrans var. thunbergii）是木犀科木犀属桂花的一个重要变种，因其花色金黄、香气浓郁而得名。树冠呈圆球形，枝条挺拔，树皮为灰白色，叶片为革质椭圆形，叶面深绿有光泽。'
+      },
+      {
+        type: 'image',
+        url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=golden%20osmanthus%20tree%20in%20full%20bloom%20autumn%20garden&image_size=landscape_16_9',
+        caption: '金秋时节的金桂树，满树金黄'
+      },
+      { type: 'heading', level: 2, text: '二、金桂的香气特点' },
+      {
+        type: 'paragraph',
+        text: '金桂的花香以"浓郁持久"著称，其香气成分中含有丰富的紫罗兰酮、芳樟醇、橙花叔醇等物质。与其他品种相比，金桂的花香更具穿透力，窨制后能深度融入茶叶之中，饮后口齿留香。'
+      },
+      {
+        type: 'quote',
+        text: '叶密千层绿，花开万点金。天香云外飘，吹落满衣襟。—— 古人咏金桂'
+      },
+      { type: 'heading', level: 2, text: '三、金桂为何是窨茶首选' },
+      {
+        type: 'paragraph',
+        text: '窨制桂花茶，金桂是当之无愧的首选品种。原因有三：'
+      },
+      {
+        type: 'list',
+        items: [
+          '花香浓郁：金桂的香气强度约为银桂的1.5倍，窨制次数少也能入味',
+          '色泽金黄：与茶芽色泽相得益彰，冲泡后茶汤金黄透亮，视觉效果佳',
+          '香气稳定：金桂花香物质较稳定，经过多次窨制仍能保持持久余韵'
+        ]
+      },
+      {
+        type: 'video',
+        poster: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20scenting%20process%20workshop%20video%20thumbnail&image_size=landscape_16_9',
+        src: 'https://media.w3.org/2010/05/sintel/trailer.mp4',
+        caption: '视频：金桂花茶窨制过程全纪录'
+      },
+      { type: 'heading', level: 2, text: '四、金桂的花期与采摘' },
+      {
+        type: 'paragraph',
+        text: '金桂的花期一般在每年9月中下旬至10月上旬，最佳采摘期为花朵初开的前3天。此时花瓣饱满、香气最盛。采摘需选晴天上午，露水散去后进行，以保证花朵完整和香气纯正。'
+      },
+      {
+        type: 'image',
+        url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hand%20picking%20golden%20osmanthus%20flowers%20traditional%20harvest&image_size=landscape_16_9',
+        caption: '人工采摘初开的金桂花，确保花朵完整无损'
+      },
+      { type: 'heading', level: 2, text: '五、代表产品推荐' },
+      {
+        type: 'paragraph',
+        text: '本平台溯源产品中的 G001（金桂花茶100g装）、G003（金桂花茶礼盒装）、G004（金桂便携装）均采用咸宁金桂为原料，欢迎扫码查看完整溯源信息。'
+      }
+    ],
+    relatedTraceIds: ['G001', 'G003', 'G004']
+  },
+  {
+    id: 'KNOW-VAR-002',
+    categoryKey: 'variety',
+    varietyName: '银桂',
+    title: '银桂：清雅淡香的气质之选',
+    subtitle: '花色乳白，香气清雅淡远，口感柔和的小众珍品',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20white%20osmanthus%20flowers%20delicate%20autumn&image_size=landscape_16_9',
+    author: '茶文化研究中心',
+    publishTime: '2025-09-12',
+    readCount: 8920,
+    likeCount: 615,
+    tags: ['银桂', '品种科普', '清雅口感'],
+    content: [
+      { type: 'heading', level: 2, text: '一、银桂的形态特征' },
+      {
+        type: 'paragraph',
+        text: '银桂（Osmanthus fragrans var. latifolius）花色呈乳白色或淡黄白色，花朵较金桂略小，但数量更密集。叶片宽大，树冠较开展，整体气质清雅素净。'
+      },
+      {
+        type: 'image',
+        url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tree%20white%20flowers%20gentle%20garden&image_size=landscape_16_9',
+        caption: '盛开的银桂树，满树素白清雅'
+      },
+      { type: 'heading', level: 2, text: '二、银桂的香气特点' },
+      {
+        type: 'paragraph',
+        text: '银桂的香气特点是"清雅淡远"，初闻不浓，但细细品味有清甜之感，余韵悠长。其香气成分中含有较多的芳樟醇和香叶醇，口感如幽兰般清远，适合不喜浓烈的茶友。'
+      },
+      { type: 'heading', level: 2, text: '三、银桂茶的适用场景' },
+      {
+        type: 'list',
+        items: [
+          '日常办公饮用：香气清雅不扰人',
+          '晨间茶饮：清甜开启一天好心情',
+          '夜晚小酌：清淡不影响睡眠',
+          '待客入门款：接受度高，大众口味'
+        ]
+      },
+      {
+        type: 'quote',
+        text: '淡妆浓抹总相宜，银桂清韵最宜人。'
+      }
+    ],
+    relatedTraceIds: ['G002']
+  },
+  {
+    id: 'KNOW-VAR-003',
+    categoryKey: 'variety',
+    varietyName: '丹桂',
+    title: '丹桂：橙红热烈的观赏名品',
+    subtitle: '花色橙红，香气馥郁浓烈，桂花中的名贵观赏品种',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=red%20orange%20dan%20gui%20osmanthus%20flowers%20vibrant&image_size=landscape_16_9',
+    author: '茶文化研究中心',
+    publishTime: '2025-09-08',
+    readCount: 6540,
+    likeCount: 428,
+    tags: ['丹桂', '品种科普', '观赏名品'],
+    content: [
+      { type: 'heading', level: 2, text: '丹桂的独特之美' },
+      {
+        type: 'paragraph',
+        text: '丹桂（Osmanthus fragrans var. aurantiacus）花色橙红至朱红，是桂花中颜色最艳丽的品种。因其花色喜庆，常被用于园林造景和庭院观赏。香气馥郁浓烈，带有微微的甜腻感。'
+      },
+      {
+        type: 'image',
+        url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=orange%20red%20osmanthus%20flowers%20autumn%20garden%20vibrant&image_size=landscape_16_9',
+        caption: '丹桂盛放，橙红似火，美不胜收'
+      },
+      { type: 'heading', level: 2, text: '丹桂在窨茶中的应用' },
+      {
+        type: 'paragraph',
+        text: '由于丹桂花色艳丽，窨制后茶中会保留淡淡的橙红色花萼，视觉效果独特。但其香气较金桂略显甜腻，因此常与金桂按比例混合窨制，兼具色泽与香气。'
+      }
+    ],
+    relatedTraceIds: []
+  },
+  {
+    id: 'KNOW-SCE-001',
+    categoryKey: 'scenting',
+    title: '窨制工艺全解读：六窨一提是如何做到的',
+    subtitle: '非遗传承600年的桂花茶窨制技艺，每一步都大有讲究',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20tea%20scenting%20workshop%20artisan%20osmanthus&image_size=landscape_16_9',
+    author: '非遗传承人 · 李师傅',
+    publishTime: '2025-09-10',
+    readCount: 15620,
+    likeCount: 1256,
+    tags: ['窨制工艺', '非遗', '六窨一提'],
+    content: [
+      { type: 'heading', level: 2, text: '一、什么是窨制？' },
+      {
+        type: 'paragraph',
+        text: '窨制（xūn zhì），也叫熏制，是花茶制作的核心工艺。简单来说，就是利用茶叶的吸附性和鲜花的吐香性，将二者按比例拌合静置，让茶叶吸收花香，再将花渣筛除的过程。'
+      },
+      { type: 'heading', level: 2, text: '二、窨制的六大核心步骤' },
+      {
+        type: 'list',
+        items: [
+          '备料：精选茶坯与新鲜桂花，茶坯需干燥冷却至室温',
+          '拌花：按1:4或1:5的配比均匀拌合，动作轻柔避免损伤花朵',
+          '窨制：恒温恒湿（30℃/72%RH）环境下静置窨香，让茶叶充分吸香',
+          '通花：适时翻动通风散热，防止闷黄变质，保持花与茶的活性',
+          '起花：用筛网分离茶叶与花渣，去除残花避免苦涩',
+          '干燥：低温烘干（80℃以下）锁住花香，便于保存'
+        ]
+      },
+      {
+        type: 'image',
+        url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20master%20mixing%20osmanthus%20flowers%20with%20tea%20leaves%20traditional&image_size=landscape_16_9',
+        caption: '非遗传承人李师傅正在拌花，60年窨制经验练就的手感'
+      },
+      { type: 'heading', level: 2, text: '三、什么是"六窨一提"' },
+      {
+        type: 'paragraph',
+        text: '"六窨一提"是指窨制6次，最后1次用少量高品质桂花"提花"（不再筛除）。窨制次数越多，茶叶吸香越充分，层次感越丰富，但成本也越高。'
+      },
+      {
+        type: 'quote',
+        text: '一窨花香浮于表，二窨香入茶骨，三窨四窨层叠生，五窨六窨入骨髓，提花收得满壶春。—— 窨制工艺口诀'
+      },
+      {
+        type: 'video',
+        poster: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=6%20times%20tea%20scenting%20process%20infographic%20video%20thumbnail&image_size=landscape_16_9',
+        src: 'https://media.w3.org/2010/05/bunny/trailer.mp4',
+        caption: '视频：六窨一提工艺动画演示（3分钟版）'
+      },
+      { type: 'heading', level: 2, text: '四、不同窨次的口感差异' },
+      {
+        type: 'paragraph',
+        text: '3窨以下：香气浅，入口即散，适合喜欢淡口的人'
+      },
+      {
+        type: 'paragraph',
+        text: '4-5窨：香气均衡，有一定层次感，大众首选（如本平台G001产品为5窨）'
+      },
+      {
+        type: 'paragraph',
+        text: '6窨以上：香气绵密悠长，饮后半小时仍有余香，属于高端收藏级（如本平台G003礼盒为6窨）'
+      },
+      {
+        type: 'image',
+        url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20brewing%20different%20scenting%20levels%20comparison&image_size=landscape_16_9',
+        caption: '左：3窨银桂，中：5窨金桂，右：6窨金桂（汤色与香气层次递增）'
+      }
+    ],
+    relatedTraceIds: ['G001', 'G003']
+  },
+  {
+    id: 'KNOW-SCE-002',
+    categoryKey: 'scenting',
+    title: '温度与湿度：窨制成败的关键参数',
+    subtitle: '为什么要控制在30℃和72%湿度？老师傅告诉你答案',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20scenting%20temperature%20humidity%20control%20room&image_size=landscape_16_9',
+    author: '窨制工艺组',
+    publishTime: '2025-09-05',
+    readCount: 7820,
+    likeCount: 512,
+    tags: ['窨制工艺', '温湿度', '技术参数'],
+    content: [
+      { type: 'heading', level: 2, text: '温度：30℃是黄金数值' },
+      {
+        type: 'paragraph',
+        text: '桂花吐香的最佳温度范围是28-32℃，低于25℃花朵闭合，香气无法释放；高于35℃花朵容易腐烂变味。我们将窨制车间精准控制在30℃±1℃，确保花香充分释放而不变质。'
+      },
+      { type: 'heading', level: 2, text: '湿度：72%RH的科学依据' },
+      {
+        type: 'paragraph',
+        text: '茶叶吸香需要一定的含水率作为载体。72%的相对湿度能让茶坯含水率保持在8-9%之间，此时茶叶的毛细管充分张开，吸附效率最高。湿度过低吸香不足，过高则茶叶容易霉变。'
+      }
+    ],
+    relatedTraceIds: ['G001', 'G002']
+  },
+  {
+    id: 'KNOW-BRW-001',
+    categoryKey: 'brewing',
+    title: '桂花茶冲泡指南：水温、时长、茶具的黄金搭配',
+    subtitle: '掌握这5个要点，在家也能泡出茶店级别的桂花茶',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20brewing%20guide%20glass%20cup%20elegant&image_size=landscape_16_9',
+    author: '高级茶艺师 · 陈老师',
+    publishTime: '2025-09-18',
+    readCount: 23560,
+    likeCount: 2180,
+    tags: ['冲泡技巧', '入门必读', '茶艺'],
+    content: [
+      { type: 'heading', level: 2, text: '一、水温：85℃-90℃是黄金区间' },
+      {
+        type: 'paragraph',
+        text: '水温过高（95℃以上）会烫熟桂花，使花香挥发过快，产生闷味；水温过低（80℃以下）则茶叶内含物释放不足，茶汤寡淡。推荐将开水晾凉1-2分钟，约85℃时冲泡最佳。'
+      },
+      {
+        type: 'image',
+        url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=pouring%20hot%20water%2085%20degrees%20osmanthus%20tea%20glass&image_size=landscape_16_9',
+        caption: '沿杯壁缓缓注入85℃热水'
+      },
+      { type: 'heading', level: 2, text: '二、时长：首泡2分钟，后续每泡加30秒' },
+      {
+        type: 'paragraph',
+        text: '首泡2分钟能充分释放桂花香和茶味。桂花茶一般可续泡4-6次，从第二泡开始每泡延长30秒，保持口感稳定。切记不要长时间闷泡，否则茶汤会苦涩。'
+      },
+      { type: 'heading', level: 2, text: '三、茶具：玻璃杯或白瓷盖碗' },
+      {
+        type: 'list',
+        items: [
+          '玻璃杯：观赏性最佳，能看到茶汤金黄透亮、桂花舒展的姿态',
+          '白瓷盖碗：聚香效果好，适合细细品鉴香气层次',
+          '保温杯：日常办公使用，但温度过高会焖坏香气，建议用前先温杯不盖盖'
+        ]
+      },
+      { type: 'heading', level: 2, text: '四、用量：每杯3-5克' },
+      {
+        type: 'paragraph',
+        text: '1人饮用：3克（约1茶匙）；2-3人分享：5-8克。金桂浓郁可少放，银桂清淡可酌加。'
+      },
+      { type: 'heading', level: 2, text: '五、进阶技巧：三步温杯法' },
+      {
+        type: 'video',
+        poster: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=three%20step%20tea%20warming%20method%20tutorial%20thumbnail&image_size=landscape_16_9',
+        src: 'https://media.w3.org/2010/05/video/movie_300.mp4',
+        caption: '视频：茶艺师演示三步温杯法冲泡桂花茶'
+      },
+      {
+        type: 'paragraph',
+        text: '温杯 → 投茶闻干香 → 注水高冲 → 静置出汤。四步下来，一杯花香馥郁的桂花茶就完成了。'
+      },
+      {
+        type: 'quote',
+        text: '泡茶的过程，也是静心的过程。水温、时长、心境，三者合一，方得好茶。'
+      }
+    ],
+    relatedTraceIds: []
+  },
+  {
+    id: 'KNOW-BRW-002',
+    categoryKey: 'brewing',
+    title: '冷泡桂花茶：夏日消暑的清新选择',
+    subtitle: '拒绝燥热，4℃冷藏8小时，解锁桂花茶的另一种打开方式',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cold%20brew%20osmanthus%20tea%20summer%20refreshing%20ice&image_size=landscape_16_9',
+    author: '夏日茶饮研发组',
+    publishTime: '2025-08-20',
+    readCount: 11250,
+    likeCount: 980,
+    tags: ['冲泡技巧', '冷泡', '夏日饮品'],
+    content: [
+      { type: 'heading', level: 2, text: '为什么夏天推荐冷泡？' },
+      {
+        type: 'paragraph',
+        text: '高温冲泡会释放茶叶中的咖啡因和苦涩物质，而冷水慢泡能减少苦涩，同时保留更多甘甜和花香。冷泡桂花茶入口清甜，冰镇后更是消暑佳品。'
+      },
+      { type: 'heading', level: 2, text: '冷泡步骤（超级简单）' },
+      {
+        type: 'list',
+        items: [
+          '取5克桂花茶，投入冷泡茶壶或矿泉水瓶',
+          '加入500ml常温纯净水（建议山泉水）',
+          '轻轻摇晃几下，让茶叶充分浸湿',
+          '放入冰箱冷藏，4℃静置6-8小时',
+          '取出即可饮用，也可加入冰块或蜂蜜调味'
+        ]
+      }
+    ],
+    relatedTraceIds: []
+  },
+  {
+    id: 'KNOW-SOL-001',
+    categoryKey: 'solar-term',
+    title: '秋分饮桂香：一年中桂花茶最好的时节',
+    subtitle: '金风送爽桂花香，秋分时节饮桂花茶的养生之道',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=autumn%20equinox%20osmanthus%20tea%20chinese%20traditional%20garden&image_size=landscape_16_9',
+    author: '中医养生顾问 · 王医师',
+    publishTime: '2025-09-23',
+    readCount: 9860,
+    likeCount: 875,
+    tags: ['节气饮茶', '秋分', '养生'],
+    content: [
+      { type: 'heading', level: 2, text: '秋分养生：润肺防燥是关键' },
+      {
+        type: 'paragraph',
+        text: '秋分时节，天气转凉，空气干燥。中医认为秋属金，对应肺脏，此时最易感受燥邪。桂花性温味辛，有温中散寒、化痰止咳、润肺养生之效，是秋季茶饮的不二之选。'
+      },
+      {
+        type: 'quote',
+        text: '秋三月，此谓容平。天气以急，地气以明。早卧早起，与鸡俱兴。——《黄帝内经·素问》'
+      },
+      { type: 'heading', level: 2, text: '秋分推荐：金桂枸杞茶' },
+      {
+        type: 'paragraph',
+        text: '配方：金桂花茶3克 + 宁夏枸杞5粒 + 红枣2片。85℃冲泡，焖3分钟。温中补气，养肝明目，适合秋分前后早晚温差大的时节饮用。'
+      },
+      {
+        type: 'image',
+        url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20goji%20berry%20tea%20autumn%20wellness%20warm&image_size=landscape_16_9',
+        caption: '金桂枸杞红枣茶，秋分养生良品'
+      }
+    ],
+    relatedTraceIds: ['G001']
+  },
+  {
+    id: 'KNOW-SOL-002',
+    categoryKey: 'solar-term',
+    title: '立春到冬至：二十四节气饮茶全攻略（上）',
+    subtitle: '春生夏长秋收冬藏，顺应节气喝茶才是养生之道',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=24%20solar%20terms%20tea%20calendar%20chinese%20traditional&image_size=landscape_16_9',
+    author: '中医养生顾问 · 王医师',
+    publishTime: '2025-08-15',
+    readCount: 18920,
+    likeCount: 1560,
+    tags: ['节气饮茶', '养生', '二十四节气'],
+    content: [
+      { type: 'heading', level: 2, text: '春：疏肝解郁，清轻升发' },
+      {
+        type: 'paragraph',
+        text: '立春-雨水-惊蛰-春分-清明-谷雨：春季阳气升发，适合饮用清淡型桂花茶。推荐银桂系列（G002），清雅不浓烈，配少许陈皮或菊花更佳。'
+      },
+      { type: 'heading', level: 2, text: '夏：清热解暑，生津止渴' },
+      {
+        type: 'paragraph',
+        text: '立夏-小满-芒种-夏至-小暑-大暑：暑热难当，推荐冷泡桂花茶或金桂薄荷茶。冰镇后饮用，消暑解渴的同时花香怡人。'
+      },
+      { type: 'heading', level: 2, text: '秋：润肺防燥，温中散寒' },
+      {
+        type: 'paragraph',
+        text: '立秋-处暑-白露-秋分-寒露-霜降：秋燥最盛，金桂系列（G001/G003）配枸杞、红枣、黄芪，温补润肺正当时。'
+      },
+      { type: 'heading', level: 2, text: '冬：温阳暖身，驱寒活血' },
+      {
+        type: 'paragraph',
+        text: '立冬-小雪-大雪-冬至-小寒-大寒：寒冬腊月，金桂配生姜、红糖煮饮，或加桂花黄酒，驱寒暖身，冬日必备。'
+      }
+    ],
+    relatedTraceIds: []
+  },
+  {
+    id: 'KNOW-ORG-001',
+    categoryKey: 'origin',
+    title: '武夷山：世界文化与自然双遗产的茶树天堂',
+    subtitle: '200年古茶树扎根的地方，每一片茶叶都有故事',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wuyi%20mountain%20tea%20terraces%20misty%20sunrise%20ancient%20trees&image_size=landscape_16_9',
+    author: '产地探访记者',
+    publishTime: '2025-09-20',
+    readCount: 14580,
+    likeCount: 1120,
+    tags: ['产地风土', '武夷山', '古茶树'],
+    content: [
+      { type: 'heading', level: 2, text: '一、武夷山的独特地貌' },
+      {
+        type: 'paragraph',
+        text: '武夷山位于福建省西北部，是世界文化与自然双重遗产。典型的丹霞地貌，奇峰林立，九曲溪蜿蜒其间。山间常年云雾缭绕，昼夜温差大，茶树生长缓慢，内含物质积累丰富。'
+      },
+      {
+        type: 'image',
+        url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wuyi%20mountain%20danxia%20landscape%20river%20morning%20mist&image_size=landscape_16_9',
+        caption: '武夷山丹霞地貌 · 九曲溪晨雾'
+      },
+      { type: 'heading', level: 2, text: '二、200年古茶树的故事' },
+      {
+        type: 'paragraph',
+        text: '我们溯源产品的茶底原料，来自武夷山核心产区九龙窠崖壁上的古茶树群。其中编号WH-001的古茶树种于清嘉庆五年（1800年），至今已225年。扎根岩缝之中，汲取岩石矿物精华，造就了独特的"岩骨花香"。'
+      },
+      {
+        type: 'image',
+        url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=200%20year%20old%20ancient%20tea%20tree%20wuyi%20mountain%20rock%20crevice&image_size=landscape_16_9',
+        caption: '九龙窠崖壁间的200年古茶树（WH-001）'
+      },
+      { type: 'heading', level: 2, text: '三、明前采摘：一芽二叶的讲究' },
+      {
+        type: 'paragraph',
+        text: '每年清明前3-5天，是古茶树采摘的黄金期。采摘标准极为严格：一芽二叶初展，芽长于叶，长度不超过3厘米。熟练采茶女工一天只能采得鲜叶1-2斤，4-5斤鲜叶才能制出1斤干茶。'
+      },
+      {
+        type: 'video',
+        poster: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20pickers%20ancient%20tea%20trees%20wuyi%20mountain%20spring%20video%20thumbnail&image_size=landscape_16_9',
+        src: 'https://media.w3.org/2010/05/sintel/trailer.mp4',
+        caption: '纪录片：武夷山古茶园春采纪实'
+      }
+    ],
+    relatedTraceIds: ['G001', 'G003']
+  },
+  {
+    id: 'KNOW-ORG-002',
+    categoryKey: 'origin',
+    title: '湖北咸宁：中国桂花之乡的百年桂花园',
+    subtitle: '50年树龄金桂3000余株，每到中秋香飘数里',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=xianning%20osmanthus%20town%20hundred%20year%20garden%20autumn&image_size=landscape_16_9',
+    author: '产地探访记者',
+    publishTime: '2025-09-01',
+    readCount: 11320,
+    likeCount: 890,
+    tags: ['产地风土', '咸宁', '桂花之乡'],
+    content: [
+      { type: 'heading', level: 2, text: '一、为什么咸宁是桂花之乡？' },
+      {
+        type: 'paragraph',
+        text: '咸宁位于湖北省东南部，长江中游南岸。属亚热带季风气候，四季分明，雨量充沛，土壤微酸性，特别适合桂花生长。咸宁桂花种植历史可追溯到唐代，至今已有1300多年，是国家林业局命名的"中国桂花之乡"。'
+      },
+      {
+        type: 'image',
+        url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=xianning%20osmanthus%20garden%20aerial%20autumn%20golden%20flowers&image_size=landscape_16_9',
+        caption: '咸安区桂花镇王氏百年桂花园航拍（金秋时节）'
+      },
+      { type: 'heading', level: 2, text: '二、王氏百年桂花园：三代人的坚守' },
+      {
+        type: 'paragraph',
+        text: '我们的桂花原料供应商——王氏百年桂花园，由王氏家族三代人经营。创始人王老先生1973年亲手栽种的第一批金桂，如今已52年树龄，株高6.8米，冠幅5.5米，每年可产鲜花40余公斤。'
+      },
+      {
+        type: 'quote',
+        text: '桂花树是有灵性的，你对它好，它就回报你最香的花。—— 王氏第三代传人 王师傅'
+      },
+      { type: 'heading', level: 2, text: '三、有机种植：不打农药的生态桂花园' },
+      {
+        type: 'paragraph',
+        text: '王氏桂花园坚持有机种植，从不使用除草剂和农药。春季人工除草，夏季生物防虫，秋季腐熟羊粪施肥。桂花盛开时节，满园都是蝴蝶和蜜蜂，生态环境极佳。'
+      }
+    ],
+    relatedTraceIds: ['G001', 'G002', 'G003', 'G004']
+  }
+];
+
+function getKnowledgeCategories() {
+  return JSON.parse(JSON.stringify(KNOWLEDGE_CATEGORIES));
+}
+
+function getKnowledgeArticles(options) {
+  var list = JSON.parse(JSON.stringify(KNOWLEDGE_ARTICLES));
+
+  if (options && options.categoryKey) {
+    list = list.filter(function(a) { return a.categoryKey === options.categoryKey; });
+  }
+
+  if (options && options.sortBy) {
+    if (options.sortBy === 'readCount') {
+      list.sort(function(a, b) { return b.readCount - a.readCount; });
+    } else if (options.sortBy === 'publishTime') {
+      list.sort(function(a, b) { return b.publishTime.localeCompare(a.publishTime); });
+    } else if (options.sortBy === 'likeCount') {
+      list.sort(function(a, b) { return b.likeCount - a.likeCount; });
+    }
+  }
+
+  return list;
+}
+
+function getKnowledgeArticle(id) {
+  if (!id) return null;
+  var normalizedId = id.trim().toUpperCase();
+  for (var i = 0; i < KNOWLEDGE_ARTICLES.length; i++) {
+    if (KNOWLEDGE_ARTICLES[i].id === normalizedId) {
+      return JSON.parse(JSON.stringify(KNOWLEDGE_ARTICLES[i]));
+    }
+  }
+  return null;
+}
+
+function getKnowledgeArticleByVariety(varietyName) {
+  if (!varietyName) return null;
+  for (var i = 0; i < KNOWLEDGE_ARTICLES.length; i++) {
+    if (KNOWLEDGE_ARTICLES[i].varietyName === varietyName) {
+      return JSON.parse(JSON.stringify(KNOWLEDGE_ARTICLES[i]));
+    }
+  }
+  return null;
+}
+
+function getRelatedKnowledgeArticles(traceId, limit) {
+  if (!traceId) return [];
+  var l = limit || 3;
+  var related = [];
+  for (var i = 0; i < KNOWLEDGE_ARTICLES.length; i++) {
+    var article = KNOWLEDGE_ARTICLES[i];
+    if (article.relatedTraceIds && article.relatedTraceIds.indexOf(traceId) !== -1) {
+      related.push({
+        id: article.id,
+        title: article.title,
+        subtitle: article.subtitle,
+        coverImage: article.coverImage,
+        categoryKey: article.categoryKey,
+        readCount: article.readCount,
+        author: article.author
+      });
+    }
+  }
+  related.sort(function(a, b) { return b.readCount - a.readCount; });
+  return JSON.parse(JSON.stringify(related.slice(0, l)));
+}
+
+function incrementKnowledgeReadCount(id) {
+  if (!id) return false;
+  var normalizedId = id.trim().toUpperCase();
+  for (var i = 0; i < KNOWLEDGE_ARTICLES.length; i++) {
+    if (KNOWLEDGE_ARTICLES[i].id === normalizedId) {
+      KNOWLEDGE_ARTICLES[i].readCount += 1;
+      return true;
+    }
+  }
+  return false;
+}
+
+function incrementKnowledgeLikeCount(id) {
+  if (!id) return false;
+  var normalizedId = id.trim().toUpperCase();
+  for (var i = 0; i < KNOWLEDGE_ARTICLES.length; i++) {
+    if (KNOWLEDGE_ARTICLES[i].id === normalizedId) {
+      KNOWLEDGE_ARTICLES[i].likeCount += 1;
+      return true;
+    }
+  }
+  return false;
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -3104,5 +3722,12 @@ module.exports = {
   getOrderById,
   getOrderByNo,
   getOrdersByStatus,
-  calculateCartSummary
+  calculateCartSummary,
+  getKnowledgeCategories,
+  getKnowledgeArticles,
+  getKnowledgeArticle,
+  getKnowledgeArticleByVariety,
+  getRelatedKnowledgeArticles,
+  incrementKnowledgeReadCount,
+  incrementKnowledgeLikeCount
 };

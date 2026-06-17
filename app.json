@@ -17,7 +17,9 @@
     "pages/tastingNotes/tastingNotes",
     "pages/tastingNoteDetail/tastingNoteDetail",
     "pages/notifications/notifications",
-    "pages/privacy/privacy"
+    "pages/privacy/privacy",
+    "pages/knowledge/list",
+    "pages/knowledge/detail"
   ],
   "window": {
     "backgroundTextStyle": "dark",

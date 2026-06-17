@@ -5160,6 +5160,44 @@
   flex: 1;
 }
 
+.knowledge-entry {
+  margin-top: 22rpx;
+  padding: 20rpx 24rpx;
+  background: linear-gradient(135deg, #FFF8E7 0%, #FAF3E0 100%);
+  border: 1rpx solid #E8D5A8;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.knowledge-entry:active {
+  transform: scale(0.98);
+  background: linear-gradient(135deg, #FAF3E0 0%, #F3E8CC 100%);
+}
+
+.knowledge-entry .entry-icon {
+  font-size: 32rpx;
+  flex-shrink: 0;
+  margin-right: 14rpx;
+}
+
+.knowledge-entry .entry-text {
+  flex: 1;
+  font-size: 25rpx;
+  color: #8B6914;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.knowledge-entry .entry-arrow {
+  font-size: 26rpx;
+  color: #CD853F;
+  flex-shrink: 0;
+  margin-left: 10rpx;
+  font-weight: bold;
+}
+
 /* ============================================================
    分享与社交传播模块样式
    ============================================================ */

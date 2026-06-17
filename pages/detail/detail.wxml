@@ -573,6 +573,16 @@
               <text class="desc-icon">✨</text>
               {{varietyStyle.description}}
             </view>
+            <view
+              class="knowledge-entry"
+              wx:if="{{traceData.osmanthusInfo.variety}}"
+              bindtap="onJumpKnowledgeDetail"
+              data-variety="{{traceData.osmanthusInfo.variety}}"
+            >
+              <text class="entry-icon">📖</text>
+              <text class="entry-text">了解更多「{{traceData.osmanthusInfo.variety}}」品种科普</text>
+              <text class="entry-arrow">→</text>
+            </view>
           </view>
           <view class="info-grid">
             <view class="info-item">
