@@ -2495,6 +2495,115 @@ function getTsaCertificate(traceId) {
   });
 }
 
+function getInviteRewardConfig() {
+  return {
+    inviterPoints: 100,
+    inviteePoints: 50,
+    inviterCoupon: {
+      name: '邀请好友专属券',
+      type: 'cash',
+      value: 20,
+      minAmount: 100,
+      desc: '满100元可用，全场通用',
+      expireDays: 30
+    },
+    inviteeCoupon: {
+      name: '新用户专属券',
+      type: 'cash',
+      value: 15,
+      minAmount: 80,
+      desc: '满80元可用，新用户专享',
+      expireDays: 15
+    },
+    maxDailyInvites: 10,
+    activityTip: '每邀请1位好友扫码溯源，双方各得好礼！',
+    rules: [
+      '分享带有专属邀请码的溯源卡片给好友',
+      '好友通过扫码进入并完成首次溯源查看',
+      '系统自动发放积分和优惠券奖励',
+      '每日邀请奖励上限10次，超出不再发放'
+    ]
+  };
+}
+
+function getAvailableCoupons() {
+  return [
+    {
+      id: 'TPL-001',
+      name: '新人专享券',
+      type: 'cash',
+      value: 10,
+      minAmount: 50,
+      desc: '满50元减10元，新用户首单可用',
+      expireDays: 7,
+      tag: '新人',
+      tagColor: '#FF4D4F'
+    },
+    {
+      id: 'TPL-002',
+      name: '满减优惠券',
+      type: 'cash',
+      value: 30,
+      minAmount: 200,
+      desc: '满200元减30元，全场通用',
+      expireDays: 30,
+      tag: '热门',
+      tagColor: '#DAA520'
+    },
+    {
+      id: 'TPL-003',
+      name: '桂花茶专属券',
+      type: 'discount',
+      value: 0.88,
+      minAmount: 0,
+      desc: '桂花茶系列8.8折，不限金额',
+      expireDays: 15,
+      tag: '专属',
+      tagColor: '#2E8B57'
+    },
+    {
+      id: 'TPL-004',
+      name: '礼盒套装券',
+      type: 'cash',
+      value: 80,
+      minAmount: 500,
+      desc: '满500元减80元，礼盒套装专用',
+      expireDays: 60,
+      tag: '大额',
+      tagColor: '#722ED1'
+    },
+    {
+      id: 'TPL-005',
+      name: '老用户回馈券',
+      type: 'cash',
+      value: 50,
+      minAmount: 300,
+      desc: '满300元减50元，老用户专享',
+      expireDays: 45,
+      tag: '回馈',
+      tagColor: '#1890FF'
+    }
+  ];
+}
+
+function getShareThemeConfig() {
+  return {
+    cardTitle: '一茶一品',
+    cardSubtitle: '· 桂花茶全链路溯源 ·',
+    footerSloganLeft: '正品溯源 · 品质保障',
+    footerSloganRight: '邀请好友双方得积分',
+    qrCodeTip: '扫码查看完整溯源信息',
+    qrCodeSubTip: '支持区块链验真 · 全链路可追溯',
+    certificateTitle: '产品溯源证书',
+    certificateTitleEn: 'PRODUCT TRACEABILITY CERTIFICATE',
+    certificateFooter: [
+      '本证书由「一茶一品·桂花茶溯源平台」自动生成',
+      '生成时间：' + new Date().toLocaleString('zh-CN'),
+      '证书仅用于产品溯源，不具备法律效力'
+    ]
+  };
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -2517,5 +2626,8 @@ module.exports = {
   calculateTeaDosage,
   verifyBlockchainEvidence,
   recordAntiCounterfeitingScan,
-  getTsaCertificate
+  getTsaCertificate,
+  getInviteRewardConfig,
+  getAvailableCoupons,
+  getShareThemeConfig
 };

@@ -21,6 +21,9 @@
     },
     "scope.userLocationBackground": {
       "desc": "你的位置将用于产地地图持续导航"
+    },
+    "scope.writePhotosAlbum": {
+      "desc": "保存分享卡片和溯源证书到你的相册"
     }
   },
   "requiredPrivateInfos": [

@@ -6,6 +6,7 @@
 
 // 引入模拟数据模块
 const mockData = require('../../utils/mockData.js');
+const shareUtil = require('../../utils/share.js');
 
 // 锚点 Tab 配置
 const ANCHOR_TABS = [
@@ -147,7 +148,19 @@ Page({
     bcShowScanRecords: false,
     bcShowTsaCert: false,
     bcTsaCertData: null,
-    bcAntiCounterResult: null
+    bcAntiCounterResult: null,
+
+    // ========== 分享与社交传播功能 ==========
+    shareInviteConfig: null,
+    shareInviteData: null,
+    showShareCardModal: false,
+    shareCardGenerating: false,
+    shareCardImage: '',
+    showCertModal: false,
+    certGenerating: false,
+    certImage: '',
+    showRewardModal: false,
+    lastRewardResult: null
   },
 
   /**
@@ -238,6 +251,9 @@ Page({
         // 初始化模块收起状态（产地模块默认收起）
         moduleCollapsed.location = true;
 
+        var shareInviteConfig = mockData.getInviteRewardConfig();
+        var shareInviteData = shareUtil.getShareInviteData();
+
         that.setData({
           traceData: data,
           loading: false,
@@ -250,7 +266,9 @@ Page({
           dosageResult: initialDosageResult,
           brewStepSeconds: initialBrewStepSeconds,
           brewStepTotalSeconds: initialBrewStepSeconds,
-          brewStepTimerText: initialBrewStepTimerText
+          brewStepTimerText: initialBrewStepTimerText,
+          shareInviteConfig: shareInviteConfig,
+          shareInviteData: shareInviteData
         });
         
         // 设置导航栏标题
@@ -1685,6 +1703,229 @@ Page({
 
   closeBlockchainVerifyResult: function() {
     this.setData({ bcShowVerifyResult: false });
+  },
+
+  // ============================================================
+  // ==================== 分享与社交传播功能方法 ====================
+  // ============================================================
+
+  openShareCardModal: function() {
+    var that = this;
+    this.setData({
+      showShareCardModal: true,
+      shareCardImage: '',
+      shareCardGenerating: true
+    });
+    setTimeout(function() {
+      that.generateShareCard();
+    }, 300);
+  },
+
+  closeShareCardModal: function() {
+    this.setData({ showShareCardModal: false });
+  },
+
+  generateShareCard: function() {
+    var that = this;
+    if (!that.data.traceData) return;
+
+    var app = getApp();
+    var themeColors = app.globalData && app.globalData.themeColors ? app.globalData.themeColors : null;
+
+    shareUtil.drawShareCard('shareCardCanvas', that.data.traceData, themeColors, function(res) {
+      if (res.success) {
+        that.setData({
+          shareCardImage: res.tempFilePath,
+          shareCardGenerating: false
+        });
+      } else {
+        that.setData({ shareCardGenerating: false });
+        wx.showToast({ title: '生成失败，请重试', icon: 'none' });
+      }
+    });
+  },
+
+  regenerateShareCard: function() {
+    var that = this;
+    this.setData({
+      shareCardGenerating: true,
+      shareCardImage: ''
+    });
+    setTimeout(function() {
+      that.generateShareCard();
+    }, 200);
+  },
+
+  saveShareCardToAlbum: function() {
+    var that = this;
+    if (!that.data.shareCardImage) {
+      wx.showToast({ title: '请先生成分享卡片', icon: 'none' });
+      return;
+    }
+    wx.showLoading({ title: '保存中...', mask: true });
+    shareUtil.saveImageToAlbum(that.data.shareCardImage, function(res) {
+      wx.hideLoading();
+      if (res.success) {
+        wx.showToast({ title: '已保存到相册', icon: 'success' });
+      } else {
+        wx.showToast({ title: '保存失败', icon: 'none' });
+      }
+    });
+  },
+
+  openCertModal: function() {
+    var that = this;
+    this.setData({
+      showCertModal: true,
+      certImage: '',
+      certGenerating: true
+    });
+    setTimeout(function() {
+      that.generateCert();
+    }, 300);
+  },
+
+  closeCertModal: function() {
+    this.setData({ showCertModal: false });
+  },
+
+  generateCert: function() {
+    var that = this;
+    if (!that.data.traceData) return;
+
+    var app = getApp();
+    var themeColors = app.globalData && app.globalData.themeColors ? app.globalData.themeColors : null;
+
+    shareUtil.drawTraceCertificate('certCanvas', that.data.traceData, themeColors, function(res) {
+      if (res.success) {
+        that.setData({
+          certImage: res.tempFilePath,
+          certGenerating: false
+        });
+      } else {
+        that.setData({ certGenerating: false });
+        wx.showToast({ title: '生成失败，请重试', icon: 'none' });
+      }
+    });
+  },
+
+  regenerateCert: function() {
+    var that = this;
+    this.setData({
+      certGenerating: true,
+      certImage: ''
+    });
+    setTimeout(function() {
+      that.generateCert();
+    }, 200);
+  },
+
+  saveCertToAlbum: function() {
+    var that = this;
+    if (!that.data.certImage) {
+      wx.showToast({ title: '请先生成溯源证书', icon: 'none' });
+      return;
+    }
+    wx.showLoading({ title: '保存中...', mask: true });
+    shareUtil.saveImageToAlbum(that.data.certImage, function(res) {
+      wx.hideLoading();
+      if (res.success) {
+        wx.showToast({ title: '证书已保存到相册', icon: 'success' });
+      } else {
+        wx.showToast({ title: '保存失败', icon: 'none' });
+      }
+    });
+  },
+
+  doInviteShare: function() {
+    var that = this;
+    var data = that.data.traceData;
+    if (!data) return;
+
+    wx.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    });
+
+    wx.showToast({
+      title: '点击右上角分享给好友',
+      icon: 'none',
+      duration: 2500
+    });
+
+    setTimeout(function() {
+      var result = shareUtil.handleInviteeScan('current_user', that.data.traceId);
+      if (result.success) {
+        that.setData({
+          shareInviteData: result.inviteData,
+          lastRewardResult: result,
+          showRewardModal: true
+        });
+      }
+    }, 1500);
+  },
+
+  copyShareLink: function() {
+    var that = this;
+    var traceId = that.data.traceId;
+    var shareUrl = 'https://example.com/trace?traceId=' + traceId + '&invite=1';
+    wx.setClipboardData({
+      data: shareUrl,
+      success: function() {
+        wx.showToast({
+          title: '链接已复制',
+          icon: 'success',
+          duration: 1500
+        });
+      }
+    });
+  },
+
+  previewShareImage: function(e) {
+    var url = e.currentTarget.dataset.url;
+    if (!url) return;
+    wx.previewImage({
+      current: url,
+      urls: [url]
+    });
+  },
+
+  closeRewardModal: function() {
+    this.setData({ showRewardModal: false });
+  },
+
+  shareAfterReward: function() {
+    var that = this;
+    this.setData({ showRewardModal: false });
+    setTimeout(function() {
+      that.doInviteShare();
+    }, 200);
+  },
+
+  /**
+   * 用户点击右上角分享 - 增强版本
+   */
+  onShareAppMessage: function() {
+    const data = this.data.traceData;
+    const traceId = this.data.traceId;
+    return {
+      title: `${data.basicInfo.productName} - 扫码查看全链路溯源信息，邀请双方得积分好礼！`,
+      path: `/pages/detail/detail?traceId=${traceId}&invite=1`,
+      imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || ''
+    };
+  },
+
+  /**
+   * 分享到朋友圈 - 增强版本
+   */
+  onShareTimeline: function() {
+    const data = this.data.traceData;
+    const traceId = this.data.traceId;
+    return {
+      title: `${data.basicInfo.productName} | 全链路溯源 · 区块链验真 · 扫码邀请双方得好礼`,
+      query: `traceId=${traceId}&invite=1`,
+      imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || ''
+    };
   },
 
   /**

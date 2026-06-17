@@ -1827,6 +1827,100 @@
       </view>
     </view>
 
+    <!-- ========== 模块9：分享与社交传播 ========== -->
+    <view class="card animate-card module-card share-social-card" style="animation-delay: 0.5s;">
+      <view class="card-title module-header">
+        <view class="title-left">
+          <text class="title-icon">📣</text>
+          <text>分享与传播</text>
+          <view class="title-badge">邀请得好礼</view>
+        </view>
+      </view>
+      <view class="module-content">
+        <view class="share-activity-tip">
+          <text class="tip-icon">🎁</text>
+          <text class="tip-text">{{shareInviteConfig.activityTip || '每邀请1位好友扫码溯源，双方各得好礼！'}}</text>
+        </view>
+
+        <view class="share-stats-row">
+          <view class="share-stat-item">
+            <text class="stat-value">{{shareInviteData.invitedCount || 0}}</text>
+            <text class="stat-label">已邀请好友</text>
+          </view>
+          <view class="share-stat-divider"></view>
+          <view class="share-stat-item">
+            <text class="stat-value">{{shareInviteConfig.inviterPoints || 100}}</text>
+            <text class="stat-label">每次积分</text>
+          </view>
+          <view class="share-stat-divider"></view>
+          <view class="share-stat-item">
+            <text class="stat-value">¥{{shareInviteConfig.inviterCoupon && shareInviteConfig.inviterCoupon.value || 20}}</text>
+            <text class="stat-label">优惠券</text>
+          </view>
+        </view>
+
+        <view class="share-action-grid">
+          <view class="share-action-card" bindtap="openShareCardModal">
+            <view class="action-icon-wrap" style="background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);">
+              <text class="action-icon">🖼️</text>
+            </view>
+            <text class="action-title">生成分享卡</text>
+            <text class="action-desc">精美卡片含二维码</text>
+          </view>
+
+          <view class="share-action-card" bindtap="openCertModal">
+            <view class="action-icon-wrap" style="background: linear-gradient(135deg, #DAA520 0%, #FFD700 100%);">
+              <text class="action-icon">📜</text>
+            </view>
+            <text class="action-title">溯源证书</text>
+            <text class="action-desc">区块链验真长图</text>
+          </view>
+
+          <view class="share-action-card" bindtap="doInviteShare">
+            <view class="action-icon-wrap" style="background: linear-gradient(135deg, #1890FF 0%, #40A9FF 100%);">
+              <text class="action-icon">💬</text>
+            </view>
+            <text class="action-title">邀请好友</text>
+            <text class="action-desc">双方得积分优惠券</text>
+          </view>
+
+          <view class="share-action-card" bindtap="copyShareLink">
+            <view class="action-icon-wrap" style="background: linear-gradient(135deg, #722ED1 0%, #9254DE 100%);">
+              <text class="action-icon">🔗</text>
+            </view>
+            <text class="action-title">复制链接</text>
+            <text class="action-desc">一键复制溯源链接</text>
+          </view>
+        </view>
+
+        <view class="share-rules-box">
+          <view class="rules-title">活动规则</view>
+          <view wx:for="{{shareInviteConfig.rules}}" wx:key="index" class="rule-item">
+            <text class="rule-num">{{index + 1}}</text>
+            <text class="rule-text">{{item}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{shareInviteData.invitees && shareInviteData.invitees.length > 0}}" class="invitees-list">
+          <view class="invitees-title">
+            <text>我的邀请记录</text>
+            <text class="invitees-count">共{{shareInviteData.invitees.length}}人</text>
+          </view>
+          <view wx:for="{{shareInviteData.invitees}}" wx:for-item="invitee" wx:key="userId" class="invitee-item">
+            <view class="invitee-avatar">👤</view>
+            <view class="invitee-info">
+              <text class="invitee-name">好友{{index + 1}}</text>
+              <text class="invitee-trace">溯源码：{{invitee.traceId}}</text>
+            </view>
+            <view class="invitee-status">
+              <text wx:if="{{invitee.rewarded}}" class="status-done">✓ 已奖励</text>
+              <text wx:else class="status-pending">待完成</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
   </view>
 
   <!-- ==================== 返回顶部按钮 ==================== -->
@@ -2028,6 +2122,124 @@
           <view class="callout-btn secondary" bindtap="closeMapCallout">
             <text>关闭</text>
           </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 分享卡片弹窗 ==================== -->
+  <view class="share-modal {{showShareCardModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeShareCardModal">
+    <view class="share-modal-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="share-modal-header">
+        <text class="share-modal-title">🖼️ 分享卡片</text>
+        <view class="share-modal-close" bindtap="closeShareCardModal">×</view>
+      </view>
+      <view class="share-modal-body">
+        <view class="share-preview-area">
+          <canvas type="2d" id="shareCardCanvas" class="share-card-canvas" style="width: 375px; height: 600px;"></canvas>
+          <view class="share-loading-mask" wx:if="{{shareCardGenerating}}">
+            <view class="loading-spinner small"></view>
+            <text>正在生成分享卡片...</text>
+          </view>
+          <image wx:if="{{shareCardImage}}" class="share-preview-image" src="{{shareCardImage}}" mode="aspectFit" bindtap="previewShareImage" data-url="{{shareCardImage}}" />
+        </view>
+        <view class="share-tip-text">长按图片可保存或转发给好友</view>
+      </view>
+      <view class="share-modal-footer">
+        <view class="share-footer-btn secondary" bindtap="regenerateShareCard">
+          <text>🔄 重新生成</text>
+        </view>
+        <view class="share-footer-btn primary" bindtap="saveShareCardToAlbum">
+          <text>💾 保存到相册</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 溯源证书弹窗 ==================== -->
+  <view class="share-modal cert-modal {{showCertModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeCertModal">
+    <view class="share-modal-content cert-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="share-modal-header cert-header">
+        <text class="share-modal-title">📜 溯源证书</text>
+        <view class="share-modal-close" bindtap="closeCertModal">×</view>
+      </view>
+      <view class="share-modal-body cert-body">
+        <scroll-view scroll-y="true" class="cert-scroll">
+          <view class="cert-preview-area">
+            <canvas type="2d" id="certCanvas" class="cert-canvas" style="width: 375px; height: 1100px;"></canvas>
+            <view class="share-loading-mask" wx:if="{{certGenerating}}">
+              <view class="loading-spinner small"></view>
+              <text>正在生成溯源证书...</text>
+            </view>
+            <image wx:if="{{certImage}}" class="cert-preview-image" src="{{certImage}}" mode="widthFix" bindtap="previewShareImage" data-url="{{certImage}}" />
+          </view>
+        </scroll-view>
+        <view class="share-tip-text">证书包含区块链验真二维码，可长按保存</view>
+      </view>
+      <view class="share-modal-footer">
+        <view class="share-footer-btn secondary" bindtap="regenerateCert">
+          <text>🔄 重新生成</text>
+        </view>
+        <view class="share-footer-btn primary gold" bindtap="saveCertToAlbum">
+          <text>💾 保存到相册</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 邀请奖励弹窗 ==================== -->
+  <view class="reward-modal {{showRewardModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeRewardModal">
+    <view class="reward-modal-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="reward-celebration">
+        <text class="celebration-icon">🎉</text>
+        <text class="celebration-title">恭喜获得奖励</text>
+      </view>
+      <view class="reward-list" wx:if="{{lastRewardResult && lastRewardResult.rewards}}">
+        <view wx:if="{{lastRewardResult.rewards.inviter}}" class="reward-item inviter-reward">
+          <view class="reward-role">您的奖励</view>
+          <view class="reward-detail" wx:if="{{lastRewardResult.rewards.inviter.type === 'points' || lastRewardResult.rewards.inviter.value}}">
+            <text class="reward-icon">✨</text>
+            <view class="reward-info">
+              <text class="reward-name">绿色积分</text>
+              <text class="reward-value">+{{lastRewardResult.rewards.inviter.value || lastRewardResult.rewards.inviter}} 分</text>
+            </view>
+          </view>
+          <view class="reward-detail" wx:if="{{lastRewardResult.rewards.inviter.coupon}}">
+            <text class="reward-icon">🎫</text>
+            <view class="reward-info">
+              <text class="reward-name">{{lastRewardResult.rewards.inviter.coupon.name}}</text>
+              <text class="reward-value">
+                {{lastRewardResult.rewards.inviter.coupon.type === 'cash' ? '¥' + lastRewardResult.rewards.inviter.coupon.value : (lastRewardResult.rewards.inviter.coupon.value * 10) + '折'}}
+              </text>
+            </view>
+          </view>
+        </view>
+        <view wx:if="{{lastRewardResult.rewards.invitee}}" class="reward-item invitee-reward">
+          <view class="reward-role">好友的奖励</view>
+          <view class="reward-detail" wx:if="{{lastRewardResult.rewards.invitee.type === 'points' || lastRewardResult.rewards.invitee.value}}">
+            <text class="reward-icon">✨</text>
+            <view class="reward-info">
+              <text class="reward-name">绿色积分</text>
+              <text class="reward-value">+{{lastRewardResult.rewards.invitee.value || 50}} 分</text>
+            </view>
+          </view>
+          <view class="reward-detail" wx:if="{{lastRewardResult.rewards.invitee.coupon}}">
+            <text class="reward-icon">🎫</text>
+            <view class="reward-info">
+              <text class="reward-name">{{lastRewardResult.rewards.invitee.coupon.name}}</text>
+              <text class="reward-value">
+                {{lastRewardResult.rewards.invitee.coupon.type === 'cash' ? '¥' + lastRewardResult.rewards.invitee.coupon.value : (lastRewardResult.rewards.invitee.coupon.value * 10) + '折'}}
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="reward-actions">
+        <view class="reward-action-btn primary" bindtap="closeRewardModal">
+          <text>知道了</text>
+        </view>
+        <view class="reward-action-btn secondary" bindtap="shareAfterReward">
+          <text>继续邀请好友</text>
         </view>
       </view>
     </view>

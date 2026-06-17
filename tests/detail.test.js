@@ -284,7 +284,35 @@ jest.mock('../utils/mockData.js', () => ({
         osmanthusOriginImage: ''
       }
     }
-  }
+  },
+  getInviteRewardConfig: jest.fn(() => ({
+    inviterPoints: 100,
+    inviteePoints: 50,
+    inviterCoupon: { name: '邀请好友专属券', type: 'cash', value: 20, minAmount: 100 },
+    inviteeCoupon: { name: '新用户专属券', type: 'cash', value: 15, minAmount: 80 },
+    maxDailyInvites: 10,
+    rules: ['分享邀请码卡片', '好友扫码完成溯源', '自动发放奖励', '每日上限10次']
+  })),
+  getAvailableCoupons: jest.fn(() => [
+    { id: 'C001', name: '新人首单券', type: 'cash', value: 15, minAmount: 80, validityDays: 30, applicable: ['全部产品'] },
+    { id: 'C002', name: '满减优惠券', type: 'cash', value: 30, minAmount: 200, validityDays: 60, applicable: ['全部产品'] },
+    { id: 'C003', name: '桂花茶专享券', type: 'cash', value: 25, minAmount: 150, validityDays: 45, applicable: ['桂花茶系列'] },
+    { id: 'C004', name: '品鉴装尝鲜券', type: 'discount', value: 0.8, minAmount: 50, validityDays: 15, applicable: ['品鉴装系列'] },
+    { id: 'C005', name: '老顾客回馈券', type: 'cash', value: 50, minAmount: 300, validityDays: 90, applicable: ['全部产品'] }
+  ]),
+  getShareThemeConfig: jest.fn(() => ({
+    shareCardTitle: '桂花茶 · 溯源品质',
+    shareCardSubtitle: '金桂飘香 · 一品好茶',
+    inviteTitle: '邀请好友查溯源',
+    inviteSubtitle: '扫码查看全链路溯源信息，邀请双方得积分好礼！',
+    certTitle: '产品溯源证书',
+    certSubtitle: '区块链存证 · 不可篡改',
+    shareSlogans: [
+      '来自桂花之乡的问候',
+      '古法窨制 · 匠心传承',
+      '每一片茶叶都有故事'
+    ]
+  }))
 }));
 
 const mockData = require('../utils/mockData.js');
@@ -516,8 +544,8 @@ describe('detail.js 页面逻辑测试', () => {
 
       const result = page.onShareAppMessage();
 
-      expect(result.title).toBe('金桂花茶 - 全链路溯源信息');
-      expect(result.path).toBe('/pages/detail/detail?traceId=G001');
+      expect(result.title).toBe('金桂花茶 - 扫码查看全链路溯源信息，邀请双方得积分好礼！');
+      expect(result.path).toBe('/pages/detail/detail?traceId=G001&invite=1');
     });
   });
 
