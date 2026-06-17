@@ -3,23 +3,23 @@
   功能：品牌展示、扫码溯源、手动输入查询、批量查询、扫码历史
 -->
 
-<view class="page-container {{pageLoaded ? 'page-loaded' : ''}}">
-  
+<view class="page-container {{pageLoaded ? 'page-loaded' : ''}} {{a11yClasses}}">
+
   <!-- 剪贴板识别弹窗 -->
-  <view wx:if="{{showClipboardModal}}" class="modal-overlay" catchtap="handleClipboardCancel">
+  <view wx:if="{{showClipboardModal}}" class="modal-overlay" catchtap="handleClipboardCancel" role="dialog" aria-label="{{i18n.clipboardTitle}}">
     <view class="modal-content" catchtap="preventBubble">
       <view class="modal-header">
         <view class="modal-icon">📋</view>
-        <view class="modal-title">检测到溯源ID</view>
+        <view class="modal-title">{{i18n.clipboardTitle}}</view>
       </view>
       <view class="modal-body">
-        <text>剪贴板中检测到有效溯源ID：</text>
+        <text>{{i18n.clipboardDesc}}</text>
         <view class="clipboard-id">{{clipboardTraceId}}</view>
         <text class="modal-tip">是否立即查询该产品的溯源信息？</text>
       </view>
       <view class="modal-footer">
-        <button class="modal-btn modal-btn-cancel" bindtap="handleClipboardCancel">取消</button>
-        <button class="modal-btn modal-btn-confirm" bindtap="handleClipboardConfirm">立即查询</button>
+        <button class="modal-btn modal-btn-cancel" bindtap="handleClipboardCancel" role="button" aria-label="{{i18n.clipboardClose}}">{{i18n.clipboardClose}}</button>
+        <button class="modal-btn modal-btn-confirm" bindtap="handleClipboardConfirm" role="button" aria-label="{{i18n.clipboardGoto}}">{{i18n.clipboardGoto}}</button>
       </view>
     </view>
   </view>
@@ -34,8 +34,8 @@
         <view class="scan-guide-header-subtitle">3步轻松查询产品溯源信息</view>
       </view>
       <view class="scan-guide-steps">
-        <view 
-          wx:for="{{scanGuideSteps}}" 
+        <view
+          wx:for="{{scanGuideSteps}}"
           wx:key="step"
           class="scan-guide-step {{scanGuideStep >= index ? 'active' : ''}} {{scanGuideStep === index ? 'current' : ''}}"
         >
@@ -70,21 +70,33 @@
   </view>
 
   <!-- ==================== 顶部品牌视觉区域 ==================== -->
-  <view class="header-section">
+  <view class="header-section" role="banner">
     <view class="header-bg">
       <view class="header-pattern"></view>
     </view>
-    
+
+    <!-- 无障碍设置入口按钮（右上角） -->
+    <view
+      class="a11y-entry-btn"
+      bindtap="openA11yPanel"
+      role="button"
+      aria-label="{{i18n.a11ySettings}}"
+    >
+      <text class="a11y-entry-icon">♿</text>
+      <text wx:if="{{currentLang === 'en-US'}}" class="a11y-entry-label">A11y</text>
+      <text wx:else class="a11y-entry-label">无障碍</text>
+    </view>
+
     <view class="brand-container">
-      <view class="brand-icon">
+      <view class="brand-icon" aria-hidden="true">
         <text class="osmanthus-icon">🌼</text>
       </view>
-      
-      <view class="brand-title">{{brandName}}</view>
-      
-      <view class="brand-subtitle">
+
+      <view class="brand-title" role="heading" aria-level="1">{{brandName}}</view>
+
+      <view class="brand-subtitle" aria-hidden="true">
         <text class="eco-leaf">🍃</text>
-        <text>追溯每一片茶叶的绿色旅程</text>
+        <text>{{currentLang === 'en-US' ? 'Trace the green journey of every tea leaf' : '追溯每一片茶叶的绿色旅程'}}</text>
         <text class="eco-leaf">🍃</text>
       </view>
     </view>
@@ -92,22 +104,22 @@
 
   <!-- ==================== 主要功能区域 ==================== -->
   <view class="main-section">
-    
+
     <!-- ==================== 轮播 Banner 区域 ==================== -->
     <view class="banner-section">
-      <swiper 
-        class="banner-swiper" 
-        autoplay="{{true}}" 
-        interval="{{4000}}" 
-        duration="{{500}}" 
+      <swiper
+        class="banner-swiper"
+        autoplay="{{true}}"
+        interval="{{4000}}"
+        duration="{{500}}"
         circular="{{true}}"
         bindchange="onBannerChange"
         indicator-dots="{{true}}"
         indicator-color="rgba(255,255,255,0.4)"
         indicator-active-color="#FFFFFF"
       >
-        <swiper-item 
-          wx:for="{{bannerList}}" 
+        <swiper-item
+          wx:for="{{bannerList}}"
           wx:key="id"
           data-index="{{index}}"
           bindtap="onBannerTap"
@@ -127,8 +139,8 @@
     </view>
 
     <!-- ==================== 公告栏区域 ==================== -->
-    <view class="announcement-bar" bindtap="onAnnouncementTap">
-      <view class="announcement-icon-row">
+    <view class="announcement-bar" bindtap="onAnnouncementTap" role="region" aria-label="公告栏，点击查看详情">
+      <view class="announcement-icon-row" aria-hidden="true">
         <view class="announcement-label {{announcementList[currentAnnouncement].type === 'recall' ? 'recall' : ''}}">{{announcementList[currentAnnouncement].icon}}</view>
       </view>
       <view class="announcement-scroll {{announcementAnimation ? 'animating' : ''}}">
@@ -136,12 +148,12 @@
           {{announcementList[currentAnnouncement].text}}
         </view>
       </view>
-      <view class="announcement-arrow">›</view>
+      <view class="announcement-arrow" aria-hidden="true">›</view>
     </view>
 
     <!-- 扫码溯源主按钮 -->
-    <view class="scan-card" bindtap="handleScanCode">
-      <view class="scan-icon-wrapper">
+    <view class="scan-card" bindtap="handleScanCode" role="button" aria-label="{{i18n.scanBtn}}">
+      <view class="scan-icon-wrapper" aria-hidden="true">
         <view class="scan-icon">
           <view class="scan-icon-inner">
             <view class="scan-corner scan-corner-tl"></view>
@@ -153,42 +165,44 @@
         </view>
       </view>
       <view class="scan-text">
-        <text class="scan-title">桂花茶扫码溯源</text>
-        <text class="scan-desc">扫描二维码/条形码，支持小程序码</text>
+        <text class="scan-title">{{currentLang === 'en-US' ? 'Scan & Trace Osmanthus Tea' : '桂花茶扫码溯源'}}</text>
+        <text class="scan-desc">{{currentLang === 'en-US' ? 'Scan QR / Barcode, support Mini Program code' : '扫描二维码/条形码，支持小程序码'}}</text>
       </view>
-      <view class="scan-arrow">›</view>
+      <view class="scan-arrow" aria-hidden="true">›</view>
     </view>
 
     <!-- ==================== 功能卡片区域（可点击联动） ==================== -->
-    <view class="feature-section">
-      <view class="section-title">
-        <view class="title-icon">🔍</view>
-        <text>溯源功能</text>
+    <view class="feature-section" role="region" aria-label="溯源功能卡片导航">
+      <view class="section-title" role="heading" aria-level="2">
+        <view class="title-icon" aria-hidden="true">🔍</view>
+        <text>{{currentLang === 'en-US' ? 'Traceability Features' : '溯源功能'}}</text>
       </view>
-      
+
       <view class="feature-grid">
-        <view 
-          wx:for="{{featureCards}}" 
+        <view
+          wx:for="{{featureCards}}"
           wx:key="key"
           class="feature-item feature-card-clickable"
           data-card="{{item}}"
           bindtap="onFeatureCardTap"
+          role="button"
+          aria-label="{{item.name}}，{{item.desc}}"
         >
-          <view class="feature-icon" style="background: linear-gradient(135deg, {{item.color}}, {{item.color}}88);">
+          <view class="feature-icon" aria-hidden="true" style="background: linear-gradient(135deg, {{item.color}}, {{item.color}}88);">
             <text>{{item.icon}}</text>
           </view>
           <view class="feature-name">{{item.name}}</view>
           <view class="feature-desc">{{item.desc}}</view>
-          <view class="feature-card-arrow" wx:if="{{item.type === 'brand'}}">›</view>
+          <view class="feature-card-arrow" wx:if="{{item.type === 'brand'}}" aria-hidden="true">›</view>
         </view>
       </view>
     </view>
 
     <!-- ==================== 品牌视频区域 ==================== -->
-    <view class="brand-video-section">
-      <view class="section-title">
-        <view class="title-icon">🎬</view>
-        <text>品牌故事</text>
+    <view class="brand-video-section" role="region" aria-label="{{i18n.brandStoryTitle}}">
+      <view class="section-title" role="heading" aria-level="2">
+        <view class="title-icon" aria-hidden="true">🎬</view>
+        <text>{{i18n.brandStoryTitle}}</text>
       </view>
       <view class="video-card">
         <video
@@ -207,46 +221,50 @@
           autoplay="{{false}}"
           loop="{{false}}"
           muted="{{false}}"
+          aria-label="{{brandVideo.title}}"
         ></video>
         <view class="video-info">
           <view class="video-title">{{brandVideo.title}}</view>
-          <view class="video-duration">⏱ {{brandVideo.duration}}</view>
+          <view class="video-duration" aria-hidden="true">⏱ {{brandVideo.duration}}</view>
         </view>
       </view>
     </view>
 
     <!-- 手动输入区域 -->
-    <view class="manual-section">
-      <view class="manual-toggle" bindtap="toggleInputArea">
-        <text class="manual-toggle-text">手动输入溯源ID</text>
-        <text class="manual-toggle-icon {{showInputArea ? 'rotate' : ''}}">▼</text>
+    <view class="manual-section" role="region" aria-label="{{i18n.quickInputTitle}}">
+      <view class="manual-toggle" bindtap="toggleInputArea" role="button" aria-expanded="{{showInputArea}}" aria-label="{{i18n.quickInputTitle}}">
+        <text class="manual-toggle-text">{{i18n.quickInputTitle}}</text>
+        <text class="manual-toggle-icon {{showInputArea ? 'rotate' : ''}}" aria-hidden="true">▼</text>
       </view>
-      
+
       <view class="manual-input-area {{showInputArea ? 'show' : ''}}">
         <view class="input-wrapper">
-          <input 
-            class="trace-input" 
-            type="text" 
-            placeholder="请输入溯源ID（如：G001）"
+          <input
+            class="trace-input"
+            type="text"
+            placeholder="{{i18n.inputPlaceholder}}"
             placeholder-class="input-placeholder"
             value="{{inputTraceId}}"
             bindinput="onInputChange"
             maxlength="20"
             confirm-type="search"
             bindconfirm="handleManualQuery"
+            aria-label="{{i18n.inputPlaceholder}}"
           />
-          <button class="query-btn" bindtap="handleManualQuery">查询</button>
+          <button class="query-btn" bindtap="handleManualQuery" role="button" aria-label="{{i18n.searchBtn}}">{{i18n.searchBtn}}</button>
         </view>
-        
+
         <view class="test-ids">
-          <text class="test-label">测试ID：</text>
-          <view class="test-id-btns">
-            <view 
-              wx:for="{{testIds}}" 
-              wx:key="*this" 
+          <text class="test-label">{{currentLang === 'en-US' ? 'Demo IDs:' : '测试ID：'}}</text>
+          <view class="test-id-btns" role="group">
+            <view
+              wx:for="{{testIds}}"
+              wx:key="*this"
               class="test-id-btn"
               data-id="{{item}}"
               bindtap="fillTestId"
+              role="button"
+              aria-label="{{currentLang === 'en-US' ? 'Use demo ID ' : '使用示例ID'}}{{item}}"
             >{{item}}</view>
           </view>
         </view>
@@ -254,37 +272,40 @@
     </view>
 
     <!-- 批量查询区域 -->
-    <view class="manual-section">
-      <view class="manual-toggle" bindtap="toggleBatchArea">
-        <text class="manual-toggle-text">📦 按批次号查询</text>
-        <text class="manual-toggle-icon {{showBatchArea ? 'rotate' : ''}}">▼</text>
+    <view class="manual-section" role="region" aria-label="{{i18n.quickInputBatchTitle}}">
+      <view class="manual-toggle" bindtap="toggleBatchArea" role="button" aria-expanded="{{showBatchArea}}" aria-label="{{i18n.quickInputBatchTitle}}">
+        <text class="manual-toggle-text">📦 {{i18n.quickInputBatchTitle}}</text>
+        <text class="manual-toggle-icon {{showBatchArea ? 'rotate' : ''}}" aria-hidden="true">▼</text>
       </view>
-      
+
       <view class="manual-input-area {{showBatchArea ? 'show' : ''}}">
         <view class="input-wrapper">
-          <input 
-            class="trace-input" 
-            type="text" 
-            placeholder="请输入批次号（如：GH202503）"
+          <input
+            class="trace-input"
+            type="text"
+            placeholder="{{i18n.batchPlaceholder}}"
             placeholder-class="input-placeholder"
             value="{{inputBatchNo}}"
             bindinput="onBatchInputChange"
             maxlength="10"
             confirm-type="search"
             bindconfirm="handleBatchQuery"
+            aria-label="{{i18n.batchPlaceholder}}"
           />
-          <button class="query-btn batch-btn" bindtap="handleBatchQuery">查询批次</button>
+          <button class="query-btn batch-btn" bindtap="handleBatchQuery" role="button" aria-label="{{i18n.batchSearchBtn}}">{{i18n.batchSearchBtn}}</button>
         </view>
-        
+
         <view class="test-ids">
-          <text class="test-label">测试批次：</text>
-          <view class="test-id-btns">
-            <view 
-              wx:for="{{testBatchNos}}" 
-              wx:key="*this" 
+          <text class="test-label">{{currentLang === 'en-US' ? 'Demo batches:' : '测试批次：'}}</text>
+          <view class="test-id-btns" role="group">
+            <view
+              wx:for="{{testBatchNos}}"
+              wx:key="*this"
               class="test-id-btn batch-test-btn"
               data-batch="{{item}}"
               bindtap="fillTestBatchNo"
+              role="button"
+              aria-label="{{currentLang === 'en-US' ? 'Use demo batch ' : '使用示例批次'}}{{item}}"
             >{{item}}</view>
           </view>
         </view>
@@ -292,22 +313,24 @@
     </view>
 
     <!-- ==================== 扫码历史区域 ==================== -->
-    <view wx:if="{{showHistory}}" class="history-section">
-      <view class="section-title">
-        <view class="title-icon">⏰</view>
-        <text>扫码历史</text>
-        <view class="clear-history-btn" bindtap="clearAllHistory">清空</view>
+    <view wx:if="{{showHistory}}" class="history-section" role="region" aria-label="{{i18n.historyTitle}}">
+      <view class="section-title" role="heading" aria-level="2">
+        <view class="title-icon" aria-hidden="true">⏰</view>
+        <text>{{i18n.historyTitle}}</text>
+        <view class="clear-history-btn" bindtap="clearAllHistory" role="button" aria-label="{{currentLang === 'en-US' ? 'Clear all history' : '清空扫码历史'}}">{{currentLang === 'en-US' ? 'Clear' : '清空'}}</view>
       </view>
-      
-      <view class="history-list">
-        <view 
-          class="history-item" 
-          wx:for="{{scanHistory}}" 
+
+      <view class="history-list" role="list">
+        <view
+          class="history-item"
+          wx:for="{{scanHistory}}"
           wx:key="id"
           data-traceid="{{item.traceId}}"
           bindtap="viewHistoryItem"
+          role="listitem"
+          aria-label="{{item.productName}}，溯源ID{{item.traceId}}，{{item.formatTime}}"
         >
-          <view class="history-icon">🌼</view>
+          <view class="history-icon" aria-hidden="true">🌼</view>
           <view class="history-info">
             <view class="history-name">{{item.productName}}</view>
             <view class="history-meta">
@@ -316,40 +339,159 @@
             </view>
           </view>
           <view class="history-actions">
-            <view 
-              class="delete-btn" 
+            <view
+              class="delete-btn"
               catchtap="deleteHistoryItem"
               data-id="{{item.id}}"
+              role="button"
+              aria-label="{{currentLang === 'en-US' ? 'Delete this history' : '删除该条历史'}}"
             >×</view>
           </view>
-          <view class="history-arrow">›</view>
+          <view class="history-arrow" aria-hidden="true">›</view>
         </view>
       </view>
     </view>
 
     <!-- ==================== 区块链存证提示 ==================== -->
-    <view class="blockchain-banner">
-      <view class="blockchain-icon">
+    <view class="blockchain-banner" role="note" aria-label="区块链存证技术，数据真实可查不可篡改">
+      <view class="blockchain-icon" aria-hidden="true">
         <text>🔗</text>
       </view>
       <view class="blockchain-text">
-        <text class="blockchain-title">区块链存证技术</text>
-        <text class="blockchain-desc">数据真实可查、不可篡改</text>
+        <text class="blockchain-title">{{currentLang === 'en-US' ? 'Blockchain Proof' : '区块链存证技术'}}</text>
+        <text class="blockchain-desc">{{currentLang === 'en-US' ? 'Verifiable & Tamper-proof Data' : '数据真实可查、不可篡改'}}</text>
       </view>
-      <view class="blockchain-badge">
-        <text>已认证</text>
+      <view class="blockchain-badge" role="status">
+        <text>{{currentLang === 'en-US' ? 'Certified' : '已认证'}}</text>
       </view>
     </view>
   </view>
 
   <!-- ==================== 底部信息 ==================== -->
-  <view class="footer-section">
-    <view class="footer-text">
+  <view class="footer-section" role="contentinfo">
+    <view class="footer-text" aria-hidden="true">
       <text class="eco-icon">🍃</text>
       <text>一茶一品 · 品质溯源</text>
       <text class="eco-icon">🍃</text>
     </view>
-    <view class="footer-tip">数据安全存储，保护您的隐私</view>
+    <view class="footer-tip">{{currentLang === 'en-US' ? 'Data securely stored, protecting your privacy' : '数据安全存储，保护您的隐私'}}</view>
   </view>
-  
+
+  <!-- ==================== 无障碍与多语言设置弹窗 ==================== -->
+  <view wx:if="{{showA11yPanel}}" class="modal-overlay a11y-overlay" catchtap="closeA11yPanel" role="dialog" aria-modal="true" aria-label="{{i18n.a11yTitle}}">
+    <view class="a11y-modal" catchtap="preventBubble">
+      <view class="a11y-modal-header">
+        <view class="a11y-modal-title" role="heading" aria-level="1">
+          <text class="a11y-title-icon" aria-hidden="true">♿</text>
+          <text>{{i18n.a11yTitle}}</text>
+        </view>
+        <view class="a11y-modal-close" bindtap="closeA11yPanel" role="button" aria-label="{{i18n.closeBtn}}">×</view>
+      </view>
+
+      <scroll-view scroll-y class="a11y-modal-body">
+
+        <!-- 语言切换 -->
+        <view class="a11y-row a11y-row-block">
+          <view class="a11y-label">
+            <text class="a11y-label-icon" aria-hidden="true">🌐</text>
+            <view class="a11y-label-stack">
+              <text class="a11y-label-text">{{i18n.languageLabel}}</text>
+              <text class="a11y-label-desc">{{currentLang === 'en-US' ? 'Switch UI language' : '切换界面显示语言，支持茶叶出口场景'}}</text>
+            </view>
+          </view>
+          <view class="a11y-options" role="radiogroup" aria-label="{{i18n.languageLabel}}">
+            <view
+              wx:for="{{availableLanguages}}"
+              wx:key="code"
+              class="a11y-option {{currentLang === item.code ? 'active' : ''}}"
+              data-lang="{{item.code}}"
+              bindtap="handleSelectLanguage"
+              role="radio"
+              aria-checked="{{currentLang === item.code}}"
+              aria-label="{{item.label}}"
+            >
+              {{item.label}}
+            </view>
+          </view>
+        </view>
+
+        <!-- 字号调节 -->
+        <view class="a11y-row a11y-row-block">
+          <view class="a11y-label">
+            <text class="a11y-label-icon" aria-hidden="true">🔠</text>
+            <view class="a11y-label-stack">
+              <text class="a11y-label-text">{{i18n.fontLabel}}</text>
+              <text class="a11y-label-desc">{{currentLang === 'en-US' ? 'Care mode & extra large fonts' : '关怀版/特大字号，适合视力不佳人群'}}</text>
+            </view>
+          </view>
+          <view class="a11y-options" role="radiogroup" aria-label="{{i18n.fontLabel}}">
+            <view
+              wx:for="{{availableFontSizes}}"
+              wx:key="key"
+              class="a11y-option {{currentFontSize === item.key ? 'active' : ''}}"
+              data-size="{{item.key}}"
+              bindtap="handleSelectFontSize"
+              role="radio"
+              aria-checked="{{currentFontSize === item.key}}"
+              aria-label="{{currentLang === 'en-US' ? item.labelEn : item.labelZh}}"
+            >
+              {{currentLang === 'en-US' ? item.labelEn : item.labelZh}}
+            </view>
+          </view>
+        </view>
+
+        <!-- 色弱模式开关 -->
+        <view class="a11y-row a11y-row-block">
+          <view class="a11y-label">
+            <text class="a11y-label-icon" aria-hidden="true">🎨</text>
+            <view class="a11y-label-stack">
+              <text class="a11y-label-text">{{i18n.colorWeakLabel}}</text>
+              <text class="a11y-label-desc">{{i18n.colorWeakDesc}}</text>
+            </view>
+          </view>
+          <view
+            class="a11y-switch {{currentColorWeak ? 'on' : ''}}"
+            bindtap="handleToggleColorWeak"
+            role="switch"
+            aria-checked="{{currentColorWeak}}"
+            aria-label="{{i18n.colorWeakLabel}}"
+          >
+            <view class="a11y-switch-dot" aria-hidden="true"></view>
+          </view>
+        </view>
+
+        <!-- 使用说明 -->
+        <view class="a11y-tips">
+          <view class="a11y-tips-title" role="heading" aria-level="2">
+            <text aria-hidden="true">💡</text>
+            <text>{{currentLang === 'en-US' ? 'Tips' : '使用提示'}}</text>
+          </view>
+          <view class="a11y-tips-item">
+            <text class="a11y-tip-bullet" aria-hidden="true">•</text>
+            <text>{{currentLang === 'en-US' ? 'English mode optimizes for tea export scenarios' : '英文模式下对出口茶叶专业术语进行优化翻译'}}</text>
+          </view>
+          <view class="a11y-tips-item">
+            <text class="a11y-tip-bullet" aria-hidden="true">•</text>
+            <text>{{currentLang === 'en-US' ? 'Care mode increases font size by 50%' : '关怀版字号比标准字号放大约 50%'}}</text>
+          </view>
+          <view class="a11y-tips-item">
+            <text class="a11y-tip-bullet" aria-hidden="true">•</text>
+            <text>{{currentLang === 'en-US' ? 'Color weak mode adds icons & patterns to status' : '色弱模式下合格/不合格会额外显示图标和图案，不只靠颜色区分'}}</text>
+          </view>
+          <view class="a11y-tips-item">
+            <text class="a11y-tip-bullet" aria-hidden="true">•</text>
+            <text>{{currentLang === 'en-US' ? 'Screen reader friendly with full aria semantics' : '所有模块按钮均补充了 aria 语义，支持屏幕阅读器朗读'}}</text>
+          </view>
+        </view>
+
+      </scroll-view>
+
+      <view class="a11y-modal-footer">
+        <view class="a11y-confirm-btn" bindtap="closeA11yPanel" role="button" aria-label="{{i18n.closeBtn}}">
+          {{i18n.closeBtn}}
+        </view>
+      </view>
+    </view>
+  </view>
+
 </view>

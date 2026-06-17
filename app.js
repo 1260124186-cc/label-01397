@@ -1,17 +1,27 @@
 /**
  * 桂花茶溯源小程序 - 全局入口文件
- * 功能：初始化全局数据、配置全局方法
+ * 功能：初始化全局数据、配置全局方法、i18n 与无障碍状态
  * 作者：开发团队
  * 版本：1.0.0
  */
 
+const i18n = require('./utils/i18n/index.js');
+
 App({
   /**
    * 小程序初始化时触发
-   * 用于全局数据初始化、登录状态检查等
+   * 用于全局数据初始化、登录状态检查、i18n 初始化等
    */
   onLaunch: function() {
     console.log('桂花茶溯源小程序启动');
+    
+    // 初始化 i18n 与无障碍全局数据
+    i18n.applySettingsToApp(this);
+    console.log('无障碍设置:', {
+      lang: this.globalData.currentLang,
+      fontSize: this.globalData.currentFontSize,
+      colorWeak: this.globalData.currentColorWeak
+    });
     
     // 检查微信基础库版本，确保兼容性
     const systemInfo = wx.getSystemInfoSync();
@@ -25,6 +35,54 @@ App({
         showCancel: false
       });
     }
+  },
+
+  /**
+   * 全局翻译函数（可通过 getApp().t() 调用）
+   */
+  t: function(key) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    return i18n.t.apply(null, [key].concat(args));
+  },
+
+  /**
+   * 切换语言并返回新的无障碍数据
+   */
+  switchLanguage: function(lang) {
+    const ok = i18n.setLanguage(lang);
+    if (ok) {
+      i18n.applySettingsToApp(this);
+      return i18n.getA11yData();
+    }
+    return null;
+  },
+
+  /**
+   * 切换字号并返回新的无障碍数据
+   */
+  switchFontSize: function(size) {
+    const ok = i18n.setFontSize(size);
+    if (ok) {
+      i18n.applySettingsToApp(this);
+      return i18n.getA11yData();
+    }
+    return null;
+  },
+
+  /**
+   * 切换色弱模式并返回新的无障碍数据
+   */
+  switchColorWeak: function(enabled) {
+    i18n.setColorWeak(enabled);
+    i18n.applySettingsToApp(this);
+    return i18n.getA11yData();
+  },
+
+  /**
+   * 获取当前无障碍配置
+   */
+  getA11yData: function() {
+    return i18n.getA11yData();
   },
 
   /**
@@ -76,6 +134,12 @@ App({
     // API基础地址（预留后端接口）
     apiBaseUrl: 'https://api.example.com/trace',
     // 用户信息（如需登录功能）
-    userInfo: null
+    userInfo: null,
+    // ===== i18n 与无障碍（启动时被 applySettingsToApp 覆盖） =====
+    currentLang: i18n.LANG_ZH,
+    currentFontSize: i18n.FONT_NORMAL,
+    currentColorWeak: false,
+    fontMultiplier: 1.0,
+    a11yClasses: 'font-normal'
   }
 });

@@ -15,7 +15,7 @@
     <view class="skeleton-title shimmer" style="width: 200rpx;"></view>
     <view class="skeleton-subtitle shimmer" style="width: 160rpx;"></view>
   </view>
-  
+
   <view class="skeleton-content">
     <view class="skeleton-card">
       <view class="skeleton-line shimmer" style="width: 40%;"></view>
@@ -26,13 +26,13 @@
         <view class="skeleton-grid-item shimmer"></view>
       </view>
     </view>
-    
+
     <view class="skeleton-card">
       <view class="skeleton-line shimmer" style="width: 30%;"></view>
       <view class="skeleton-line shimmer" style="width: 80%;"></view>
       <view class="skeleton-line shimmer" style="width: 60%;"></view>
     </view>
-    
+
     <view class="skeleton-card">
       <view class="skeleton-line shimmer" style="width: 35%;"></view>
       <view class="skeleton-params">
@@ -42,7 +42,7 @@
         <view class="skeleton-param shimmer"></view>
       </view>
     </view>
-    
+
     <view class="skeleton-card">
       <view class="skeleton-line shimmer" style="width: 45%;"></view>
       <view class="skeleton-image shimmer"></view>
@@ -51,8 +51,8 @@
   </view>
 </view>
 
-<view class="page-container {{showPdfModal ? 'no-scroll' : ''}}" style="{{showPdfModal ? 'top: -' + scrollTop + 'px;' : ''}}" wx:if="{{!skeletonLoading && traceData}}">
-  
+<view class="page-container {{showPdfModal ? 'no-scroll' : ''}} {{a11yClasses}}" style="{{showPdfModal ? 'top: -' + scrollTop + 'px;' : ''}}" wx:if="{{!skeletonLoading && traceData}}">
+
   <!-- ==================== 顶部产品概览 ==================== -->
   <view class="product-header">
     <view class="header-bg-pattern"></view>
@@ -65,7 +65,7 @@
       </view>
       <view class="product-name">{{traceData.basicInfo.productName}}</view>
       <view class="product-batch">批次号：{{traceData.basicInfo.batchNo}}</view>
-      
+
       <!-- 区块链存证标识 -->
       <view class="blockchain-badge" wx:if="{{traceData.blockchainInfo}}">
         <view class="badge-icon">🔗</view>
@@ -79,20 +79,24 @@
   </view>
 
   <!-- ==================== 锚点 Tab 导航栏 ==================== -->
-  <view class="anchor-tab-bar {{anchorSticky ? 'sticky' : ''}}" id="anchor-tab-bar">
+  <view class="anchor-tab-bar {{anchorSticky ? 'sticky' : ''}}" id="anchor-tab-bar" role="tablist" aria-label="{{currentLang === 'en-US' ? 'Module navigation' : '模块导航'}}">
     <scroll-view scroll-x="true" class="anchor-scroll" enhanced show-scrollbar="{{false}}">
       <view class="anchor-tabs">
-        <view 
-          wx:for="{{anchorTabs}}" 
+        <view
+          wx:for="{{anchorTabs}}"
           wx:key="key"
           class="anchor-tab-item {{activeAnchor === item.key ? 'active' : ''}}"
           data-key="{{item.key}}"
           data-index="{{index}}"
           bindtap="onAnchorTap"
+          role="tab"
+          aria-current="{{activeAnchor === item.key}}"
+          aria-selected="{{activeAnchor === item.key}}"
+          aria-label="{{item.label}}"
         >
-          <text class="anchor-tab-icon">{{item.icon}}</text>
+          <text class="anchor-tab-icon" aria-hidden="true">{{item.icon}}</text>
           <text class="anchor-tab-label">{{item.label}}</text>
-          <view class="anchor-tab-indicator" wx:if="{{activeAnchor === item.key}}"></view>
+          <view class="anchor-tab-indicator" wx:if="{{activeAnchor === item.key}}" aria-hidden="true"></view>
         </view>
       </view>
     </scroll-view>
@@ -100,7 +104,7 @@
 
   <!-- ==================== 主要内容区域 ==================== -->
   <view class="main-content">
-    
+
     <!-- ========== 模块1：基础信息 ========== -->
     <view class="card animate-card module-card" id="anchor-basic" style="animation-delay: 0.1s;">
       <view class="card-title module-header" bindtap="toggleModule" data-key="basic">
@@ -134,13 +138,13 @@
             <view class="info-value">{{traceData.basicInfo.productionTime}}</view>
           </view>
         </view>
-        
+
         <!-- 产地图片（懒加载） -->
         <view class="module-image-wrapper" id="img-origin">
           <block wx:if="{{lazyImageMap.originImage}}">
-            <image 
-              class="module-image" 
-              src="{{traceData.images.originImage}}" 
+            <image
+              class="module-image"
+              src="{{traceData.images.originImage}}"
               mode="aspectFill"
               lazy-load="true"
             />
@@ -191,13 +195,13 @@
             </view>
           </view>
         </view>
-        
+
         <!-- 茶树产地图片（懒加载） -->
         <view class="module-image-wrapper" id="img-tea-origin">
           <block wx:if="{{lazyImageMap.teaOriginImage}}">
-            <image 
-              class="module-image" 
-              src="{{traceData.images.teaOriginImage}}" 
+            <image
+              class="module-image"
+              src="{{traceData.images.teaOriginImage}}"
               mode="aspectFill"
               lazy-load="true"
             />
@@ -399,10 +403,10 @@
             <text class="sub-icon">🗺️</text>
             <text>{{traceData.scenicPhotos.title}}</text>
           </view>
-          <swiper 
-            class="scenic-swiper" 
-            indicator-dots="{{true}}" 
-            autoplay="{{traceData.scenicPhotos.autoPlay}}" 
+          <swiper
+            class="scenic-swiper"
+            indicator-dots="{{true}}"
+            autoplay="{{traceData.scenicPhotos.autoPlay}}"
             interval="{{traceData.scenicPhotos.interval}}"
             circular="{{true}}"
             bindchange="onScenicChange"
@@ -589,13 +593,13 @@
             </view>
           </view>
         </view>
-        
+
         <!-- 桂花产地图片（懒加载） -->
         <view class="module-image-wrapper" id="img-osmanthus-origin">
           <block wx:if="{{lazyImageMap.osmanthusOriginImage}}">
-            <image 
-              class="module-image" 
-              src="{{traceData.images.osmanthusOriginImage}}" 
+            <image
+              class="module-image"
+              src="{{traceData.images.osmanthusOriginImage}}"
               mode="aspectFill"
               lazy-load="true"
             />
@@ -621,7 +625,7 @@
         </view>
       </view>
       <view class="module-content {{moduleCollapsed.process ? 'hidden' : ''}}">
-        
+
         <!-- 工艺参数 -->
         <view class="process-params">
           <view class="param-item">
@@ -644,7 +648,7 @@
             <view class="param-label">花茶配比</view>
           </view>
         </view>
-        
+
         <!-- 环境参数 -->
         <view class="env-params">
           <view class="env-item">
@@ -656,13 +660,13 @@
             <text>洁净度：{{traceData.scentingProcess.workshopCleanliness}}</text>
           </view>
         </view>
-        
+
         <!-- 工艺图片（懒加载） -->
         <view class="module-image-wrapper" id="img-process">
           <block wx:if="{{lazyImageMap.processImage}}">
-            <image 
-              class="module-image" 
-              src="{{traceData.images.processImage}}" 
+            <image
+              class="module-image"
+              src="{{traceData.images.processImage}}"
               mode="aspectFill"
               lazy-load="true"
             />
@@ -672,10 +676,10 @@
             <text class="placeholder-icon">🫖</text>
           </view>
         </view>
-        
+
         <!-- 工艺模块 Tab 导航 -->
         <view class="process-tab-bar">
-          <view 
+          <view
             class="process-tab-item {{activeProcessTab === 'records' ? 'active' : ''}}"
             data-tab="records"
             bindtap="switchProcessTab"
@@ -683,7 +687,7 @@
             <text class="tab-icon">📋</text>
             <text class="tab-label">窨制记录</text>
           </view>
-          <view 
+          <view
             class="process-tab-item {{activeProcessTab === 'flow' ? 'active' : ''}}"
             data-tab="flow"
             bindtap="switchProcessTab"
@@ -691,7 +695,7 @@
             <text class="tab-icon">🎬</text>
             <text class="tab-label">工艺流程</text>
           </view>
-          <view 
+          <view
             class="process-tab-item {{activeProcessTab === 'comparison' ? 'active' : ''}}"
             data-tab="comparison"
             bindtap="switchProcessTab"
@@ -700,18 +704,18 @@
             <text class="tab-label">工艺对比</text>
           </view>
         </view>
-        
+
         <!-- Tab 1：窨制独立记录 -->
         <view class="process-tab-content" wx:if="{{activeProcessTab === 'records'}}">
           <view class="records-title">
             <text class="records-title-icon">📝</text>
             <text class="records-title-text">每次窨制独立记录</text>
           </view>
-          
+
           <!-- 窨制记录时间轴 -->
           <view class="scenting-records-timeline">
-            <view 
-              wx:for="{{traceData.scentingProcess.scentingRecords}}" 
+            <view
+              wx:for="{{traceData.scentingProcess.scentingRecords}}"
               wx:key="round"
               class="record-timeline-item {{activeScentingRecord === index ? 'active' : ''}}"
               data-index="{{index}}"
@@ -725,7 +729,7 @@
               <view class="record-line" wx:if="{{index < traceData.scentingProcess.scentingRecords.length - 1}}"></view>
             </view>
           </view>
-          
+
           <!-- 当前选中记录详情卡片 -->
           <view class="record-detail-card" wx:if="{{traceData.scentingProcess.scentingRecords[activeScentingRecord]}}">
             <view class="record-detail-header">
@@ -758,7 +762,7 @@
               <text class="record-timestamp">📅 {{traceData.scentingProcess.scentingRecords[activeScentingRecord].timestamp}}</text>
             </view>
           </view>
-          
+
           <!-- 工艺多媒体展示 -->
           <view class="process-media-section">
             <view class="media-section-title">
@@ -766,8 +770,8 @@
               <text class="media-title-text">工艺多媒体</text>
             </view>
             <view class="media-grid">
-              <view 
-                wx:for="{{traceData.scentingProcess.processSteps}}" 
+              <view
+                wx:for="{{traceData.scentingProcess.processSteps}}"
                 wx:key="step"
                 class="media-item"
                 data-url="{{item.mediaUrl}}"
@@ -782,14 +786,14 @@
             </view>
           </view>
         </view>
-        
+
         <!-- Tab 2：横向时间轴动画 -->
         <view class="process-tab-content" wx:if="{{activeProcessTab === 'flow'}}">
           <view class="timeline-section-title">
             <text class="timeline-title-icon">🎬</text>
             <text class="timeline-title-text">工艺流程图 - 动画演示</text>
           </view>
-          
+
           <!-- 时间轴控制栏 -->
           <view class="timeline-controls">
             <view class="control-btn" bindtap="prevTimelineStep">
@@ -810,12 +814,12 @@
               <text class="speed-label">{{timelineSpeed === 1000 ? '快' : timelineSpeed === 2000 ? '中' : '慢'}}</text>
             </view>
           </view>
-          
+
           <!-- 横向时间轴 -->
           <view class="horizontal-timeline">
             <view class="timeline-track">
-              <view 
-                wx:for="{{traceData.scentingProcess.processSteps}}" 
+              <view
+                wx:for="{{traceData.scentingProcess.processSteps}}"
                 wx:key="step"
                 class="timeline-step {{timelineActiveStep === index ? 'active' : ''}} {{timelineActiveStep > index ? 'completed' : ''}}"
                 data-index="{{index}}"
@@ -829,7 +833,7 @@
               </view>
             </view>
           </view>
-          
+
           <!-- 当前步骤详情卡片（带动画） -->
           <view class="timeline-step-detail" wx:if="{{timelineActiveStep >= 0}}">
             <view class="timeline-detail-icon">{{traceData.scentingProcess.processSteps[timelineActiveStep].icon}}</view>
@@ -840,29 +844,29 @@
               </view>
               <view class="timeline-detail-desc">{{traceData.scentingProcess.processSteps[timelineActiveStep].desc}}</view>
             </view>
-            <image 
-              class="timeline-detail-image" 
-              src="{{traceData.scentingProcess.processSteps[timelineActiveStep].mediaUrl}}" 
+            <image
+              class="timeline-detail-image"
+              src="{{traceData.scentingProcess.processSteps[timelineActiveStep].mediaUrl}}"
               mode="aspectFill"
               data-url="{{traceData.scentingProcess.processSteps[timelineActiveStep].mediaUrl}}"
               bindtap="previewProcessImage"
             />
           </view>
-          
+
           <!-- 提示信息 -->
           <view class="timeline-tip">
             <text class="tip-icon">💡</text>
             <text class="tip-text">点击步骤可跳转到对应位置，长按窨制记录可查看详情</text>
           </view>
         </view>
-        
+
         <!-- Tab 3：工艺对比 -->
         <view class="process-tab-content" wx:if="{{activeProcessTab === 'comparison' && processComparisonData}}">
           <view class="comparison-section-title">
             <text class="comparison-title-icon">⚖️</text>
             <text class="comparison-title-text">{{processComparisonData.title}}</text>
           </view>
-          
+
           <!-- 对比概览卡片 -->
           <view class="comparison-overview">
             <view class="comparison-col golden">
@@ -909,7 +913,7 @@
               </view>
             </view>
           </view>
-          
+
           <!-- 详细对比表格 -->
           <view class="comparison-table">
             <view class="comparison-table-header">
@@ -917,8 +921,8 @@
               <view class="table-cell header-cell golden">金桂</view>
               <view class="table-cell header-cell silver">银桂</view>
             </view>
-            <view 
-              wx:for="{{processComparisonData.comparisonItems}}" 
+            <view
+              wx:for="{{processComparisonData.comparisonItems}}"
               wx:key="category"
               class="comparison-table-row {{item.advantage}}"
             >
@@ -933,7 +937,7 @@
               </view>
             </view>
           </view>
-          
+
           <!-- 差异说明 -->
           <view class="comparison-difference">
             <view class="diff-title">
@@ -944,7 +948,7 @@
               <text class="diff-text">{{processComparisonData.differenceExplanation}}</text>
             </view>
           </view>
-          
+
           <!-- 窨制记录对比时间轴 -->
           <view class="records-comparison">
             <view class="records-comp-title">
@@ -954,8 +958,8 @@
             <view class="records-comp-content">
               <view class="records-col">
                 <view class="records-col-header golden">金桂（{{processComparisonData.recordsComparison.golden.length}}次）</view>
-                <view 
-                  wx:for="{{processComparisonData.recordsComparison.golden}}" 
+                <view
+                  wx:for="{{processComparisonData.recordsComparison.golden}}"
                   wx:for-item="record"
                   wx:key="round"
                   class="comp-record-item golden-record"
@@ -970,8 +974,8 @@
               </view>
               <view class="records-col">
                 <view class="records-col-header silver">银桂（{{processComparisonData.recordsComparison.silver.length}}次）</view>
-                <view 
-                  wx:for="{{processComparisonData.recordsComparison.silver}}" 
+                <view
+                  wx:for="{{processComparisonData.recordsComparison.silver}}"
                   wx:for-item="record"
                   wx:key="round"
                   class="comp-record-item silver-record"
@@ -1003,13 +1007,13 @@
         </view>
       </view>
       <view class="module-content {{moduleCollapsed.green ? 'hidden' : ''}}">
-        
+
         <!-- 认证证书图片（懒加载） -->
         <view class="module-image-wrapper" id="img-cert">
           <block wx:if="{{lazyImageMap.certImage}}">
-            <image 
-              class="module-image" 
-              src="{{traceData.images.certImage}}" 
+            <image
+              class="module-image"
+              src="{{traceData.images.certImage}}"
               mode="aspectFill"
               lazy-load="true"
             />
@@ -1019,7 +1023,7 @@
             <text class="placeholder-icon">📜</text>
           </view>
         </view>
-        
+
         <!-- 生态种植 -->
         <view class="green-section">
           <view class="green-header">
@@ -1028,8 +1032,8 @@
             <view class="green-cert">{{traceData.greenTrace.ecoPlanting.certification}}</view>
           </view>
           <view class="green-records">
-            <view 
-              wx:for="{{traceData.greenTrace.ecoPlanting.records}}" 
+            <view
+              wx:for="{{traceData.greenTrace.ecoPlanting.records}}"
               wx:key="*this"
               class="record-item"
             >
@@ -1038,7 +1042,7 @@
             </view>
           </view>
         </view>
-        
+
         <!-- 环保包装 -->
         <view class="green-section">
           <view class="green-header">
@@ -1047,8 +1051,8 @@
             <view class="green-cert">{{traceData.greenTrace.ecoPacking.certification}}</view>
           </view>
           <view class="green-records">
-            <view 
-              wx:for="{{traceData.greenTrace.ecoPacking.records}}" 
+            <view
+              wx:for="{{traceData.greenTrace.ecoPacking.records}}"
               wx:key="*this"
               class="record-item"
             >
@@ -1057,7 +1061,7 @@
             </view>
           </view>
         </view>
-        
+
         <!-- 绿色物流 -->
         <view class="green-section">
           <view class="green-header">
@@ -1066,8 +1070,8 @@
             <view class="green-reduction">{{traceData.greenTrace.ecoLogistics.carbonReduction}}</view>
           </view>
           <view class="green-records">
-            <view 
-              wx:for="{{traceData.greenTrace.ecoLogistics.records}}" 
+            <view
+              wx:for="{{traceData.greenTrace.ecoLogistics.records}}"
               wx:key="*this"
               class="record-item"
             >
@@ -1076,7 +1080,7 @@
             </view>
           </view>
         </view>
-        
+
         <view class="green-trace-entry" bindtap="goGreenTrace">
           <view class="green-trace-entry-left">
             <text class="green-trace-entry-icon">🍃</text>
@@ -1087,7 +1091,7 @@
           </view>
           <text class="green-trace-entry-arrow">›</text>
         </view>
-        
+
         <!-- 数据安全提示 -->
         <view class="privacy-notice">
           <text class="privacy-icon">🔒</text>
@@ -1097,149 +1101,155 @@
     </view>
 
     <!-- ========== 模块6：农残检测 ========== -->
-    <view class="card animate-card module-card test-module-card {{testChartData.overallPass ? '' : 'test-abnormal-card'}}" id="anchor-test" style="animation-delay: 0.35s;">
-      <view class="card-title module-header" bindtap="toggleModule" data-key="test">
+    <view class="card animate-card module-card test-module-card {{testChartData.overallPass ? '' : 'test-abnormal-card'}}" id="anchor-test" role="region" aria-label="{{i18n.tabTitleTest}}" style="animation-delay: 0.35s;">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="test" role="button" aria-expanded="{{!moduleCollapsed.test}}" aria-label="{{i18n.tabTitleTest}}">
         <view class="title-left">
-          <text class="title-icon">🔬</text>
-          <text>农残检测</text>
-          <view class="title-badge {{testChartData.overallPass ? '' : 'danger'}}" wx:if="{{traceData.pesticideTest}}">
-            {{testChartData.overallPass ? '全部合格' : '存在异常'}}
+          <text class="title-icon" aria-hidden="true">🔬</text>
+          <text role="heading" aria-level="2">{{i18n.tabTitleTest}}</text>
+          <view class="title-badge {{testChartData.overallPass ? 'status-badge-pass' : 'status-badge-fail'}} status-badge {{testChartData.overallPass ? '' : 'danger'}}" wx:if="{{traceData.pesticideTest}}" data-status="{{testChartData.overallPass ? 'pass' : 'fail'}}">
+            {{testChartData.overallPass ? (currentLang === 'en-US' ? 'All Passed' : '全部合格' : (currentLang === 'en-US' ? 'Abnormal' : '存在异常'}}
           </view>
         </view>
-        <view class="module-toggle {{moduleCollapsed.test ? 'collapsed' : ''}}">
+        <view class="module-toggle {{moduleCollapsed.test ? 'collapsed' : ''}}" aria-hidden="true">
           <text class="toggle-icon">▾</text>
         </view>
       </view>
       <view class="module-content {{moduleCollapsed.test ? 'hidden' : ''}}">
-        
+
         <!-- 异常警告横幅 -->
-        <view class="abnormal-warning-banner" wx:if="{{!testChartData.overallPass}}">
-          <view class="warning-icon">⚠️</view>
+        <view class="abnormal-warning-banner" wx:if="{{!testChartData.overallPass}}" role="alert" aria-live="polite">
+          <view class="warning-icon" aria-hidden="true">⚠️</view>
           <view class="warning-content">
-            <view class="warning-title">检测结果异常</view>
-            <view class="warning-desc">本次检测存在不合格项，请谨慎食用</view>
+            <view class="warning-title">{{currentLang === 'en-US' ? 'Abnormal Results' : '检测结果异常'}}</view>
+            <view class="warning-desc">{{currentLang === 'en-US' ? 'Unqualified items detected, please consume with caution' : '本次检测存在不合格项，请谨慎食用'}}</view>
           </view>
         </view>
 
         <!-- 检测机构信息 -->
         <view class="test-institution">
-          <view class="institution-icon">🏛️</view>
+          <view class="institution-icon" aria-hidden="true">🏛️</view>
           <view class="institution-info">
-            <view class="institution-name">{{traceData.pesticideTest.institution}}</view>
+            <view class="institution-name" role="heading" aria-level="3">{{traceData.pesticideTest.institution}}</view>
             <view class="institution-meta">
-              <text bindtap="copyReportNo">报告编号：{{traceData.pesticideTest.reportNo}} 📋</text>
-              <text>检测日期：{{traceData.pesticideTest.testDate}}</text>
+              <text bindtap="copyReportNo" role="button" aria-label="{{currentLang === 'en-US' ? 'Copy report number' : '复制报告编号'}}">{{currentLang === 'en-US' ? 'Report No.: ' : '报告编号：'}}{{traceData.pesticideTest.reportNo}} 📋</text>
+              <text>{{currentLang === 'en-US' ? 'Test Date: ' : '检测日期：'}}{{traceData.pesticideTest.testDate}}</text>
             </view>
           </view>
         </view>
 
         <!-- 操作按钮组：保存 / 转发 / 验真 -->
-        <view class="test-action-buttons">
-          <view class="action-btn" bindtap="saveReportToAlbum">
-            <text class="action-icon">📸</text>
-            <text class="action-text">保存相册</text>
+        <view class="test-action-buttons" role="group" aria-label="{{currentLang === 'en-US' ? 'Report operations' : '报告操作'}}">
+          <view class="action-btn" bindtap="saveReportToAlbum" role="button" aria-label="{{currentLang === 'en-US' ? 'Save report to album' : '保存报告到相册'}}">
+            <text class="action-icon" aria-hidden="true">📸</text>
+            <text class="action-text">{{currentLang === 'en-US' ? 'Save' : '保存相册'}}</text>
           </view>
-          <view class="action-btn" bindtap="shareReport">
-            <text class="action-icon">📤</text>
-            <text class="action-text">转发好友</text>
+          <view class="action-btn" bindtap="shareReport" role="button" aria-label="{{currentLang === 'en-US' ? 'Forward report to friend' : '转发报告给好友'}}">
+            <text class="action-icon" aria-hidden="true">📤</text>
+            <text class="action-text">{{currentLang === 'en-US' ? 'Share' : '转发好友'}}</text>
           </view>
-          <view class="action-btn" bindtap="openVerifyModal">
-            <text class="action-icon">✅</text>
-            <text class="action-text">报告验真</text>
+          <view class="action-btn" bindtap="openVerifyModal" role="button" aria-label="{{i18n.verifyBtn}}">
+            <text class="action-icon" aria-hidden="true">✅</text>
+            <text class="action-text">{{i18n.verifyBtn}}</text>
           </view>
         </view>
 
         <!-- 国标对比总览 -->
         <view class="standard-overview">
-          <view class="overview-label">
-            <text class="overview-icon">📊</text>
-            <text>国标 GB 2763-2021 对比</text>
+          <view class="overview-label" role="heading" aria-level="3">
+            <text class="overview-icon" aria-hidden="true">📊</text>
+            <text>{{currentLang === 'en-US' ? 'GB 2763-2021 Comparison' : '国标 GB 2763-2021 对比'}}</text>
           </view>
-          <view class="overview-badge {{testChartData.overallPass ? 'pass' : 'fail'}}">
-            {{testChartData.overallPass ? '全部达标' : '部分超标'}}
+          <view class="overview-badge status-badge-{{testChartData.overallPass ? 'pass' : 'fail'}} {{testChartData.overallPass ? 'pass' : 'fail'}}" data-status="{{testChartData.overallPass ? 'pass' : 'fail'}}">
+            {{testChartData.overallPass ? (currentLang === 'en-US' ? 'All Within Limit' : '全部达标' : (currentLang === 'en-US' ? 'Some Over Limit' : '部分超标'}}
           </view>
         </view>
-        
+
         <!-- 茶叶检测结果：国标对比进度条图表 -->
-        <view class="test-results">
+        <view class="test-results" role="region" aria-label="{{currentLang === 'en-US' ? 'Tea pesticide residue test results' : '茶叶农残检测结果'}}">
           <view class="test-category">
-            <text class="category-icon">🍃</text>
-            <text>茶叶农残检测</text>
+            <text class="category-icon" aria-hidden="true">🍃</text>
+            <text role="heading" aria-level="3">{{currentLang === 'en-US' ? 'Tea Pesticide Test' : '茶叶农残检测'}}</text>
           </view>
-          
+
           <!-- 进度条图表 -->
-          <view class="progress-chart">
-            <view 
-              wx:for="{{testChartData.teaTests}}" 
+          <view class="progress-chart" role="list">
+            <view
+              wx:for="{{testChartData.teaTests}}"
               wx:key="item"
-              class="progress-item {{item.level}}"
+              class="progress-item {{item.level}} {{item.levelClass}}"
+              data-status="{{item.a11yStatus}}"
+              role="listitem"
+              aria-label="{{item.item}}，检测值{{item.displayValue}}{{item.unit}}，限值{{item.limit}}{{item.unit}}，{{item.status}}"
             >
               <view class="progress-header">
                 <text class="progress-name">{{item.item}}</text>
-                <view class="progress-status {{item.isPass ? 'pass' : 'fail'}}">
+                <view class="progress-status {{item.isPass ? 'pass' : 'fail'}} {{item.statusClass}}" data-status="{{item.a11yStatus}}">
                   {{item.status}}
                 </view>
               </view>
               <view class="progress-bar-container">
                 <view class="progress-bar-bg">
-                  <view class="progress-bar-fill {{item.level}}" style="width: {{item.percent}}%;"></view>
+                  <view class="progress-bar-fill {{item.level}} {{item.progressClass}}" style="width: {{item.percent}}%;"></view>
                   <view class="progress-limit-line" style="left: 100%;"></view>
                 </view>
                 <view class="progress-labels">
-                  <text class="progress-value">检测值：{{item.displayValue}}{{item.unit}}</text>
-                  <text class="progress-limit">限值：{{item.limit}}{{item.unit}}</text>
+                  <text class="progress-value">{{i18n.measuredValueLabel}}：{{item.displayValue}}{{item.unit}}</text>
+                  <text class="progress-limit">{{i18n.gbLimitLabel}}：{{item.limit}}{{item.unit}}</text>
                 </view>
                 <view class="progress-multiple" wx:if="{{item.isPass}}">
-                  <text class="multiple-label">低于限值</text>
-                  <text class="multiple-value">{{item.multiple}}倍</text>
+                  <text class="multiple-label">{{currentLang === 'en-US' ? 'Below limit by' : '低于限值'}}</text>
+                  <text class="multiple-value">{{item.multiple}}{{currentLang === 'en-US' ? 'x' : '倍'}}</text>
                 </view>
               </view>
               <!-- 异常说明 -->
-              <view class="abnormal-desc" wx:if="{{!item.isPass && item.description}}">
-                <text class="desc-icon">⚠️</text>
+              <view class="abnormal-desc" wx:if="{{!item.isPass && item.description}}" role="note">
+                <text class="desc-icon" aria-hidden="true">⚠️</text>
                 <text class="desc-text">{{item.description}}</text>
               </view>
             </view>
           </view>
         </view>
-        
+
         <!-- 桂花检测结果：国标对比进度条图表 -->
-        <view class="test-results">
+        <view class="test-results" role="region" aria-label="{{currentLang === 'en-US' ? 'Osmanthus pesticide residue test results' : '桂花农残检测结果'}}">
           <view class="test-category">
-            <text class="category-icon">🌸</text>
-            <text>桂花农残检测</text>
+            <text class="category-icon" aria-hidden="true">🌸</text>
+            <text role="heading" aria-level="3">{{currentLang === 'en-US' ? 'Osmanthus Pesticide Test' : '桂花农残检测'}}</text>
           </view>
-          
+
           <!-- 进度条图表 -->
-          <view class="progress-chart">
-            <view 
-              wx:for="{{testChartData.osmanthusTests}}" 
+          <view class="progress-chart" role="list">
+            <view
+              wx:for="{{testChartData.osmanthusTests}}"
               wx:key="item"
-              class="progress-item {{item.level}}"
+              class="progress-item {{item.level}} {{item.levelClass}}"
+              data-status="{{item.a11yStatus}}"
+              role="listitem"
+              aria-label="{{item.item}}，检测值{{item.displayValue}}{{item.unit}}，限值{{item.limit}}{{item.unit}}，{{item.status}}"
             >
               <view class="progress-header">
                 <text class="progress-name">{{item.item}}</text>
-                <view class="progress-status {{item.isPass ? 'pass' : 'fail'}}">
+                <view class="progress-status {{item.isPass ? 'pass' : 'fail'}} {{item.statusClass}}" data-status="{{item.a11yStatus}}">
                   {{item.status}}
                 </view>
               </view>
               <view class="progress-bar-container">
                 <view class="progress-bar-bg">
-                  <view class="progress-bar-fill {{item.level}}" style="width: {{item.percent}}%;"></view>
+                  <view class="progress-bar-fill {{item.level}} {{item.progressClass}}" style="width: {{item.percent}}%;"></view>
                   <view class="progress-limit-line" style="left: 100%;"></view>
                 </view>
                 <view class="progress-labels">
-                  <text class="progress-value">检测值：{{item.displayValue}}{{item.unit}}</text>
-                  <text class="progress-limit">限值：{{item.limit}}{{item.unit}}</text>
+                  <text class="progress-value">{{i18n.measuredValueLabel}}：{{item.displayValue}}{{item.unit}}</text>
+                  <text class="progress-limit">{{i18n.gbLimitLabel}}：{{item.limit}}{{item.unit}}</text>
                 </view>
                 <view class="progress-multiple" wx:if="{{item.isPass}}">
-                  <text class="multiple-label">低于限值</text>
-                  <text class="multiple-value">{{item.multiple}}倍</text>
+                  <text class="multiple-label">{{currentLang === 'en-US' ? 'Below limit by' : '低于限值'}}</text>
+                  <text class="multiple-value">{{item.multiple}}{{currentLang === 'en-US' ? 'x' : '倍'}}</text>
                 </view>
               </view>
               <!-- 异常说明 -->
-              <view class="abnormal-desc" wx:if="{{!item.isPass && item.description}}">
-                <text class="desc-icon">⚠️</text>
+              <view class="abnormal-desc" wx:if="{{!item.isPass && item.description}}" role="note">
+                <text class="desc-icon" aria-hidden="true">⚠️</text>
                 <text class="desc-text">{{item.description}}</text>
               </view>
             </view>
@@ -1247,24 +1257,27 @@
         </view>
 
         <!-- 历史检测报告时间轴 -->
-        <view class="history-reports-section" wx:if="{{traceData.pesticideTest.historyReports && traceData.pesticideTest.historyReports.length > 0}}">
-          <view class="history-header" bindtap="toggleHistoryTimeline">
+        <view class="history-reports-section" wx:if="{{traceData.pesticideTest.historyReports && traceData.pesticideTest.historyReports.length > 0}}" role="region" aria-label="{{currentLang === 'en-US' ? 'Historical test records' : '历次检测记录'}}">
+          <view class="history-header" bindtap="toggleHistoryTimeline" role="button" aria-expanded="{{showHistoryTimeline}}" aria-label="{{currentLang === 'en-US' ? 'Toggle historical test report timeline' : '展开或收起历次检测报告时间轴'}}">
             <view class="history-title">
-              <text class="history-icon">📅</text>
-              <text>历次检测记录</text>
-              <text class="history-count">共 {{traceData.pesticideTest.historyReports.length}} 份</text>
+              <text class="history-icon" aria-hidden="true">📅</text>
+              <text role="heading" aria-level="3">{{currentLang === 'en-US' ? 'Historical Reports' : '历次检测记录'}}</text>
+              <text class="history-count">{{currentLang === 'en-US' ? 'Total ' : '共 '}}{{traceData.pesticideTest.historyReports.length}}{{currentLang === 'en-US' ? ' reports' : ' 份'}}</text>
             </view>
-            <view class="history-toggle {{showHistoryTimeline ? 'expanded' : ''}}">
+            <view class="history-toggle {{showHistoryTimeline ? 'expanded' : ''}}" aria-hidden="true">
               <text>▾</text>
             </view>
           </view>
-          <view class="history-timeline {{showHistoryTimeline ? 'show' : ''}}">
-            <view 
-              wx:for="{{traceData.pesticideTest.historyReports}}" 
+          <view class="history-timeline {{showHistoryTimeline ? 'show' : ''}}" role="list">
+            <view
+              wx:for="{{traceData.pesticideTest.historyReports}}"
               wx:key="reportNo"
               class="timeline-item {{index === 0 ? 'latest' : ''}} {{item.status === '不合格' ? 'abnormal' : ''}}"
               bindtap="viewHistoryReport"
               data-report="{{item}}"
+              role="listitem"
+              data-status="{{item.status === '不合格' ? 'fail' : 'pass'}}"
+              aria-label="{{item.testDate}}，报告编号{{item.reportNo}}，检测结果{{item.status}}"
             >
               <view class="timeline-dot {{item.status === '不合格' ? 'danger' : (item.statusLevel === '优秀' ? 'excellent' : 'good')}}"></view>
               <view class="timeline-line" wx:if="{{index < traceData.pesticideTest.historyReports.length - 1}}"></view>
@@ -1272,30 +1285,30 @@
                 <view class="timeline-date">{{item.testDate}}</view>
                 <view class="timeline-info">
                   <text class="timeline-report-no">{{item.reportNo}}</text>
-                  <view class="timeline-status {{item.status === '不合格' ? 'danger' : (item.statusLevel === '优秀' ? 'excellent' : 'good')}}">
+                  <view class="timeline-status {{item.status === '不合格' ? 'danger' : (item.statusLevel === '优秀' ? 'excellent' : 'good')}} status-{{item.status === '不合格' ? 'fail' : 'pass'}}" data-status="{{item.status === '不合格' ? 'fail' : 'pass'}}">
                     {{item.status}}
                   </view>
                 </view>
                 <view class="timeline-meta">
                   <text>{{item.institution}}</text>
-                  <text wx:if="{{item.batchNo}}">批次：{{item.batchNo}}</text>
+                  <text wx:if="{{item.batchNo}}">{{currentLang === 'en-US' ? 'Batch: ' : '批次：'}}{{item.batchNo}}</text>
                 </view>
-                <view class="timeline-tag" wx:if="{{index === 0}}">最新</view>
+                <view class="timeline-tag" wx:if="{{index === 0}}">{{currentLang === 'en-US' ? 'Latest' : '最新'}}</view>
               </view>
             </view>
           </view>
         </view>
-        
+
         <!-- 国标对比提示 -->
-        <view class="standard-tip {{testChartData.overallPass ? '' : 'danger'}}">
-          <text class="tip-icon">{{testChartData.overallPass ? '✅' : '⚠️'}}</text>
+        <view class="standard-tip {{testChartData.overallPass ? '' : 'danger'}}" data-status="{{testChartData.overallPass ? 'pass' : 'fail'}}" role="note" aria-label="{{testChartData.overallPass ? (currentLang === 'en-US' ? 'Test result passed' : '检测结果合格') : (currentLang === 'en-US' ? 'Test result has abnormal items' : '检测结果存在异常项')}}">
+          <text class="tip-icon" aria-hidden="true">{{testChartData.overallPass ? '✅' : '⚠️'}}</text>
           <text class="tip-text">{{traceData.pesticideTest.comparisonTip}}</text>
         </view>
-        
+
         <!-- 查看完整报告按钮 -->
-        <view class="view-report-btn" bindtap="showPdfReport">
-          <text class="btn-icon">📄</text>
-          <text>查看完整报告（PDF样式）</text>
+        <view class="view-report-btn" bindtap="showPdfReport" role="button" aria-label="{{i18n.pdfBtn}}">
+          <text class="btn-icon" aria-hidden="true">📄</text>
+          <text>{{currentLang === 'en-US' ? 'View Full Report (PDF Style)' : '查看完整报告（PDF样式）'}}</text>
         </view>
       </view>
     </view>
@@ -1312,7 +1325,7 @@
         </view>
       </view>
       <view class="module-content {{moduleCollapsed.brew ? 'hidden' : ''}}">
-        
+
         <view class="brewing-content">
           <view class="brewing-params">
             <view class="brewing-item">
@@ -1331,7 +1344,7 @@
               <view class="brewing-value">{{traceData.brewingGuide.rebrewTimes}}</view>
             </view>
           </view>
-          
+
           <view class="brewing-extra">
             <view class="extra-item">
               <text class="extra-label">推荐用水：</text>
@@ -1342,12 +1355,12 @@
               <text class="extra-value">{{traceData.brewingGuide.teawareType}}</text>
             </view>
           </view>
-          
+
           <view class="brewing-tips">
             <view class="tips-title">冲泡小贴士</view>
             <view class="tips-list">
-              <view 
-                wx:for="{{traceData.brewingGuide.tips}}" 
+              <view
+                wx:for="{{traceData.brewingGuide.tips}}"
                 wx:key="*this"
                 class="tip-item"
               >
@@ -1366,8 +1379,8 @@
 
             <view class="timer-container">
               <view class="water-temp-selector">
-                <view 
-                  wx:for="{{brewInteractiveConfig.waterTempLevels}}" 
+                <view
+                  wx:for="{{brewInteractiveConfig.waterTempLevels}}"
                   wx:key="key"
                   class="temp-item {{selectedWaterTemp === item.key ? 'active' : ''}}"
                   data-temp="{{item.key}}"
@@ -1410,8 +1423,8 @@
 
             <view class="brew-guide-container">
               <view class="brew-step-nav">
-                <view 
-                  wx:for="{{brewInteractiveConfig.brewSteps}}" 
+                <view
+                  wx:for="{{brewInteractiveConfig.brewSteps}}"
                   wx:key="step"
                   class="step-nav-item {{activeBrewStep === index ? 'active' : ''}} {{activeBrewStep > index ? 'completed' : ''}}"
                   data-index="{{index}}"
@@ -1504,7 +1517,7 @@
               <view class="dosage-row">
                 <text class="dosage-label">口味浓淡</text>
                 <view class="taste-selector">
-                  <view 
+                  <view
                     class="taste-item {{dosageTaste === 'light' ? 'active' : ''}}"
                     data-taste="light"
                     bindtap="selectTaste"
@@ -1512,7 +1525,7 @@
                     <text class="taste-icon">🌿</text>
                     <text class="taste-name">清淡</text>
                   </view>
-                  <view 
+                  <view
                     class="taste-item {{dosageTaste === 'medium' ? 'active' : ''}}"
                     data-taste="medium"
                     bindtap="selectTaste"
@@ -1520,7 +1533,7 @@
                     <text class="taste-icon">🍵</text>
                     <text class="taste-name">适中</text>
                   </view>
-                  <view 
+                  <view
                     class="taste-item {{dosageTaste === 'strong' ? 'active' : ''}}"
                     data-taste="strong"
                     bindtap="selectTaste"
@@ -1924,8 +1937,8 @@
   </view>
 
   <!-- ==================== 返回顶部按钮 ==================== -->
-  <view class="back-top {{showBackTop ? 'show' : ''}}" bindtap="scrollToTop">
-    <text class="back-top-icon">↑</text>
+  <view class="back-top {{showBackTop ? 'show' : ''}}" bindtap="scrollToTop" role="button" aria-hidden="{{!showBackTop}}" aria-label="{{i18n.backTop}}">
+    <text class="back-top-icon" aria-hidden="true">↑</text>
   </view>
 
   <!-- ==================== PDF报告弹窗 ==================== -->
@@ -1977,7 +1990,7 @@
         <view class="pdf-footer">
           <view class="pdf-stamp {{testChartData.overallPass ? '' : 'pdf-stamp-danger'}}">{{testChartData.overallPass ? '检验合格' : '存在异常'}}</view>
           <view class="pdf-conclusion">{{traceData.pesticideTest.comparisonTip}}</view>
-          
+
           <!-- PDF 操作按钮 -->
           <view class="pdf-action-row">
             <view class="pdf-action-btn" bindtap="saveReportToAlbum" catchtap="saveReportToAlbum">
@@ -2004,9 +2017,9 @@
         <view class="verify-input-section">
           <text class="verify-label">请输入报告编号</text>
           <view class="verify-input-wrapper">
-            <input 
-              class="verify-input" 
-              placeholder="如 NTQC-2025-09876" 
+            <input
+              class="verify-input"
+              placeholder="如 NTQC-2025-09876"
               value="{{verifyInput}}"
               bindinput="onVerifyInputChange"
             />
@@ -2093,9 +2106,9 @@
       <view class="callout-body">
         <!-- 简介图片 -->
         <view class="callout-images" wx:if="{{selectedMapMarker.callout.images && selectedMapMarker.callout.images.length > 0}}">
-          <view 
-            wx:for="{{selectedMapMarker.callout.images}}" 
-            wx:key="*this" 
+          <view
+            wx:for="{{selectedMapMarker.callout.images}}"
+            wx:key="*this"
             class="callout-image-item"
             data-url="{{item}}"
             bindtap="previewMapCalloutImage"

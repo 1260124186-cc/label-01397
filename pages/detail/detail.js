@@ -7,21 +7,31 @@
 // 引入模拟数据模块
 const mockData = require('../../utils/mockData.js');
 const shareUtil = require('../../utils/share.js');
+const i18n = require('../../utils/i18n/index.js');
 
-// 锚点 Tab 配置
-const ANCHOR_TABS = [
-  { key: 'basic', label: '基础信息', icon: '📋' },
-  { key: 'treeAge', label: '树龄', icon: '🌳' },
-  { key: 'location', label: '产地', icon: '📍' },
-  { key: 'process', label: '工艺', icon: '🫖' },
-  { key: 'green', label: '绿色', icon: '♻️' },
-  { key: 'test', label: '检测', icon: '🔬' },
-  { key: 'brew', label: '冲泡', icon: '☕' },
-  { key: 'blockchain', label: '存证', icon: '🔗' }
+// 锚点 Tab 配置（将在运行时根据语言填充 label）
+const ANCHOR_TABS_BASE = [
+  { key: 'basic', icon: '📋', i18nKey: 'detail.tabs.basic' },
+  { key: 'treeAge', icon: '🌳', i18nKey: 'detail.tabs.treeAge' },
+  { key: 'location', icon: '📍', i18nKey: 'detail.tabs.location' },
+  { key: 'process', icon: '🫖', i18nKey: 'detail.tabs.process' },
+  { key: 'green', icon: '♻️', i18nKey: 'detail.tabs.green' },
+  { key: 'test', icon: '🔬', i18nKey: 'detail.tabs.test' },
+  { key: 'brew', icon: '☕', i18nKey: 'detail.tabs.brew' },
+  { key: 'blockchain', icon: '🔗', i18nKey: 'detail.tabs.blockchain' }
 ];
 
 // 核心模块（默认展开）
 const CORE_MODULES = ['treeAge', 'process', 'green'];
+
+/** 根据当前语言生成带标签的 Tab 列表 */
+function buildAnchorTabs() {
+  return ANCHOR_TABS_BASE.map(item => ({
+    key: item.key,
+    icon: item.icon,
+    label: i18n.t(item.i18nKey)
+  }));
+}
 
 Page({
   /**
@@ -36,6 +46,34 @@ Page({
     loading: true,
     // 骨架屏显示状态
     skeletonLoading: true,
+
+    // ===== 多语言与无障碍 =====
+    currentLang: i18n.LANG_ZH,
+    currentFontSize: i18n.FONT_NORMAL,
+    currentColorWeak: false,
+    a11yClasses: 'font-normal',
+    // i18n 文本
+    i18n: {
+      overallStatusPass: '',
+      overallStatusFail: '',
+      tabTitleBasic: '',
+      tabTitleTreeAge: '',
+      tabTitleProcess: '',
+      tabTitleTest: '',
+      testPassLabel: '',
+      testFailLabel: '',
+      gbLimitLabel: '',
+      measuredValueLabel: '',
+      levelExcellent: '',
+      levelGood: '',
+      levelWarning: '',
+      levelDanger: '',
+      backTop: '',
+      shareBtn: '',
+      pdfBtn: '',
+      verifyBtn: '',
+      loadingText: ''
+    },
     // 是否显示返回顶部按钮
     showBackTop: false,
     // 当前展开的工艺步骤索引
@@ -46,8 +84,8 @@ Page({
     scrollTop: 0,
     // 阅读进度 0-100
     readingProgress: 0,
-    // 锚点 Tab 列表
-    anchorTabs: ANCHOR_TABS,
+    // 锚点 Tab 列表（运行时根据语言动态生成）
+    anchorTabs: buildAnchorTabs(),
     // 当前激活的锚点
     activeAnchor: 'basic',
     // 锚点 Tab 是否吸顶
@@ -169,9 +207,14 @@ Page({
    */
   onLoad: function(options) {
     console.log('[Detail] 详情页加载，参数：', options);
-    
+
+    // ===== 初始化多语言与无障碍 =====
+    this.refreshA11yData();
+    this.refreshI18nTexts();
+    this.setData({ anchorTabs: buildAnchorTabs() });
+
     const traceId = options.traceId;
-    
+
     if (traceId) {
       this.setData({ traceId: traceId });
       this.loadTraceData(traceId);
@@ -184,6 +227,55 @@ Page({
         wx.navigateBack();
       }, 1500);
     }
+  },
+
+  /**
+   * 生命周期函数 - 页面显示（每次显示时刷新无障碍状态）
+   */
+  onShow: function() {
+    // 用户可能从首页修改了设置，返回后立即刷新
+    this.refreshA11yData();
+    this.refreshI18nTexts();
+    this.setData({ anchorTabs: buildAnchorTabs() });
+  },
+
+  // ===== i18n 与无障碍 =====
+
+  /** 刷新 a11y 状态（语言/字号/色弱） */
+  refreshA11yData: function() {
+    const a11y = i18n.getA11yData();
+    this.setData({
+      currentLang: a11y.lang,
+      currentFontSize: a11y.fontSize,
+      currentColorWeak: a11y.colorWeak,
+      a11yClasses: a11y.classes
+    });
+  },
+
+  /** 刷新 i18n 文本 */
+  refreshI18nTexts: function() {
+    const t = function(k) { return i18n.t(k); };
+    this.setData({
+      'i18n.overallStatusPass': t('detail.test.statusPass'),
+      'i18n.overallStatusFail': t('detail.test.statusFail'),
+      'i18n.tabTitleBasic': t('detail.tabs.basic'),
+      'i18n.tabTitleTreeAge': t('detail.tabs.treeAge'),
+      'i18n.tabTitleProcess': t('detail.tabs.process'),
+      'i18n.tabTitleTest': t('detail.tabs.test'),
+      'i18n.testPassLabel': t('detail.test.pass'),
+      'i18n.testFailLabel': t('detail.test.fail'),
+      'i18n.gbLimitLabel': t('detail.test.gbLimit'),
+      'i18n.measuredValueLabel': t('detail.test.measured'),
+      'i18n.levelExcellent': t('detail.test.levelExcellent'),
+      'i18n.levelGood': t('detail.test.levelGood'),
+      'i18n.levelWarning': t('detail.test.levelWarning'),
+      'i18n.levelDanger': t('detail.test.levelDanger'),
+      'i18n.backTop': t('common.backTop'),
+      'i18n.shareBtn': t('nav.share'),
+      'i18n.pdfBtn': t('detail.share.downloadPdf'),
+      'i18n.verifyBtn': t('detail.test.verifyReport'),
+      'i18n.loadingText': t('common.loading')
+    });
   },
 
   /**
@@ -201,53 +293,53 @@ Page({
    * ==================== 数据加载 ====================
    * 加载溯源数据
    * @param {string} traceId - 溯源ID
-   * 
+   *
    * 【后端接口预留】
    * 当前使用本地模拟数据，实际项目应调用后端接口
    */
   loadTraceData: function(traceId) {
     const that = this;
-    
+
     // 骨架屏先展示，模拟数据加载
     this.setData({ skeletonLoading: true, loading: true });
-    
+
     // 模拟网络延迟
     setTimeout(() => {
       // 从本地模拟数据获取
       const data = mockData.getTraceData(traceId);
-      
+
       if (data) {
         // 初始化模块展开状态：核心模块展开，其他收起
         const moduleCollapsed = {};
-        ANCHOR_TABS.forEach(tab => {
+        ANCHOR_TABS_BASE.forEach(tab => {
           moduleCollapsed[tab.key] = !CORE_MODULES.includes(tab.key);
         });
         // 桂花信息是基础信息里的子模块，也默认收起
         moduleCollapsed.osmanthus = true;
-        
+
         // 初始化图片懒加载映射
         const lazyImageMap = that.initLazyImageMap(data);
-        
+
         // 计算国标对比图表数据
         const testChartData = that.calculateTestChartData(data.pesticideTest);
-        
+
         // 获取品种样式配置（安全判断，避免 osmanthusInfo 缺失）
         const variety = (data.osmanthusInfo && data.osmanthusInfo.variety) || '金桂';
         const varietyStyle = mockData.getOsmanthusVarietyConfig(variety);
 
         // 冲泡互动配置
         const brewInteractiveConfig = mockData.getBrewingInteractiveConfig();
-        
+
         // 初始化用量计算器结果
         const initialDosageResult = mockData.calculateTeaDosage(1, 'medium');
-        
+
         // 初始化第一步计时
         const firstBrewStep = brewInteractiveConfig.brewSteps[0];
         const initialBrewStepSeconds = firstBrewStep.duration;
         const m = Math.floor(initialBrewStepSeconds / 60);
         const s = initialBrewStepSeconds % 60;
         const initialBrewStepTimerText = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
-        
+
         // 初始化模块收起状态（产地模块默认收起）
         moduleCollapsed.location = true;
 
@@ -270,12 +362,12 @@ Page({
           shareInviteConfig: shareInviteConfig,
           shareInviteData: shareInviteData
         });
-        
+
         // 设置导航栏标题
         wx.setNavigationBarTitle({
           title: data.basicInfo.productName + '溯源'
         });
-        
+
         // 数据加载完成后测量模块位置
         setTimeout(() => {
           that.measureModulePositions();
@@ -317,7 +409,7 @@ Page({
   measureModulePositions: function() {
     const that = this;
     const query = wx.createSelectorQuery();
-    
+
     const moduleIds = [
       '#anchor-basic',
       '#anchor-treeAge',
@@ -329,29 +421,29 @@ Page({
       '#anchor-blockchain',
       '#anchor-tab-bar'
     ];
-    
+
     moduleIds.forEach(id => {
       query.select(id).boundingClientRect();
     });
-    
+
     query.selectViewport().scrollOffset();
-    
+
     query.exec(function(res) {
       if (!res || res.length < moduleIds.length + 1) {
         console.warn('[Detail] 模块位置测量失败');
         return;
       }
-      
+
       const positions = {};
-      ANCHOR_TABS.forEach((tab, index) => {
+      ANCHOR_TABS_BASE.forEach((tab, index) => {
         if (res[index]) {
           positions[tab.key] = res[index].top + (res[moduleIds.length]?.scrollTop || 0);
         }
       });
-      
+
       that.modulePositions = positions;
       that.tabBarTop = res[moduleIds.length - 1]?.top || 0;
-      
+
       console.log('[Detail] 模块位置测量完成:', positions);
     });
   },
@@ -359,25 +451,25 @@ Page({
   /**
    * ==================== 页面交互 ====================
    */
-  
+
   /**
    * 页面滚动事件
    */
   onPageScroll: function(e) {
     const scrollTop = e.scrollTop;
-    
+
     // 更新返回顶部按钮显示
     const showBackTop = scrollTop > 300;
     if (this.data.showBackTop !== showBackTop) {
       this.setData({ showBackTop: showBackTop });
     }
-    
+
     // 计算阅读进度
     this.updateReadingProgress(scrollTop);
-    
+
     // 更新锚点高亮
     this.updateActiveAnchor(scrollTop);
-    
+
     // 判断锚点Tab是否吸顶
     if (this.tabBarTop !== undefined) {
       const anchorSticky = scrollTop > this.tabBarTop - 10;
@@ -385,9 +477,9 @@ Page({
         this.setData({ anchorSticky: anchorSticky });
       }
     }
-    
+
     this.setData({ scrollTop: scrollTop });
-    
+
     // 检查图片懒加载
     this.checkLazyImages(scrollTop);
   },
@@ -397,7 +489,7 @@ Page({
    */
   updateReadingProgress: function(scrollTop) {
     const that = this;
-    
+
     if (!this.pageHeightPromise) {
       this.pageHeightPromise = new Promise(function(resolve) {
         wx.createSelectorQuery()
@@ -416,11 +508,11 @@ Page({
           });
       });
     }
-    
+
     this.pageHeightPromise.then(function(dim) {
       const maxScroll = Math.max(dim.pageHeight - dim.viewportHeight, 1);
       const progress = Math.min(Math.max((scrollTop / maxScroll) * 100, 0), 100);
-      
+
       if (Math.abs(that.data.readingProgress - progress) > 1) {
         that.setData({ readingProgress: Math.round(progress) });
       }
@@ -432,20 +524,20 @@ Page({
    */
   updateActiveAnchor: function(scrollTop) {
     if (!this.modulePositions) return;
-    
+
     const positions = this.modulePositions;
-    let activeKey = ANCHOR_TABS[0].key;
-    
+    let activeKey = ANCHOR_TABS_BASE[0].key;
+
     // 找到当前滚动位置对应的模块
-    for (let i = ANCHOR_TABS.length - 1; i >= 0; i--) {
-      const tab = ANCHOR_TABS[i];
+    for (let i = ANCHOR_TABS_BASE.length - 1; i >= 0; i--) {
+      const tab = ANCHOR_TABS_BASE[i];
       const pos = positions[tab.key];
       if (pos !== undefined && scrollTop >= pos - 150) {
         activeKey = tab.key;
         break;
       }
     }
-    
+
     if (this.data.activeAnchor !== activeKey) {
       this.setData({ activeAnchor: activeKey });
     }
@@ -464,22 +556,22 @@ Page({
       { id: '#img-tea-origin', key: 'teaOriginImage' },
       { id: '#img-osmanthus-origin', key: 'osmanthusOriginImage' }
     ];
-    
+
     const lazyImageMap = that.data.lazyImageMap || {};
     const notLoaded = imageSelectors.filter(s => !lazyImageMap[s.key]);
     if (notLoaded.length === 0) return;
-    
+
     const query = wx.createSelectorQuery();
     notLoaded.forEach(s => {
       query.select(s.id).boundingClientRect();
     });
-    
+
     query.exec(function(res) {
       if (!res) return;
-      
+
       const updates = {};
       let hasUpdate = false;
-      
+
       notLoaded.forEach((s, index) => {
         const rect = res[index];
         if (rect && rect.top < scrollTop + viewportHeight + 200) {
@@ -487,7 +579,7 @@ Page({
           hasUpdate = true;
         }
       });
-      
+
       if (hasUpdate) {
         that.setData(updates);
       }
@@ -500,9 +592,9 @@ Page({
   onAnchorTap: function(e) {
     const key = e.currentTarget.dataset.key;
     const index = e.currentTarget.dataset.index;
-    
+
     console.log('[Detail] 点击锚点:', key);
-    
+
     // 如果模块是收起的，先展开
     if (this.data.moduleCollapsed[key]) {
       const updates = {};
@@ -517,7 +609,7 @@ Page({
     } else {
       this.scrollToModule(key);
     }
-    
+
     // 立即更新激活状态，提供即时反馈
     this.setData({ activeAnchor: key });
   },
@@ -530,19 +622,19 @@ Page({
     const query = wx.createSelectorQuery();
     query.select(`#anchor-${key}`).boundingClientRect();
     query.selectViewport().scrollOffset();
-    
+
     query.exec(function(res) {
       if (!res || !res[0]) {
         console.warn('[Detail] 找不到模块:', key);
         return;
       }
-      
+
       const rect = res[0];
       const scrollOffset = res[1]?.scrollTop || 0;
       // 减去 Tab 栏高度（吸顶时）
       const offset = that.data.anchorSticky ? 100 : 20;
       const scrollTop = rect.top + scrollOffset - offset;
-      
+
       wx.pageScrollTo({
         scrollTop: Math.max(scrollTop, 0),
         duration: 400
@@ -580,11 +672,11 @@ Page({
    */
   onPullDownRefresh: function() {
     console.log('[Detail] 触发下拉刷新');
-    
+
     // 重新加载数据
     this.pageHeightPromise = null;
     this.loadTraceData(this.data.traceId);
-    
+
     // 停止下拉刷新动画
     setTimeout(() => {
       wx.stopPullDownRefresh();
@@ -703,12 +795,27 @@ Page({
         } else {
           level = 'warning';
         }
+        // ===== 色弱模式辅助属性 =====
+        // data-status 给 CSS 选择器使用（[data-status="pass"] / [data-status="fail"]）
+        // a11yIcon 在色弱模式下作为可读文本前缀
+        // progressClass 控制进度条颜色和图案
+        const a11yStatus = isPass ? 'pass' : 'fail';
+        const a11yIcon = isPass ? '✓' : '✗';
+        const progressClass = isPass ? 'progress-pass' : 'progress-danger';
+        const levelClass = 'level-' + level;
+        const statusClass = isPass ? 'status-pass tag-success' : 'status-fail';
         return {
           ...test,
           percent: percent,
           level: level,
           isPass: isPass,
-          multiple: (test.limit / test.value).toFixed(1)
+          multiple: (test.limit / test.value).toFixed(1),
+          // 无障碍与色弱辅助
+          a11yStatus: a11yStatus,
+          a11yIcon: a11yIcon,
+          progressClass: progressClass,
+          levelClass: levelClass,
+          statusClass: statusClass
         };
       });
     };
@@ -905,7 +1012,7 @@ Page({
   switchProcessTab: function(e) {
     const tab = e.currentTarget.dataset.tab;
     this.setData({ activeProcessTab: tab });
-    
+
     if (tab === 'timeline') {
       this.resetTimelineAnimation();
     } else if (tab === 'comparison' && !this.data.processComparisonData) {
@@ -919,11 +1026,11 @@ Page({
   selectScentingRecord: function(e) {
     const index = e.currentTarget.dataset.index;
     const records = this.data.traceData.scentingProcess.scentingRecords;
-    
+
     if (index < 0 || index >= records.length) {
       return;
     }
-    
+
     this.setData({ activeScentingRecord: index });
   },
 
@@ -934,11 +1041,11 @@ Page({
     const that = this;
     const steps = this.data.traceData.scentingProcess.processSteps;
     const totalSteps = steps.length;
-    
+
     if (this.data.timelinePlaying) return;
-    
+
     this.setData({ timelinePlaying: true, timelineActiveStep: 0 });
-    
+
     this.timelineTimer = setInterval(function() {
       const nextStep = (that.data.timelineActiveStep + 1) % totalSteps;
       that.setData({ timelineActiveStep: nextStep });
@@ -994,7 +1101,7 @@ Page({
   changeTimelineSpeed: function(e) {
     const speedMap = { fast: 1000, normal: 2000, slow: 3000 };
     let nextSpeed;
-    
+
     if (e && e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.speed) {
       const targetSpeed = e.currentTarget.dataset.speed;
       nextSpeed = speedMap[targetSpeed] || 2000;
@@ -1005,16 +1112,16 @@ Page({
       const nextIndex = (currentIndex + 1) % speeds.length;
       nextSpeed = speeds[nextIndex];
     }
-    
+
     this.setData({ timelineSpeed: nextSpeed });
-    
+
     const speedLabels = { 1000: '快', 2000: '中', 3000: '慢' };
     wx.showToast({
       title: `播放速度：${speedLabels[nextSpeed]}`,
       icon: 'none',
       duration: 1000
     });
-    
+
     if (this.data.timelinePlaying) {
       this.pauseTimelineAnimation();
       this.startTimelineAnimation();

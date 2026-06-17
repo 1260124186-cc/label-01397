@@ -6,6 +6,7 @@
 
 const mockData = require('../../utils/mockData.js');
 const storage = require('../../utils/storage.js');
+const i18n = require('../../utils/i18n/index.js');
 
 Page({
   data: {
@@ -21,6 +22,46 @@ Page({
     showHistory: false,
     showClipboardModal: false,
     clipboardTraceId: '',
+
+    // ===== 无障碍与多语言 =====
+    showA11yPanel: false,
+    currentLang: i18n.LANG_ZH,
+    currentFontSize: i18n.FONT_NORMAL,
+    currentColorWeak: false,
+    a11yClasses: 'font-normal',
+    availableLanguages: i18n.getAvailableLanguages(),
+    availableFontSizes: [
+      { key: i18n.FONT_NORMAL, labelZh: '标准', labelEn: 'Standard' },
+      { key: i18n.FONT_LARGE, labelZh: '大号', labelEn: 'Large' },
+      { key: i18n.FONT_EXTRA, labelZh: '关怀版', labelEn: 'Care Mode' }
+    ],
+    // i18n 文本
+    i18n: {
+      scanBtn: '',
+      inputPlaceholder: '',
+      searchBtn: '',
+      historyTitle: '',
+      clipboardTitle: '',
+      clipboardDesc: '',
+      clipboardGoto: '',
+      clipboardClose: '',
+      a11ySettings: '',
+      a11yTitle: '',
+      languageLabel: '',
+      fontLabel: '',
+      colorWeakLabel: '',
+      colorWeakDesc: '',
+      closeBtn: '',
+      quickInputTitle: '',
+      quickInputBatchTitle: '',
+      batchSearchBtn: '',
+      batchPlaceholder: '',
+      bannerTag: '',
+      announcementTag: '',
+      featureHint: '',
+      scanGuideTitle: '',
+      brandStoryTitle: ''
+    },
 
     bannerList: [
       {
@@ -89,16 +130,19 @@ Page({
 
   onLoad: function(options) {
     console.log('首页加载，参数：', options);
-    
+
+    this.refreshA11yData();
+    this.refreshI18nTexts();
+
     setTimeout(() => {
       this.setData({ pageLoaded: true });
     }, 100);
-    
+
     if (options.traceId) {
       this.queryTraceInfo(options.traceId);
       return;
     }
-    
+
     if (options.scene) {
       const traceId = mockData.parseSceneParam(options.scene);
       if (traceId) {
@@ -106,7 +150,7 @@ Page({
         return;
       }
     }
-    
+
     this.loadScanHistory();
     this.checkFirstVisit();
     this.startAnnouncementRotation();
@@ -114,8 +158,102 @@ Page({
 
   onShow: function() {
     this.setData({ inputTraceId: '', inputBatchNo: '' });
+    this.refreshA11yData();
+    this.refreshI18nTexts();
     this.loadScanHistory();
     this.checkClipboard();
+  },
+
+  // ===== i18n 与无障碍 =====
+
+  /** 刷新当前 a11y 状态（语言/字号/色弱） */
+  refreshA11yData: function() {
+    const a11y = i18n.getA11yData();
+    this.setData({
+      currentLang: a11y.lang,
+      currentFontSize: a11y.fontSize,
+      currentColorWeak: a11y.colorWeak,
+      a11yClasses: a11y.classes
+    });
+  },
+
+  /** 刷新页面上所有 i18n 文本字段 */
+  refreshI18nTexts: function() {
+    const t = function(key) { return i18n.t(key); };
+    this.setData({
+      'i18n.scanBtn': t('home.scanBtn'),
+      'i18n.inputPlaceholder': t('home.inputPlaceholder'),
+      'i18n.searchBtn': t('home.searchBtn'),
+      'i18n.historyTitle': t('home.historyTitle'),
+      'i18n.clipboardTitle': t('home.clipboardTitle'),
+      'i18n.clipboardDesc': t('home.clipboardDesc'),
+      'i18n.clipboardGoto': t('home.clipboardGoto'),
+      'i18n.clipboardClose': t('common.cancel'),
+      'i18n.a11ySettings': t('settings.title'),
+      'i18n.a11yTitle': t('settings.title'),
+      'i18n.languageLabel': t('settings.language'),
+      'i18n.fontLabel': t('settings.fontSize'),
+      'i18n.colorWeakLabel': t('settings.colorWeak'),
+      'i18n.colorWeakDesc': t('settings.colorWeakDesc'),
+      'i18n.closeBtn': t('common.close'),
+      'i18n.quickInputTitle': t('home.quickInputTitle'),
+      'i18n.quickInputBatchTitle': t('home.quickInputBatchTitle'),
+      'i18n.batchSearchBtn': t('home.batchSearchBtn'),
+      'i18n.batchPlaceholder': t('home.batchPlaceholder'),
+      'i18n.bannerTag': t('home.bannerTag'),
+      'i18n.announcementTag': t('home.announcementTag'),
+      'i18n.featureHint': t('home.featureHint'),
+      'i18n.scanGuideTitle': t('home.scanGuideTitle'),
+      'i18n.brandStoryTitle': t('nav.brandStory')
+    });
+  },
+
+  /** 打开无障碍设置面板 */
+  openA11yPanel: function() {
+    this.setData({ showA11yPanel: true });
+  },
+
+  /** 关闭无障碍设置面板 */
+  closeA11yPanel: function() {
+    this.setData({ showA11yPanel: false });
+  },
+
+  /** 切换语言 */
+  handleSelectLanguage: function(e) {
+    const lang = e.currentTarget.dataset.lang;
+    if (lang === this.data.currentLang) return;
+    i18n.setLanguage(lang);
+    this.refreshA11yData();
+    this.refreshI18nTexts();
+    const app = getApp();
+    if (app) {
+      i18n.applySettingsToApp(app);
+    }
+  },
+
+  /** 切换字号 */
+  handleSelectFontSize: function(e) {
+    const size = e.currentTarget.dataset.size;
+    if (size === this.data.currentFontSize) return;
+    i18n.setFontSize(size);
+    this.refreshA11yData();
+    this.refreshI18nTexts();
+    const app = getApp();
+    if (app) {
+      i18n.applySettingsToApp(app);
+    }
+  },
+
+  /** 切换色弱模式 */
+  handleToggleColorWeak: function() {
+    const next = !this.data.currentColorWeak;
+    i18n.setColorWeak(next);
+    this.refreshA11yData();
+    this.refreshI18nTexts();
+    const app = getApp();
+    if (app) {
+      i18n.applySettingsToApp(app);
+    }
   },
 
   loadScanHistory: function() {
@@ -124,7 +262,7 @@ Page({
       ...item,
       formatTime: storage.formatTime(item.timestamp)
     }));
-    this.setData({ 
+    this.setData({
       scanHistory: formattedHistory,
       showHistory: formattedHistory.length > 0
     });
@@ -132,14 +270,14 @@ Page({
 
   checkClipboard: function() {
     const that = this;
-    
+
     wx.getClipboardData({
       success: function(res) {
         const clipboardContent = res.data && res.data.trim();
         console.log('剪贴板内容:', clipboardContent);
-        
+
         if (!clipboardContent) return;
-        
+
         const traceId = that.parseTraceId(clipboardContent);
         if (traceId && mockData.validateTraceId(traceId)) {
           const traceData = mockData.getTraceData(traceId);
@@ -172,7 +310,7 @@ Page({
 
   handleScanCode: function() {
     const that = this;
-    
+
     wx.showLoading({
       title: '正在启动扫码...',
       mask: true
@@ -183,18 +321,18 @@ Page({
       success: function(res) {
         console.log('扫码成功，结果：', res);
         wx.hideLoading();
-        
+
         const scanResult = res.result;
         const scanType = res.scanType;
-        
+
         let traceId = null;
-        
+
         if (scanType === 'barCode') {
           traceId = mockData.getTraceIdFromBarcode(scanResult);
         } else {
           traceId = that.parseTraceId(scanResult);
         }
-        
+
         if (traceId) {
           that.navigateToScanResult(traceId, scanType);
         } else {
@@ -208,7 +346,7 @@ Page({
       fail: function(err) {
         wx.hideLoading();
         console.error('扫码失败：', err);
-        
+
         if (err.errMsg.indexOf('cancel') === -1) {
           wx.showToast({
             title: '扫码失败，请重试',
@@ -222,7 +360,7 @@ Page({
 
   navigateToScanResult: function(traceId, scanType) {
     const that = this;
-    
+
     const traceData = mockData.getTraceData(traceId);
     if (traceData) {
       storage.addScanRecord({
@@ -230,7 +368,7 @@ Page({
         productName: traceData.basicInfo.productName
       });
     }
-    
+
     wx.navigateTo({
       url: `/pages/scanResult/scanResult?traceId=${traceId}&scanType=${scanType}`,
       success: function() {
@@ -249,14 +387,14 @@ Page({
 
   parseTraceId: function(scanResult) {
     if (!scanResult) return null;
-    
+
     let traceId = null;
-    
+
     if (scanResult.includes('?')) {
       const urlParams = new URLSearchParams(scanResult.split('?')[1]);
       traceId = urlParams.get('id') || urlParams.get('traceId');
     }
-    
+
     if (!traceId && scanResult.startsWith('{')) {
       try {
         const jsonData = JSON.parse(scanResult);
@@ -265,13 +403,13 @@ Page({
         console.log('JSON解析失败');
       }
     }
-    
+
     if (!traceId) {
       if (mockData.validateTraceId(scanResult)) {
         traceId = scanResult;
       }
     }
-    
+
     return traceId;
   },
 
@@ -303,7 +441,7 @@ Page({
 
   handleManualQuery: function() {
     const traceId = this.data.inputTraceId.trim();
-    
+
     if (!traceId) {
       wx.showToast({
         title: '请输入溯源ID',
@@ -312,7 +450,7 @@ Page({
       });
       return;
     }
-    
+
     if (!mockData.validateTraceId(traceId)) {
       wx.showToast({
         title: 'ID格式不正确，请检查',
@@ -321,13 +459,13 @@ Page({
       });
       return;
     }
-    
+
     this.queryTraceInfo(traceId);
   },
 
   handleBatchQuery: function() {
     const batchNo = this.data.inputBatchNo.trim().toUpperCase();
-    
+
     if (!batchNo) {
       wx.showToast({
         title: '请输入批次号',
@@ -336,7 +474,7 @@ Page({
       });
       return;
     }
-    
+
     if (!mockData.validateBatchNo(batchNo)) {
       wx.showToast({
         title: '批次号格式不正确',
@@ -345,7 +483,7 @@ Page({
       });
       return;
     }
-    
+
     wx.navigateTo({
       url: `/pages/batchList/batchList?batchNo=${batchNo}`,
       success: function() {
@@ -387,7 +525,7 @@ Page({
   deleteHistoryItem: function(e) {
     const that = this;
     const id = e.currentTarget.dataset.id;
-    
+
     wx.showModal({
       title: '删除记录',
       content: '确定删除该条扫码记录吗？',
@@ -407,7 +545,7 @@ Page({
 
   clearAllHistory: function() {
     const that = this;
-    
+
     wx.showModal({
       title: '清空历史',
       content: '确定清空所有扫码历史吗？此操作不可恢复。',
@@ -428,24 +566,24 @@ Page({
 
   queryTraceInfo: function(traceId) {
     const that = this;
-    
+
     wx.showLoading({
       title: '正在查询...',
       mask: true
     });
-    
+
     setTimeout(() => {
       wx.hideLoading();
-      
+
       const traceData = mockData.getTraceData(traceId);
-      
+
       if (traceData) {
         storage.addScanRecord({
           traceId: traceId,
           productName: traceData.basicInfo.productName
         });
         that.loadScanHistory();
-        
+
         wx.navigateTo({
           url: `/pages/detail/detail?traceId=${traceId}`,
           success: function() {

@@ -285,3 +285,307 @@ page {
 .animate-pulse {
   animation: pulse 2s ease-in-out infinite;
 }
+
+/* ==================== 字号调节（关怀版） ==================== */
+
+page.font-large {
+  --font-xs: 28rpx;
+  --font-sm: 30rpx;
+  --font-md: 35rpx;
+  --font-lg: 40rpx;
+  --font-xl: 45rpx;
+  --font-xxl: 55rpx;
+  --spacing-xs: 10rpx;
+  --spacing-sm: 20rpx;
+  --spacing-md: 30rpx;
+  --spacing-lg: 40rpx;
+  --spacing-xl: 60rpx;
+  line-height: 1.7;
+}
+
+page.font-extra {
+  --font-xs: 33rpx;
+  --font-sm: 36rpx;
+  --font-md: 42rpx;
+  --font-lg: 48rpx;
+  --font-xl: 54rpx;
+  --font-xxl: 66rpx;
+  --spacing-xs: 12rpx;
+  --spacing-sm: 24rpx;
+  --spacing-md: 36rpx;
+  --spacing-lg: 48rpx;
+  --spacing-xl: 72rpx;
+  line-height: 1.8;
+}
+
+page.font-large .card,
+page.font-extra .card {
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+}
+
+page.font-large .btn-primary,
+page.font-large .btn-secondary,
+page.font-large .btn-outline,
+page.font-extra .btn-primary,
+page.font-extra .btn-secondary,
+page.font-extra .btn-outline {
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-lg);
+}
+
+page.font-large input,
+page.font-extra input,
+page.font-large textarea,
+page.font-extra textarea {
+  min-height: 88rpx;
+  font-size: var(--font-md);
+}
+
+/* ==================== 色弱模式：合格/不合格增强区分 ==================== */
+
+/* 合格状态 —— 增加 ✅ 图标前缀 + 斜纹底纹 */
+page.color-weak .tag-success::before,
+page.color-weak .status-pass::before,
+page.color-weak [data-status="pass"]::before {
+  content: '✓';
+  display: inline-block;
+  margin-right: 6rpx;
+  font-weight: 700;
+  color: #1F7A34;
+  font-size: 1.1em;
+}
+
+page.color-weak .tag-success,
+page.color-weak .status-pass,
+page.color-weak [data-status="pass"] {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(31, 122, 52, 0.06) 0 8rpx,
+    transparent 8rpx 16rpx
+  );
+  border: 3rpx solid #1F7A34 !important;
+  font-weight: 600 !important;
+  color: #1F7A34 !important;
+}
+
+/* 不合格状态 —— 增加 ❌ 图标前缀 + 斜线底纹 */
+page.color-weak .status-fail::before,
+page.color-weak [data-status="fail"]::before {
+  content: '✗';
+  display: inline-block;
+  margin-right: 6rpx;
+  font-weight: 700;
+  color: #B71C1C;
+  font-size: 1.1em;
+}
+
+page.color-weak .status-fail,
+page.color-weak [data-status="fail"] {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(183, 28, 28, 0.08) 0 8rpx,
+    transparent 8rpx 16rpx
+  );
+  border: 3rpx solid #B71C1C !important;
+  font-weight: 700 !important;
+  color: #B71C1C !important;
+  text-decoration: underline wavy #B71C1C;
+  text-underline-offset: 6rpx;
+}
+
+/* 色弱模式：警告级别增加边框与图案 */
+page.color-weak .level-excellent::after {
+  content: ' ★★★';
+  color: #1F7A34;
+}
+
+page.color-weak .level-good::after {
+  content: ' ★★';
+  color: #388E3C;
+}
+
+page.color-weak .level-warning::after {
+  content: ' ★';
+  color: #F57F17;
+}
+
+page.color-weak .level-danger::after {
+  content: ' ⚠';
+  color: #B71C1C;
+}
+
+/* 色弱模式：状态颜色调整为高对比度非彩虹色 */
+page.color-weak {
+  --color-success: #1F7A34;        /* 深绿（替代草绿） */
+  --color-warning: #F57F17;        /* 深橙（替代黄） */
+  --color-error: #B71C1C;          /* 深红（替代品红） */
+  --color-info: #0D47A1;           /* 深蓝（代指信息） */
+  --color-primary: #1565C0;        /* 调整主色调为深蓝 */
+  --color-secondary: #6D4C41;      /* 调整辅助色为深棕 */
+}
+
+/* 色弱模式：检测进度条增加格纹 */
+page.color-weak .progress-pass {
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.2) 0 4rpx,
+      transparent 4rpx 8rpx
+    );
+  border: 2rpx solid #1F7A34;
+}
+
+page.color-weak .progress-danger {
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.25) 0 4rpx,
+      transparent 4rpx 8rpx
+    );
+  border: 2rpx solid #B71C1C;
+}
+
+/* 色弱模式：合格/不合格大标签 */
+page.color-weak .status-badge-pass {
+  position: relative;
+}
+page.color-weak .status-badge-pass::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 70%; height: 4rpx;
+  background: #1F7A34;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  opacity: 0.35;
+}
+
+page.color-weak .status-badge-fail {
+  position: relative;
+}
+page.color-weak .status-badge-fail::after {
+  content: '✗';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 300%;
+  color: rgba(183, 28, 28, 0.25);
+  font-weight: 900;
+}
+
+/* ==================== 无障碍设置面板（通用） ==================== */
+
+.a11y-panel {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.a11y-panel-title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+}
+
+.a11y-panel-title-icon {
+  margin-right: var(--spacing-sm);
+}
+
+.a11y-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) 0;
+  border-bottom: 1rpx solid var(--border-light);
+}
+
+.a11y-row:last-child {
+  border-bottom: none;
+}
+
+.a11y-label {
+  font-size: var(--font-md);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.a11y-label-icon {
+  margin-right: var(--spacing-sm);
+  font-size: var(--font-lg);
+}
+
+.a11y-label-text {
+  font-weight: 500;
+}
+
+.a11y-label-desc {
+  font-size: var(--font-sm);
+  color: var(--text-hint);
+  margin-top: 4rpx;
+  line-height: 1.4;
+}
+
+.a11y-label-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.a11y-options {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.a11y-option {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 2rpx solid var(--border-color);
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+  transition: all 0.2s ease;
+}
+
+.a11y-option.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  color: var(--text-white);
+  border-color: var(--color-primary);
+  font-weight: 500;
+}
+
+.a11y-switch {
+  width: 96rpx;
+  height: 52rpx;
+  border-radius: 26rpx;
+  background: var(--border-color);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.a11y-switch.on {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+}
+
+.a11y-switch-dot {
+  position: absolute;
+  top: 4rpx;
+  left: 4rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.a11y-switch.on .a11y-switch-dot {
+  left: 48rpx;
+}
+
