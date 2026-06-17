@@ -108,6 +108,62 @@ const mockTraceData = {
       ]
     },
 
+    // IoT车间环境监测（窨制车间）
+    workshopEnv: {
+      workshopName: '窨制车间A',
+      cleanlinessLevel: 'Class 10万级',
+      cleanlinessStatus: '达标',
+      sensors: [
+        { id: 'TH-001', name: '温湿度传感器-1区', type: 'temperature_humidity', location: '窨制区1号位', status: 'online' },
+        { id: 'TH-002', name: '温湿度传感器-2区', type: 'temperature_humidity', location: '窨制区2号位', status: 'online' },
+        { id: 'PM-001', name: '洁净度检测仪', type: 'cleanliness', location: '车间入口', status: 'online' }
+      ],
+      realtimeData: {
+        temperature: 29.5,
+        humidity: 72.3,
+        pm25: 8,
+        particleCount: 3520,
+        updateTime: '2025-09-16 10:30:00'
+      },
+      curveData: {
+        duration: 72,
+        interval: 1,
+        temperatureData: (function() {
+          var data = [];
+          for (var i = 0; i < 72; i++) {
+            var base = 28 + Math.sin(i / 12 * Math.PI) * 2;
+            var noise = (Math.random() - 0.5) * 1.5;
+            var scentingBoost = 0;
+            if ((i >= 8 && i <= 13) || (i >= 32 && i <= 37) || (i >= 56 && i <= 61)) {
+              scentingBoost = 2;
+            }
+            data.push(Math.round((base + noise + scentingBoost) * 10) / 10);
+          }
+          return data;
+        })(),
+        humidityData: (function() {
+          var data = [];
+          for (var i = 0; i < 72; i++) {
+            var base = 70 + Math.sin(i / 10 * Math.PI) * 4;
+            var noise = (Math.random() - 0.5) * 3;
+            var scentingBoost = 0;
+            if ((i >= 8 && i <= 13) || (i >= 32 && i <= 37) || (i >= 56 && i <= 61)) {
+              scentingBoost = 3;
+            }
+            data.push(Math.round((base + noise + scentingBoost) * 10) / 10);
+          }
+          return data;
+        })(),
+        startTime: '2025-09-14 00:00',
+        endTime: '2025-09-16 23:59',
+        scentingRanges: [
+          { round: 1, startHour: 8, endHour: 13 },
+          { round: 2, startHour: 32, endHour: 37 },
+          { round: 3, startHour: 56, endHour: 61 }
+        ]
+      }
+    },
+
     // 绿色溯源（新增核心模块）
     greenTrace: {
       // 生态种植记录
@@ -500,6 +556,59 @@ const mockTraceData = {
         { step: 5, name: '起花', icon: '🧹', desc: '分离茶叶与桂花残渣', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=separating%20silver%20osmanthus%20flowers%20from%20tea%20leaves%20fine%20sieving&image_size=square' },
         { step: 6, name: '干燥', icon: '☀️', desc: '低温烘干锁住花香', mediaType: 'image', mediaUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=low%20temperature%20drying%20silver%20osmanthus%20tea%20preserving%20light%20fragrance&image_size=square' }
       ]
+    },
+
+    workshopEnv: {
+      workshopName: '窨制车间B',
+      cleanlinessLevel: 'Class 10万级',
+      cleanlinessStatus: '达标',
+      sensors: [
+        { id: 'TH-003', name: '温湿度传感器-1区', type: 'temperature_humidity', location: '窨制区1号位', status: 'online' },
+        { id: 'PM-002', name: '洁净度检测仪', type: 'cleanliness', location: '车间入口', status: 'online' }
+      ],
+      realtimeData: {
+        temperature: 27.8,
+        humidity: 70.1,
+        pm25: 6,
+        particleCount: 2840,
+        updateTime: '2025-09-19 08:30:00'
+      },
+      curveData: {
+        duration: 72,
+        interval: 1,
+        temperatureData: (function() {
+          var data = [];
+          for (var i = 0; i < 72; i++) {
+            var base = 26 + Math.sin(i / 14 * Math.PI) * 2;
+            var noise = (Math.random() - 0.5) * 1.2;
+            var scentingBoost = 0;
+            if ((i >= 8 && i <= 14) || (i >= 32 && i <= 38)) {
+              scentingBoost = 1.5;
+            }
+            data.push(Math.round((base + noise + scentingBoost) * 10) / 10);
+          }
+          return data;
+        })(),
+        humidityData: (function() {
+          var data = [];
+          for (var i = 0; i < 72; i++) {
+            var base = 68 + Math.sin(i / 11 * Math.PI) * 3;
+            var noise = (Math.random() - 0.5) * 2.5;
+            var scentingBoost = 0;
+            if ((i >= 8 && i <= 14) || (i >= 32 && i <= 38)) {
+              scentingBoost = 2.5;
+            }
+            data.push(Math.round((base + noise + scentingBoost) * 10) / 10);
+          }
+          return data;
+        })(),
+        startTime: '2025-09-17 00:00',
+        endTime: '2025-09-19 23:59',
+        scentingRanges: [
+          { round: 1, startHour: 8, endHour: 14 },
+          { round: 2, startHour: 32, endHour: 38 }
+        ]
+      }
     },
 
     // 绿色溯源
@@ -1849,6 +1958,12 @@ function calculateTestPercent(value, limit) {
  * 获取金桂（G001）与银桂（G002）窨制工艺对比数据
  * @returns {object} - 工艺对比数据对象
  */
+function getWorkshopEnvData(traceId) {
+  var data = getTraceData(traceId);
+  if (!data || !data.workshopEnv) return null;
+  return data.workshopEnv;
+}
+
 function getScentingComparison() {
   const golden = mockTraceData['G001'];
   const silver = mockTraceData['G002'];
@@ -4473,6 +4588,7 @@ module.exports = {
   parseSceneParam,
   verifyReport,
   calculateTestPercent,
+  getWorkshopEnvData,
   getScentingComparison,
   getGreenTraceExtended,
   getGreenPointsConfig,

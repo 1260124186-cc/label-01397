@@ -135,6 +135,10 @@ Page({
     showProcessComparison: false,
     processComparisonData: null,
 
+    // ========== 车间环境监测 ==========
+    activeCurveTab: 'both',
+    workshopCurveStats: null,
+
     // ========== 新增功能数据 ==========
     // 品种样式配置
     varietyStyle: null,
@@ -367,6 +371,11 @@ Page({
         var shareInviteConfig = mockData.getInviteRewardConfig();
         var shareInviteData = shareUtil.getShareInviteData();
 
+        var workshopCurveStats = null;
+        if (data.workshopEnv && data.workshopEnv.curveData) {
+          workshopCurveStats = that.calculateWorkshopCurveStats(data.workshopEnv.curveData);
+        }
+
         that.setData({
           traceData: data,
           loading: false,
@@ -382,7 +391,8 @@ Page({
           brewStepTimerText: initialBrewStepTimerText,
           shareInviteConfig: shareInviteConfig,
           shareInviteData: shareInviteData,
-          batchSubscribed: subscription.isBatchSubscribed(data.basicInfo.batchNo)
+          batchSubscribed: subscription.isBatchSubscribed(data.basicInfo.batchNo),
+          workshopCurveStats: workshopCurveStats
         });
 
         // 设置导航栏标题
@@ -410,6 +420,12 @@ Page({
         setTimeout(() => {
           that.measureModulePositions();
         }, 300);
+
+        if (data.workshopEnv && data.workshopEnv.curveData) {
+          setTimeout(() => {
+            that.drawWorkshopCurve();
+          }, 600);
+        }
       } else {
         that.setData({ skeletonLoading: false, loading: false });
         wx.showToast({
@@ -685,13 +701,20 @@ Page({
    */
   toggleModule: function(e) {
     const key = e.currentTarget.dataset.key;
+    const wasCollapsed = this.data.moduleCollapsed[key];
     const updates = {};
-    updates[`moduleCollapsed.${key}`] = !this.data.moduleCollapsed[key];
+    updates[`moduleCollapsed.${key}`] = !wasCollapsed;
     this.setData(updates, () => {
       // 模块高度变化后重新测量位置
       setTimeout(() => {
         this.measureModulePositions();
       }, 350);
+
+      if (key === 'process' && wasCollapsed && this.data.traceData && this.data.traceData.workshopEnv) {
+        setTimeout(() => {
+          this.drawWorkshopCurve();
+        }, 400);
+      }
     });
   },
 
@@ -1219,6 +1242,191 @@ Page({
       current: url,
       urls: urls
     });
+  },
+
+  // ============================================================
+  // ==================== 车间环境监测方法 ====================
+  // ============================================================
+
+  calculateWorkshopCurveStats: function(curveData) {
+    if (!curveData || !curveData.temperatureData || !curveData.humidityData) return null;
+    var tempArr = curveData.temperatureData;
+    var humArr = curveData.humidityData;
+    var tempMin = Math.min.apply(null, tempArr);
+    var tempMax = Math.max.apply(null, tempArr);
+    var tempSum = tempArr.reduce(function(a, b) { return a + b; }, 0);
+    var humMin = Math.min.apply(null, humArr);
+    var humMax = Math.max.apply(null, humArr);
+    var humSum = humArr.reduce(function(a, b) { return a + b; }, 0);
+    return {
+      tempMin: Math.round(tempMin * 10) / 10,
+      tempMax: Math.round(tempMax * 10) / 10,
+      tempAvg: Math.round(tempSum / tempArr.length * 10) / 10,
+      humidityMin: Math.round(humMin * 10) / 10,
+      humidityMax: Math.round(humMax * 10) / 10,
+      humidityAvg: Math.round(humSum / humArr.length * 10) / 10
+    };
+  },
+
+  switchCurveTab: function(e) {
+    var tab = e.currentTarget.dataset.tab;
+    this.setData({ activeCurveTab: tab });
+    var that = this;
+    setTimeout(function() {
+      that.drawWorkshopCurve();
+    }, 100);
+  },
+
+  drawWorkshopCurve: function() {
+    var that = this;
+    var envData = this.data.traceData && this.data.traceData.workshopEnv;
+    if (!envData || !envData.curveData) return;
+
+    var query = wx.createSelectorQuery();
+    query.select('#envCurveCanvas')
+      .fields({ node: true, size: true })
+      .exec(function(res) {
+        if (!res || !res[0] || !res[0].node) {
+          console.warn('[Detail] Canvas node not found');
+          return;
+        }
+        var canvas = res[0].node;
+        var ctx = canvas.getContext('2d');
+        var dpr = wx.getWindowInfo().pixelRatio || 2;
+        var width = res[0].width;
+        var height = res[0].height;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+
+        var curveData = envData.curveData;
+        var activeTab = that.data.activeCurveTab;
+        var showTemp = activeTab === 'temp' || activeTab === 'both';
+        var showHumidity = activeTab === 'humidity' || activeTab === 'both';
+
+        var padding = { top: 30, right: 20, bottom: 36, left: 44 };
+        var chartW = width - padding.left - padding.right;
+        var chartH = height - padding.top - padding.bottom;
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = '#FAFCFF';
+        ctx.fillRect(0, 0, width, height);
+
+        var tempArr = curveData.temperatureData || [];
+        var humArr = curveData.humidityData || [];
+        var count = tempArr.length;
+        if (count === 0) return;
+
+        var tempMin = 20, tempMax = 38;
+        var humMin = 55, humMax = 90;
+
+        ctx.strokeStyle = '#E8E8E8';
+        ctx.lineWidth = 0.5;
+        var gridLines = 5;
+        for (var g = 0; g <= gridLines; g++) {
+          var gy = padding.top + (chartH / gridLines) * g;
+          ctx.beginPath();
+          ctx.moveTo(padding.left, gy);
+          ctx.lineTo(width - padding.right, gy);
+          ctx.stroke();
+        }
+
+        var xLabels = [0, 12, 24, 36, 48, 60, 72];
+        ctx.fillStyle = '#999999';
+        ctx.font = '9px sans-serif';
+        ctx.textAlign = 'center';
+        for (var xi = 0; xi < xLabels.length; xi++) {
+          var lx = padding.left + (xLabels[xi] / (count - 1)) * chartW;
+          ctx.fillText(xLabels[xi] + 'h', lx, height - 8);
+        }
+
+        if (showTemp) {
+          ctx.fillStyle = '#FF6B6B';
+          ctx.font = '9px sans-serif';
+          ctx.textAlign = 'right';
+          for (var ti = 0; ti <= gridLines; ti++) {
+            var tv = tempMax - (tempMax - tempMin) / gridLines * ti;
+            var ty = padding.top + (chartH / gridLines) * ti;
+            ctx.fillText(tv.toFixed(0), padding.left - 6, ty + 3);
+          }
+        }
+
+        if (showHumidity && !showTemp) {
+          ctx.fillStyle = '#1890FF';
+          ctx.font = '9px sans-serif';
+          ctx.textAlign = 'right';
+          for (var hi = 0; hi <= gridLines; hi++) {
+            var hv = humMax - (humMax - humMin) / gridLines * hi;
+            var hy = padding.top + (chartH / gridLines) * hi;
+            ctx.fillText(hv.toFixed(0), padding.left - 6, hy + 3);
+          }
+        }
+
+        var scentingRanges = curveData.scentingRanges || [];
+        for (var si = 0; si < scentingRanges.length; si++) {
+          var sr = scentingRanges[si];
+          var sx1 = padding.left + (sr.startHour / (count - 1)) * chartW;
+          var sx2 = padding.left + (sr.endHour / (count - 1)) * chartW;
+          ctx.fillStyle = 'rgba(218, 165, 32, 0.12)';
+          ctx.fillRect(sx1, padding.top, sx2 - sx1, chartH);
+          ctx.fillStyle = '#DAA520';
+          ctx.font = '8px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('\u7b2d' + sr.round + '\u7aaf', (sx1 + sx2) / 2, padding.top + 14);
+        }
+
+        function drawLine(dataArr, minVal, maxVal, color, lineWidth) {
+          if (dataArr.length === 0) return;
+          ctx.beginPath();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = lineWidth || 1.5;
+          ctx.lineJoin = 'round';
+          for (var i = 0; i < dataArr.length; i++) {
+            var x = padding.left + (i / (dataArr.length - 1)) * chartW;
+            var y = padding.top + (1 - (dataArr[i] - minVal) / (maxVal - minVal)) * chartH;
+            if (i === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+          }
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(padding.left + chartW, padding.top + chartH);
+          ctx.lineTo(padding.left, padding.top + chartH);
+          for (var j = 0; j < dataArr.length; j++) {
+            var xf = padding.left + (j / (dataArr.length - 1)) * chartW;
+            var yf = padding.top + (1 - (dataArr[j] - minVal) / (maxVal - minVal)) * chartH;
+            ctx.lineTo(xf, yf);
+          }
+          ctx.closePath();
+          var grad = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH);
+          var baseColor = color === '#FF6B6B' ? '255,107,107' : '24,144,255';
+          grad.addColorStop(0, 'rgba(' + baseColor + ',0.18)');
+          grad.addColorStop(1, 'rgba(' + baseColor + ',0.02)');
+          ctx.fillStyle = grad;
+          ctx.fill();
+        }
+
+        if (showTemp) {
+          drawLine(tempArr, tempMin, tempMax, '#FF6B6B', 1.5);
+        }
+        if (showHumidity) {
+          drawLine(humArr, humMin, humMax, '#1890FF', 1.5);
+        }
+
+        if (showTemp && showHumidity) {
+          ctx.fillStyle = '#1890FF';
+          ctx.font = '9px sans-serif';
+          ctx.textAlign = 'right';
+          for (var ri = 0; ri <= gridLines; ri++) {
+            var rv = humMax - (humMax - humMin) / gridLines * ri;
+            var ry = padding.top + (chartH / gridLines) * ri;
+            ctx.fillText(rv.toFixed(0) + '%', width - 2, ry + 3);
+          }
+        }
+      });
   },
 
   // ============================================================

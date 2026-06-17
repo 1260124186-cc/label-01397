@@ -5972,3 +5972,336 @@
   border-radius: 16rpx;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
 }
+
+/* ==================== 车间环境监测子模块 ==================== */
+.workshop-env-section {
+  margin-top: 28rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx dashed #E8E8E8;
+}
+
+.workshop-env-badge {
+  margin-left: 12rpx;
+  background: linear-gradient(135deg, #1890FF, #40A9FF);
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 600;
+  padding: 4rpx 14rpx;
+  border-radius: 16rpx;
+  letter-spacing: 1rpx;
+}
+
+.workshop-realtime-card {
+  background: linear-gradient(135deg, #F0F7FF, #F8FBFF);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-top: 20rpx;
+  border: 1rpx solid rgba(24, 144, 255, 0.12);
+}
+
+.workshop-cleanliness {
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid rgba(24, 144, 255, 0.08);
+}
+
+.cleanliness-header {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.cleanliness-icon {
+  font-size: 32rpx;
+}
+
+.cleanliness-level {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1890FF;
+}
+
+.cleanliness-status {
+  font-size: 22rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 16rpx;
+  font-weight: 500;
+}
+
+.cleanliness-status.pass {
+  background: rgba(82, 196, 26, 0.1);
+  color: #52C41A;
+}
+
+.cleanliness-status.fail {
+  background: rgba(255, 77, 79, 0.1);
+  color: #FF4D4F;
+}
+
+.cleanliness-workshop {
+  font-size: 24rpx;
+  color: #999999;
+  margin-top: 8rpx;
+  margin-left: 42rpx;
+}
+
+.workshop-realtime-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+}
+
+.realtime-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 8rpx;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.realtime-icon {
+  font-size: 32rpx;
+  margin-bottom: 8rpx;
+}
+
+.realtime-value {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1890FF;
+  font-family: 'DIN Alternate', sans-serif;
+  margin-bottom: 4rpx;
+}
+
+.realtime-label {
+  font-size: 20rpx;
+  color: #999999;
+}
+
+.realtime-update-time {
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: #BBBBBB;
+  text-align: right;
+}
+
+.workshop-sensors-section {
+  margin-top: 24rpx;
+}
+
+.sensors-title {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+.sensors-icon {
+  font-size: 30rpx;
+}
+
+.sensors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.sensor-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  background: #FAFAFA;
+  border-radius: 12rpx;
+  gap: 12rpx;
+}
+
+.sensor-status-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sensor-status-dot.online {
+  background: #52C41A;
+  box-shadow: 0 0 8rpx rgba(82, 196, 26, 0.4);
+  animation: sensorPulse 2s ease-in-out infinite;
+}
+
+.sensor-status-dot.offline {
+  background: #D9D9D9;
+}
+
+@keyframes sensorPulse {
+  0%, 100% { box-shadow: 0 0 4rpx rgba(82, 196, 26, 0.3); }
+  50% { box-shadow: 0 0 12rpx rgba(82, 196, 26, 0.6); }
+}
+
+.sensor-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.sensor-name {
+  font-size: 26rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.sensor-location {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.sensor-type-tag {
+  font-size: 20rpx;
+  color: #1890FF;
+  background: rgba(24, 144, 255, 0.08);
+  padding: 4rpx 14rpx;
+  border-radius: 12rpx;
+  white-space: nowrap;
+}
+
+.workshop-curve-section {
+  margin-top: 24rpx;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  border: 1rpx solid #F0F0F0;
+}
+
+.curve-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 20rpx;
+  flex-wrap: wrap;
+}
+
+.curve-icon {
+  font-size: 30rpx;
+}
+
+.curve-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.curve-period {
+  font-size: 22rpx;
+  color: #999999;
+  margin-left: auto;
+}
+
+.curve-tab-bar {
+  display: flex;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.curve-tab-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 12rpx 24rpx;
+  background: #F5F5F5;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+  color: #666666;
+  transition: all 0.25s ease;
+}
+
+.curve-tab-item.active {
+  background: linear-gradient(135deg, #1890FF, #40A9FF);
+  color: #FFFFFF;
+  box-shadow: 0 4rpx 12rpx rgba(24, 144, 255, 0.3);
+}
+
+.curve-tab-icon {
+  font-size: 26rpx;
+}
+
+.curve-canvas-wrapper {
+  width: 100%;
+  height: 360rpx;
+  background: #FAFCFF;
+  border-radius: 12rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.env-curve-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.curve-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24rpx;
+  margin-top: 16rpx;
+}
+
+.curve-legend .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: #666666;
+}
+
+.legend-color {
+  width: 24rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
+}
+
+.legend-color.temp-color {
+  background: #FF6B6B;
+}
+
+.legend-color.humidity-color {
+  background: #1890FF;
+}
+
+.legend-color.scenting-color {
+  background: rgba(218, 165, 32, 0.3);
+  border: 1rpx dashed #DAA520;
+}
+
+.curve-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.curve-stats .stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx;
+  background: #F8FAFC;
+  border-radius: 12rpx;
+}
+
+.curve-stats .stat-label {
+  font-size: 22rpx;
+  color: #999999;
+  margin-bottom: 6rpx;
+}
+
+.curve-stats .stat-value {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1890FF;
+  font-family: 'DIN Alternate', sans-serif;
+}

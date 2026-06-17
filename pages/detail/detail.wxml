@@ -1013,6 +1013,136 @@
           </view>
         </view>
       </view>
+
+      <!-- ========== 车间环境监测子模块 ========== -->
+      <view class="workshop-env-section" wx:if="{{traceData.workshopEnv}}">
+        <view class="section-sub-title">
+          <text class="sub-icon">🏭</text>
+          <text>车间环境监测</text>
+          <view class="workshop-env-badge">IoT</view>
+        </view>
+
+        <!-- 洁净度等级 + 实时数据概览 -->
+        <view class="workshop-realtime-card">
+          <view class="workshop-cleanliness">
+            <view class="cleanliness-header">
+              <text class="cleanliness-icon">✨</text>
+              <text class="cleanliness-level">{{traceData.workshopEnv.cleanlinessLevel}}</text>
+              <view class="cleanliness-status {{traceData.workshopEnv.cleanlinessStatus === '达标' ? 'pass' : 'fail'}}">
+                {{traceData.workshopEnv.cleanlinessStatus}}
+              </view>
+            </view>
+            <text class="cleanliness-workshop">{{traceData.workshopEnv.workshopName}}</text>
+          </view>
+
+          <view class="workshop-realtime-grid">
+            <view class="realtime-item">
+              <text class="realtime-icon">🌡️</text>
+              <text class="realtime-value">{{traceData.workshopEnv.realtimeData.temperature}}℃</text>
+              <text class="realtime-label">温度</text>
+            </view>
+            <view class="realtime-item">
+              <text class="realtime-icon">💧</text>
+              <text class="realtime-value">{{traceData.workshopEnv.realtimeData.humidity}}%</text>
+              <text class="realtime-label">湿度</text>
+            </view>
+            <view class="realtime-item">
+              <text class="realtime-icon">🫧</text>
+              <text class="realtime-value">{{traceData.workshopEnv.realtimeData.pm25}}</text>
+              <text class="realtime-label">PM2.5</text>
+            </view>
+            <view class="realtime-item">
+              <text class="realtime-icon">🔬</text>
+              <text class="realtime-value">{{traceData.workshopEnv.realtimeData.particleCount}}</text>
+              <text class="realtime-label">粒子数</text>
+            </view>
+          </view>
+
+          <view class="realtime-update-time">
+            <text>📡 最近更新：{{traceData.workshopEnv.realtimeData.updateTime}}</text>
+          </view>
+        </view>
+
+        <!-- 传感器列表 -->
+        <view class="workshop-sensors-section">
+          <view class="sensors-title">
+            <text class="sensors-icon">📡</text>
+            <text>传感器设备</text>
+          </view>
+          <view class="sensors-list">
+            <view wx:for="{{traceData.workshopEnv.sensors}}" wx:key="id" class="sensor-item">
+              <view class="sensor-status-dot {{item.status === 'online' ? 'online' : 'offline'}}"></view>
+              <view class="sensor-info">
+                <text class="sensor-name">{{item.name}}</text>
+                <text class="sensor-location">📍 {{item.location}}</text>
+              </view>
+              <view class="sensor-type-tag">{{item.type === 'temperature_humidity' ? '温湿度' : '洁净度'}}</view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 72小时温湿度曲线 -->
+        <view class="workshop-curve-section">
+          <view class="curve-header">
+            <text class="curve-icon">📈</text>
+            <text class="curve-title">72小时温湿度曲线</text>
+            <text class="curve-period">{{traceData.workshopEnv.curveData.startTime}} ~ {{traceData.workshopEnv.curveData.endTime}}</text>
+          </view>
+
+          <!-- 曲线 Tab 切换 -->
+          <view class="curve-tab-bar">
+            <view class="curve-tab-item {{activeCurveTab === 'temp' ? 'active' : ''}}" data-tab="temp" bindtap="switchCurveTab">
+              <text class="curve-tab-icon">🌡️</text>
+              <text>温度</text>
+            </view>
+            <view class="curve-tab-item {{activeCurveTab === 'humidity' ? 'active' : ''}}" data-tab="humidity" bindtap="switchCurveTab">
+              <text class="curve-tab-icon">💧</text>
+              <text>湿度</text>
+            </view>
+            <view class="curve-tab-item {{activeCurveTab === 'both' ? 'active' : ''}}" data-tab="both" bindtap="switchCurveTab">
+              <text class="curve-tab-icon">📊</text>
+              <text>叠加</text>
+            </view>
+          </view>
+
+          <!-- Canvas 曲线图 -->
+          <view class="curve-canvas-wrapper">
+            <canvas type="2d" id="envCurveCanvas" class="env-curve-canvas"></canvas>
+          </view>
+
+          <!-- 窨制区间图例 -->
+          <view class="curve-legend">
+            <view class="legend-item">
+              <view class="legend-color temp-color"></view>
+              <text>温度(℃)</text>
+            </view>
+            <view class="legend-item">
+              <view class="legend-color humidity-color"></view>
+              <text>湿度(%)</text>
+            </view>
+            <view class="legend-item" wx:if="{{traceData.workshopEnv.curveData.scentingRanges.length > 0}}">
+              <view class="legend-color scenting-color"></view>
+              <text>窨制区间</text>
+            </view>
+          </view>
+
+          <!-- 数据统计摘要 -->
+          <view class="curve-stats" wx:if="{{workshopCurveStats}}">
+            <view class="stat-card">
+              <text class="stat-label">{{activeCurveTab === 'humidity' ? '最低湿度' : '最低温度'}}</text>
+              <text class="stat-value">{{activeCurveTab === 'humidity' ? workshopCurveStats.humidityMin : workshopCurveStats.tempMin}}{{activeCurveTab === 'humidity' ? '%' : '℃'}}</text>
+            </view>
+            <view class="stat-card">
+              <text class="stat-label">{{activeCurveTab === 'humidity' ? '最高湿度' : '最高温度'}}</text>
+              <text class="stat-value">{{activeCurveTab === 'humidity' ? workshopCurveStats.humidityMax : workshopCurveStats.tempMax}}{{activeCurveTab === 'humidity' ? '%' : '℃'}}</text>
+            </view>
+            <view class="stat-card">
+              <text class="stat-label">{{activeCurveTab === 'humidity' ? '平均湿度' : '平均温度'}}</text>
+              <text class="stat-value">{{activeCurveTab === 'humidity' ? workshopCurveStats.humidityAvg : workshopCurveStats.tempAvg}}{{activeCurveTab === 'humidity' ? '%' : '℃'}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
     </view>
 
     <!-- ========== 模块5：绿色溯源（新增核心模块） ========== -->
