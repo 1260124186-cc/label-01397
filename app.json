@@ -4,6 +4,7 @@
     "pages/profile/profile",
     "pages/detail/detail",
     "pages/scanResult/scanResult",
+    "pages/reportProduct/reportProduct",
     "pages/batchList/batchList",
     "pages/greenTrace/greenTrace",
     "pages/brandStory/brandStory",

@@ -1,21 +1,19 @@
-/**
- * 桂花茶溯源小程序 - 扫码结果确认页
- * 功能：扫码后展示产品缩略信息，用户确认后进入详情页
- * 页面路径：pages/scanResult/scanResult
- */
-
 const mockData = require('../../utils/mockData.js');
+const antiCounterfeit = require('../../utils/antiCounterfeit.js');
 
 Page({
   data: {
     traceId: '',
-    productInfo: null,
+    scanType: '',
     loading: true,
-    scanType: ''
+    verifyResult: null,
+    showAlerts: false,
+    showHistory: false,
+    productInfo: null
   },
 
   onLoad: function(options) {
-    console.log('扫码结果页加载，参数：', options);
+    console.log('[防伪验真] 扫码结果页加载，参数：', options);
     
     const traceId = options.traceId;
     const scanType = options.scanType || 'qrCode';
@@ -25,7 +23,7 @@ Page({
         traceId: traceId,
         scanType: scanType
       });
-      this.loadProductInfo(traceId);
+      this.verifyProduct(traceId);
     } else {
       wx.showToast({
         title: '参数错误',
@@ -37,34 +35,45 @@ Page({
     }
   },
 
-  loadProductInfo: function(traceId) {
+  verifyProduct: async function(traceId) {
     const that = this;
     
     wx.showLoading({
-      title: '加载产品信息...',
+      title: '防伪验证中...',
       mask: true
     });
     
-    setTimeout(() => {
+    try {
+      const result = await antiCounterfeit.verifyProduct(traceId);
+      
       wx.hideLoading();
       
-      const data = mockData.getTraceData(traceId);
-      
-      if (data) {
+      if (result.success) {
+        const traceData = mockData.getTraceData(traceId);
         that.setData({
-          productInfo: data.basicInfo,
-          loading: false
+          verifyResult: result,
+          productInfo: traceData ? traceData.basicInfo : null,
+          loading: false,
+          showAlerts: result.abnormal && result.abnormal.isAbnormal
         });
       } else {
         wx.showToast({
-          title: '未找到产品信息',
-          icon: 'none'
+          title: result.error || '验证失败',
+          icon: 'none',
+          duration: 2000
         });
         setTimeout(() => {
           wx.navigateBack();
         }, 1500);
       }
-    }, 500);
+    } catch (error) {
+      wx.hideLoading();
+      console.error('[防伪验真] 验证出错:', error);
+      wx.showToast({
+        title: '验证失败，请重试',
+        icon: 'none'
+      });
+    }
   },
 
   confirmToDetail: function() {
@@ -93,5 +102,54 @@ Page({
     wx.navigateBack({
       delta: 1
     });
+  },
+
+  toggleAlerts: function() {
+    this.setData({
+      showAlerts: !this.data.showAlerts
+    });
+  },
+
+  toggleHistory: function() {
+    this.setData({
+      showHistory: !this.data.showHistory
+    });
+  },
+
+  goToReport: function() {
+    const traceId = this.data.traceId;
+    const productInfo = this.data.productInfo;
+    
+    wx.navigateTo({
+      url: `/pages/reportProduct/reportProduct?traceId=${traceId}&productName=${encodeURIComponent(productInfo ? productInfo.productName : '')}`,
+      success: function() {
+        console.log('跳转举报页成功');
+      },
+      fail: function(err) {
+        console.error('跳转举报页失败：', err);
+        wx.showToast({
+          title: '页面跳转失败',
+          icon: 'none'
+        });
+      }
+    });
+  },
+
+  getRiskLevelText: function(level) {
+    const map = {
+      'normal': '正常',
+      'warning': '警告',
+      'danger': '危险'
+    };
+    return map[level] || '未知';
+  },
+
+  getAuthenticityText: function(authenticity) {
+    const map = {
+      'genuine': '正品',
+      'suspicious': '存疑',
+      'fake': '仿冒'
+    };
+    return map[authenticity] || '未知';
   }
 });

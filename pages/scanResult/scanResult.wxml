@@ -1,66 +1,202 @@
-<!--
-  桂花茶溯源小程序 - 扫码结果确认页
-  功能：展示产品缩略信息，用户确认后进入详情页
--->
-
 <view class="page-container">
   
-  <!-- 加载状态 -->
   <view wx:if="{{loading}}" class="loading-container">
     <view class="loading-icon">🔍</view>
-    <view class="loading-text">正在识别产品信息...</view>
+    <view class="loading-text">正在进行防伪验证...</view>
   </view>
 
-  <!-- 产品信息展示 -->
   <view wx:else class="result-container">
     
-    <!-- 扫码成功图标 -->
-    <view class="success-icon-wrapper">
-      <view class="success-icon">✓</view>
-      <view class="scan-type-badge">{{scanType === 'barCode' ? '条形码' : '二维码'}}</view>
-    </view>
-
-    <!-- 产品卡片 -->
-    <view class="product-card">
-      <!-- 产品缩略图 -->
-      <view class="product-image-wrapper">
-        <image 
-          class="product-image" 
-          src="{{productInfo.thumbnail}}" 
-          mode="aspectFill"
-        />
+    <view class="verify-header {{verifyResult.scanType}}">
+      <view class="verify-icon-wrapper">
+        <view class="verify-icon {{verifyResult.authenticity}}">
+          <text wx:if="{{verifyResult.authenticity === 'genuine'}}">✓</text>
+          <text wx:elif="{{verifyResult.authenticity === 'suspicious'}}">!</text>
+          <text wx:else>✗</text>
+        </view>
+        <view class="scan-type-badge">{{scanType === 'barCode' ? '条形码' : '二维码'}}</view>
       </view>
-      
-      <!-- 产品信息 -->
-      <view class="product-info">
-        <view class="product-name">{{productInfo.productName}}</view>
-        <view class="product-spec">规格：{{productInfo.specification}}</view>
-        <view class="product-trace-id">溯源ID：{{productInfo.traceId}}</view>
-        <view class="product-batch">批次号：{{productInfo.batchNo}}</view>
-        <view class="product-date">出厂日期：{{productInfo.productionTime}}</view>
+      <view class="verify-title">{{verifyResult.title}}</view>
+      <view class="verify-message">{{verifyResult.message}}</view>
+      <view class="verify-tags">
+        <view class="tag tag-{{verifyResult.scanType}}">
+          {{verifyResult.scanType === 'first' ? '首次验证' : '重复验证'}}
+        </view>
+        <view class="tag tag-auth tag-{{verifyResult.authenticity}}">
+          <text wx:if="{{verifyResult.authenticity === 'genuine'}}">正品</text>
+          <text wx:elif="{{verifyResult.authenticity === 'suspicious'}}">存疑</text>
+          <text wx:else>仿冒</text>
+        </view>
+        <view wx:if="{{verifyResult.abnormal.riskLevel !== 'normal'}}" class="tag tag-risk tag-{{verifyResult.abnormal.riskLevel}}">
+          <text wx:if="{{verifyResult.abnormal.riskLevel === 'warning'}}">⚠️ 警告</text>
+          <text wx:elif="{{verifyResult.abnormal.riskLevel === 'danger'}}">🔴 危险</text>
+        </view>
       </view>
     </view>
 
-    <!-- 提示信息 -->
-    <view class="tip-section">
-      <view class="tip-icon">📋</view>
-      <view class="tip-text">确认查看该产品的完整溯源信息？</view>
+    <view wx:if="{{verifyResult.abnormal.isAbnormal}}" class="alert-section">
+      <view class="section-header" bindtap="toggleAlerts">
+        <view class="section-title">
+          <text class="section-icon">🚨</text>
+          <text>安全告警 ({{verifyResult.abnormal.alerts.length}})</text>
+        </view>
+        <text class="toggle-icon">{{showAlerts ? '▲' : '▼'}}</text>
+      </view>
+      <view wx:if="{{showAlerts}}" class="alert-list">
+        <block wx:for="{{verifyResult.abnormal.alerts}}" wx:key="type">
+          <view class="alert-item alert-{{item.level}}">
+            <view class="alert-icon">
+              <text wx:if="{{item.level === 'danger'}}">🔴</text>
+              <text wx:elif="{{item.level === 'warning'}}">🟡</text>
+              <text wx:else>🔵</text>
+            </view>
+            <view class="alert-content">
+              <view class="alert-title">{{item.title}}</view>
+              <view class="alert-message">{{item.message}}</view>
+            </view>
+          </view>
+        </block>
+      </view>
     </view>
 
-    <!-- 操作按钮 -->
-    <view class="action-buttons">
-      <button class="btn-confirm" bindtap="confirmToDetail">
-        查看溯源详情
-      </button>
-      <button class="btn-cancel" bindtap="cancelAndBack">
-        取消
-      </button>
+    <view class="card factory-info-card">
+      <view class="card-header">
+        <text class="card-icon">🏭</text>
+        <text class="card-title">出厂信息</text>
+      </view>
+      <view class="card-body">
+        <view class="info-row">
+          <text class="info-label">产品名称</text>
+          <text class="info-value">{{verifyResult.factoryInfo.productName}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">规格</text>
+          <text class="info-value">{{verifyResult.factoryInfo.specification}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">批次号</text>
+          <text class="info-value highlight">{{verifyResult.factoryInfo.batchNo}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">出厂日期</text>
+          <text class="info-value">{{verifyResult.factoryInfo.productionTime}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">采摘时间</text>
+          <text class="info-value">{{verifyResult.factoryInfo.pickTime}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">桂花品种</text>
+          <text class="info-value">{{verifyResult.factoryInfo.variety}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">产地</text>
+          <text class="info-value">{{verifyResult.factoryInfo.origin}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">检测报告</text>
+          <view class="info-value">
+            <text wx:if="{{verifyResult.factoryInfo.hasAbnormal}}" class="status-bad">异常</text>
+            <text wx:else class="status-good">正常</text>
+            <text class="report-no">{{verifyResult.factoryInfo.testReportNo}}</text>
+          </view>
+        </view>
+      </view>
     </view>
 
-    <!-- 重新扫码 -->
-    <view class="rescan-section" bindtap="rescan">
-      <text class="rescan-icon">📷</text>
-      <text class="rescan-text">重新扫码</text>
+    <view class="card scan-info-card">
+      <view class="card-header">
+        <text class="card-icon">📊</text>
+        <text class="card-title">扫码查询信息</text>
+      </view>
+      <view class="card-body">
+        <view class="info-row">
+          <text class="info-label">本次扫码时间</text>
+          <text class="info-value">{{verifyResult.scanInfo.currentScan.time}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">本次扫码地区</text>
+          <text class="info-value">{{verifyResult.scanInfo.currentScan.location}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">累计查询次数</text>
+          <text class="info-value highlight-big">{{verifyResult.scanInfo.totalQueryCount}} 次</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">首次查询时间</text>
+          <text class="info-value">{{verifyResult.scanInfo.firstScanTime}}</text>
+        </view>
+        <view wx:if="{{verifyResult.scanType === 'repeat'}}" class="info-row">
+          <text class="info-label">首次查询地区</text>
+          <text class="info-value">{{verifyResult.scanInfo.firstScanLocation}}</text>
+        </view>
+        <view wx:if="{{verifyResult.scanType === 'repeat'}}" class="info-row">
+          <text class="info-label">最近查询时间</text>
+          <text class="info-value">{{verifyResult.scanInfo.lastScanTime}}</text>
+        </view>
+        <view wx:if="{{verifyResult.scanType === 'repeat'}}" class="info-row">
+          <text class="info-label">最近查询地区</text>
+          <text class="info-value">{{verifyResult.scanInfo.lastScanLocation}}</text>
+        </view>
+
+        <view wx:if="{{verifyResult.scanType === 'repeat' && verifyResult.scanInfo.queryLocations.length > 0}}" class="locations-row">
+          <text class="info-label">查询地区分布</text>
+          <view class="location-tags">
+            <block wx:for="{{verifyResult.scanInfo.queryLocations}}" wx:key="*this">
+              <text class="location-tag">{{item}}</text>
+            </block>
+          </view>
+        </view>
+
+        <view wx:if="{{verifyResult.scanType === 'repeat' && verifyResult.scanInfo.recentRecords && verifyResult.scanInfo.recentRecords.length > 0}}" class="history-toggle" bindtap="toggleHistory">
+          <text>查看最近查询记录</text>
+          <text class="toggle-icon">{{showHistory ? '▲' : '▼'}}</text>
+        </view>
+
+        <view wx:if="{{showHistory && verifyResult.scanType === 'repeat' && verifyResult.scanInfo.recentRecords}}" class="history-list">
+          <block wx:for="{{verifyResult.scanInfo.recentRecords}}" wx:key="time">
+            <view class="history-item">
+              <view class="history-dot {{item.type}}"></view>
+              <view class="history-info">
+                <text class="history-time">{{item.time}}</text>
+                <text class="history-location">{{item.location}}</text>
+              </view>
+              <view class="history-type">
+                <text wx:if="{{item.type === 'first'}}">首次</text>
+                <text wx:else>重复</text>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view class="card action-card">
+      <button class="btn btn-primary" bindtap="confirmToDetail">
+        查看完整溯源信息
+      </button>
+      <button class="btn btn-danger" bindtap="goToReport">
+        🚨 一键举报可疑产品
+      </button>
+      <view class="secondary-actions">
+        <view class="secondary-btn" bindtap="rescan">
+          <text class="btn-icon">📷</text>
+          <text>重新扫码</text>
+        </view>
+        <view class="secondary-btn" bindtap="cancelAndBack">
+          <text class="btn-icon">←</text>
+          <text>返回首页</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="security-tips">
+      <view class="tips-title">🛡️ 防伪小贴士</view>
+      <view class="tips-list">
+        <view class="tip-item">• 首次扫码显示"正品首次验证"最为可靠</view>
+        <view class="tip-item">• 如发现多次异地扫码，请谨慎购买</view>
+        <view class="tip-item">• 购买渠道请认准官方授权店铺</view>
+      </view>
     </view>
 
   </view>

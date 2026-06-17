@@ -1,0 +1,142 @@
+<view class="page-container">
+
+  <view wx:if="{{showSuccess}}" class="success-modal">
+    <view class="success-content">
+      <view class="success-icon">✓</view>
+      <view class="success-title">举报提交成功</view>
+      <view class="success-message">感谢您的反馈，我们将在1-3个工作日内核实处理</view>
+      
+      <view wx:if="{{submittedReport}}" class="report-info">
+        <view class="info-row">
+          <text class="label">举报编号</text>
+          <text class="value">{{submittedReport.id}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">提交时间</text>
+          <text class="value">{{submittedReport.createdAtStr}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">举报类型</text>
+          <text class="value">{{submittedReport.reportTypeLabel}}</text>
+        </view>
+      </view>
+
+      <button class="btn-success" bindtap="closeSuccess">我知道了</button>
+    </view>
+  </view>
+
+  <view wx:else class="form-container">
+
+    <view class="product-info-bar">
+      <view class="product-icon">📦</view>
+      <view class="product-detail">
+        <view class="product-name">{{productName || '未知产品'}}</view>
+        <view class="product-trace">溯源ID: {{traceId}}</view>
+      </view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">
+        <text class="required">*</text>
+        举报类型
+      </view>
+      <view class="type-grid">
+        <block wx:for="{{reportTypes}}" wx:key="key">
+          <view 
+            class="type-item {{selectedType === item.key ? 'selected' : ''}}"
+            data-key="{{item.key}}"
+            bindtap="selectReportType"
+          >
+            <view class="type-icon">{{item.icon}}</view>
+            <view class="type-label">{{item.label}}</view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">
+        <text class="required">*</text>
+        问题描述
+      </view>
+      <view class="textarea-wrapper">
+        <textarea
+          class="description-input"
+          placeholder="请详细描述您遇到的问题，如：购买渠道、产品外观异常、使用感受等..."
+          value="{{description}}"
+          bindinput="onDescriptionInput"
+          maxlength="500"
+          auto-height
+        />
+        <view class="char-count">{{description.length}}/500</view>
+      </view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">
+        <text>上传照片</text>
+        <text class="photo-hint">（选填，最多6张）</text>
+      </view>
+      <view class="photo-grid">
+        <block wx:for="{{photos}}" wx:key="path">
+          <view class="photo-item">
+            <image 
+              class="photo" 
+              src="{{item.path}}" 
+              mode="aspectFill"
+              data-index="{{index}}"
+              bindtap="previewImage"
+            />
+            <view class="photo-remove" data-index="{{index}}" catchtap="removeImage">×</view>
+          </view>
+        </block>
+        <view wx:if="{{photos.length < maxPhotos}}" class="photo-add-area">
+          <view class="add-btn" bindtap="chooseImage">
+            <text class="add-icon">+</text>
+            <text class="add-text">相册</text>
+          </view>
+          <view class="add-btn camera-btn" bindtap="takePhoto">
+            <text class="add-icon">📷</text>
+            <text class="add-text">拍照</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">
+        <text>联系方式</text>
+        <text class="contact-hint">（选填，便于我们联系您反馈处理结果）</text>
+      </view>
+      <input
+        class="contact-input"
+        placeholder="请输入手机号或微信号"
+        value="{{contact}}"
+        bindinput="onContactInput"
+        maxlength="50"
+      />
+    </view>
+
+    <view class="tips-section">
+      <view class="tips-title">💡 温馨提示</view>
+      <view class="tips-list">
+        <view class="tip-item">• 请如实填写举报信息，恶意举报将承担相应责任</view>
+        <view class="tip-item">• 上传清晰的产品照片有助于我们更快核实问题</view>
+        <view class="tip-item">• 我们将严格保护您的个人隐私信息</view>
+      </view>
+    </view>
+
+    <view class="action-buttons">
+      <button class="btn-submit" bindtap="submitReport" disabled="{{submitting}}">
+        <text wx:if="{{submitting}}">提交中...</text>
+        <text wx:else>提交举报</text>
+      </button>
+      <view class="secondary-btns">
+        <view class="btn-secondary" bindtap="clearForm">清空内容</view>
+        <view class="btn-secondary" bindtap="goBack">返回</view>
+      </view>
+    </view>
+
+  </view>
+
+</view>
