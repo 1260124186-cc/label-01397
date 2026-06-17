@@ -1356,6 +1356,201 @@
               </view>
             </view>
           </view>
+
+          <!-- ============ 互动功能 1：冲泡计时器 ============ -->
+          <view class="interactive-section" wx:if="{{brewInteractiveConfig}}">
+            <view class="section-sub-title">
+              <text class="sub-icon">⏱️</text>
+              <text>冲泡计时器</text>
+            </view>
+
+            <view class="timer-container">
+              <view class="water-temp-selector">
+                <view 
+                  wx:for="{{brewInteractiveConfig.waterTempLevels}}" 
+                  wx:key="key"
+                  class="temp-item {{selectedWaterTemp === item.key ? 'active' : ''}}"
+                  data-temp="{{item.key}}"
+                  bindtap="selectWaterTemp"
+                >
+                  <text class="temp-icon">{{item.icon}}</text>
+                  <text class="temp-label">{{item.label}}</text>
+                  <text class="temp-desc">{{item.desc}}</text>
+                </view>
+              </view>
+
+              <view class="timer-display">
+                <view class="timer-circle">
+                  <view class="timer-progress" style="--progress: {{timerProgress}}%;"></view>
+                  <view class="timer-content">
+                    <text class="timer-text">{{timerText}}</text>
+                    <text class="timer-label">{{timerRunning ? '冲泡中...' : '准备冲泡'}}</text>
+                  </view>
+                </view>
+              </view>
+
+              <view class="timer-controls">
+                <view class="control-btn reset-btn" bindtap="resetBrewTimer">
+                  <text>🔄 重置</text>
+                </view>
+                <view class="control-btn primary-btn {{timerRunning ? 'pause' : 'start'}}" bindtap="toggleBrewTimer">
+                  <text wx:if="{{!timerRunning}}">▶️ 开始 2分钟</text>
+                  <text wx:else>⏸️ 暂停</text>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <!-- ============ 互动功能 2：分步冲泡向导 ============ -->
+          <view class="interactive-section" wx:if="{{brewInteractiveConfig}}">
+            <view class="section-sub-title">
+              <text class="sub-icon">📖</text>
+              <text>分步冲泡向导</text>
+            </view>
+
+            <view class="brew-guide-container">
+              <view class="brew-step-nav">
+                <view 
+                  wx:for="{{brewInteractiveConfig.brewSteps}}" 
+                  wx:key="step"
+                  class="step-nav-item {{activeBrewStep === index ? 'active' : ''}} {{activeBrewStep > index ? 'completed' : ''}}"
+                  data-index="{{index}}"
+                  bindtap="selectBrewStep"
+                >
+                  <view class="step-nav-dot">
+                    <text wx:if="{{activeBrewStep > index}}">✓</text>
+                    <text wx:else>{{item.step}}</text>
+                  </view>
+                  <text class="step-nav-name">{{item.name}}</text>
+                  <view class="step-nav-line" wx:if="{{index < brewInteractiveConfig.brewSteps.length - 1}}"></view>
+                </view>
+              </view>
+
+              <view class="brew-step-detail">
+                <block wx:if="{{brewInteractiveConfig.brewSteps[activeBrewStep]}}">
+                  <view class="step-detail-header">
+                    <view class="step-detail-icon">{{brewInteractiveConfig.brewSteps[activeBrewStep].icon}}</view>
+                    <view class="step-detail-info">
+                      <text class="step-detail-title">{{brewInteractiveConfig.brewSteps[activeBrewStep].title}}</text>
+                      <text class="step-detail-desc">{{brewInteractiveConfig.brewSteps[activeBrewStep].desc}}</text>
+                    </view>
+                  </view>
+
+                  <view class="step-detail-content">
+                    <text class="step-detail-text">{{brewInteractiveConfig.brewSteps[activeBrewStep].detail}}</text>
+                  </view>
+
+                  <view class="step-detail-tip">
+                    <text class="tip-bulb">💡</text>
+                    <text class="tip-content">{{brewInteractiveConfig.brewSteps[activeBrewStep].tip}}</text>
+                  </view>
+
+                  <view class="step-timer-row" wx:if="{{brewInteractiveConfig.brewSteps[activeBrewStep].duration > 0}}">
+                    <view class="step-timer-display">
+                      <text class="step-timer-label">本步计时</text>
+                      <text class="step-timer-value">{{brewStepTimerText}}</text>
+                    </view>
+                    <view class="step-timer-controls">
+                      <view class="mini-btn" bindtap="resetBrewStepTimer">
+                        <text>🔄</text>
+                      </view>
+                      <view class="mini-btn primary {{brewStepTimerRunning ? '' : 'start'}}" bindtap="toggleBrewStepTimer">
+                        <text wx:if="{{!brewStepTimerRunning}}">▶️</text>
+                        <text wx:else>⏸️</text>
+                      </view>
+                    </view>
+                  </view>
+                </block>
+              </view>
+
+              <view class="brew-guide-controls">
+                <view class="guide-btn prev-btn {{activeBrewStep === 0 ? 'disabled' : ''}}" bindtap="prevBrewStep">
+                  <text>⬅️ 上一步</text>
+                </view>
+                <view class="guide-btn restart-btn" bindtap="restartBrewGuide">
+                  <text>🔄 重新开始</text>
+                </view>
+                <view class="guide-btn next-btn {{activeBrewStep === brewInteractiveConfig.brewSteps.length - 1 ? 'disabled' : ''}}" bindtap="nextBrewStep">
+                  <text>下一步 ➡️</text>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <!-- ============ 互动功能 3：用量计算器 ============ -->
+          <view class="interactive-section" wx:if="{{brewInteractiveConfig && dosageResult}}">
+            <view class="section-sub-title">
+              <text class="sub-icon">⚖️</text>
+              <text>用量计算器</text>
+            </view>
+
+            <view class="dosage-container">
+              <view class="dosage-row">
+                <text class="dosage-label">饮用人数</text>
+                <view class="people-selector">
+                  <view class="people-btn" bindtap="decreasePeople">
+                    <text>−</text>
+                  </view>
+                  <view class="people-count">
+                    <text class="count-number">{{dosagePeople}}</text>
+                    <text class="count-unit">人</text>
+                  </view>
+                  <view class="people-btn" bindtap="increasePeople">
+                    <text>+</text>
+                  </view>
+                </view>
+              </view>
+
+              <view class="dosage-row">
+                <text class="dosage-label">口味浓淡</text>
+                <view class="taste-selector">
+                  <view 
+                    class="taste-item {{dosageTaste === 'light' ? 'active' : ''}}"
+                    data-taste="light"
+                    bindtap="selectTaste"
+                  >
+                    <text class="taste-icon">🌿</text>
+                    <text class="taste-name">清淡</text>
+                  </view>
+                  <view 
+                    class="taste-item {{dosageTaste === 'medium' ? 'active' : ''}}"
+                    data-taste="medium"
+                    bindtap="selectTaste"
+                  >
+                    <text class="taste-icon">🍵</text>
+                    <text class="taste-name">适中</text>
+                  </view>
+                  <view 
+                    class="taste-item {{dosageTaste === 'strong' ? 'active' : ''}}"
+                    data-taste="strong"
+                    bindtap="selectTaste"
+                  >
+                    <text class="taste-icon">☕</text>
+                    <text class="taste-name">浓郁</text>
+                  </view>
+                </view>
+              </view>
+
+              <view class="dosage-result">
+                <view class="result-header">
+                  <text class="result-title">推荐投茶量</text>
+                </view>
+                <view class="result-body">
+                  <view class="result-main">
+                    <text class="result-grams">{{dosageResult.grams}}</text>
+                    <text class="result-unit">克</text>
+                  </view>
+                  <view class="result-extra">
+                    <text class="extra-info">约 {{dosageResult.teaspoon}} 茶匙</text>
+                  </view>
+                </view>
+                <view class="result-footer">
+                  <text class="result-suggestion">{{dosageResult.suggestion}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+
         </view>
       </view>
     </view>

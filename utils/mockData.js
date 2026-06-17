@@ -2109,6 +2109,98 @@ function getAllVarieties() {
   });
 }
 
+// ==================== 冲泡互动配置 ====================
+
+const BREWING_INTERACTIVE_CONFIG = {
+  waterTempLevels: [
+    { key: '80', label: '80℃', desc: '清香淡雅', icon: '🌿' },
+    { key: '85', label: '85℃', desc: '花香馥郁', icon: '🌸', default: true },
+    { key: '90', label: '90℃', desc: '醇厚浓郁', icon: '🍵' },
+    { key: '95', label: '95℃', desc: '茶气强劲', icon: '🔥' }
+  ],
+
+  brewSteps: [
+    {
+      step: 1,
+      name: '温杯',
+      icon: '🫖',
+      title: '温杯烫盏',
+      desc: '用热水将茶具温热，提升茶香散发效果',
+      detail: '1. 将适量热水倒入盖碗或玻璃杯中\n2. 轻轻旋转使杯壁均匀受热\n3. 将温杯水倒掉',
+      duration: 30,
+      tip: '温杯能让茶香更好地释放'
+    },
+    {
+      step: 2,
+      name: '投茶',
+      icon: '🍃',
+      title: '投茶入盏',
+      desc: '根据人数和口味，投入适量桂花茶',
+      detail: '1. 用量勺取适量干茶\n2. 轻轻拨入温好的茶具中\n3. 可轻轻摇晃闻干香',
+      duration: 20,
+      tip: '推荐用量：每杯3-5克'
+    },
+    {
+      step: 3,
+      name: '注水',
+      icon: '💧',
+      title: '注水冲泡',
+      desc: '沿杯壁缓缓注入适宜温度的热水',
+      detail: '1. 水温控制在85℃-90℃为佳\n2. 沿杯壁顺时针注水\n3. 注水量约七分满',
+      duration: 15,
+      tip: '避免直接冲在茶叶上，保持芽叶完整'
+    },
+    {
+      step: 4,
+      name: '出汤',
+      icon: '🍵',
+      title: '出汤品茗',
+      desc: '浸泡2分钟后即可出汤品尝',
+      detail: '1. 首泡浸泡约2分钟\n2. 后续每泡延长30秒\n3. 可连续冲泡4-5次',
+      duration: 120,
+      tip: '桂花茶香气浓郁，首泡即可闻到花香'
+    }
+  ],
+
+  dosageConfig: {
+    basePerCup: 3,
+    tasteMultiplier: {
+      light: 0.7,
+      medium: 1.0,
+      strong: 1.4
+    },
+    tasteLabels: {
+      light: '清淡',
+      medium: '适中',
+      strong: '浓郁'
+    },
+    maxPeople: 10,
+    minPeople: 1
+  }
+};
+
+function getBrewingInteractiveConfig() {
+  return BREWING_INTERACTIVE_CONFIG;
+}
+
+function calculateTeaDosage(people, taste) {
+  var config = BREWING_INTERACTIVE_CONFIG.dosageConfig;
+  var p = Math.max(config.minPeople, Math.min(config.maxPeople, parseInt(people) || 1));
+  var t = taste || 'medium';
+  var multiplier = config.tasteMultiplier[t] || 1.0;
+  var grams = Math.round(p * config.basePerCup * multiplier * 10) / 10;
+  return {
+    people: p,
+    taste: t,
+    tasteLabel: config.tasteLabels[t],
+    grams: grams,
+    teaspoon: Math.round(grams / 3 * 10) / 10,
+    suggestion: grams <= 5 ? '少量精品，品花香为主' :
+                grams <= 15 ? '适量冲泡，适合日常饮用' :
+                '多人共享，茶香四溢'
+  };
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -2126,5 +2218,7 @@ module.exports = {
   getGreenPointsConfig,
   verifyCertificate,
   getOsmanthusVarietyConfig,
-  getAllVarieties
+  getAllVarieties,
+  getBrewingInteractiveConfig,
+  calculateTeaDosage
 };

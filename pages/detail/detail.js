@@ -113,7 +113,31 @@ Page({
       digital: '💾'
     },
     // 地图图例
-    showMapLegend: true
+    showMapLegend: true,
+
+    // ========== 冲泡互动功能 ==========
+    // 冲泡互动配置
+    brewInteractiveConfig: null,
+
+    // --- 冲泡计时器 ---
+    selectedWaterTemp: '85',
+    timerRunning: false,
+    timerSeconds: 120,
+    timerTotalSeconds: 120,
+    timerProgress: 0,
+    timerText: '02:00',
+
+    // --- 分步冲泡向导 ---
+    activeBrewStep: 0,
+    brewStepTimerRunning: false,
+    brewStepSeconds: 0,
+    brewStepTotalSeconds: 0,
+    brewStepTimerText: '00:00',
+
+    // --- 用量计算器 ---
+    dosagePeople: 1,
+    dosageTaste: 'medium',
+    dosageResult: null
   },
 
   /**
@@ -187,6 +211,19 @@ Page({
         // 获取品种样式配置（安全判断，避免 osmanthusInfo 缺失）
         const variety = (data.osmanthusInfo && data.osmanthusInfo.variety) || '金桂';
         const varietyStyle = mockData.getOsmanthusVarietyConfig(variety);
+
+        // 冲泡互动配置
+        const brewInteractiveConfig = mockData.getBrewingInteractiveConfig();
+        
+        // 初始化用量计算器结果
+        const initialDosageResult = mockData.calculateTeaDosage(1, 'medium');
+        
+        // 初始化第一步计时
+        const firstBrewStep = brewInteractiveConfig.brewSteps[0];
+        const initialBrewStepSeconds = firstBrewStep.duration;
+        const m = Math.floor(initialBrewStepSeconds / 60);
+        const s = initialBrewStepSeconds % 60;
+        const initialBrewStepTimerText = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
         
         // 初始化模块收起状态（产地模块默认收起）
         moduleCollapsed.location = true;
@@ -198,7 +235,12 @@ Page({
           moduleCollapsed: moduleCollapsed,
           lazyImageMap: lazyImageMap,
           testChartData: testChartData,
-          varietyStyle: varietyStyle
+          varietyStyle: varietyStyle,
+          brewInteractiveConfig: brewInteractiveConfig,
+          dosageResult: initialDosageResult,
+          brewStepSeconds: initialBrewStepSeconds,
+          brewStepTotalSeconds: initialBrewStepSeconds,
+          brewStepTimerText: initialBrewStepTimerText
         });
         
         // 设置导航栏标题
@@ -1157,12 +1199,402 @@ Page({
   },
 
   /**
+   * ==================== 冲泡计时器功能 ====================
+   */
+
+  /**
+   * 选择水温档位
+   */
+  selectWaterTemp: function(e) {
+    const temp = e.currentTarget.dataset.temp;
+    if (this.data.timerRunning) {
+      wx.showToast({
+        title: '计时中无法切换水温',
+        icon: 'none',
+        duration: 1500
+      });
+      return;
+    }
+    this.setData({ selectedWaterTemp: temp });
+  },
+
+  /**
+   * 开始/暂停冲泡计时器
+   */
+  toggleBrewTimer: function() {
+    if (this.data.timerRunning) {
+      this.pauseBrewTimer();
+    } else {
+      this.startBrewTimer();
+    }
+  },
+
+  /**
+   * 开始计时
+   */
+  startBrewTimer: function() {
+    const that = this;
+    if (this.data.timerSeconds <= 0) {
+      this.resetBrewTimer();
+    }
+
+    this.setData({ timerRunning: true });
+
+    if (this.brewTimer) {
+      clearInterval(this.brewTimer);
+    }
+
+    this.brewTimer = setInterval(function() {
+      const seconds = that.data.timerSeconds - 1;
+      const total = that.data.timerTotalSeconds;
+      const progress = Math.round((total - seconds) / total * 100);
+      const timeText = that.formatTime(seconds);
+
+      if (seconds <= 0) {
+        that.stopBrewTimer();
+        that.setData({
+          timerSeconds: 0,
+          timerProgress: 100,
+          timerText: '00:00'
+        });
+        that.onBrewTimerComplete();
+      } else {
+        that.setData({
+          timerSeconds: seconds,
+          timerProgress: progress,
+          timerText: timeText
+        });
+      }
+    }, 1000);
+  },
+
+  /**
+   * 暂停计时
+   */
+  pauseBrewTimer: function() {
+    if (this.brewTimer) {
+      clearInterval(this.brewTimer);
+      this.brewTimer = null;
+    }
+    this.setData({ timerRunning: false });
+  },
+
+  /**
+   * 停止计时
+   */
+  stopBrewTimer: function() {
+    if (this.brewTimer) {
+      clearInterval(this.brewTimer);
+      this.brewTimer = null;
+    }
+    this.setData({ timerRunning: false });
+  },
+
+  /**
+   * 重置计时器
+   */
+  resetBrewTimer: function() {
+    this.stopBrewTimer();
+    this.setData({
+      timerSeconds: 120,
+      timerTotalSeconds: 120,
+      timerProgress: 0,
+      timerText: '02:00'
+    });
+  },
+
+  /**
+   * 计时完成提醒
+   */
+  onBrewTimerComplete: function() {
+    wx.vibrateLong({
+      success: function() {},
+      fail: function() {}
+    });
+
+    wx.showToast({
+      title: '冲泡完成！',
+      icon: 'success',
+      duration: 3000
+    });
+
+    wx.showModal({
+      title: '☕ 冲泡完成',
+      content: '2分钟冲泡时间已到，现在可以品尝香浓的桂花茶了！',
+      showCancel: false,
+      confirmText: '好的'
+    });
+  },
+
+  /**
+   * 格式化秒数为 mm:ss
+   */
+  formatTime: function(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+  },
+
+  /**
+   * ==================== 分步冲泡向导功能 ====================
+   */
+
+  /**
+   * 选择冲泡步骤
+   */
+  selectBrewStep: function(e) {
+    const index = e.currentTarget.dataset.index;
+    if (this.data.brewStepTimerRunning) {
+      this.stopBrewStepTimer();
+    }
+    const steps = this.data.brewInteractiveConfig.brewSteps;
+    const step = steps[index];
+    this.setData({
+      activeBrewStep: index,
+      brewStepSeconds: step.duration,
+      brewStepTotalSeconds: step.duration,
+      brewStepTimerText: this.formatTime(step.duration)
+    });
+  },
+
+  /**
+   * 上一步
+   */
+  prevBrewStep: function() {
+    if (this.data.brewStepTimerRunning) {
+      this.stopBrewStepTimer();
+    }
+    const current = this.data.activeBrewStep;
+    if (current > 0) {
+      const steps = this.data.brewInteractiveConfig.brewSteps;
+      const step = steps[current - 1];
+      this.setData({
+        activeBrewStep: current - 1,
+        brewStepSeconds: step.duration,
+        brewStepTotalSeconds: step.duration,
+        brewStepTimerText: this.formatTime(step.duration)
+      });
+    }
+  },
+
+  /**
+   * 下一步
+   */
+  nextBrewStep: function() {
+    if (this.data.brewStepTimerRunning) {
+      this.stopBrewStepTimer();
+    }
+    const steps = this.data.brewInteractiveConfig.brewSteps;
+    const current = this.data.activeBrewStep;
+    if (current < steps.length - 1) {
+      const step = steps[current + 1];
+      this.setData({
+        activeBrewStep: current + 1,
+        brewStepSeconds: step.duration,
+        brewStepTotalSeconds: step.duration,
+        brewStepTimerText: this.formatTime(step.duration)
+      });
+    } else {
+      wx.showToast({
+        title: '已是最后一步',
+        icon: 'none',
+        duration: 1500
+      });
+    }
+  },
+
+  /**
+   * 开始/暂停当前步骤计时
+   */
+  toggleBrewStepTimer: function() {
+    if (this.data.brewStepTimerRunning) {
+      this.stopBrewStepTimer();
+    } else {
+      this.startBrewStepTimer();
+    }
+  },
+
+  /**
+   * 开始当前步骤计时
+   */
+  startBrewStepTimer: function() {
+    const that = this;
+    const steps = this.data.brewInteractiveConfig.brewSteps;
+    const currentStep = steps[this.data.activeBrewStep];
+    const duration = currentStep.duration;
+
+    if (this.data.brewStepSeconds <= 0) {
+      this.setData({
+        brewStepSeconds: duration,
+        brewStepTotalSeconds: duration,
+        brewStepTimerText: this.formatTime(duration)
+      });
+    }
+
+    this.setData({ brewStepTimerRunning: true });
+
+    if (this.brewStepTimer) {
+      clearInterval(this.brewStepTimer);
+    }
+
+    this.brewStepTimer = setInterval(function() {
+      const seconds = that.data.brewStepSeconds - 1;
+      const timeText = that.formatTime(seconds);
+      if (seconds <= 0) {
+        that.stopBrewStepTimer();
+        that.setData({ brewStepSeconds: 0, brewStepTimerText: '00:00' });
+        that.onBrewStepComplete();
+      } else {
+        that.setData({ brewStepSeconds: seconds, brewStepTimerText: timeText });
+      }
+    }, 1000);
+  },
+
+  /**
+   * 停止当前步骤计时
+   */
+  stopBrewStepTimer: function() {
+    if (this.brewStepTimer) {
+      clearInterval(this.brewStepTimer);
+      this.brewStepTimer = null;
+    }
+    this.setData({ brewStepTimerRunning: false });
+  },
+
+  /**
+   * 重置当前步骤计时
+   */
+  resetBrewStepTimer: function() {
+    this.stopBrewStepTimer();
+    const steps = this.data.brewInteractiveConfig.brewSteps;
+    const currentStep = steps[this.data.activeBrewStep];
+    const duration = currentStep.duration;
+    this.setData({
+      brewStepSeconds: duration,
+      brewStepTotalSeconds: duration,
+      brewStepTimerText: this.formatTime(duration)
+    });
+  },
+
+  /**
+   * 当前步骤完成
+   */
+  onBrewStepComplete: function() {
+    const that = this;
+    const steps = this.data.brewInteractiveConfig.brewSteps;
+    const current = this.data.activeBrewStep;
+
+    wx.vibrateShort({
+      success: function() {},
+      fail: function() {}
+    });
+
+    wx.showToast({
+      title: steps[current].name + '完成！',
+      icon: 'success',
+      duration: 1500
+    });
+
+    if (current < steps.length - 1) {
+      wx.showModal({
+        title: '✅ ' + steps[current].name + '完成',
+        content: '是否进行下一步：' + steps[current + 1].name + '？',
+        confirmText: '下一步',
+        cancelText: '留在本步',
+        success: function(res) {
+          if (res.confirm) {
+            that.nextBrewStep();
+          }
+        }
+      });
+    } else {
+      wx.showModal({
+        title: '🎉 冲泡完成',
+        content: '所有冲泡步骤已完成，祝您品茶愉快！',
+        showCancel: false,
+        confirmText: '好的'
+      });
+    }
+  },
+
+  /**
+   * 重新开始冲泡向导
+   */
+  restartBrewGuide: function() {
+    this.stopBrewStepTimer();
+    const firstStep = this.data.brewInteractiveConfig.brewSteps[0];
+    const duration = firstStep.duration;
+    this.setData({
+      activeBrewStep: 0,
+      brewStepSeconds: duration,
+      brewStepTotalSeconds: duration,
+      brewStepTimerText: this.formatTime(duration)
+    });
+  },
+
+  /**
+   * ==================== 用量计算器功能 ====================
+   */
+
+  /**
+   * 减少人数
+   */
+  decreasePeople: function() {
+    const min = this.data.brewInteractiveConfig.dosageConfig.minPeople;
+    const current = this.data.dosagePeople;
+    if (current > min) {
+      const newPeople = current - 1;
+      const result = mockData.calculateTeaDosage(newPeople, this.data.dosageTaste);
+      this.setData({
+        dosagePeople: newPeople,
+        dosageResult: result
+      });
+    }
+  },
+
+  /**
+   * 增加人数
+   */
+  increasePeople: function() {
+    const max = this.data.brewInteractiveConfig.dosageConfig.maxPeople;
+    const current = this.data.dosagePeople;
+    if (current < max) {
+      const newPeople = current + 1;
+      const result = mockData.calculateTeaDosage(newPeople, this.data.dosageTaste);
+      this.setData({
+        dosagePeople: newPeople,
+        dosageResult: result
+      });
+    }
+  },
+
+  /**
+   * 选择口味浓淡
+   */
+  selectTaste: function(e) {
+    const taste = e.currentTarget.dataset.taste;
+    const result = mockData.calculateTeaDosage(this.data.dosagePeople, taste);
+    this.setData({
+      dosageTaste: taste,
+      dosageResult: result
+    });
+  },
+
+  /**
    * 生命周期函数 - 页面卸载
    */
   onUnload: function() {
     if (this.timelineTimer) {
       clearInterval(this.timelineTimer);
       this.timelineTimer = null;
+    }
+    if (this.brewTimer) {
+      clearInterval(this.brewTimer);
+      this.brewTimer = null;
+    }
+    if (this.brewStepTimer) {
+      clearInterval(this.brewStepTimer);
+      this.brewStepTimer = null;
     }
   }
 });

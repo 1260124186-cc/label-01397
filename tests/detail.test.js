@@ -59,6 +59,43 @@ jest.mock('../utils/mockData.js', () => ({
   }),
   getAllVarieties: jest.fn(() => ['金桂', '银桂', '丹桂', '四季桂']),
   calculateTestPercent: jest.fn(() => 50),
+  getBrewingInteractiveConfig: jest.fn(() => ({
+    waterTempLevels: [
+      { key: '80', label: '80℃', desc: '清香淡雅', icon: '🌿' },
+      { key: '85', label: '85℃', desc: '花香馥郁', icon: '🌸', default: true },
+      { key: '90', label: '90℃', desc: '醇厚浓郁', icon: '🍵' },
+      { key: '95', label: '95℃', desc: '茶气强劲', icon: '🔥' }
+    ],
+    brewSteps: [
+      { step: 1, name: '温杯', icon: '🫖', title: '温杯烫盏', desc: '用热水将茶具温热', detail: '1. 将热水倒入盖碗\n2. 轻轻旋转\n3. 倒掉水倒掉', duration: 30, tip: '温杯能让茶香更好地释放' },
+      { step: 2, name: '投茶', icon: '🍃', title: '投茶入盏', desc: '投入适量桂花茶', detail: '1. 取适量干茶\n2. 拨入茶具中', duration: 20, tip: '推荐用量：每杯3-5克' },
+      { step: 3, name: '注水', icon: '💧', title: '注水冲泡', desc: '注入适宜温度的热水', detail: '1. 水温85℃-90℃\n2. 沿杯壁注水', duration: 15, tip: '避免直接冲在茶叶上' },
+      { step: 4, name: '出汤', icon: '🍵', title: '出汤品茗', desc: '浸泡后出汤品尝', detail: '1. 首泡约2分钟\n2. 可连续冲泡4-5次', duration: 120, tip: '桂花茶香气浓郁' }
+    ],
+    dosageConfig: {
+      basePerCup: 3,
+      tasteMultiplier: { light: 0.7, medium: 1.0, strong: 1.4 },
+      tasteLabels: { light: '清淡', medium: '适中', strong: '浓郁' },
+      maxPeople: 10,
+      minPeople: 1
+    }
+  })),
+  calculateTeaDosage: jest.fn((people, taste) => {
+    const base = 3;
+    const mult = { light: 0.7, medium: 1.0, strong: 1.4 };
+    const m = mult[taste] || 1.0;
+    const grams = Math.round(people * base * m * 10) / 10;
+    return {
+      people: people,
+      taste: taste,
+      tasteLabel: { light: '清淡', medium: '适中', strong: '浓郁' }[taste] || '适中',
+      grams: grams,
+      teaspoon: Math.round(grams / 3 * 10) / 10,
+      suggestion: grams <= 5 ? '少量精品，品花香为主' :
+                  grams <= 15 ? '适量冲泡，适合日常饮用' :
+                  '多人共享，茶香四溢'
+    };
+  }),
   mockTraceData: {
     'G001': {
       basicInfo: { productName: '金桂花茶', thumbnail: '' },
