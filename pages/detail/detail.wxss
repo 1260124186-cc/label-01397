@@ -4908,6 +4908,115 @@
   line-height: 1.7;
 }
 
+.ar-garden-entry {
+  position: relative;
+  margin-top: 28rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(46, 139, 87, 0.2);
+}
+
+.ar-garden-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #1a3a2a 0%, #0d2818 50%, #1a2a1a 100%);
+  z-index: 0;
+}
+
+.ar-garden-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  padding: 28rpx 24rpx;
+}
+
+.ar-garden-icon-wrapper {
+  position: relative;
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.ar-garden-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(46, 139, 87, 0.3);
+  animation: arPulse 2s ease-in-out infinite;
+}
+
+@keyframes arPulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.3); opacity: 0; }
+}
+
+.ar-garden-icon {
+  position: relative;
+  z-index: 1;
+  font-size: 44rpx;
+}
+
+.ar-garden-text {
+  flex: 1;
+}
+
+.ar-garden-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 6rpx;
+}
+
+.ar-garden-desc {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ar-garden-arrow {
+  font-size: 48rpx;
+  color: #DAA520;
+  font-weight: 300;
+  flex-shrink: 0;
+}
+
+.ar-garden-badges {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 16rpx;
+  padding: 0 24rpx 20rpx;
+}
+
+.ar-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 8rpx 16rpx;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8rpx);
+}
+
+.ar-badge-icon {
+  font-size: 22rpx;
+}
+
+.ar-garden-entry:active {
+  opacity: 0.9;
+  transform: scale(0.99);
+}
+
 /* ===================================================== */
 /*  ===== 地图标记弹窗 · Map Callout Modal =====         */
 /* ===================================================== */

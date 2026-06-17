@@ -146,6 +146,14 @@ Page({
     });
   },
 
+  openARExperience: function(e) {
+    var scene = e.currentTarget.dataset.scene || 'tree';
+    var traceId = this.data.traceId;
+    wx.navigateTo({
+      url: '/pages/arExperience/arExperience?mode=scan&traceId=' + traceId + '&scene=' + scene
+    });
+  },
+
   getRiskLevelText: function(level) {
     const map = {
       'normal': '正常',

@@ -556,6 +556,36 @@
           </view>
         </view>
 
+        <!-- AR 看茶园入口 -->
+        <view class="ar-garden-entry" bindtap="openARGarden">
+          <view class="ar-garden-bg"></view>
+          <view class="ar-garden-content">
+            <view class="ar-garden-icon-wrapper">
+              <view class="ar-garden-pulse"></view>
+              <text class="ar-garden-icon">🔮</text>
+            </view>
+            <view class="ar-garden-text">
+              <view class="ar-garden-title">AR 看茶园</view>
+              <view class="ar-garden-desc">增强现实沉浸式体验产地实景</view>
+            </view>
+            <view class="ar-garden-arrow">›</view>
+          </view>
+          <view class="ar-garden-badges">
+            <view class="ar-badge-item">
+              <text class="ar-badge-icon">🌳</text>
+              <text>3D桂花树</text>
+            </view>
+            <view class="ar-badge-item">
+              <text class="ar-badge-icon">🫖</text>
+              <text>窨制动画</text>
+            </view>
+            <view class="ar-badge-item">
+              <text class="ar-badge-icon">🍃</text>
+              <text>茶园实景</text>
+            </view>
+          </view>
+        </view>
+
       </view>
     </view>
 

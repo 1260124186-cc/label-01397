@@ -1,0 +1,180 @@
+<view class="ar-container">
+
+  <view class="ar-unsupported-overlay" wx:if="{{!checking && !deviceSupported}}">
+    <view class="ar-unsupported-card">
+      <view class="ar-unsupported-icon">📵</view>
+      <text class="ar-unsupported-title">设备不支持</text>
+      <text class="ar-unsupported-desc">您的设备不支持AR功能，请使用支持ARKit/ARCore的设备体验</text>
+      <view class="ar-unsupported-requirements">
+        <view class="ar-requirement-item">
+          <text class="ar-requirement-icon">✓</text>
+          <text class="ar-requirement-text">微信版本 7.0.0 及以上</text>
+        </view>
+        <view class="ar-requirement-item">
+          <text class="ar-requirement-icon">✓</text>
+          <text class="ar-requirement-text">iOS 11 / Android 7.0 及以上</text>
+        </view>
+        <view class="ar-requirement-item">
+          <text class="ar-requirement-icon">✓</text>
+          <text class="ar-requirement-text">支持陀螺仪和相机的设备</text>
+        </view>
+      </view>
+      <view class="ar-unsupported-btn" bindtap="goBack">返回</view>
+    </view>
+  </view>
+
+  <view class="ar-permission-guide" wx:if="{{!checking && deviceSupported && showPermissionGuide && !cameraAuthorized}}">
+    <view class="ar-permission-card">
+      <view class="ar-permission-icon">📷</view>
+      <text class="ar-permission-title">需要相机权限</text>
+      <text class="ar-permission-desc">AR体验需要使用您的相机来识别产品包装并展示增强现实内容，请在设置中开启相机权限</text>
+      <view class="ar-permission-btn" bindtap="requestCameraPermission">授权相机</view>
+      <view class="ar-permission-btn" style="margin-top: 20rpx; background: var(--ar-glass-bg); border: 1rpx solid var(--ar-glass-border); box-shadow: none;" bindtap="openPermissionSetting">去设置开启</view>
+    </view>
+  </view>
+
+  <camera
+    wx:if="{{deviceSupported && cameraAuthorized}}"
+    class="ar-camera"
+    device-position="back"
+    flash="off"
+    resolution="high"
+    mode="normal"
+    binderror="onCameraError"
+  ></camera>
+
+  <canvas
+    wx:if="{{deviceSupported && cameraAuthorized}}"
+    id="arCanvas"
+    class="ar-canvas"
+    type="webgl"
+    bindtouchstart="onCanvasTouchStart"
+    bindtouchmove="onCanvasTouchMove"
+    bindtouchend="onCanvasTouchEnd"
+  ></canvas>
+
+  <view class="ar-nav-bar" wx:if="{{deviceSupported && cameraAuthorized}}">
+    <view class="ar-nav-back" bindtap="goBack">
+      <text class="ar-nav-back-icon">‹</text>
+    </view>
+    <text class="ar-nav-title">AR 增强现实</text>
+    <view class="ar-nav-placeholder"></view>
+  </view>
+
+  <view class="ar-hint-toast show" wx:if="{{deviceSupported && cameraAuthorized && currentScene === 'tree'}}">
+    <text class="ar-hint-toast-icon">👋</text>
+    <text class="ar-hint-toast-text">滑动屏幕旋转桂花树</text>
+  </view>
+
+  <view class="ar-hint-toast show" wx:elif="{{deviceSupported && cameraAuthorized && currentScene === 'garden'}}">
+    <text class="ar-hint-toast-icon">👋</text>
+    <text class="ar-hint-toast-text">移动手机探索茶园</text>
+  </view>
+
+  <view class="ar-hint-toast show" wx:elif="{{deviceSupported && cameraAuthorized && currentScene === 'process'}}">
+    <text class="ar-hint-toast-icon">👋</text>
+    <text class="ar-hint-toast-text">点击播放查看窨制过程</text>
+  </view>
+
+  <view class="ar-process-controls" wx:if="{{deviceSupported && cameraAuthorized && currentScene === 'process'}}">
+    <view class="ar-process-btn {{processPlaying ? 'active' : ''}}" bindtap="toggleProcessAnimation">
+      <text class="ar-process-btn-icon" wx:if="{{processPlaying}}">⏸</text>
+      <text class="ar-process-btn-icon" wx:else>▶</text>
+    </view>
+  </view>
+
+  <view class="ar-process-progress" wx:if="{{deviceSupported && cameraAuthorized && currentScene === 'process'}}">
+    <view class="ar-process-timeline">
+      <view
+        wx:for="{{6}}"
+        wx:key="*this"
+        class="ar-process-step {{processStep >= index ? 'active' : ''}} {{processStep > index ? 'completed' : ''}}"
+      >
+        <view class="ar-process-step-dot"></view>
+        <text class="ar-process-step-name" wx:if="{{index === 0}}">茶胚</text>
+        <text class="ar-process-step-name" wx:elif="{{index === 1}}">拌花</text>
+        <text class="ar-process-step-name" wx:elif="{{index === 2}}">堆窨</text>
+        <text class="ar-process-step-name" wx:elif="{{index === 3}}">通花</text>
+        <text class="ar-process-step-name" wx:elif="{{index === 4}}">起花</text>
+        <text class="ar-process-step-name" wx:elif="{{index === 5}}">烘焙</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="ar-info-panel {{showInfoPanel ? 'show' : ''}}" wx:if="{{deviceSupported && cameraAuthorized}}">
+    <view class="ar-info-panel-handle"></view>
+    <view style="position: relative;">
+      <text class="ar-info-panel-title">{{infoPanelContent.title}}</text>
+      <view class="ar-info-panel-close" bindtap="closeInfoPanel">×</view>
+    </view>
+    <text class="ar-info-panel-subtitle" wx:if="{{infoPanelContent.description}}">{{infoPanelContent.description}}</text>
+    <view class="ar-info-panel-tags" wx:if="{{infoPanelContent.tags}}">
+      <view
+        wx:for="{{infoPanelContent.tags}}"
+        wx:key="*this"
+        class="ar-info-tag {{item.type || 'primary'}}"
+      >{{item.text}}</view>
+    </view>
+    <scroll-view scroll-y style="max-height: 400rpx;">
+      <text class="ar-info-panel-desc" wx:if="{{infoPanelContent.details_text}}">{{infoPanelContent.details_text}}</text>
+      <view wx:if="{{infoPanelContent.details}}" style="margin-top: 20rpx;">
+        <view
+          wx:for="{{infoPanelContent.details}}"
+          wx:key="label"
+          style="display: flex; justify-content: space-between; padding: 16rpx 0; border-bottom: 1rpx solid rgba(255,255,255,0.1);"
+        >
+          <text style="font-size: 26rpx; color: rgba(255,255,255,0.6);">{{item.label}}</text>
+          <text style="font-size: 26rpx; color: #FFFFFF; font-weight: 500;">{{item.value}}</text>
+        </view>
+      </view>
+    </scroll-view>
+    <view
+      style="margin-top: 24rpx; display: flex; align-items: center; justify-content: center; height: 88rpx; background: linear-gradient(135deg, var(--ar-primary), #3CB371); border-radius: 44rpx;"
+      bindtap="showSceneInfo"
+      data-scene="{{currentScene}}"
+    >
+      <text style="font-size: 28rpx; font-weight: 600; color: #FFFFFF; margin-right: 8rpx;">查看完整信息</text>
+      <text style="font-size: 28rpx; color: #FFFFFF;">›</text>
+    </view>
+  </view>
+
+  <view class="ar-scene-selector" wx:if="{{deviceSupported && cameraAuthorized}}">
+    <view class="ar-scene-tabs">
+      <view
+        class="ar-scene-tab {{currentScene === 'tree' ? 'active' : ''}}"
+        data-scene="tree"
+        bindtap="switchScene"
+      >
+        <view class="ar-scene-tab-icon">🌳</view>
+        <text class="ar-scene-tab-label">桂花树</text>
+      </view>
+      <view
+        class="ar-scene-tab {{currentScene === 'process' ? 'active' : ''}}"
+        data-scene="process"
+        bindtap="switchScene"
+      >
+        <view class="ar-scene-tab-icon">🫖</view>
+        <text class="ar-scene-tab-label">窨制过程</text>
+      </view>
+      <view
+        class="ar-scene-tab {{currentScene === 'garden' ? 'active' : ''}}"
+        data-scene="garden"
+        bindtap="switchScene"
+      >
+        <view class="ar-scene-tab-icon">🍃</view>
+        <text class="ar-scene-tab-label">看茶园</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="ar-loading-overlay" wx:if="{{deviceSupported && cameraAuthorized && sceneTransitioning}}">
+    <view class="ar-loading-spinner"></view>
+    <text class="ar-loading-text">场景加载中...</text>
+    <view class="ar-loading-progress">
+      <view class="ar-loading-progress-bar" style="width: {{loadingProgress}}%;"></view>
+    </view>
+  </view>
+
+  <view class="ar-transition-overlay {{sceneTransitioning ? 'active' : ''}}" wx:if="{{deviceSupported && cameraAuthorized}}"></view>
+
+</view>

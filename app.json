@@ -28,7 +28,8 @@
     "pages/subscription/subscription",
     "pages/member/index",
     "pages/member/pointsDetail",
-    "pages/member/level"
+    "pages/member/level",
+    "pages/arExperience/arExperience"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -71,6 +72,9 @@
     },
     "scope.writePhotosAlbum": {
       "desc": "保存分享卡片和溯源证书到你的相册"
+    },
+    "scope.camera": {
+      "desc": "你的摄像头将用于AR增强现实体验，展示3D桂花树和茶园实景"
     }
   },
   "requiredPrivateInfos": [

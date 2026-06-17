@@ -1541,6 +1541,13 @@ Page({
   /**
    * 打开导航：跳转地图导航
    */
+  openARGarden: function() {
+    var traceId = this.data.traceId;
+    wx.navigateTo({
+      url: '/pages/arExperience/arExperience?mode=detail&traceId=' + traceId + '&scene=garden'
+    });
+  },
+
   openLocationNavigation: function() {
     const marker = this.data.selectedMapMarker;
     if (!marker) return;
