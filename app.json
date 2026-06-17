@@ -25,7 +25,10 @@
     "pages/service/ticketCreate",
     "pages/service/ticketList",
     "pages/service/ticketDetail",
-    "pages/subscription/subscription"
+    "pages/subscription/subscription",
+    "pages/member/index",
+    "pages/member/pointsDetail",
+    "pages/member/level"
   ],
   "window": {
     "backgroundTextStyle": "dark",

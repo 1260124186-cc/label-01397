@@ -1,4 +1,5 @@
 var userStore = require('../../utils/userStore.js');
+var greenPoints = require('../../utils/greenPoints.js');
 
 Page({
   data: {
@@ -134,7 +135,13 @@ Page({
         rating: this.data.rating,
         tags: this.data.tags
       });
-      wx.showToast({ title: '已保存', icon: 'success', duration: 1500 });
+      var pointsResult = greenPoints.earnPoints('tastingNote', '完成品鉴笔记:' + (this.data.productName || '未知产品'));
+      if (pointsResult.earned > 0) {
+        wx.showToast({ title: '已保存 +' + pointsResult.earned + '积分', icon: 'success', duration: 2000 });
+        console.log('[TastingNote] 完成笔记获得积分:', pointsResult.earned);
+      } else {
+        wx.showToast({ title: '已保存', icon: 'success', duration: 1500 });
+      }
     }
 
     this.setData({ saving: false });

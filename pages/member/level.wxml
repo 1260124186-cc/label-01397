@@ -1,0 +1,87 @@
+<view class="level-page">
+  <view class="level-header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <view class="current-level" style="border-color: {{memberLevel.color}}">
+        <view class="level-icon" style="background: {{memberLevel.color}}">{{memberLevel.icon}}</view>
+        <view class="level-name" style="color: {{memberLevel.color}}">{{memberLevel.name}}</view>
+      </view>
+      <view class="points-info">
+        <view class="current-points">{{totalPoints}}<text class="points-unit">积分</text></view>
+        <view class="level-progress-section" wx:if="{{memberLevel.nextLevel}}">
+          <view class="progress-info">
+            <text>距离{{memberLevel.nextLevel}}{{memberLevel.nextLevelIcon}}</text>
+            <text class="points-needed">还差{{memberLevel.nextLevelPoints - totalPoints}}积分</text>
+          </view>
+          <view class="progress-bar">
+            <view class="progress" style="width: {{memberLevel.progress}}%; background: {{memberLevel.color}}"></view>
+          </view>
+        </view>
+        <view class="level-progress-section" wx:else>
+          <view class="max-level-tip">🎉 恭喜您已是最高等级会员</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="levels-section">
+    <view class="section-title">等级特权</view>
+    <view class="levels-list">
+      <view
+        wx:for="{{allLevels}}"
+        wx:key="level"
+        class="level-card {{memberLevel.level === item.level ? 'active' : ''}} {{memberLevel.level > item.level ? 'achieved' : ''}}"
+        style="border-color: {{item.color}}"
+      >
+        <view class="level-card-header">
+          <view class="level-badge" style="background: {{item.color}}">
+            <text class="badge-icon">{{item.icon}}</text>
+            <text class="badge-name">{{item.name}}</text>
+          </view>
+          <view class="level-threshold">{{item.minPoints}}积分以上</view>
+        </view>
+        <view class="benefits-list">
+          <view
+            wx:for="{{item.benefits}}"
+            wx:for-item="benefit"
+            wx:key="*this"
+            class="benefit-item"
+          >
+            <view class="benefit-dot" style="background: {{item.color}}"></view>
+            <text class="benefit-text">{{benefit}}</text>
+          </view>
+        </view>
+        <view wx:if="{{memberLevel.level === item.level}}" class="current-tag">当前等级</view>
+        <view wx:elif="{{memberLevel.level > item.level}}" class="achieved-tag">已达成</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="rules-section">
+    <view class="section-title">积分获取规则</view>
+    <view class="rules-list">
+      <view
+        wx:for="{{rules}}"
+        wx:key="title"
+        class="rule-item"
+      >
+        <view class="rule-icon">{{item.icon}}</view>
+        <view class="rule-content">
+          <view class="rule-header">
+            <text class="rule-title">{{item.title}}</text>
+            <text class="rule-points">{{item.points}}</text>
+          </view>
+          <view class="rule-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="action-section">
+    <view class="action-btn" bindtap="goToEarnPoints">
+      去赚取积分
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

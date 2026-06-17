@@ -1,0 +1,124 @@
+<view class="points-detail-page">
+  <view class="stats-header">
+    <view class="total-points">
+      <view class="points-label">可用积分</view>
+      <view class="points-value">{{totalPoints}}</view>
+    </view>
+    <view class="mini-stats">
+      <view class="mini-stat-item">
+        <view class="mini-stat-value income">+{{pointsStats.monthEarned}}</view>
+        <view class="mini-stat-label">本月获得</view>
+      </view>
+      <view class="mini-stat-item">
+        <view class="mini-stat-value expense">-{{pointsStats.monthSpent}}</view>
+        <view class="mini-stat-label">本月消耗</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="tabs-section">
+    <view class="tabs">
+      <view
+        wx:for="{{historyTabs}}"
+        wx:key="key"
+        class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+        data-tab="{{item.key}}"
+        bindtap="handleTabChange"
+      >
+        {{item.name}}
+      </view>
+    </view>
+  </view>
+
+  <view class="history-section">
+    <block wx:if="{{formattedHistory.length === 0}}">
+      <view class="empty-state">
+        <view class="empty-icon">📭</view>
+        <view class="empty-text">暂无积分记录</view>
+        <view class="empty-hint">完成任务获得积分后将在此显示</view>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view
+        wx:for="{{formattedHistory}}"
+        wx:key="date"
+        wx:for-item="dayGroup"
+        class="history-day-group"
+      >
+        <view class="day-header">
+          <view class="day-date">{{dayGroup.date}}</view>
+          <view class="day-summary">
+            <text class="day-earned">+{{dayGroup.dayEarned}}</text>
+            <text class="day-spent">-{{dayGroup.daySpent}}</text>
+          </view>
+        </view>
+        <view class="day-items">
+          <view
+            wx:for="{{dayGroup.items}}"
+            wx:key="id"
+            wx:for-item="item"
+            class="history-item"
+          >
+            <view class="item-icon {{item.type}}">
+              <text wx:if="{{item.type === 'earn'}}">📈</text>
+              <text wx:elif="{{item.type === 'spend'}}">📉</text>
+              <text wx:else>📋</text>
+            </view>
+            <view class="item-info">
+              <view class="item-desc">{{item.desc}}</view>
+              <view class="item-time">{{item.time}}</view>
+            </view>
+            <view class="item-points {{item.type}}">
+              {{item.points > 0 ? '+' : ''}}{{item.points}}
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{redemptionRecords.length > 0}}" class="records-section">
+    <view class="section-title">兑换记录</view>
+    <view class="records-list">
+      <view
+        wx:for="{{redemptionRecords}}"
+        wx:key="id"
+        class="record-item"
+      >
+        <image class="record-image" src="{{item.itemImage}}" mode="aspectFill" />
+        <view class="record-info">
+          <view class="record-name">{{item.itemName}}</view>
+          <view class="record-meta">
+            <text class="record-points">{{item.points}}积分</text>
+            <text class="record-status {{item.status}}">{{item.status === 'pending' ? '待发货' : '已完成'}}</text>
+          </view>
+          <view class="record-date">{{item.createdAt}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{activityRegistrations.length > 0}}" class="records-section">
+    <view class="section-title">活动报名</view>
+    <view class="records-list">
+      <view
+        wx:for="{{activityRegistrations}}"
+        wx:key="id"
+        class="record-item"
+      >
+        <view class="record-icon">🎟️</view>
+        <view class="record-info">
+          <view class="record-name">{{item.activityTitle}}</view>
+          <view class="record-meta">
+            <text class="record-type">{{item.activityType === 'live' ? '线上直播' : '线下活动'}}</text>
+            <text class="record-status {{item.status}}">{{item.status === 'registered' ? '已报名' : '已取消'}}</text>
+          </view>
+          <view class="record-date">{{item.scheduledTime}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

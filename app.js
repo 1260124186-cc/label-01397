@@ -8,10 +8,13 @@
 const i18n = require('./utils/i18n/index.js');
 const auth = require('./utils/auth.js');
 const userStore = require('./utils/userStore.js');
+const greenPoints = require('./utils/greenPoints.js');
+const shareUtil = require('./utils/share.js');
 
 App({
-  onLaunch: function() {
+  onLaunch: function(options) {
     console.log('桂花茶溯源小程序启动');
+    console.log('[App] 启动参数:', options);
 
     i18n.applySettingsToApp(this);
     console.log('无障碍设置:', {
@@ -23,6 +26,11 @@ App({
     this.checkPrivacyCompliance();
     this.initUserData();
 
+    if (options && options.query && options.query.invite) {
+      this.globalData.pendingInviter = options.query.invite;
+      console.log('[Invite] 检测到邀请人:', options.query.invite);
+    }
+
     const systemInfo = wx.getSystemInfoSync();
     console.log('系统信息:', systemInfo);
 
@@ -32,6 +40,63 @@ App({
         content: '当前微信版本过低，请升级微信以获得更好的使用体验',
         showCancel: false
       });
+    }
+  },
+
+  processInviteReward: function(traceId) {
+    try {
+      if (typeof wx === 'undefined') return null;
+
+      var inviter = this.globalData.pendingInviter;
+      if (!inviter) return null;
+
+      var firstScanKey = 'first_scan_completed';
+      var hasScanned = wx.getStorageSync(firstScanKey);
+      if (hasScanned) {
+        console.log('[Invite] 用户非首次扫码，跳过邀请奖励');
+        this.globalData.pendingInviter = null;
+        return null;
+      }
+
+      var inviteeOpenId = null;
+      try {
+        inviteeOpenId = auth.getUserInfo() ? auth.getUserInfo().openid : ('guest_' + Date.now());
+      } catch (e) {
+        inviteeOpenId = 'guest_' + Date.now();
+      }
+      console.log('[Invite] 处理邀请奖励，邀请人:', inviter, '被邀请人:', inviteeOpenId, '溯源码:', traceId);
+
+      var result = shareUtil.handleInviteeScan(inviter, traceId);
+      if (result.success) {
+        wx.setStorageSync(firstScanKey, true);
+        this.globalData.pendingInviter = null;
+
+        try {
+          if (result.rewards.invitee && result.rewards.invitee.value > 0) {
+            greenPoints.earnPoints('invited', '好友邀请奖励');
+            console.log('[Invite] 被邀请人获得积分:', result.rewards.invitee.value);
+          }
+        } catch (e) {
+          console.warn('[Invite] 被邀请人积分发放失败:', e);
+        }
+
+        setTimeout(function() {
+          try {
+            wx.showToast({
+              title: '邀请成功！双方获得' + result.rewards.inviter.value + '积分',
+              icon: 'success',
+              duration: 3000
+            });
+          } catch (e) {
+            console.log('[Invite] 邀请成功提示:', result.rewards.inviter.value);
+          }
+        }, 1500);
+      }
+
+      return result;
+    } catch (e) {
+      console.error('[Invite] 处理邀请奖励失败:', e);
+      return null;
     }
   },
 

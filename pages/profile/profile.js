@@ -1,6 +1,7 @@
 var auth = require('../../utils/auth.js');
 var userStore = require('../../utils/userStore.js');
 var storage = require('../../utils/storage.js');
+var greenPoints = require('../../utils/greenPoints.js');
 
 Page({
   data: {
@@ -12,8 +13,18 @@ Page({
     noteCount: 0,
     scanCount: 0,
     unreadCount: 0,
+    greenPoints: 0,
+    memberLevel: {},
 
     menuSections: [
+      {
+        title: '会员中心',
+        items: [
+          { key: 'member', icon: '💎', name: '积分商城', desc: '积分兑换好礼', url: '/pages/member/index', badge: '' },
+          { key: 'pointsDetail', icon: '📊', name: '积分明细', desc: '查看积分流水', url: '/pages/member/pointsDetail', badge: '' },
+          { key: 'level', icon: '🏅', name: '会员等级', desc: '普通/银卡/金卡', url: '/pages/member/level', badge: '' }
+        ]
+      },
       {
         title: '溯源服务',
         items: [
@@ -50,6 +61,8 @@ Page({
     var notes = userStore.getTastingNotes();
     var scanHistory = storage.getScanHistory();
     var unreadCount = userStore.getUnreadNotificationCount();
+    var points = greenPoints.getPoints();
+    var level = greenPoints.getUserLevel(points);
 
     var menuSections = this.data.menuSections;
     for (var s = 0; s < menuSections.length; s++) {
@@ -70,6 +83,8 @@ Page({
       noteCount: notes.length,
       scanCount: scanHistory.length,
       unreadCount: unreadCount,
+      greenPoints: points,
+      memberLevel: level,
       menuSections: menuSections
     });
   },

@@ -2239,15 +2239,260 @@ var greenPointsConfig = {
     { action: 'viewCarbon', points: 5, desc: '查看碳足迹', dailyLimit: 25 },
     { action: 'viewRecycling', points: 5, desc: '查看回收指引', dailyLimit: 25 },
     { action: 'viewCertificate', points: 3, desc: '查看认证证书', dailyLimit: 15 },
-    { action: 'shareGreen', points: 15, desc: '分享绿色溯源', dailyLimit: 45 }
+    { action: 'shareGreen', points: 15, desc: '分享绿色溯源', dailyLimit: 45 },
+    { action: 'scan', points: 10, desc: '扫码溯源', dailyLimit: 100 },
+    { action: 'share', points: 5, desc: '分享产品', dailyLimit: 25 },
+    { action: 'dailySignIn', points: 3, desc: '每日签到', dailyLimit: 30 },
+    { action: 'tastingNote', points: 20, desc: '完成品鉴笔记', dailyLimit: 40 },
+    { action: 'invite', points: 50, desc: '邀请好友奖励', dailyLimit: 5000 },
+    { action: 'invited', points: 30, desc: '好友邀请奖励', dailyLimit: 30 },
+    { action: 'invite_friend', points: 50, desc: '邀请好友扫码奖励', dailyLimit: 5000 }
   ],
   levelConfig: [
-    { level: 1, name: '环保新手', minPoints: 0, icon: '🌱' },
-    { level: 2, name: '环保达人', minPoints: 100, icon: '🌿' },
-    { level: 3, name: '环保先锋', minPoints: 500, icon: '🌳' },
-    { level: 4, name: '环保大使', minPoints: 1000, icon: '🌍' }
+    { level: 1, name: '普通会员', minPoints: 0, icon: '🍵', color: '#999999', benefits: ['基础溯源服务', '每日签到积分'] },
+    { level: 2, name: '银卡会员', minPoints: 200, icon: '🥈', color: '#C0C0C0', benefits: ['普通会员全部权益', '商城95折优惠', '专属客服', '生日双倍积分'] },
+    { level: 3, name: '金卡会员', minPoints: 500, icon: '🥇', color: '#DAA520', benefits: ['银卡会员全部权益', '商城9折优惠', '免费试饮优先', '活动优先报名', '专属礼品'] }
   ]
 };
+
+var pointsMallItems = [
+  {
+    id: 'mall_001',
+    name: '金桂试饮装',
+    desc: '金桂花茶10g试饮装，每人限兑2份',
+    points: 100,
+    originalPrice: 29,
+    stock: 500,
+    sold: 236,
+    category: 'tea',
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20golden%20osmanthus%20tea%20sample%20pack%20elegant%20small%20package&image_size=square',
+    limitPerUser: 2
+  },
+  {
+    id: 'mall_002',
+    name: '银桂试饮装',
+    desc: '银桂花茶10g试饮装，每人限兑2份',
+    points: 80,
+    originalPrice: 25,
+    stock: 800,
+    sold: 312,
+    category: 'tea',
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20sample%20pack%20delicate%20small%20package&image_size=square',
+    limitPerUser: 2
+  },
+  {
+    id: 'mall_003',
+    name: '手工玻璃公道杯',
+    desc: '高硼硅玻璃手工公道杯，耐热150℃',
+    points: 300,
+    originalPrice: 89,
+    stock: 200,
+    sold: 87,
+    category: 'teaware',
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handmade%20glass%20gongdao%20bei%20fair%20cup%20for%20tea&image_size=square',
+    limitPerUser: 1
+  },
+  {
+    id: 'mall_004',
+    name: '白瓷盖碗套装',
+    desc: '德化白瓷盖碗120ml，含三才盖碗+品茗杯2只',
+    points: 500,
+    originalPrice: 158,
+    stock: 100,
+    sold: 45,
+    category: 'teaware',
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=white%20porcelain%20gaiwan%20tea%20set%20elegant%20dehua&image_size=square',
+    limitPerUser: 1
+  },
+  {
+    id: 'mall_005',
+    name: '20元无门槛券',
+    desc: '商城全场通用，满0可用，有效期30天',
+    points: 150,
+    originalPrice: 20,
+    stock: 1000,
+    sold: 567,
+    category: 'coupon',
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=golden%20coupon%20voucher%2020%20yuan%20discount&image_size=square',
+    limitPerUser: 5
+  },
+  {
+    id: 'mall_006',
+    name: '50元满减券',
+    desc: '商城满199可用，有效期30天',
+    points: 300,
+    originalPrice: 50,
+    stock: 500,
+    sold: 234,
+    category: 'coupon',
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=golden%20coupon%20voucher%2050%20yuan%20discount&image_size=square',
+    limitPerUser: 3
+  },
+  {
+    id: 'mall_007',
+    name: '竹制茶则套装',
+    desc: '天然孟宗竹制茶则+茶针+茶拨三件套',
+    points: 250,
+    originalPrice: 68,
+    stock: 300,
+    sold: 156,
+    category: 'teaware',
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=bamboo%20tea%20utensil%20set%20cha%20ze%20needle%20scoop&image_size=square',
+    limitPerUser: 2
+  },
+  {
+    id: 'mall_008',
+    name: '100元礼品券',
+    desc: '商城满399可用，有效期60天，可转赠',
+    points: 600,
+    originalPrice: 100,
+    stock: 200,
+    sold: 89,
+    category: 'coupon',
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20gift%20voucher%20100%20yuan%20golden%20design&image_size=square',
+    limitPerUser: 2
+  }
+];
+
+var marketingActivities = [
+  {
+    id: 'activity_001',
+    type: 'live',
+    title: '2025金秋桂花采摘季直播',
+    subtitle: '跟随镜头探访咸宁金桂基地',
+    status: 'upcoming',
+    scheduledTime: '2025-09-20 09:00:00',
+    duration: '约120分钟',
+    location: '湖北咸宁·金桂种植基地',
+    description: '带您深入中国桂花之乡核心产区，见证2025年第一缕金桂的采摘全过程。非遗传承人现场讲解窨制工艺，更有直播间专属福利。',
+    highlights: [
+      '50年树龄金桂采摘现场',
+      '窨制工艺大师现场讲解',
+      '直播间专属优惠券',
+      '互动抽奖赢金桂礼盒'
+    ],
+    totalSlots: 5000,
+    registeredCount: 3256,
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=golden%20osmanthus%20harvest%20live%20streaming%20event%20autumn%20garden&image_size=landscape_16_9',
+    rewardPoints: 50
+  },
+  {
+    id: 'activity_002',
+    type: 'offline',
+    title: '线下茶园参观体验日',
+    subtitle: '武夷山百年茶树园深度体验',
+    status: 'upcoming',
+    scheduledTime: '2025-10-15 08:00:00',
+    duration: '全天（8:00-18:00）',
+    location: '福建武夷山·百年茶树园',
+    description: '深入武夷山核心产区，探访200年古茶树，跟随制茶大师体验手工采茶、传统制茶工艺，品鉴明前珍品。',
+    highlights: [
+      '200年古茶树探访',
+      '手工采茶体验',
+      '传统制茶工艺学习',
+      '茶王品鉴会',
+      '颁发纪念证书'
+    ],
+    totalSlots: 30,
+    registeredCount: 18,
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wuyi%20mountain%20tea%20garden%20visit%20experience%20traditional%20tea%20making&image_size=landscape_16_9',
+    rewardPoints: 200,
+    requirements: '金卡会员优先，需扣除50积分报名',
+    fee: 0
+  },
+  {
+    id: 'activity_003',
+    type: 'live',
+    title: '桂花茶冲泡大师课',
+    subtitle: '国家级茶艺师亲授冲泡技巧',
+    status: 'upcoming',
+    scheduledTime: '2025-09-28 20:00:00',
+    duration: '约90分钟',
+    location: '线上直播',
+    description: '国家级高级茶艺师手把手教您泡好一杯桂花茶，从水温、投茶量到浸泡时间，掌握专业冲泡技巧。',
+    highlights: [
+      '不同等级桂花茶冲泡要点',
+      '茶具选择与搭配',
+      '品鉴香气层次',
+      '现场答疑互动'
+    ],
+    totalSlots: 10000,
+    registeredCount: 6789,
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20master%20brewing%20class%20online%20course%20chinese%20tea%20art&image_size=landscape_16_9',
+    rewardPoints: 30
+  }
+];
+
+var inviteRewardConfig = {
+  inviterPoints: 50,
+  inviteePoints: 30,
+  maxInvites: 100,
+  description: '邀请好友首次扫码，双方均可获得积分奖励',
+  rules: [
+    '被邀请好友必须是新用户（从未扫码溯源）',
+    '好友首次扫码后，双方立即获得积分',
+    '每位用户最多可邀请100位好友',
+    '积分奖励实时到账，可在积分明细中查看'
+  ]
+};
+
+function getPointsMallItems(category) {
+  if (category && category !== 'all') {
+    return pointsMallItems.filter(function(item) { return item.category === category; });
+  }
+  return pointsMallItems;
+}
+
+function getPointsMallItemById(id) {
+  for (var i = 0; i < pointsMallItems.length; i++) {
+    if (pointsMallItems[i].id === id) return pointsMallItems[i];
+  }
+  return null;
+}
+
+function getMarketingActivities(status) {
+  if (status && status !== 'all') {
+    return marketingActivities.filter(function(act) { return act.status === status; });
+  }
+  return marketingActivities;
+}
+
+function getMarketingActivityById(id) {
+  for (var i = 0; i < marketingActivities.length; i++) {
+    if (marketingActivities[i].id === id) return marketingActivities[i];
+  }
+  return null;
+}
+
+function getInviteRewardConfig() {
+  return inviteRewardConfig;
+}
+
+function getMemberLevels() {
+  return greenPointsConfig.levelConfig;
+}
+
+function getMemberLevelByPoints(totalPoints) {
+  var levels = greenPointsConfig.levelConfig;
+  var current = levels[0];
+  for (var i = 0; i < levels.length; i++) {
+    if (totalPoints >= levels[i].minPoints) {
+      current = levels[i];
+    }
+  }
+  var nextLevel = null;
+  for (var j = 0; j < levels.length; j++) {
+    if (levels[j].minPoints > totalPoints) {
+      nextLevel = levels[j];
+      break;
+    }
+  }
+  return {
+    current: current,
+    nextLevel: nextLevel,
+    progress: nextLevel ? Math.min(100, ((totalPoints - current.minPoints) / (nextLevel.minPoints - current.minPoints)) * 100) : 100
+  };
+}
 
 function getGreenTraceExtended(traceId) {
   if (!traceId) return null;
@@ -4265,5 +4510,9 @@ module.exports = {
   incrementKnowledgeLikeCount,
   getSupplyChainTimeline,
   getAllSupplyChainTimeline,
-  maskOperator
+  maskOperator,
+  getPointsMallItems,
+  getPointsMallItemById,
+  getMarketingActivities,
+  getMarketingActivityById
 };

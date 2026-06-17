@@ -10,6 +10,8 @@ const shareUtil = require('../../utils/share.js');
 const i18n = require('../../utils/i18n/index.js');
 const shop = require('../../utils/shop.js');
 const subscription = require('../../utils/subscription.js');
+const greenPoints = require('../../utils/greenPoints.js');
+const auth = require('../../utils/auth.js');
 
 // 锚点 Tab 配置（将在运行时根据语言填充 label）
 const ANCHOR_TABS_BASE = [
@@ -224,6 +226,14 @@ Page({
 
     const traceId = options.traceId;
 
+    if (options && options.invite) {
+      var app = getApp();
+      if (app.globalData) {
+        app.globalData.pendingInviter = options.invite;
+        console.log('[Invite] 详情页检测到邀请人:', options.invite);
+      }
+    }
+
     if (traceId) {
       this.setData({ traceId: traceId });
       this.loadTraceData(traceId);
@@ -379,6 +389,22 @@ Page({
         wx.setNavigationBarTitle({
           title: data.basicInfo.productName + '溯源'
         });
+
+        var viewPointsResult = greenPoints.earnPoints('viewTrace', '查看溯源信息:' + traceId);
+        if (viewPointsResult.earned > 0) {
+          console.log('[Detail] 查看溯源获得积分:', viewPointsResult.earned);
+        }
+
+        try {
+          if (typeof getApp === 'function') {
+            var app = getApp();
+            if (app && app.processInviteReward) {
+              app.processInviteReward(traceId);
+            }
+          }
+        } catch (e) {
+          console.warn('[Detail] 处理邀请奖励失败:', e);
+        }
 
         // 数据加载完成后测量模块位置
         setTimeout(() => {
@@ -758,31 +784,6 @@ Page({
     wx.navigateTo({
       url: '/pages/greenTrace/greenTrace?traceId=' + this.data.traceId
     });
-  },
-
-  /**
-   * 用户点击右上角分享
-   * 修改为直达详情页路径，减少跳转步骤
-   */
-  onShareAppMessage: function() {
-    const data = this.data.traceData;
-    return {
-      title: `${data.basicInfo.productName} - 全链路溯源信息`,
-      path: `/pages/detail/detail?traceId=${this.data.traceId}`,
-      imageUrl: data.basicInfo.thumbnail || ''
-    };
-  },
-
-  /**
-   * 分享到朋友圈
-   */
-  onShareTimeline: function() {
-    const data = this.data.traceData;
-    return {
-      title: `${data.basicInfo.productName} - 全链路溯源信息`,
-      query: `traceId=${this.data.traceId}`,
-      imageUrl: data.basicInfo.thumbnail || ''
-    };
   },
 
   onJumpKnowledgeDetail: function(e) {
@@ -2052,10 +2053,39 @@ Page({
   onShareAppMessage: function() {
     const data = this.data.traceData;
     const traceId = this.data.traceId;
+    var inviterId = '1';
+    try {
+      var userInfo = auth.getUserInfo();
+      inviterId = userInfo && userInfo.openid ? userInfo.openid : '1';
+    } catch (e) {
+      console.warn('[Share] 获取用户信息失败，使用默认邀请人ID');
+    }
+    var that = this;
     return {
       title: `${data.basicInfo.productName} - 扫码查看全链路溯源信息，邀请双方得积分好礼！`,
-      path: `/pages/detail/detail?traceId=${traceId}&invite=1`,
-      imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || ''
+      path: `/pages/detail/detail?traceId=${traceId}&invite=${inviterId}`,
+      imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || '',
+      success: function(res) {
+        console.log('[Share] 分享成功:', res);
+        try {
+          var pointsResult = greenPoints.earnPoints('share', '分享产品:' + traceId);
+          if (pointsResult.earned > 0) {
+            console.log('[Share] 分享获得积分:', pointsResult.earned);
+            if (typeof wx !== 'undefined' && wx.showToast) {
+              wx.showToast({
+                title: '分享成功 +' + pointsResult.earned + '积分',
+                icon: 'success',
+                duration: 2000
+              });
+            }
+          }
+        } catch (e) {
+          console.warn('[Share] 积分奖励失败:', e);
+        }
+      },
+      fail: function(err) {
+        console.error('[Share] 分享失败:', err);
+      }
     };
   },
 
@@ -2065,10 +2095,29 @@ Page({
   onShareTimeline: function() {
     const data = this.data.traceData;
     const traceId = this.data.traceId;
+    var inviterId = '1';
+    try {
+      var userInfo = auth.getUserInfo();
+      inviterId = userInfo && userInfo.openid ? userInfo.openid : '1';
+    } catch (e) {
+      console.warn('[Share] 获取用户信息失败，使用默认邀请人ID');
+    }
+    var that = this;
     return {
       title: `${data.basicInfo.productName} | 全链路溯源 · 区块链验真 · 扫码邀请双方得好礼`,
-      query: `traceId=${traceId}&invite=1`,
-      imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || ''
+      query: `traceId=${traceId}&invite=${inviterId}`,
+      imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || '',
+      success: function(res) {
+        console.log('[Share] 朋友圈分享成功:', res);
+        try {
+          var pointsResult = greenPoints.earnPoints('share', '分享到朋友圈:' + traceId);
+          if (pointsResult.earned > 0) {
+            console.log('[Share] 朋友圈分享获得积分:', pointsResult.earned);
+          }
+        } catch (e) {
+          console.warn('[Share] 积分奖励失败:', e);
+        }
+      }
     };
   },
 

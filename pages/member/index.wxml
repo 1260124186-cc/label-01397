@@ -1,0 +1,171 @@
+<view class="member-page">
+  <view class="member-header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <view class="points-info" bindtap="goToPointsDetail">
+        <view class="points-label">可用积分</view>
+        <view class="points-value">{{totalPoints}}</view>
+        <view class="points-detail-hint">查看明细 ›</view>
+      </view>
+      <view class="level-info" bindtap="goToLevel">
+        <view class="level-badge" style="color: {{memberLevel.color}}">
+          <text class="level-icon">{{memberLevel.icon}}</text>
+          <text class="level-name">{{memberLevel.name}}</text>
+        </view>
+        <view class="level-progress-bar">
+          <view class="level-progress" style="width: {{memberLevel.progress}}%; background: {{memberLevel.color}}"></view>
+        </view>
+        <view class="level-hint" wx:if="{{memberLevel.nextLevel}}">
+          还差{{memberLevel.nextLevelPoints - totalPoints}}积分升级{{memberLevel.nextLevel}}
+        </view>
+        <view class="level-hint" wx:else>
+          已是最高等级
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="sign-in-section">
+    <view class="sign-in-card">
+      <view class="sign-in-left">
+        <view class="sign-in-title">每日签到</view>
+        <view class="sign-in-streak">连续签到{{signInStreak}}天</view>
+      </view>
+      <view class="sign-in-btn {{isSignedIn ? 'signed' : ''}}" bindtap="handleSignIn">
+        <text wx:if="{{!isSignedIn}}">立即签到 +3</text>
+        <text wx:else>已签到 ✓</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="quick-actions">
+    <view class="section-title">赚取积分</view>
+    <view class="action-grid">
+      <view
+        wx:for="{{quickActions}}"
+        wx:key="key"
+        class="action-item"
+        data-action="{{item.key}}"
+        bindtap="handleQuickAction"
+      >
+        <view class="action-icon">{{item.icon}}</view>
+        <view class="action-name">{{item.name}}</view>
+        <view class="action-points">{{item.points}}</view>
+        <view class="action-desc">{{item.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="stats-section">
+    <view class="section-title">积分统计</view>
+    <view class="stats-card">
+      <view class="stats-row">
+        <view class="stats-item">
+          <view class="stats-value income">+{{pointsStats.totalEarned}}</view>
+          <view class="stats-label">累计获得</view>
+        </view>
+        <view class="stats-divider"></view>
+        <view class="stats-item">
+          <view class="stats-value expense">-{{pointsStats.totalSpent}}</view>
+          <view class="stats-label">累计消耗</view>
+        </view>
+        <view class="stats-divider"></view>
+        <view class="stats-item">
+          <view class="stats-value invite">{{inviteCount}}</view>
+          <view class="stats-label">邀请好友</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="invite-section">
+    <view class="section-title">邀请有礼</view>
+    <view class="invite-card" bindtap="handleInviteFriend">
+      <view class="invite-left">
+        <view class="invite-icon">🎁</view>
+        <view class="invite-info">
+          <view class="invite-title">邀请好友，双方得积分</view>
+          <view class="invite-desc">{{inviteConfig.description}}</view>
+          <view class="invite-reward">邀请人 +{{inviteConfig.inviterPoints}}积分 | 好友 +{{inviteConfig.inviteePoints}}积分</view>
+        </view>
+      </view>
+      <view class="invite-btn">去邀请</view>
+    </view>
+  </view>
+
+  <view class="mall-section">
+    <view class="section-title">积分商城</view>
+    <scroll-view class="category-scroll" scroll-x="true">
+      <view class="category-list">
+        <view
+          wx:for="{{mallCategories}}"
+          wx:key="key"
+          class="category-item {{activeMallCategory === item.key ? 'active' : ''}}"
+          data-category="{{item.key}}"
+          bindtap="handleMallCategoryChange"
+        >
+          {{item.name}}
+        </view>
+      </view>
+    </scroll-view>
+    <view class="mall-grid">
+      <view
+        wx:for="{{mallItems}}"
+        wx:key="id"
+        class="mall-item"
+      >
+        <image class="mall-item-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="mall-item-info">
+          <view class="mall-item-name">{{item.name}}</view>
+          <view class="mall-item-desc">{{item.desc}}</view>
+          <view class="mall-item-bottom">
+            <view class="mall-item-points">{{item.points}}积分</view>
+            <view class="mall-item-price">¥{{item.originalPrice}}</view>
+          </view>
+          <view
+            class="redeem-btn {{totalPoints >= item.points ? '' : 'disabled'}}"
+            data-item-id="{{item.id}}"
+            bindtap="handleRedeemItem"
+          >
+            立即兑换
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="activity-section">
+    <view class="section-title">活动中心</view>
+    <view class="activity-list">
+      <view
+        wx:for="{{activities}}"
+        wx:key="id"
+        class="activity-item"
+      >
+        <image class="activity-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="activity-tag">{{item.type === 'live' ? '直播' : '线下'}}</view>
+        <view class="activity-info">
+          <view class="activity-title">{{item.title}}</view>
+          <view class="activity-subtitle">{{item.subtitle}}</view>
+          <view class="activity-meta">
+            <view class="meta-item">📅 {{item.scheduledTime}}</view>
+            <view class="meta-item">📍 {{item.location}}</view>
+          </view>
+          <view class="activity-footer">
+            <view class="activity-slots">名额: {{item.registeredCount}}/{{item.totalSlots}}</view>
+            <view class="activity-reward">+{{item.rewardPoints}}积分</view>
+            <view
+              class="register-btn"
+              data-activity-id="{{item.id}}"
+              bindtap="handleRegisterActivity"
+            >
+              立即报名
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

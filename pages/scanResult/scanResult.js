@@ -1,5 +1,6 @@
 const mockData = require('../../utils/mockData.js');
 const antiCounterfeit = require('../../utils/antiCounterfeit.js');
+const greenPoints = require('../../utils/greenPoints.js');
 
 Page({
   data: {
@@ -14,12 +15,12 @@ Page({
 
   onLoad: function(options) {
     console.log('[防伪验真] 扫码结果页加载，参数：', options);
-    
+
     const traceId = options.traceId;
     const scanType = options.scanType || 'qrCode';
-    
+
     if (traceId) {
-      this.setData({ 
+      this.setData({
         traceId: traceId,
         scanType: scanType
       });
@@ -37,17 +38,17 @@ Page({
 
   verifyProduct: async function(traceId) {
     const that = this;
-    
+
     wx.showLoading({
       title: '防伪验证中...',
       mask: true
     });
-    
+
     try {
       const result = await antiCounterfeit.verifyProduct(traceId);
-      
+
       wx.hideLoading();
-      
+
       if (result.success) {
         const traceData = mockData.getTraceData(traceId);
         that.setData({
@@ -56,6 +57,16 @@ Page({
           loading: false,
           showAlerts: result.abnormal && result.abnormal.isAbnormal
         });
+
+        var pointsResult = greenPoints.earnPoints('scan', '扫码溯源:' + traceId);
+        if (pointsResult.earned > 0) {
+          console.log('[Scan] 扫码获得积分:', pointsResult.earned);
+        }
+
+        var app = getApp();
+        if (app.processInviteReward) {
+          app.processInviteReward(traceId);
+        }
       } else {
         wx.showToast({
           title: result.error || '验证失败',
@@ -78,7 +89,7 @@ Page({
 
   confirmToDetail: function() {
     const traceId = this.data.traceId;
-    
+
     wx.navigateTo({
       url: `/pages/detail/detail?traceId=${traceId}`,
       success: function() {
@@ -119,7 +130,7 @@ Page({
   goToReport: function() {
     const traceId = this.data.traceId;
     const productInfo = this.data.productInfo;
-    
+
     wx.navigateTo({
       url: `/pages/reportProduct/reportProduct?traceId=${traceId}&productName=${encodeURIComponent(productInfo ? productInfo.productName : '')}`,
       success: function() {
