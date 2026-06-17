@@ -210,6 +210,62 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
+.batch-subscribe-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20rpx;
+  gap: 16rpx;
+}
+
+.batch-subscribe-btn {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 24rpx;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10rpx);
+  border-radius: 30rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.batch-subscribe-btn:active {
+  transform: scale(0.96);
+}
+
+.batch-subscribe-btn.subscribed {
+  background: rgba(218, 165, 32, 0.3);
+  border-color: rgba(218, 165, 32, 0.5);
+}
+
+.subscribe-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.subscribe-text {
+  font-size: 24rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+.subscribe-setting-link {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 12rpx 16rpx;
+}
+
+.subscribe-setting-link:active {
+  opacity: 0.7;
+}
+
+.link-arrow {
+  margin-left: 6rpx;
+  font-size: 28rpx;
+}
+
 /* 区块链存证标识 */
 .blockchain-badge {
   display: flex;

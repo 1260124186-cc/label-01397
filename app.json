@@ -24,7 +24,8 @@
     "pages/service/index",
     "pages/service/ticketCreate",
     "pages/service/ticketList",
-    "pages/service/ticketDetail"
+    "pages/service/ticketDetail",
+    "pages/subscription/subscription"
   ],
   "window": {
     "backgroundTextStyle": "dark",

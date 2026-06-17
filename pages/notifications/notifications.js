@@ -1,12 +1,16 @@
 var userStore = require('../../utils/userStore.js');
 var storage = require('../../utils/storage.js');
+var subscription = require('../../utils/subscription.js');
 
 var TYPE_ICONS = {
   system: '📢',
   trace: '🔍',
   recall: '⚠️',
   activity: '🎉',
-  privacy: '🛡️'
+  privacy: '🛡️',
+  newBatch: '📦',
+  reportUpdate: '🔬',
+  promotion: '🎊'
 };
 
 var TYPE_COLORS = {
@@ -14,18 +18,32 @@ var TYPE_COLORS = {
   trace: '#2E8B57',
   recall: '#FF4D4F',
   activity: '#DAA520',
-  privacy: '#722ED1'
+  privacy: '#722ED1',
+  newBatch: '#2E8B57',
+  reportUpdate: '#1890FF',
+  promotion: '#DAA520'
 };
 
 Page({
   data: {
     notifications: [],
     isEmpty: true,
-    unreadCount: 0
+    unreadCount: 0,
+    subEnabled: false
   },
 
   onShow: function() {
     this.loadNotifications();
+    this.checkSubscriptionStatus();
+  },
+
+  checkSubscriptionStatus: function() {
+    var sub = subscription.getSubscriptions();
+    this.setData({ subEnabled: sub.enabled });
+  },
+
+  goToSubscription: function() {
+    wx.navigateTo({ url: '/pages/subscription/subscription' });
   },
 
   loadNotifications: function() {

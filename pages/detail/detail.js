@@ -9,6 +9,7 @@ const mockData = require('../../utils/mockData.js');
 const shareUtil = require('../../utils/share.js');
 const i18n = require('../../utils/i18n/index.js');
 const shop = require('../../utils/shop.js');
+const subscription = require('../../utils/subscription.js');
 
 // 锚点 Tab 配置（将在运行时根据语言填充 label）
 const ANCHOR_TABS_BASE = [
@@ -203,7 +204,10 @@ Page({
     lastRewardResult: null,
 
     // ========== 商城与购买功能 ==========
-    cartCount: 0
+    cartCount: 0,
+
+    // ========== 批次订阅功能 ==========
+    batchSubscribed: false
   },
 
   /**
@@ -367,7 +371,8 @@ Page({
           brewStepTotalSeconds: initialBrewStepSeconds,
           brewStepTimerText: initialBrewStepTimerText,
           shareInviteConfig: shareInviteConfig,
-          shareInviteData: shareInviteData
+          shareInviteData: shareInviteData,
+          batchSubscribed: subscription.isBatchSubscribed(data.basicInfo.batchNo)
         });
 
         // 设置导航栏标题
@@ -2074,6 +2079,39 @@ Page({
   refreshCartCount: function() {
     var count = shop.getCartCount();
     this.setData({ cartCount: count });
+  },
+
+  toggleBatchSubscription: function() {
+    var that = this;
+    var data = this.data.traceData;
+    if (!data || !data.basicInfo) return;
+
+    var batchNo = data.basicInfo.batchNo;
+    var productName = data.basicInfo.productName;
+    var traceId = this.data.traceId;
+
+    if (this.data.batchSubscribed) {
+      wx.showModal({
+        title: '取消订阅',
+        content: '确定取消订阅批次 ' + batchNo + ' 的动态吗？',
+        confirmColor: '#ff4d4f',
+        success: function(res) {
+          if (res.confirm) {
+            subscription.unsubscribeBatch(batchNo);
+            that.setData({ batchSubscribed: false });
+            wx.showToast({ title: '已取消订阅', icon: 'success', duration: 1500 });
+          }
+        }
+      });
+    } else {
+      subscription.subscribeBatch(batchNo, traceId, productName);
+      this.setData({ batchSubscribed: true });
+      wx.showToast({ title: '已订阅本批次动态', icon: 'success', duration: 1500 });
+    }
+  },
+
+  goToSubscriptionPage: function() {
+    wx.navigateTo({ url: '/pages/subscription/subscription' });
   },
 
   goToShopHome: function() {

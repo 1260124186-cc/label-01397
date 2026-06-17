@@ -1,0 +1,134 @@
+<view class="subscription-page">
+  <view class="sub-header">
+    <view class="sub-header-icon">🔔</view>
+    <view class="sub-header-text">
+      <view class="sub-header-title">消息订阅</view>
+      <view class="sub-header-desc">订阅感兴趣的消息类型、品种和地区</view>
+    </view>
+    <view class="sub-enable-switch {{enabled ? 'enabled' : 'disabled'}}" bindtap="onToggleEnabled">
+      <view class="switch-track">
+        <view class="switch-thumb"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="sub-section" wx:if="{{enabled}}">
+    <view class="section-title">
+      <text class="section-icon">📨</text>
+      <text class="section-label">消息类型</text>
+    </view>
+    <view class="type-list">
+      <view
+        wx:for="{{messageTypes}}"
+        wx:key="key"
+        class="type-item {{item.checked ? 'checked' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onToggleMessageType"
+      >
+        <view class="type-icon-wrapper" style="background: {{item.checked ? item.color + '15' : '#F5F5F5'}};">
+          <text class="type-icon">{{item.icon}}</text>
+        </view>
+        <view class="type-info">
+          <view class="type-name">{{item.label}}</view>
+          <view class="type-status" style="color: {{item.checked ? item.color : '#999999'}};">{{item.checked ? '已订阅' : '未订阅'}}</view>
+        </view>
+        <view class="type-check {{item.checked ? 'checked' : ''}}" style="background: {{item.checked ? item.color : '#E0E0E0'}};">
+          <text wx:if="{{item.checked}}">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="sub-section" wx:if="{{enabled}}">
+    <view class="section-title">
+      <text class="section-icon">🌸</text>
+      <text class="section-label">品种偏好</text>
+    </view>
+    <view class="variety-list">
+      <view
+        wx:for="{{varieties}}"
+        wx:key="key"
+        class="variety-item {{item.checked ? 'checked' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onToggleVariety"
+      >
+        <view class="variety-badge" style="background: {{item.checked ? item.color : '#E8E8E8'}};">
+          <text class="variety-badge-icon">{{item.icon}}</text>
+        </view>
+        <view class="variety-name" style="color: {{item.checked ? item.color : '#999999'}};">{{item.name}}</view>
+        <view class="variety-check {{item.checked ? 'checked' : ''}}" style="border-color: {{item.checked ? item.color : '#D0D0D0'}}; background: {{item.checked ? item.color : '#FFFFFF'}};">
+          <text wx:if="{{item.checked}}" class="check-mark" style="color: #FFFFFF;">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="sub-section" wx:if="{{enabled}}">
+    <view class="section-title">
+      <text class="section-icon">📍</text>
+      <text class="section-label">地区偏好</text>
+    </view>
+    <view class="region-list">
+      <view
+        wx:for="{{regions}}"
+        wx:key="key"
+        class="region-item {{item.checked ? 'checked' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onToggleRegion"
+      >
+        <text class="region-icon">{{item.icon}}</text>
+        <text class="region-name" style="color: {{item.checked ? '#2E8B57' : '#999999'}};">{{item.name}}</text>
+        <view class="region-check {{item.checked ? 'checked' : ''}}">
+          <text wx:if="{{item.checked}}">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="sub-section" wx:if="{{enabled}}">
+    <view class="section-title">
+      <text class="section-icon">📦</text>
+      <text class="section-label">已订阅批次</text>
+      <view class="batch-count-badge" wx:if="{{batchCount > 0}}">{{batchCount}}</view>
+      <view class="batch-clear-btn" wx:if="{{hasBatchSubscriptions}}" bindtap="onClearAllBatchSubscriptions">清空</view>
+    </view>
+
+    <view wx:if="{{!hasBatchSubscriptions}}" class="batch-empty">
+      <text class="batch-empty-icon">📭</text>
+      <text class="batch-empty-text">暂无订阅批次，在详情页可订阅批次动态</text>
+    </view>
+
+    <view wx:else class="batch-list">
+      <view
+        wx:for="{{batchSubscriptions}}"
+        wx:key="batchNo"
+        class="batch-item"
+      >
+        <view class="batch-item-info" data-traceid="{{item.traceId}}" bindtap="onViewBatchDetail">
+          <view class="batch-item-name">{{item.productName || '未知产品'}}</view>
+          <view class="batch-item-no">批次号：{{item.batchNo}}</view>
+        </view>
+        <view class="batch-unsub-btn" data-batchno="{{item.batchNo}}" bindtap="onUnsubscribeBatch">取消订阅</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="sub-footer" wx:if="{{enabled}}">
+    <view class="test-btn" bindtap="onTestNotification">
+      <text class="test-btn-icon">🔔</text>
+      <text class="test-btn-text">推送测试通知</text>
+    </view>
+    <view class="footer-tip">
+      <text class="tip-icon">💡</text>
+      <text class="tip-text">订阅后，当新批次上市、检测报告更新或促销活动时，您将收到通知提醒</text>
+    </view>
+  </view>
+
+  <view class="disabled-overlay" wx:if="{{!enabled}}">
+    <view class="disabled-content">
+      <text class="disabled-icon">🔕</text>
+      <text class="disabled-title">消息订阅已关闭</text>
+      <text class="disabled-desc">开启后即可订阅感兴趣的消息</text>
+    </view>
+  </view>
+</view>

@@ -26,7 +26,8 @@ Page({
         title: '消息与设置',
         items: [
           { key: 'notifications', icon: '🔔', name: '消息通知', desc: '系统通知与溯源提醒', url: '/pages/notifications/notifications', badge: '' },
-          { key: 'privacy', icon: '🛡️', name: '隐私设置', desc: '数据收集与权限管理', url: '/pages/privacy/privacy', badge: '' }
+          { key: 'subscription', icon: '📩', name: '消息订阅', desc: '订阅品种、地区与批次动态', url: '/pages/subscription/subscription', badge: '' },
+          { key: 'privacy', icon: '🛡️', name: '隐私设置', desc: '数据收集与权限管理', url: '/pages/privacy/privacy' }
         ]
       }
     ]

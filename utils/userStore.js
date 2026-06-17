@@ -232,8 +232,11 @@ function initMockNotifications() {
   if (existing.length > 0) return existing;
   var mockList = [
     { type: 'system', title: '欢迎使用桂花茶溯源', content: '感谢您使用一茶一品·桂花茶溯源小程序，我们致力于为您提供透明、可信赖的茶叶溯源服务。', isRead: false },
+    { type: 'newBatch', title: '新批次上市通知', content: '金桂系列新批次GH202503已上线，来自武夷山百年茶树园，欢迎查看溯源信息。', isRead: false, extra: { traceId: 'G001' } },
     { type: 'trace', title: '新品溯源已上线', content: '金桂花茶礼盒装（六窨一提）溯源信息已更新，欢迎扫码查看完整溯源链路。', isRead: false },
+    { type: 'reportUpdate', title: '检测报告更新', content: '批次GH202503的最新检测报告已更新，所有指标合格，安全放心。', isRead: false, extra: { traceId: 'G001' } },
     { type: 'recall', title: '批次安全提醒', content: '批次GH202504部分产品农残指标异常，如已购买请查看详情并联系客服。', isRead: false },
+    { type: 'promotion', title: '金秋促销活动', content: '桂花茶金秋特惠，金桂系列满200减30，活动截止11月30日。', isRead: true },
     { type: 'activity', title: '采摘季活动开始', content: '2025金秋桂花采摘体验活动报名开启，名额有限，先到先得！', isRead: true },
     { type: 'system', title: '隐私政策更新', content: '我们更新了隐私政策，仅收集必要信息以保障您的权益，请查阅最新条款。', isRead: false }
   ];

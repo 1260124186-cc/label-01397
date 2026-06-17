@@ -66,6 +66,17 @@
       <view class="product-name">{{traceData.basicInfo.productName}}</view>
       <view class="product-batch">批次号：{{traceData.basicInfo.batchNo}}</view>
 
+      <view class="batch-subscribe-row">
+        <view class="batch-subscribe-btn {{batchSubscribed ? 'subscribed' : ''}}" bindtap="toggleBatchSubscription">
+          <text class="subscribe-icon">{{batchSubscribed ? '🔔' : '🔔'}}</text>
+          <text class="subscribe-text">{{batchSubscribed ? '已订阅本批次' : '订阅本批次动态'}}</text>
+        </view>
+        <view class="subscribe-setting-link" bindtap="goToSubscriptionPage">
+          <text>订阅设置</text>
+          <text class="link-arrow">›</text>
+        </view>
+      </view>
+
       <!-- 区块链存证标识 -->
       <view class="blockchain-badge" wx:if="{{traceData.blockchainInfo}}">
         <view class="badge-icon">🔗</view>
