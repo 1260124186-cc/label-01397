@@ -211,10 +211,50 @@ const mockTraceData = {
     // 区块链存证信息
     blockchainInfo: {
       chainName: '溯源链',
+      chainId: 'trace-chain-mainnet-01',
       blockHeight: 1892347,
-      txHash: '0x8f9a3b...c7d2e1',
+      txHash: '0x8f9a3b7c4d5e6f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5',
+      txHashShort: '0x8f9a3b...c7d2e1',
       timestamp: '2025-09-25 14:32:18',
-      verifyStatus: '已验证'
+      verifyStatus: '已验证',
+      contractAddress: '0x1234abcd5678ef90abcdef1234567890abcdef12',
+      nodeCount: 21,
+      consensusType: 'PBFT',
+      onChainFields: [
+        { key: 'batchNo', label: '批次号', value: 'GH202503', onChain: true },
+        { key: 'testReport', label: '检测报告编号', value: 'NTQC-2025-09876', onChain: true },
+        { key: 'productionTime', label: '出厂时间', value: '2025年9月25日', onChain: true },
+        { key: 'teaTreeAge', label: '茶树龄', value: '200年', onChain: true },
+        { key: 'osmanthusVariety', label: '桂花品种', value: '金桂', onChain: true },
+        { key: 'scentingTimes', label: '窨制次数', value: '5次', onChain: true },
+        { key: 'greenCert', label: '绿色认证', value: '有机产品认证', onChain: true }
+      ],
+      blockExplorerUrl: 'https://explorer.tracechain.cn/tx/0x8f9a3b7c4d5e6f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5',
+      scanRecords: {
+        totalQueryCount: 128,
+        firstScanTime: '2025-09-26 09:15:32',
+        lastScanTime: '2025-12-10 18:22:45',
+        records: [
+          { time: '2025-09-26 09:15:32', type: 'first', location: '湖北咸宁', ip: '119.96.xx.xx' },
+          { time: '2025-10-03 14:08:19', type: 'repeat', location: '北京朝阳', ip: '123.125.xx.xx' },
+          { time: '2025-10-15 20:33:51', type: 'repeat', location: '上海浦东', ip: '101.226.xx.xx' },
+          { time: '2025-11-02 11:47:05', type: 'repeat', location: '广东深圳', ip: '183.14.xx.xx' },
+          { time: '2025-12-10 18:22:45', type: 'repeat', location: '浙江杭州', ip: '115.236.xx.xx' }
+        ]
+      },
+      tsaCertificate: {
+        issuer: '中国电子认证服务产业联盟',
+        tsServer: 'TSA-2025-CN-JUDICIAL-001',
+        certSerial: 'TSA-CERT-2025-0925-001',
+        algorithm: 'SM2',
+        timestamp: '2025-09-25 14:32:18.456+08:00',
+        accuracy: '0.001s',
+        tsTokenHash: 'a7f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0',
+        evidenceHash: 'e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1',
+        legalBasis: '《中华人民共和国电子签名法》第十三条',
+        validityPeriod: '2025-01-01 至 2030-12-31',
+        verifyUrl: 'https://tsa.cfca.com.cn/verify?sn=TSA-CERT-2025-0925-001'
+      }
     },
     
     // 产地地理信息（地图模块）
@@ -582,10 +622,49 @@ const mockTraceData = {
     // 区块链存证信息
     blockchainInfo: {
       chainName: '溯源链',
+      chainId: 'trace-chain-mainnet-01',
       blockHeight: 1895123,
-      txHash: '0x2e7c4a...f8b9d3',
+      txHash: '0x2e7c4a9b8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1',
+      txHashShort: '0x2e7c4a...f8b9d3',
       timestamp: '2025-09-30 10:15:42',
-      verifyStatus: '已验证'
+      verifyStatus: '已验证',
+      contractAddress: '0x1234abcd5678ef90abcdef1234567890abcdef12',
+      nodeCount: 21,
+      consensusType: 'PBFT',
+      onChainFields: [
+        { key: 'batchNo', label: '批次号', value: 'GH202504', onChain: true },
+        { key: 'testReport', label: '检测报告编号', value: 'HBAQ-2025-12345', onChain: true },
+        { key: 'productionTime', label: '出厂时间', value: '2025年9月30日', onChain: true },
+        { key: 'teaTreeAge', label: '茶树龄', value: '120年', onChain: true },
+        { key: 'osmanthusVariety', label: '桂花品种', value: '银桂', onChain: true },
+        { key: 'scentingTimes', label: '窨制次数', value: '3次', onChain: true },
+        { key: 'greenCert', label: '绿色认证', value: '绿色食品认证', onChain: true }
+      ],
+      blockExplorerUrl: 'https://explorer.tracechain.cn/tx/0x2e7c4a9b8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1',
+      scanRecords: {
+        totalQueryCount: 56,
+        firstScanTime: '2025-10-01 16:42:08',
+        lastScanTime: '2025-12-08 09:15:33',
+        records: [
+          { time: '2025-10-01 16:42:08', type: 'first', location: '湖北武汉', ip: '111.47.xx.xx' },
+          { time: '2025-10-20 13:28:15', type: 'repeat', location: '四川成都', ip: '171.221.xx.xx' },
+          { time: '2025-11-15 19:05:44', type: 'repeat', location: '江苏南京', ip: '49.65.xx.xx' },
+          { time: '2025-12-08 09:15:33', type: 'repeat', location: '福建厦门', ip: '120.42.xx.xx' }
+        ]
+      },
+      tsaCertificate: {
+        issuer: '中国电子认证服务产业联盟',
+        tsServer: 'TSA-2025-CN-JUDICIAL-001',
+        certSerial: 'TSA-CERT-2025-0930-002',
+        algorithm: 'SM2',
+        timestamp: '2025-09-30 10:15:42.891+08:00',
+        accuracy: '0.001s',
+        tsTokenHash: 'b8c4d2e0f6a7b3c9d1e5f7a9b1c3d5e7f9a0b2c4d6e8f0a2b4c6d8e0f2a4b6',
+        evidenceHash: 'f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0',
+        legalBasis: '《中华人民共和国电子签名法》第十三条',
+        validityPeriod: '2025-01-01 至 2030-12-31',
+        verifyUrl: 'https://tsa.cfca.com.cn/verify?sn=TSA-CERT-2025-0930-002'
+      }
     },
     
     // 产地地理信息（地图模块）
@@ -899,10 +978,48 @@ const mockTraceData = {
     // 区块链存证信息
     blockchainInfo: {
       chainName: '溯源链',
+      chainId: 'trace-chain-mainnet-01',
       blockHeight: 1892348,
-      txHash: '0x9a4b2c...d8e3f2',
+      txHash: '0x9a4b2c3d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3',
+      txHashShort: '0x9a4b2c...d8e3f2',
       timestamp: '2025-09-25 14:35:22',
-      verifyStatus: '已验证'
+      verifyStatus: '已验证',
+      contractAddress: '0x1234abcd5678ef90abcdef1234567890abcdef12',
+      nodeCount: 21,
+      consensusType: 'PBFT',
+      onChainFields: [
+        { key: 'batchNo', label: '批次号', value: 'GH202503', onChain: true },
+        { key: 'testReport', label: '检测报告编号', value: 'NTQC-2025-09877', onChain: true },
+        { key: 'productionTime', label: '出厂时间', value: '2025年9月25日', onChain: true },
+        { key: 'teaTreeAge', label: '茶树龄', value: '180年', onChain: true },
+        { key: 'osmanthusVariety', label: '桂花品种', value: '金桂', onChain: true },
+        { key: 'scentingTimes', label: '窨制次数', value: '6次', onChain: true },
+        { key: 'greenCert', label: '绿色认证', value: '有机产品认证', onChain: true }
+      ],
+      blockExplorerUrl: 'https://explorer.tracechain.cn/tx/0x9a4b2c3d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3',
+      scanRecords: {
+        totalQueryCount: 89,
+        firstScanTime: '2025-09-26 10:22:15',
+        lastScanTime: '2025-12-12 14:38:09',
+        records: [
+          { time: '2025-09-26 10:22:15', type: 'first', location: '福建福州', ip: '117.26.xx.xx' },
+          { time: '2025-10-08 16:45:30', type: 'repeat', location: '上海黄浦', ip: '180.168.xx.xx' },
+          { time: '2025-11-20 08:12:55', type: 'repeat', location: '北京海淀', ip: '124.65.xx.xx' }
+        ]
+      },
+      tsaCertificate: {
+        issuer: '中国电子认证服务产业联盟',
+        tsServer: 'TSA-2025-CN-JUDICIAL-001',
+        certSerial: 'TSA-CERT-2025-0925-003',
+        algorithm: 'SM2',
+        timestamp: '2025-09-25 14:35:22.234+08:00',
+        accuracy: '0.001s',
+        tsTokenHash: 'c3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5',
+        evidenceHash: 'd5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5e7',
+        legalBasis: '《中华人民共和国电子签名法》第十三条',
+        validityPeriod: '2025-01-01 至 2030-12-31',
+        verifyUrl: 'https://tsa.cfca.com.cn/verify?sn=TSA-CERT-2025-0925-003'
+      }
     },
     
     // 产地与故事数据（后续通过引用复用 G001）
@@ -1068,10 +1185,48 @@ const mockTraceData = {
     // 区块链存证信息
     blockchainInfo: {
       chainName: '溯源链',
+      chainId: 'trace-chain-mainnet-01',
       blockHeight: 1892349,
-      txHash: '0x1b3d5f...a9c7e4',
+      txHash: '0x1b3d5f7a9c1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5',
+      txHashShort: '0x1b3d5f...a9c7e4',
       timestamp: '2025-09-25 14:38:45',
-      verifyStatus: '已验证'
+      verifyStatus: '已验证',
+      contractAddress: '0x1234abcd5678ef90abcdef1234567890abcdef12',
+      nodeCount: 21,
+      consensusType: 'PBFT',
+      onChainFields: [
+        { key: 'batchNo', label: '批次号', value: 'GH202503', onChain: true },
+        { key: 'testReport', label: '检测报告编号', value: 'NTQC-2025-09878', onChain: true },
+        { key: 'productionTime', label: '出厂时间', value: '2025年9月25日', onChain: true },
+        { key: 'teaTreeAge', label: '茶树龄', value: '150年', onChain: true },
+        { key: 'osmanthusVariety', label: '桂花品种', value: '金桂', onChain: true },
+        { key: 'scentingTimes', label: '窨制次数', value: '4次', onChain: true },
+        { key: 'greenCert', label: '绿色认证', value: '有机产品认证', onChain: true }
+      ],
+      blockExplorerUrl: 'https://explorer.tracechain.cn/tx/0x1b3d5f7a9c1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5',
+      scanRecords: {
+        totalQueryCount: 34,
+        firstScanTime: '2025-09-27 08:45:12',
+        lastScanTime: '2025-12-05 20:18:33',
+        records: [
+          { time: '2025-09-27 08:45:12', type: 'first', location: '广东广州', ip: '113.108.xx.xx' },
+          { time: '2025-10-15 14:22:08', type: 'repeat', location: '湖南长沙', ip: '175.6.xx.xx' },
+          { time: '2025-12-05 20:18:33', type: 'repeat', location: '重庆渝北', ip: '183.67.xx.xx' }
+        ]
+      },
+      tsaCertificate: {
+        issuer: '中国电子认证服务产业联盟',
+        tsServer: 'TSA-2025-CN-JUDICIAL-001',
+        certSerial: 'TSA-CERT-2025-0925-004',
+        algorithm: 'SM2',
+        timestamp: '2025-09-25 14:38:45.678+08:00',
+        accuracy: '0.001s',
+        tsTokenHash: 'd1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1e3',
+        evidenceHash: 'e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1e3f5',
+        legalBasis: '《中华人民共和国电子签名法》第十三条',
+        validityPeriod: '2025-01-01 至 2030-12-31',
+        verifyUrl: 'https://tsa.cfca.com.cn/verify?sn=TSA-CERT-2025-0925-004'
+      }
     },
     
     // 产地与故事数据（后续通过引用复用 G001）
@@ -1209,10 +1364,48 @@ const mockTraceData = {
 
     blockchainInfo: {
       chainName: '溯源链',
+      chainId: 'trace-chain-mainnet-01',
       blockHeight: 1896001,
-      txHash: '0x4d2c7e...b1a8f9',
+      txHash: '0x4d2c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7',
+      txHashShort: '0x4d2c7e...b1a8f9',
       timestamp: '2025-10-05 15:20:36',
-      verifyStatus: '已验证'
+      verifyStatus: '已验证',
+      contractAddress: '0x1234abcd5678ef90abcdef1234567890abcdef12',
+      nodeCount: 21,
+      consensusType: 'PBFT',
+      onChainFields: [
+        { key: 'batchNo', label: '批次号', value: 'GH202505', onChain: true },
+        { key: 'testReport', label: '检测报告编号', value: 'NTQC-2025-09999', onChain: true },
+        { key: 'productionTime', label: '出厂时间', value: '2025年10月5日', onChain: true },
+        { key: 'teaTreeAge', label: '茶树龄', value: '160年', onChain: true },
+        { key: 'osmanthusVariety', label: '桂花品种', value: '丹桂', onChain: true },
+        { key: 'scentingTimes', label: '窨制次数', value: '6次', onChain: true },
+        { key: 'greenCert', label: '绿色认证', value: '有机产品认证', onChain: true }
+      ],
+      blockExplorerUrl: 'https://explorer.tracechain.cn/tx/0x4d2c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7',
+      scanRecords: {
+        totalQueryCount: 15,
+        firstScanTime: '2025-10-06 11:30:22',
+        lastScanTime: '2025-12-14 16:45:18',
+        records: [
+          { time: '2025-10-06 11:30:22', type: 'first', location: '北京西城', ip: '106.39.xx.xx' },
+          { time: '2025-11-08 19:55:41', type: 'repeat', location: '浙江杭州', ip: '115.236.xx.xx' },
+          { time: '2025-12-14 16:45:18', type: 'repeat', location: '广东深圳', ip: '183.14.xx.xx' }
+        ]
+      },
+      tsaCertificate: {
+        issuer: '中国电子认证服务产业联盟',
+        tsServer: 'TSA-2025-CN-JUDICIAL-001',
+        certSerial: 'TSA-CERT-2025-1005-005',
+        algorithm: 'SM2',
+        timestamp: '2025-10-05 15:20:36.123+08:00',
+        accuracy: '0.001s',
+        tsTokenHash: 'f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9',
+        evidenceHash: 'a7b9c1d3e5f7a9b1c3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1',
+        legalBasis: '《中华人民共和国电子签名法》第十三条',
+        validityPeriod: '2025-01-01 至 2030-12-31',
+        verifyUrl: 'https://tsa.cfca.com.cn/verify?sn=TSA-CERT-2025-1005-005'
+      }
     },
 
     locationMap: {
@@ -2201,6 +2394,107 @@ function calculateTeaDosage(people, taste) {
   };
 }
 
+function verifyBlockchainEvidence(txHash) {
+  if (!txHash || typeof txHash !== 'string') {
+    return {
+      success: false,
+      message: '交易哈希不能为空'
+    };
+  }
+
+  var normalizedHash = txHash.trim().toLowerCase();
+
+  for (var traceId in mockTraceData) {
+    var data = mockTraceData[traceId];
+    if (data.blockchainInfo && data.blockchainInfo.txHash.toLowerCase() === normalizedHash) {
+      var bc = data.blockchainInfo;
+      return {
+        success: true,
+        verified: true,
+        txHash: bc.txHash,
+        chainName: bc.chainName,
+        chainId: bc.chainId,
+        blockHeight: bc.blockHeight,
+        timestamp: bc.timestamp,
+        contractAddress: bc.contractAddress,
+        nodeCount: bc.nodeCount,
+        consensusType: bc.consensusType,
+        verifyTime: new Date().toLocaleString('zh-CN'),
+        traceId: traceId,
+        productName: data.basicInfo.productName,
+        batchNo: data.basicInfo.batchNo,
+        onChainFieldsCount: bc.onChainFields ? bc.onChainFields.filter(function(f) { return f.onChain; }).length : 0,
+        scanRecords: bc.scanRecords
+      };
+    }
+  }
+
+  return {
+    success: true,
+    verified: false,
+    txHash: normalizedHash,
+    message: '该交易哈希未在溯源链上找到对应记录',
+    verifyTime: new Date().toLocaleString('zh-CN')
+  };
+}
+
+function recordAntiCounterfeitingScan(traceId, scanInfo) {
+  if (!traceId || !mockTraceData[traceId]) {
+    return {
+      success: false,
+      message: '无效的溯源码'
+    };
+  }
+
+  var data = mockTraceData[traceId];
+  if (!data.blockchainInfo || !data.blockchainInfo.scanRecords) {
+    return {
+      success: false,
+      message: '无防伪记录'
+    };
+  }
+
+  var records = data.blockchainInfo.scanRecords.records;
+  var isFirstScan = records.length === 0;
+  var now = new Date().toLocaleString('zh-CN');
+
+  var newRecord = {
+    time: now,
+    type: isFirstScan ? 'first' : 'repeat',
+    location: (scanInfo && scanInfo.location) || '未知位置',
+    ip: (scanInfo && scanInfo.ip) || 'xxx.xxx.xx.xx'
+  };
+
+  return {
+    success: true,
+    isFirstScan: isFirstScan,
+    totalQueryCount: data.blockchainInfo.scanRecords.totalQueryCount + 1,
+    currentRecord: newRecord,
+    firstScanTime: isFirstScan ? now : data.blockchainInfo.scanRecords.firstScanTime,
+    lastScanTime: now,
+    traceId: traceId,
+    productName: data.basicInfo.productName
+  };
+}
+
+function getTsaCertificate(traceId) {
+  if (!traceId || !mockTraceData[traceId]) {
+    return null;
+  }
+
+  var data = mockTraceData[traceId];
+  if (!data.blockchainInfo || !data.blockchainInfo.tsaCertificate) {
+    return null;
+  }
+
+  return Object.assign({}, data.blockchainInfo.tsaCertificate, {
+    chainName: data.blockchainInfo.chainName,
+    txHash: data.blockchainInfo.txHash,
+    productName: data.basicInfo.productName,
+    batchNo: data.basicInfo.batchNo
+  });
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -2220,5 +2514,8 @@ module.exports = {
   getOsmanthusVarietyConfig,
   getAllVarieties,
   getBrewingInteractiveConfig,
-  calculateTeaDosage
+  calculateTeaDosage,
+  verifyBlockchainEvidence,
+  recordAntiCounterfeitingScan,
+  getTsaCertificate
 };

@@ -137,7 +137,17 @@ Page({
     // --- 用量计算器 ---
     dosagePeople: 1,
     dosageTaste: 'medium',
-    dosageResult: null
+    dosageResult: null,
+
+    // ========== 区块链存证功能 ==========
+    bcVerifying: false,
+    bcVerifyResult: null,
+    bcShowVerifyResult: false,
+    bcShowTxHashFull: false,
+    bcShowScanRecords: false,
+    bcShowTsaCert: false,
+    bcTsaCertData: null,
+    bcAntiCounterResult: null
   },
 
   /**
@@ -1578,6 +1588,103 @@ Page({
       dosageTaste: taste,
       dosageResult: result
     });
+  },
+
+  verifyBlockchainEvidence: function() {
+    var that = this;
+    var bc = that.data.traceData && that.data.traceData.blockchainInfo;
+    if (!bc || !bc.txHash) {
+      wx.showToast({ title: '无存证信息', icon: 'none' });
+      return;
+    }
+
+    that.setData({ bcVerifying: true, bcShowVerifyResult: false });
+
+    setTimeout(function() {
+      var result = mockData.verifyBlockchainEvidence(bc.txHash);
+      that.setData({
+        bcVerifying: false,
+        bcVerifyResult: result,
+        bcShowVerifyResult: true
+      });
+    }, 1500);
+  },
+
+  copyTxHash: function() {
+    var bc = this.data.traceData && this.data.traceData.blockchainInfo;
+    if (!bc || !bc.txHash) {
+      wx.showToast({ title: '无交易哈希', icon: 'none' });
+      return;
+    }
+    wx.setClipboardData({
+      data: bc.txHash,
+      success: function() {
+        wx.showToast({ title: '已复制交易哈希', icon: 'success', duration: 1500 });
+      }
+    });
+  },
+
+  toggleTxHashDisplay: function() {
+    this.setData({
+      bcShowTxHashFull: !this.data.bcShowTxHashFull
+    });
+  },
+
+  openBlockExplorer: function() {
+    var bc = this.data.traceData && this.data.traceData.blockchainInfo;
+    if (!bc || !bc.blockExplorerUrl) {
+      wx.showToast({ title: '无浏览器链接', icon: 'none' });
+      return;
+    }
+    wx.navigateTo({
+      url: '/pages/webview/webview?url=' + encodeURIComponent(bc.blockExplorerUrl) + '&title=区块浏览器'
+    });
+  },
+
+  toggleScanRecords: function() {
+    var that = this;
+    var show = !that.data.bcShowScanRecords;
+    that.setData({ bcShowScanRecords: show });
+
+    if (show && that.data.traceId) {
+      var scanResult = mockData.recordAntiCounterfeitingScan(that.data.traceId, {
+        location: '当前位置',
+        ip: 'xxx.xxx.xx.xx'
+      });
+      that.setData({ bcAntiCounterResult: scanResult });
+    }
+  },
+
+  toggleTsaCertificate: function() {
+    var that = this;
+    var show = !that.data.bcShowTsaCert;
+    if (show && that.data.traceId) {
+      var tsaData = mockData.getTsaCertificate(that.data.traceId);
+      that.setData({
+        bcShowTsaCert: true,
+        bcTsaCertData: tsaData
+      });
+    } else {
+      that.setData({ bcShowTsaCert: show });
+    }
+  },
+
+  copyTsaCertSerial: function() {
+    var tsa = this.data.bcTsaCertData;
+    if (!tsa || !tsa.certSerial) {
+      wx.showToast({ title: '无证书编号', icon: 'none' });
+      return;
+    }
+    wx.setClipboardData({
+      data: tsa.certSerial,
+      success: function() {
+        wx.showToast({ title: '已复制证书编号', icon: 'success', duration: 1500 });
+      }
+    });
+  },
+
+  closeBlockchainVerifyResult: function() {
+    this.setData({ bcShowVerifyResult: false });
   },
 
   /**

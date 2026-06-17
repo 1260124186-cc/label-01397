@@ -35,6 +35,7 @@ global.wx = {
   hideLoading: jest.fn(),
   showToast: jest.fn(),
   navigateBack: jest.fn(),
+  navigateTo: jest.fn(),
   setNavigationBarTitle: jest.fn(),
   pageScrollTo: jest.fn(),
   setClipboardData: jest.fn(),
@@ -96,6 +97,63 @@ jest.mock('../utils/mockData.js', () => ({
                   '多人共享，茶香四溢'
     };
   }),
+  verifyBlockchainEvidence: jest.fn((txHash) => {
+    if (!txHash) {
+      return { success: false, message: '交易哈希不能为空' };
+    }
+    return {
+      success: true,
+      verified: true,
+      txHash: txHash,
+      chainName: '溯源链',
+      chainId: 'trace-chain-mainnet-01',
+      blockHeight: 1892347,
+      timestamp: '2025-09-25 14:32:18',
+      contractAddress: '0x1234abcd5678ef90abcdef1234567890abcdef12',
+      nodeCount: 21,
+      consensusType: 'PBFT',
+      verifyTime: new Date().toLocaleString('zh-CN'),
+      traceId: 'G001',
+      productName: '金桂花茶',
+      batchNo: 'GH202503',
+      onChainFieldsCount: 3,
+      scanRecords: { totalQueryCount: 128, records: [] }
+    };
+  }),
+  recordAntiCounterfeitingScan: jest.fn((traceId, scanInfo) => {
+    if (!traceId) {
+      return { success: false, message: '无效的溯源码' };
+    }
+    return {
+      success: true,
+      isFirstScan: false,
+      totalQueryCount: 129,
+      currentRecord: { time: new Date().toLocaleString('zh-CN'), type: 'repeat', location: '当前位置' },
+      firstScanTime: '2025-09-26 09:15:32',
+      lastScanTime: new Date().toLocaleString('zh-CN'),
+      traceId: traceId,
+      productName: '金桂花茶'
+    };
+  }),
+  getTsaCertificate: jest.fn((traceId) => {
+    if (!traceId) return null;
+    return {
+      issuer: '中国电子认证服务产业联盟',
+      tsServer: 'TSA-2025-CN-JUDICIAL-001',
+      certSerial: 'TSA-CERT-2025-0925-001',
+      algorithm: 'SM2',
+      timestamp: '2025-09-25 14:32:18.456+08:00',
+      accuracy: '0.001s',
+      tsTokenHash: 'a7f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0',
+      evidenceHash: 'e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1',
+      legalBasis: '《中华人民共和国电子签名法》第十三条',
+      validityPeriod: '2025-01-01 至 2030-12-31',
+      chainName: '溯源链',
+      txHash: '0x8f9a3b7c4d5e6f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5',
+      productName: '金桂花茶',
+      batchNo: 'GH202503'
+    };
+  }),
   mockTraceData: {
     'G001': {
       basicInfo: { productName: '金桂花茶', thumbnail: '' },
@@ -122,7 +180,46 @@ jest.mock('../utils/mockData.js', () => ({
       greenTrace: { ecoPlanting: {}, ecoPacking: {}, ecoLogistics: {} },
       pesticideTest: { teaTests: [], osmanthusTests: [] },
       brewingGuide: { tips: [] },
-      blockchainInfo: {},
+      blockchainInfo: {
+        chainName: '溯源链',
+        chainId: 'trace-chain-mainnet-01',
+        blockHeight: 1892347,
+        txHash: '0x8f9a3b7c4d5e6f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5',
+        txHashShort: '0x8f9a3b...c7d2e1',
+        timestamp: '2025-09-25 14:32:18',
+        verifyStatus: '已验证',
+        contractAddress: '0x1234abcd5678ef90abcdef1234567890abcdef12',
+        nodeCount: 21,
+        consensusType: 'PBFT',
+        onChainFields: [
+          { key: 'batchNo', label: '批次号', value: 'GH202503', onChain: true },
+          { key: 'testReport', label: '检测报告编号', value: 'NTQC-2025-09876', onChain: true },
+          { key: 'productionTime', label: '出厂时间', value: '2025年9月25日', onChain: true }
+        ],
+        blockExplorerUrl: 'https://explorer.tracechain.cn/tx/0x8f9a3b7c4d5e6f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5',
+        scanRecords: {
+          totalQueryCount: 128,
+          firstScanTime: '2025-09-26 09:15:32',
+          lastScanTime: '2025-12-10 18:22:45',
+          records: [
+            { time: '2025-09-26 09:15:32', type: 'first', location: '湖北咸宁', ip: '119.96.xx.xx' },
+            { time: '2025-10-03 14:08:19', type: 'repeat', location: '北京朝阳', ip: '123.125.xx.xx' }
+          ]
+        },
+        tsaCertificate: {
+          issuer: '中国电子认证服务产业联盟',
+          tsServer: 'TSA-2025-CN-JUDICIAL-001',
+          certSerial: 'TSA-CERT-2025-0925-001',
+          algorithm: 'SM2',
+          timestamp: '2025-09-25 14:32:18.456+08:00',
+          accuracy: '0.001s',
+          tsTokenHash: 'a7f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0',
+          evidenceHash: 'e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1',
+          legalBasis: '《中华人民共和国电子签名法》第十三条',
+          validityPeriod: '2025-01-01 至 2030-12-31',
+          verifyUrl: 'https://tsa.cfca.com.cn/verify?sn=TSA-CERT-2025-0925-001'
+        }
+      },
       images: {
         originImage: '',
         processImage: '',
@@ -154,7 +251,31 @@ jest.mock('../utils/mockData.js', () => ({
       greenTrace: { ecoPlanting: {}, ecoPacking: {}, ecoLogistics: {} },
       pesticideTest: { teaTests: [], osmanthusTests: [] },
       brewingGuide: { tips: [] },
-      blockchainInfo: {},
+      blockchainInfo: {
+        chainName: '溯源链',
+        chainId: 'trace-chain-mainnet-01',
+        blockHeight: 1895123,
+        txHash: '0x2e7c4a9b8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1',
+        txHashShort: '0x2e7c4a...f8b9d3',
+        timestamp: '2025-09-30 10:15:42',
+        verifyStatus: '已验证',
+        contractAddress: '0x1234abcd5678ef90abcdef1234567890abcdef12',
+        nodeCount: 21,
+        consensusType: 'PBFT',
+        onChainFields: [],
+        blockExplorerUrl: 'https://explorer.tracechain.cn/tx/0x2e7c4a9b8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1',
+        scanRecords: {
+          totalQueryCount: 56,
+          firstScanTime: '2025-10-01 16:42:08',
+          lastScanTime: '2025-12-08 09:15:33',
+          records: []
+        },
+        tsaCertificate: {
+          issuer: '中国电子认证服务产业联盟',
+          certSerial: 'TSA-CERT-2025-0930-002',
+          algorithm: 'SM2'
+        }
+      },
       images: {
         originImage: '',
         processImage: '',
@@ -672,6 +793,130 @@ describe('detail.js 页面逻辑测试', () => {
       test('onUnload 在无定时器时不应出错', () => {
         page.timelineTimer = null;
         expect(() => page.onUnload()).not.toThrow();
+      });
+    });
+
+    describe('区块链存证功能测试', () => {
+      test('verifyBlockchainEvidence 应调用验证接口并设置验证结果', () => {
+        jest.useFakeTimers();
+        page.setData({ traceId: 'G001' });
+        page.verifyBlockchainEvidence();
+
+        expect(page.data.bcVerifying).toBe(true);
+        jest.runAllTimers();
+
+        expect(mockData.verifyBlockchainEvidence).toHaveBeenCalled();
+        expect(page.data.bcVerifying).toBe(false);
+        expect(page.data.bcShowVerifyResult).toBe(true);
+        expect(page.data.bcVerifyResult).toBeDefined();
+        expect(page.data.bcVerifyResult.verified).toBe(true);
+
+        jest.useRealTimers();
+      });
+
+      test('verifyBlockchainEvidence 无存证信息时提示', () => {
+        page.setData({ traceData: { blockchainInfo: null } });
+        page.verifyBlockchainEvidence();
+        expect(wx.showToast).toHaveBeenCalledWith({ title: '无存证信息', icon: 'none' });
+      });
+
+      test('copyTxHash 应调用剪贴板复制交易哈希', () => {
+        page.setData({
+          traceData: {
+            blockchainInfo: {
+              txHash: '0x8f9a3b7c4d5e6f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5'
+            }
+          }
+        });
+        page.copyTxHash();
+        expect(wx.setClipboardData).toHaveBeenCalledWith({
+          data: '0x8f9a3b7c4d5e6f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5',
+          success: expect.any(Function)
+        });
+      });
+
+      test('copyTxHash 无交易哈希时提示', () => {
+        page.setData({ traceData: { blockchainInfo: {} } });
+        page.copyTxHash();
+        expect(wx.showToast).toHaveBeenCalledWith({ title: '无交易哈希', icon: 'none' });
+      });
+
+      test('toggleTxHashDisplay 应切换哈希显示状态', () => {
+        page.setData({ bcShowTxHashFull: false });
+        page.toggleTxHashDisplay();
+        expect(page.data.bcShowTxHashFull).toBe(true);
+        page.toggleTxHashDisplay();
+        expect(page.data.bcShowTxHashFull).toBe(false);
+      });
+
+      test('openBlockExplorer 应跳转webview页面', () => {
+        const url = 'https://explorer.tracechain.cn/tx/0xabc';
+        page.setData({
+          traceData: {
+            blockchainInfo: { blockExplorerUrl: url }
+          }
+        });
+        page.openBlockExplorer();
+        expect(wx.navigateTo).toHaveBeenCalledWith({
+          url: '/pages/webview/webview?url=' + encodeURIComponent(url) + '&title=区块浏览器'
+        });
+      });
+
+      test('openBlockExplorer 无浏览器链接时提示', () => {
+        page.setData({ traceData: { blockchainInfo: {} } });
+        page.openBlockExplorer();
+        expect(wx.showToast).toHaveBeenCalledWith({ title: '无浏览器链接', icon: 'none' });
+      });
+
+      test('toggleScanRecords 应切换扫码记录显示', () => {
+        page.setData({ traceId: 'G001', bcShowScanRecords: false });
+        page.toggleScanRecords();
+        expect(page.data.bcShowScanRecords).toBe(true);
+        expect(mockData.recordAntiCounterfeitingScan).toHaveBeenCalledWith('G001', expect.objectContaining({
+          location: expect.any(String)
+        }));
+        expect(page.data.bcAntiCounterResult).toBeDefined();
+        expect(page.data.bcAntiCounterResult.success).toBe(true);
+      });
+
+      test('toggleTsaCertificate 应切换TSA证书显示', () => {
+        page.setData({ traceId: 'G001', bcShowTsaCert: false });
+        page.toggleTsaCertificate();
+        expect(page.data.bcShowTsaCert).toBe(true);
+        expect(mockData.getTsaCertificate).toHaveBeenCalledWith('G001');
+        expect(page.data.bcTsaCertData).toBeDefined();
+        expect(page.data.bcTsaCertData.certSerial).toBe('TSA-CERT-2025-0925-001');
+      });
+
+      test('copyTsaCertSerial 应复制证书编号', () => {
+        page.setData({
+          bcTsaCertData: { certSerial: 'TSA-CERT-2025-0925-001' }
+        });
+        page.copyTsaCertSerial();
+        expect(wx.setClipboardData).toHaveBeenCalledWith({
+          data: 'TSA-CERT-2025-0925-001',
+          success: expect.any(Function)
+        });
+      });
+
+      test('closeBlockchainVerifyResult 应关闭验证结果', () => {
+        page.setData({ bcShowVerifyResult: true });
+        page.closeBlockchainVerifyResult();
+        expect(page.data.bcShowVerifyResult).toBe(false);
+      });
+
+      test('区块链数据应包含完整字段', () => {
+        const bc = page.data.traceData && page.data.traceData.blockchainInfo;
+        if (bc) {
+          expect(bc.chainName).toBeDefined();
+          expect(bc.txHash).toBeDefined();
+          expect(bc.blockHeight).toBeDefined();
+          expect(bc.timestamp).toBeDefined();
+          expect(bc.onChainFields).toBeDefined();
+          expect(Array.isArray(bc.onChainFields)).toBe(true);
+          expect(bc.scanRecords).toBeDefined();
+          expect(bc.tsaCertificate).toBeDefined();
+        }
       });
     });
   });

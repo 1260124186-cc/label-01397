@@ -4,7 +4,8 @@
     "pages/detail/detail",
     "pages/scanResult/scanResult",
     "pages/batchList/batchList",
-    "pages/greenTrace/greenTrace"
+    "pages/greenTrace/greenTrace",
+    "pages/webview/webview"
   ],
   "window": {
     "backgroundTextStyle": "dark",

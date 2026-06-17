@@ -1562,29 +1562,268 @@
           <text class="title-icon">🔗</text>
           <text>区块链存证信息</text>
         </view>
-        <view class="module-toggle {{moduleCollapsed.blockchain ? 'collapsed' : ''}}">
-          <text class="toggle-icon">▾</text>
+        <view class="title-right">
+          <view class="bc-verified-badge" wx:if="{{traceData.blockchainInfo.verifyStatus === '已验证'}}">
+            <text class="bc-badge-icon">✓</text>
+            <text class="bc-badge-text">已验证</text>
+          </view>
+          <view class="module-toggle {{moduleCollapsed.blockchain ? 'collapsed' : ''}}">
+            <text class="toggle-icon">▾</text>
+          </view>
         </view>
       </view>
       <view class="module-content {{moduleCollapsed.blockchain ? 'hidden' : ''}}">
-        <view class="blockchain-detail">
-          <view class="blockchain-item">
-            <text class="bc-label">存证链</text>
-            <text class="bc-value">{{traceData.blockchainInfo.chainName}}</text>
+
+        <!-- 链上验真 -->
+        <view class="bc-section bc-verify-section">
+          <view class="bc-section-header">
+            <text class="bc-section-icon">🔍</text>
+            <text class="bc-section-title">链上验真</text>
           </view>
-          <view class="blockchain-item">
-            <text class="bc-label">区块高度</text>
-            <text class="bc-value">{{traceData.blockchainInfo.blockHeight}}</text>
+          <view class="bc-verify-content">
+            <view class="bc-chain-info">
+              <view class="bc-info-row">
+                <text class="bc-info-label">存证链</text>
+                <text class="bc-info-value">{{traceData.blockchainInfo.chainName}}</text>
+              </view>
+              <view class="bc-info-row">
+                <text class="bc-info-label">区块高度</text>
+                <text class="bc-info-value">#{{traceData.blockchainInfo.blockHeight}}</text>
+              </view>
+              <view class="bc-info-row">
+                <text class="bc-info-label">存证时间</text>
+                <text class="bc-info-value">{{traceData.blockchainInfo.timestamp}}</text>
+              </view>
+            </view>
+
+            <!-- 交易哈希（可展开/复制） -->
+            <view class="bc-txhash-row">
+              <text class="bc-info-label">交易哈希</text>
+              <view class="bc-txhash-container">
+                <text class="bc-txhash-value" bindtap="toggleTxHashDisplay">
+                  {{bcShowTxHashFull ? traceData.blockchainInfo.txHash : traceData.blockchainInfo.txHashShort}}
+                </text>
+                <text class="bc-txhash-toggle">{{bcShowTxHashFull ? '收起' : '展开'}}</text>
+              </view>
+            </view>
+
+            <!-- 操作按钮 -->
+            <view class="bc-action-btns">
+              <view class="bc-btn bc-btn-verify" bindtap="verifyBlockchainEvidence">
+                <text class="bc-btn-icon">{{bcVerifying ? '' : '🔍'}}</text>
+                <text class="bc-btn-text">{{bcVerifying ? '验证中...' : '验证存证'}}</text>
+                <view class="bc-loading-spinner" wx:if="{{bcVerifying}}"></view>
+              </view>
+              <view class="bc-btn bc-btn-copy" bindtap="copyTxHash">
+                <text class="bc-btn-icon">📋</text>
+                <text class="bc-btn-text">复制哈希</text>
+              </view>
+              <view class="bc-btn bc-btn-explorer" bindtap="openBlockExplorer">
+                <text class="bc-btn-icon">🌐</text>
+                <text class="bc-btn-text">区块浏览器</text>
+              </view>
+            </view>
           </view>
-          <view class="blockchain-item">
-            <text class="bc-label">交易哈希</text>
-            <text class="bc-value hash">{{traceData.blockchainInfo.txHash}}</text>
-          </view>
-          <view class="blockchain-item">
-            <text class="bc-label">存证时间</text>
-            <text class="bc-value">{{traceData.blockchainInfo.timestamp}}</text>
+
+          <!-- 验证结果弹层 -->
+          <view class="bc-verify-result" wx:if="{{bcShowVerifyResult && bcVerifyResult}}">
+            <view class="bc-result-header">
+              <view class="bc-result-status {{bcVerifyResult.verified ? 'success' : 'fail'}}">
+                <text class="bc-result-status-icon">{{bcVerifyResult.verified ? '✅' : '❌'}}</text>
+                <text class="bc-result-status-text">{{bcVerifyResult.verified ? '验证通过' : '验证未通过'}}</text>
+              </view>
+              <text class="bc-result-close" bindtap="closeBlockchainVerifyResult">✕</text>
+            </view>
+            <view class="bc-result-body" wx:if="{{bcVerifyResult.verified}}">
+              <view class="bc-result-item">
+                <text class="bc-result-label">交易哈希</text>
+                <text class="bc-result-value bc-result-hash">{{bcVerifyResult.txHash}}</text>
+              </view>
+              <view class="bc-result-item">
+                <text class="bc-result-label">存证链</text>
+                <text class="bc-result-value">{{bcVerifyResult.chainName}} ({{bcVerifyResult.chainId}})</text>
+              </view>
+              <view class="bc-result-item">
+                <text class="bc-result-label">区块高度</text>
+                <text class="bc-result-value">#{{bcVerifyResult.blockHeight}}</text>
+              </view>
+              <view class="bc-result-item">
+                <text class="bc-result-label">共识机制</text>
+                <text class="bc-result-value">{{bcVerifyResult.consensusType}} · {{bcVerifyResult.nodeCount}}节点</text>
+              </view>
+              <view class="bc-result-item">
+                <text class="bc-result-label">上链字段</text>
+                <text class="bc-result-value">{{bcVerifyResult.onChainFieldsCount}}项已上链</text>
+              </view>
+              <view class="bc-result-item">
+                <text class="bc-result-label">关联产品</text>
+                <text class="bc-result-value">{{bcVerifyResult.productName}}</text>
+              </view>
+              <view class="bc-result-item">
+                <text class="bc-result-label">批次号</text>
+                <text class="bc-result-value">{{bcVerifyResult.batchNo}}</text>
+              </view>
+              <view class="bc-result-item">
+                <text class="bc-result-label">验证时间</text>
+                <text class="bc-result-value">{{bcVerifyResult.verifyTime}}</text>
+              </view>
+            </view>
+            <view class="bc-result-body" wx:else="">
+              <text class="bc-result-fail-msg">{{bcVerifyResult.message || '未找到对应记录'}}</text>
+            </view>
           </view>
         </view>
+
+        <!-- 存证内容说明 -->
+        <view class="bc-section bc-onchain-section">
+          <view class="bc-section-header">
+            <text class="bc-section-icon">📝</text>
+            <text class="bc-section-title">已上链字段</text>
+            <text class="bc-onchain-count">{{traceData.blockchainInfo.onChainFields.length}}项</text>
+          </view>
+          <view class="bc-onchain-list">
+            <view class="bc-onchain-item" wx:for="{{traceData.blockchainInfo.onChainFields}}" wx:key="key">
+              <view class="bc-onchain-left">
+                <view class="bc-onchain-check {{item.onChain ? 'checked' : ''}}">
+                  <text wx:if="{{item.onChain}}">✓</text>
+                </view>
+                <text class="bc-onchain-label">{{item.label}}</text>
+              </view>
+              <view class="bc-onchain-right">
+                <text class="bc-onchain-value">{{item.value}}</text>
+                <text class="bc-onchain-tag" wx:if="{{item.onChain}}">已上链</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 防伪联动 -->
+        <view class="bc-section bc-anticounter-section">
+          <view class="bc-section-header" bindtap="toggleScanRecords">
+            <text class="bc-section-icon">🛡️</text>
+            <text class="bc-section-title">防伪查询记录</text>
+            <text class="bc-scan-count">{{traceData.blockchainInfo.scanRecords.totalQueryCount}}次</text>
+            <text class="bc-section-arrow {{bcShowScanRecords ? 'expanded' : ''}}">›</text>
+          </view>
+          <view class="bc-anticounter-summary">
+            <view class="bc-anticounter-stat">
+              <text class="bc-stat-number">{{traceData.blockchainInfo.scanRecords.totalQueryCount}}</text>
+              <text class="bc-stat-label">累计查询</text>
+            </view>
+            <view class="bc-anticounter-stat">
+              <text class="bc-stat-number">{{traceData.blockchainInfo.scanRecords.records.length}}</text>
+              <text class="bc-stat-label">上链记录</text>
+            </view>
+            <view class="bc-anticounter-stat">
+              <text class="bc-stat-number">1</text>
+              <text class="bc-stat-label">首次扫码</text>
+            </view>
+          </view>
+
+          <!-- 扫码记录列表 -->
+          <view class="bc-scan-records" wx:if="{{bcShowScanRecords}}">
+            <view class="bc-scan-record-item" wx:for="{{traceData.blockchainInfo.scanRecords.records}}" wx:key="time">
+              <view class="bc-scan-type-badge {{item.type === 'first' ? 'first' : 'repeat'}}">
+                <text>{{item.type === 'first' ? '首' : '复'}}</text>
+              </view>
+              <view class="bc-scan-info">
+                <view class="bc-scan-top">
+                  <text class="bc-scan-location">{{item.location}}</text>
+                  <text class="bc-scan-type-text">{{item.type === 'first' ? '首次扫码' : '重复扫码'}}</text>
+                </view>
+                <view class="bc-scan-bottom">
+                  <text class="bc-scan-time">{{item.time}}</text>
+                  <text class="bc-scan-ip">IP: {{item.ip}}</text>
+                </view>
+              </view>
+            </view>
+
+            <!-- 当前扫码结果 -->
+            <view class="bc-current-scan" wx:if="{{bcAntiCounterResult && bcAntiCounterResult.success}}">
+              <view class="bc-current-scan-header">
+                <text class="bc-current-scan-title">本次查询</text>
+                <view class="bc-current-scan-badge {{bcAntiCounterResult.isFirstScan ? 'first' : 'repeat'}}">
+                  <text>{{bcAntiCounterResult.isFirstScan ? '首次扫码' : '重复扫码'}}</text>
+                </view>
+              </view>
+              <view class="bc-current-scan-body">
+                <text class="bc-current-scan-product">{{bcAntiCounterResult.productName}}</text>
+                <text class="bc-current-scan-total">累计查询 {{bcAntiCounterResult.totalQueryCount}} 次</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 时间戳服务 -->
+        <view class="bc-section bc-tsa-section">
+          <view class="bc-section-header" bindtap="toggleTsaCertificate">
+            <text class="bc-section-icon">⏱️</text>
+            <text class="bc-section-title">司法级时间戳</text>
+            <text class="bc-tsa-badge">TSA</text>
+            <text class="bc-section-arrow {{bcShowTsaCert ? 'expanded' : ''}}">›</text>
+          </view>
+          <view class="bc-tsa-brief">
+            <view class="bc-tsa-brief-item">
+              <text class="bc-tsa-brief-label">签发机构</text>
+              <text class="bc-tsa-brief-value">{{traceData.blockchainInfo.tsaCertificate.issuer}}</text>
+            </view>
+            <view class="bc-tsa-brief-item">
+              <text class="bc-tsa-brief-label">时间戳精度</text>
+              <text class="bc-tsa-brief-value">{{traceData.blockchainInfo.tsaCertificate.accuracy}}</text>
+            </view>
+          </view>
+
+          <!-- TSA证书详情 -->
+          <view class="bc-tsa-cert-detail" wx:if="{{bcShowTsaCert && bcTsaCertData}}">
+            <view class="bc-tsa-cert-card">
+              <view class="bc-tsa-cert-header">
+                <text class="bc-tsa-cert-icon">🔏</text>
+                <text class="bc-tsa-cert-title">TSA 时间戳证书</text>
+              </view>
+              <view class="bc-tsa-cert-body">
+                <view class="bc-tsa-cert-item">
+                  <text class="bc-tsa-cert-label">证书编号</text>
+                  <view class="bc-tsa-cert-value-row">
+                    <text class="bc-tsa-cert-value bc-mono">{{bcTsaCertData.certSerial}}</text>
+                    <text class="bc-tsa-cert-copy" bindtap="copyTsaCertSerial">复制</text>
+                  </view>
+                </view>
+                <view class="bc-tsa-cert-item">
+                  <text class="bc-tsa-cert-label">签名算法</text>
+                  <text class="bc-tsa-cert-value">{{bcTsaCertData.algorithm}}</text>
+                </view>
+                <view class="bc-tsa-cert-item">
+                  <text class="bc-tsa-cert-label">时间戳服务</text>
+                  <text class="bc-tsa-cert-value bc-mono">{{bcTsaCertData.tsServer}}</text>
+                </view>
+                <view class="bc-tsa-cert-item">
+                  <text class="bc-tsa-cert-label">精确时间</text>
+                  <text class="bc-tsa-cert-value bc-mono">{{bcTsaCertData.timestamp}}</text>
+                </view>
+                <view class="bc-tsa-cert-item">
+                  <text class="bc-tsa-cert-label">TSA令牌哈希</text>
+                  <text class="bc-tsa-cert-value bc-mono bc-hash-small">{{bcTsaCertData.tsTokenHash}}</text>
+                </view>
+                <view class="bc-tsa-cert-item">
+                  <text class="bc-tsa-cert-label">存证哈希</text>
+                  <text class="bc-tsa-cert-value bc-mono bc-hash-small">{{bcTsaCertData.evidenceHash}}</text>
+                </view>
+                <view class="bc-tsa-cert-item">
+                  <text class="bc-tsa-cert-label">法律依据</text>
+                  <text class="bc-tsa-cert-value bc-legal">{{bcTsaCertData.legalBasis}}</text>
+                </view>
+                <view class="bc-tsa-cert-item">
+                  <text class="bc-tsa-cert-label">有效期</text>
+                  <text class="bc-tsa-cert-value">{{bcTsaCertData.validityPeriod}}</text>
+                </view>
+              </view>
+              <view class="bc-tsa-cert-footer">
+                <text class="bc-tsa-cert-verify-hint">此证书由司法级时间戳服务机构签发，具有法律效力</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
       </view>
     </view>
 
