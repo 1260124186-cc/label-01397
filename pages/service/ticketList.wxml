@@ -1,0 +1,67 @@
+<view class="ticket-list-page {{a11yClasses}}">
+
+  <view class="tab-bar">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="switchTab"
+    >
+      {{item.label}}
+    </view>
+  </view>
+
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <view class="loading-spinner">⏳</view>
+    <view class="loading-text">加载中...</view>
+  </view>
+
+  <view class="list-content" wx:else>
+    <view class="ticket-list" wx:if="{{filteredTickets.length > 0}}">
+      <view
+        wx:for="{{filteredTickets}}"
+        wx:key="id"
+        class="ticket-card"
+        data-id="{{item.id}}"
+        bindtap="goDetail"
+      >
+        <view class="ticket-header">
+          <view class="ticket-type">{{item.typeLabel}}</view>
+          <view class="ticket-status {{item.statusClass}}">{{item.statusText}}</view>
+        </view>
+
+        <view class="ticket-title">{{item.title}}</view>
+
+        <view class="ticket-desc" wx:if="{{item.description}}">
+          {{item.description}}
+        </view>
+
+        <view class="ticket-footer">
+          <view class="ticket-id">#{{item.id}}</view>
+          <view class="ticket-time">{{item.timeText}}</view>
+        </view>
+
+        <view class="ticket-tag-bar" wx:if="{{item.traceId || item.needRating}}">
+          <view class="tag tag-trace" wx:if="{{item.traceId}}">
+            <text class="tag-icon">🔍</text>
+            <text>{{item.traceId}}</text>
+          </view>
+          <view class="tag tag-rating" wx:if="{{item.needRating}}">
+            <text class="tag-icon">⭐</text>
+            <text>待评价</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <view class="empty-icon">📋</view>
+      <view class="empty-tip">{{i18n.emptyTip}}</view>
+      <view class="empty-desc">{{i18n.emptyDesc}}</view>
+      <view class="empty-btn" bindtap="goCreate">{{i18n.goCreate}}</view>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

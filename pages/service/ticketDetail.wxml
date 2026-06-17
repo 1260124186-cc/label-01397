@@ -1,0 +1,146 @@
+<view class="ticket-detail-page {{a11yClasses}}">
+
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <view class="loading-spinner">⏳</view>
+    <view class="loading-text">加载中...</view>
+  </view>
+
+  <block wx:elif="{{ticket}}">
+
+    <view class="status-header">
+      <view class="status-badge {{statusClass}}">
+        <text class="status-text">{{statusLabel}}</text>
+      </view>
+      <view class="ticket-id-row" bindtap="copyTicketId">
+        <text class="id-label">{{i18n.ticketId}}：</text>
+        <text class="id-value">{{ticket.id}}</text>
+        <text class="copy-icon">📋</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="info-row">
+        <view class="info-label">{{i18n.type}}</view>
+        <view class="info-value">{{ticket.typeLabel}}</view>
+      </view>
+      <view class="info-row">
+        <view class="info-label">{{i18n.createdAt}}</view>
+        <view class="info-value">{{progressWithTime[progressWithTime.length - 1].timeText}}</view>
+      </view>
+      <view class="info-row" wx:if="{{ticket.traceId}}">
+        <view class="info-label">{{i18n.traceId}}</view>
+        <view class="info-value highlight" bindtap="copyTraceId">
+          {{ticket.traceId}}
+          <text class="copy-icon">📋</text>
+        </view>
+      </view>
+      <view class="info-row" wx:if="{{ticket.contact}}">
+        <view class="info-label">{{i18n.contact}}</view>
+        <view class="info-value">{{ticket.contact}}</view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">{{ticket.title}}</view>
+      <view class="desc-content" wx:if="{{ticket.description}}">
+        <text>{{ticket.description}}</text>
+      </view>
+      <view class="desc-placeholder" wx:else>
+        <text>暂无详细描述</text>
+      </view>
+
+      <view class="image-section" wx:if="{{ticket.images && ticket.images.length > 0}}">
+        <view class="section-title-sm">{{i18n.images}}</view>
+        <view class="image-list">
+          <image
+            wx:for="{{ticket.images}}"
+            wx:key="*this"
+            class="ticket-image"
+            src="{{item}}"
+            mode="aspectFill"
+            data-url="{{item}}"
+            bindtap="previewImage"
+          />
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">{{i18n.progress}}</view>
+      <view class="progress-timeline">
+        <view
+          wx:for="{{progressWithTime}}"
+          wx:key="timestamp"
+          class="progress-item {{index === 0 ? 'latest' : ''}}"
+        >
+          <view class="progress-dot"></view>
+          <view class="progress-line" wx:if="{{index < progressWithTime.length - 1}}"></view>
+          <view class="progress-content">
+            <view class="progress-message">{{item.message}}</view>
+            <view class="progress-time">{{item.timeText}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="card rating-section" wx:if="{{ticket.rating > 0}}">
+      <view class="section-title">{{i18n.ratingTitle}}</view>
+      <view class="rated-info">
+        <view class="rated-stars">
+          <text wx:for="{{5}}" wx:key="*this" class="star {{index < ticket.rating ? 'filled' : ''}}">★</text>
+        </view>
+        <view class="rated-label">
+          <text wx:if="{{ticket.rating === 1}}">{{i18n.alreadyRated}} - {{i18n.rating1 ? i18n.rating1 : ''}}</text>
+          <text wx:elif="{{ticket.rating === 2}}">{{i18n.alreadyRated}} - {{i18n.rating2 ? i18n.rating2 : ''}}</text>
+          <text wx:elif="{{ticket.rating === 3}}">{{i18n.alreadyRated}} - {{i18n.rating3 ? i18n.rating3 : ''}}</text>
+          <text wx:elif="{{ticket.rating === 4}}">{{i18n.alreadyRated}} - {{i18n.rating4 ? i18n.rating4 : ''}}</text>
+          <text wx:else>{{i18n.alreadyRated}} - {{i18n.rating5 ? i18n.rating5 : ''}}</text>
+        </view>
+        <view class="rated-comment" wx:if="{{ticket.ratingComment}}">
+          <text class="comment-label">{{i18n.commentLabel}}：</text>
+          <text class="comment-text">{{ticket.ratingComment}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card rating-card" wx:if="{{showRating}}">
+      <view class="section-title">{{i18n.ratingTitle}}</view>
+      <view class="rating-tip">{{i18n.ratingTip}}</view>
+
+      <view class="star-row">
+        <view
+          wx:for="{{5}}"
+          wx:key="*this"
+          class="star-btn"
+          data-rating="{{index + 1}}"
+          bindtap="selectRating"
+        >
+          <text class="star {{index < rating ? 'filled' : ''}}">★</text>
+        </view>
+      </view>
+      <view class="rating-label-text" wx:if="{{rating > 0}}">{{ratingLabel}}</view>
+
+      <view class="comment-input-wrap">
+        <textarea
+          class="comment-input"
+          placeholder="{{i18n.ratingCommentPlaceholder}}"
+          value="{{ratingComment}}"
+          bindinput="onRatingCommentInput"
+          maxlength="200"
+          auto-height
+        />
+      </view>
+
+      <button
+        class="rating-submit {{rating === 0 || submittingRating ? 'disabled' : ''}}"
+        bindtap="submitRating"
+        disabled="{{rating === 0 || submittingRating}}"
+      >
+        {{i18n.ratingSubmit}}
+      </button>
+    </view>
+
+  </block>
+
+  <view class="bottom-space"></view>
+</view>

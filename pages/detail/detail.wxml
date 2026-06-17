@@ -2287,6 +2287,14 @@
     </view>
   </view>
 
+
+  <!-- ==================== 悬浮客服按钮 ==================== -->
+  <view class="service-floating-btn" bindtap="goService" wx:if="{{!skeletonLoading && traceData}}">
+    <view class="service-btn-circle">
+      <text class="service-btn-icon">🎧</text>
+    </view>
+    <view class="service-btn-label">{{i18n.serviceBtn}}</view>
+  </view>
 </view>
 
 <!-- ==================== 加载状态（降级，骨架屏优先） ==================== -->

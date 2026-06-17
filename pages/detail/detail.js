@@ -73,7 +73,8 @@ Page({
       shareBtn: '',
       pdfBtn: '',
       verifyBtn: '',
-      loadingText: ''
+      loadingText: '',
+      serviceBtn: ''
     },
     // 是否显示返回顶部按钮
     showBackTop: false,
@@ -279,7 +280,8 @@ Page({
       'i18n.shareBtn': t('nav.share'),
       'i18n.pdfBtn': t('detail.share.downloadPdf'),
       'i18n.verifyBtn': t('detail.test.verifyReport'),
-      'i18n.loadingText': t('common.loading')
+      'i18n.loadingText': t('common.loading'),
+      'i18n.serviceBtn': t('service.floatingBtn')
     });
   },
 
@@ -2119,6 +2121,13 @@ Page({
 
     wx.navigateTo({
       url: '/pages/shop/detail?traceId=' + traceId + '&buyNow=1'
+    });
+  },
+
+  goService: function() {
+    var traceId = this.data.traceId;
+    wx.navigateTo({
+      url: '/pages/service/index?traceId=' + (traceId || '')
     });
   },
 

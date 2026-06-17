@@ -20,7 +20,11 @@
     "pages/privacy/privacy",
     "pages/knowledge/list",
     "pages/knowledge/detail",
-    "pages/supplyChainTimeline/supplyChainTimeline"
+    "pages/supplyChainTimeline/supplyChainTimeline",
+    "pages/service/index",
+    "pages/service/ticketCreate",
+    "pages/service/ticketList",
+    "pages/service/ticketDetail"
   ],
   "window": {
     "backgroundTextStyle": "dark",

@@ -1,0 +1,123 @@
+<view class="service-page {{a11yClasses}}">
+
+  <view class="page-header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <view class="header-icon">🎧</view>
+      <view class="header-title">{{i18n.title}}</view>
+      <view class="header-subtitle">{{i18n.subtitle}}</view>
+    </view>
+  </view>
+
+  <view class="quick-actions">
+    <view class="action-card primary" bindtap="goCreateTicket">
+      <view class="action-icon">📝</view>
+      <view class="action-info">
+        <view class="action-title">{{i18n.ticketEntry}}</view>
+        <view class="action-desc">{{i18n.ticketEntryDesc}}</view>
+      </view>
+      <view class="action-arrow">→</view>
+    </view>
+
+    <view class="action-card" bindtap="goTicketList">
+      <view class="action-icon">📋</view>
+      <view class="action-info">
+        <view class="action-title">
+          {{i18n.myTickets}}
+          <view class="ticket-badge" wx:if="{{ticketCount > 0}}">{{ticketCount}}</view>
+        </view>
+        <view class="action-desc">{{i18n.myTicketsDesc}}</view>
+      </view>
+      <view class="action-arrow">→</view>
+    </view>
+  </view>
+
+  <view class="contact-info">
+    <view class="contact-item" bindtap="callHotline">
+      <view class="contact-icon">📞</view>
+      <view class="contact-text">
+        <view class="contact-label">{{i18n.hotline}}</view>
+        <view class="contact-value highlight">{{i18n.hotlineValue}}</view>
+      </view>
+      <view class="contact-action">拨打</view>
+    </view>
+    <view class="contact-item">
+      <view class="contact-icon">🕐</view>
+      <view class="contact-text">
+        <view class="contact-label">{{i18n.workHours}}</view>
+        <view class="contact-value">{{i18n.workHoursValue}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="faq-section">
+    <view class="section-header">
+      <view class="section-title">
+        <text class="title-icon">❓</text>
+        <text>{{i18n.faqTitle}}</text>
+      </view>
+      <view class="toggle-all-btn" bindtap="toggleAllFaq">
+        {{allExpanded ? i18n.collapseAll : i18n.expandAll}}
+      </view>
+    </view>
+
+    <view class="search-bar">
+      <view class="search-input-wrap">
+        <text class="search-icon">🔍</text>
+        <input
+          class="search-input"
+          type="text"
+          placeholder="{{i18n.faqSearchPlaceholder}}"
+          value="{{searchKeyword}}"
+          bindinput="onSearchInput"
+          confirm-type="search"
+        />
+        <text class="search-clear" wx:if="{{searchKeyword}}" bindtap="onSearchClear">✕</text>
+      </view>
+    </view>
+
+    <scroll-view scroll-x="true" class="category-scroll" enhanced show-scrollbar="{{false}}">
+      <view class="category-tabs">
+        <view
+          wx:for="{{categories}}"
+          wx:key="key"
+          class="category-tab {{activeCategory === item.key ? 'active' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="selectCategory"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="faq-list" wx:if="{{faqList.length > 0}}">
+      <view
+        wx:for="{{faqList}}"
+        wx:key="id"
+        class="faq-item"
+      >
+        <view class="faq-question" data-id="{{item.id}}" bindtap="toggleFaq">
+          <view class="question-text">
+            <text class="q-icon">Q</text>
+            <text>{{item.question}}</text>
+          </view>
+          <view class="question-toggle {{expandedFaqIds[item.id] ? 'expanded' : ''}}">▾</view>
+        </view>
+        <view class="faq-answer {{expandedFaqIds[item.id] ? 'show' : ''}}">
+          <view class="answer-text">
+            <text class="a-icon">A</text>
+            <text>{{item.answer}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="faq-empty" wx:else>
+      <view class="empty-icon">🔍</view>
+      <view class="empty-text">未找到相关问题</view>
+      <view class="empty-btn" bindtap="goCreateTicket">提交工单</view>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

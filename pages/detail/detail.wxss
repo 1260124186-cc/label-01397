@@ -5881,3 +5881,38 @@
   color: #fff;
   background: linear-gradient(135deg, #ff6b6b 0%, #ff4d4f 100%);
 }
+
+.service-floating-btn {
+  position: fixed;
+  right: 24rpx;
+  bottom: 200rpx;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.service-btn-circle {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(46, 139, 87, 0.35);
+}
+
+.service-btn-icon {
+  font-size: 44rpx;
+}
+
+.service-btn-label {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #2E8B57;
+  background: #FFFFFF;
+  padding: 4rpx 14rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}

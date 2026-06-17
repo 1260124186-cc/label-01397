@@ -1,0 +1,129 @@
+<view class="ticket-create-page {{a11yClasses}}">
+
+  <view class="success-modal" wx:if="{{showSuccess}}">
+    <view class="modal-mask"></view>
+    <view class="modal-content">
+      <view class="success-icon">✅</view>
+      <view class="success-title">{{i18n.submitSuccess}}</view>
+      <view class="success-desc">{{i18n.submitSuccessDesc}}</view>
+      <view class="success-ticket-id">工单号：{{createdTicketId}}</view>
+      <view class="success-actions">
+        <view class="btn-secondary" bindtap="resetAndContinue">{{i18n.continueSubmit}}</view>
+        <view class="btn-primary" bindtap="viewCreatedTicket">{{i18n.viewTicket}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">{{i18n.typeTitle}} <text class="required">*</text></view>
+    <view class="type-grid">
+      <view
+        wx:for="{{problemTypes}}"
+        wx:key="key"
+        class="type-item {{selectedType === item.key ? 'active' : ''}}"
+        data-key="{{item.key}}"
+        data-label="{{item.label}}"
+        bindtap="selectType"
+      >
+        <view class="type-icon">{{item.icon}}</view>
+        <view class="type-label">{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">{{i18n.titleLabel}} <text class="required">*</text></view>
+    <view class="input-wrap">
+      <input
+        class="form-input"
+        type="text"
+        placeholder="{{i18n.titlePlaceholder}}"
+        value="{{title}}"
+        bindinput="onTitleInput"
+        maxlength="50"
+      />
+      <view class="input-count">{{title.length}}/50</view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">{{i18n.descLabel}}</view>
+    <view class="textarea-wrap">
+      <textarea
+        class="form-textarea"
+        placeholder="{{i18n.descPlaceholder}}"
+        value="{{description}}"
+        bindinput="onDescInput"
+        maxlength="500"
+        auto-height
+      />
+      <view class="input-count">{{description.length}}/500</view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">{{i18n.traceIdLabel}}</view>
+    <view class="input-wrap">
+      <input
+        class="form-input"
+        type="text"
+        placeholder="{{i18n.traceIdPlaceholder}}"
+        value="{{traceId}}"
+        bindinput="onTraceIdInput"
+      />
+    </view>
+    <view class="field-tip" wx:if="{{traceId}}">{{i18n.traceIdTip}}</view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">{{i18n.contactLabel}}</view>
+    <view class="input-wrap">
+      <input
+        class="form-input"
+        type="number"
+        placeholder="{{i18n.contactPlaceholder}}"
+        value="{{contact}}"
+        bindinput="onContactInput"
+        maxlength="11"
+      />
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">{{i18n.imagesLabel}}</view>
+    <view class="images-tip">{{i18n.imagesTip}}</view>
+    <view class="image-grid">
+      <view
+        wx:for="{{images}}"
+        wx:key="*this"
+        class="image-item"
+      >
+        <image
+          class="uploaded-image"
+          src="{{item}}"
+          mode="aspectFill"
+          data-url="{{item}}"
+          bindtap="previewImage"
+        />
+        <view class="image-remove" data-index="{{index}}" catchtap="removeImage">✕</view>
+      </view>
+      <view class="image-upload" bindtap="chooseImage" wx:if="{{images.length < 3}}">
+        <view class="upload-plus">+</view>
+        <view class="upload-text">上传</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="submit-bar">
+    <button
+      class="submit-btn {{submitting ? 'disabled' : ''}}"
+      bindtap="submitTicket"
+      disabled="{{submitting}}"
+    >
+      <text wx:if="{{submitting}}">{{i18n.submitting}}</text>
+      <text wx:else>{{i18n.submit}}</text>
+    </button>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
