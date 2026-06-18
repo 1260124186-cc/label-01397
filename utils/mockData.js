@@ -2270,10 +2270,29 @@ function verifyReport(reportNo) {
     return null;
   }
 
-  const normalizedReportNo = reportNo.trim().toUpperCase();
+  var normalizedReportNo = reportNo.trim().toUpperCase();
+  var sampleRecord = null;
+  var abnormalSamples = [];
+  for (var stId in SAMPLE_TRACE_DATA) {
+    var stData = SAMPLE_TRACE_DATA[stId];
+    if (stData.reportNo === normalizedReportNo) {
+      sampleRecord = stData;
+    }
+    for (var s = 0; s < stData.steps.length; s++) {
+      var step = stData.steps[s];
+      if (step.isAbnormal) {
+        abnormalSamples.push({
+          traceId: stData.traceId,
+          sampleNo: stData.sampleNo,
+          stepType: step.type,
+          abnormalReason: step.abnormalReason
+        });
+      }
+    }
+  }
 
-  for (const traceId in mockTraceData) {
-    const data = mockTraceData[traceId];
+  for (var traceId in mockTraceData) {
+    var data = mockTraceData[traceId];
     if (data.pesticideTest && data.pesticideTest.reportNo === normalizedReportNo) {
       return {
         valid: true,
@@ -2285,14 +2304,21 @@ function verifyReport(reportNo) {
         standard: data.pesticideTest.standard,
         status: data.pesticideTest.hasAbnormal ? '存在异常项' : '全部合格',
         verifyTime: new Date().toLocaleString('zh-CN'),
-        traceId: traceId
+        traceId: traceId,
+        sampleNo: sampleRecord ? sampleRecord.sampleNo : '',
+        sampleReportConsistent: sampleRecord ? sampleRecord.reportNo === normalizedReportNo : false,
+        abnormalSamples: abnormalSamples
       };
     }
 
     if (data.pesticideTest && data.pesticideTest.historyReports) {
-      const historyReport = data.pesticideTest.historyReports.find(
-        r => r.reportNo === normalizedReportNo
-      );
+      var historyReport = null;
+      for (var h = 0; h < data.pesticideTest.historyReports.length; h++) {
+        if (data.pesticideTest.historyReports[h].reportNo === normalizedReportNo) {
+          historyReport = data.pesticideTest.historyReports[h];
+          break;
+        }
+      }
       if (historyReport) {
         return {
           valid: true,
@@ -2304,7 +2330,10 @@ function verifyReport(reportNo) {
           standard: data.pesticideTest.standard,
           status: historyReport.status,
           verifyTime: new Date().toLocaleString('zh-CN'),
-          traceId: traceId
+          traceId: traceId,
+          sampleNo: sampleRecord ? sampleRecord.sampleNo : '',
+          sampleReportConsistent: sampleRecord ? sampleRecord.reportNo === normalizedReportNo : false,
+          abnormalSamples: abnormalSamples
         };
       }
     }
@@ -2313,7 +2342,10 @@ function verifyReport(reportNo) {
   return {
     valid: false,
     reportNo: normalizedReportNo,
-    message: '未找到该报告编号，请检查是否输入正确'
+    message: '未找到该报告编号，请检查是否输入正确',
+    sampleNo: sampleRecord ? sampleRecord.sampleNo : '',
+    sampleReportConsistent: sampleRecord ? sampleRecord.reportNo === normalizedReportNo : false,
+    abnormalSamples: abnormalSamples
   };
 }
 
@@ -4362,6 +4394,413 @@ function incrementKnowledgeLikeCount(id) {
     }
   }
   return false;
+}
+
+// ==================== 样品流转链数据 ====================
+
+const SAMPLE_TRACE_DATA = {
+  'G001': {
+    traceId: 'G001',
+    sampleNo: 'SAMPLE-G001-001',
+    reportNo: 'NTQC-2025-09876',
+    steps: [
+      {
+        type: 'sampling',
+        samplingTime: '2025-09-18 09:00:00',
+        sampler: '张采样员',
+        sealNo: 'SEAL-G001-001',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20sample%20collection%20field%20sampling%20process&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'sealing',
+        sealNo: 'SEAL-G001-001',
+        sealTime: '2025-09-18 09:30:00',
+        sealPhotos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=sealed%20tea%20sample%20evidence%20bag%20tamper%20proof&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'delivery',
+        logisticsCompany: '顺丰速运',
+        trackingNo: 'SF20250918001',
+        deliveryTime: '2025-09-18 10:00:00',
+        arrivalTime: '2025-09-19 08:00:00',
+        transitStops: ['武汉中转站'],
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=logistics%20delivery%20package%20shipping%20tea%20sample&image_size=square'
+        ],
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'labReceipt',
+        receiptTime: '2025-09-19 09:00:00',
+        receiver: '李签收员',
+        sampleCondition: '样品完好，封条完整',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=laboratory%20sample%20receipt%20inspection%20check&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'testStart',
+        startTime: '2025-09-19 14:00:00',
+        tester: '王检测师',
+        labRoom: '检测一室',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=laboratory%20pesticide%20residue%20testing%20equipment&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'testComplete',
+        completeTime: '2025-09-20 16:00:00',
+        reportNo: 'NTQC-2025-09876',
+        result: '合格',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=test%20report%20document%20laboratory%20results&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      }
+    ]
+  },
+  'G002': {
+    traceId: 'G002',
+    sampleNo: 'SAMPLE-G002-001',
+    reportNo: 'HBAQ-2025-12345',
+    steps: [
+      {
+        type: 'sampling',
+        samplingTime: '2025-09-23 09:30:00',
+        sampler: '赵采样员',
+        sealNo: 'SEAL-G002-001',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20sample%20collection%20silver%20osmanthus&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'sealing',
+        sealNo: 'SEAL-G002-001',
+        sealTime: '2025-09-23 10:00:00',
+        sealPhotos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=sealed%20tea%20sample%20evidence%20bag%20security&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'delivery',
+        logisticsCompany: '京东物流',
+        trackingNo: 'JD20250923001',
+        deliveryTime: '2025-09-23 11:00:00',
+        arrivalTime: '2025-09-25 15:00:00',
+        transitStops: ['武汉中转站', '长沙中转站', '广州中转站'],
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=delayed%20logistics%20delivery%20package%20transit&image_size=square'
+        ],
+        isAbnormal: true,
+        abnormalReason: '物流延迟，样品超过48小时送达'
+      },
+      {
+        type: 'labReceipt',
+        receiptTime: '2025-09-25 16:00:00',
+        receiver: '孙签收员',
+        sampleCondition: '样品外观正常，封条完整',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=laboratory%20sample%20receipt%20check%20inspection&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'testStart',
+        startTime: '2025-09-26 09:00:00',
+        tester: '周检测师',
+        labRoom: '检测二室',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=laboratory%20pesticide%20residue%20testing%20chromatography&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'testComplete',
+        completeTime: '2025-09-27 17:00:00',
+        reportNo: 'HBAQ-2025-12345',
+        result: '不合格',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=failing%20test%20report%20abnormal%20laboratory%20results&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      }
+    ]
+  },
+  'G003': {
+    traceId: 'G003',
+    sampleNo: 'SAMPLE-G003-001',
+    reportNo: 'NTQC-2025-09877',
+    steps: [
+      {
+        type: 'sampling',
+        samplingTime: '2025-09-18 10:00:00',
+        sampler: '张采样员',
+        sealNo: 'SEAL-G003-001',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20tea%20sample%20collection%20gift%20box%20grade&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'sealing',
+        sealNo: 'SEAL-G003-001',
+        sealTime: '2025-09-18 10:30:00',
+        sealPhotos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=sealed%20premium%20tea%20sample%20evidence%20bag&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'delivery',
+        logisticsCompany: '顺丰速运',
+        trackingNo: 'SF20250918002',
+        deliveryTime: '2025-09-18 11:00:00',
+        arrivalTime: '2025-09-19 09:00:00',
+        transitStops: ['武汉中转站'],
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=express%20delivery%20premium%20tea%20sample%20package&image_size=square'
+        ],
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'labReceipt',
+        receiptTime: '2025-09-19 10:00:00',
+        receiver: '李签收员',
+        sampleCondition: '样品完好，封条完整',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=laboratory%20sample%20receipt%20check%20intact&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'testStart',
+        startTime: '2025-09-19 14:30:00',
+        tester: '王检测师',
+        labRoom: '检测一室',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=laboratory%20tea%20quality%20testing%20equipment%20gc%20ms&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'testComplete',
+        completeTime: '2025-09-20 17:00:00',
+        reportNo: 'NTQC-2025-09877',
+        result: '合格',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=test%20report%20document%20qualified%20results%20official&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      }
+    ]
+  },
+  'G004': {
+    traceId: 'G004',
+    sampleNo: 'SAMPLE-G004-001',
+    reportNo: 'NTQC-2025-09878',
+    steps: [
+      {
+        type: 'sampling',
+        samplingTime: '2025-09-18 11:00:00',
+        sampler: '刘采样员',
+        sealNo: 'SEAL-G004-001',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20sample%20collection%20portable%20packaging&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'sealing',
+        sealNo: 'SEAL-G004-001',
+        sealTime: '2025-09-18 11:30:00',
+        sealPhotos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=sealed%20tea%20sample%20security%20bag%20tamper%20evident&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'delivery',
+        logisticsCompany: '顺丰速运',
+        trackingNo: 'SF20250918003',
+        deliveryTime: '2025-09-18 13:00:00',
+        arrivalTime: '2025-09-19 10:00:00',
+        transitStops: ['武汉中转站'],
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=logistics%20delivery%20tea%20sample%20package%20shipping&image_size=square'
+        ],
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'labReceipt',
+        receiptTime: '2025-09-19 11:00:00',
+        receiver: '李签收员',
+        sampleCondition: '样品完好，封条完整',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=laboratory%20sample%20intact%20receipt%20inspection&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'testStart',
+        startTime: '2025-09-19 15:00:00',
+        tester: '王检测师',
+        labRoom: '检测一室',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=laboratory%20tea%20pesticide%20testing%20equipment%20hplc&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'testComplete',
+        completeTime: '2025-09-20 18:00:00',
+        reportNo: 'NTQC-2025-09878',
+        result: '合格',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=qualified%20test%20report%20document%20laboratory&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      }
+    ]
+  },
+  'G005': {
+    traceId: 'G005',
+    sampleNo: 'SAMPLE-G005-001',
+    reportNo: 'NTQC-2025-09999',
+    steps: [
+      {
+        type: 'sampling',
+        samplingTime: '2025-09-22 09:00:00',
+        sampler: '陈采样员',
+        sealNo: 'SEAL-G005-001',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20sample%20collection%20field%20osmanthus%20variety&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'sealing',
+        sealNo: 'SEAL-G005-001',
+        sealTime: '2025-09-22 09:30:00',
+        sealPhotos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=sealed%20sample%20bag%20security%20seal%20intact&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'delivery',
+        logisticsCompany: '中通快递',
+        trackingNo: 'ZT20250922001',
+        deliveryTime: '2025-09-22 10:30:00',
+        arrivalTime: '2025-09-23 14:00:00',
+        transitStops: ['咸宁中转站', '武汉中转站'],
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=logistics%20delivery%20package%20transit%20express&image_size=square'
+        ],
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'labReceipt',
+        receiptTime: '2025-09-23 15:00:00',
+        receiver: '吴签收员',
+        sampleCondition: '样品外包装破损，已拍照留证',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=damaged%20sample%20package%20broken%20outer%20packaging&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: true,
+        abnormalReason: '样品外包装破损，签收时已拍照留证'
+      },
+      {
+        type: 'testStart',
+        startTime: '2025-09-24 09:00:00',
+        tester: '郑检测师',
+        labRoom: '检测三室',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=laboratory%20testing%20equipment%20sample%20analysis&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      },
+      {
+        type: 'testComplete',
+        completeTime: '2025-09-25 16:30:00',
+        reportNo: 'NTQC-2025-09999',
+        result: '合格',
+        photos: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=test%20report%20document%20qualified%20official%20results&image_size=square'
+        ],
+        signature: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=handwritten%20signature%20on%20digital%20pad&image_size=square',
+        isAbnormal: false,
+        abnormalReason: ''
+      }
+    ]
+  }
+};
+
+function getSampleTrace(traceId) {
+  if (!traceId || typeof traceId !== 'string') return null;
+  var normalizedId = traceId.trim().toUpperCase();
+  if (!SAMPLE_TRACE_DATA[normalizedId]) return null;
+  return JSON.parse(JSON.stringify(SAMPLE_TRACE_DATA[normalizedId]));
 }
 
 // ==================== 全链路供应链时间轴数据 ====================
@@ -6759,6 +7198,7 @@ module.exports = {
   getTraceIdFromBarcode,
   parseSceneParam,
   verifyReport,
+  getSampleTrace,
   calculateTestPercent,
   getWorkshopEnvData,
   getScentingComparison,

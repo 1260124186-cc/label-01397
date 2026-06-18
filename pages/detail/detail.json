@@ -5,5 +5,7 @@
   "backgroundColor": "#F5F5F0",
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark",
-  "usingComponents": {}
+  "usingComponents": {
+    "sample-trace": "/components/sampleTrace/sampleTrace"
+  }
 }

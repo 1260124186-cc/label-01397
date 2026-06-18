@@ -3627,6 +3627,167 @@
   line-height: 1.5;
 }
 
+.verify-divider {
+  height: 1rpx;
+  background: linear-gradient(90deg, transparent, #E8E8E8, transparent);
+  margin: 20rpx 0;
+}
+
+.verify-row-value.highlight-sample {
+  color: #DAA520;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+.verify-row-value.consistency-pass {
+  color: #52C41A;
+  font-weight: 600;
+}
+
+.verify-row-value.consistency-fail {
+  color: #FF4D4F;
+  font-weight: 600;
+}
+
+.verify-abnormal-section {
+  margin-top: 24rpx;
+  background: #FFFDE7;
+  border: 2rpx solid #FFC107;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.verify-abnormal-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #F57F17;
+  margin-bottom: 16rpx;
+}
+
+.verify-abnormal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.verify-abnormal-item {
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  border: 1rpx solid #FFE082;
+}
+
+.abnormal-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.abnormal-item-step {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #F57F17;
+  background: #FFF8E1;
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.abnormal-item-sample {
+  font-size: 22rpx;
+  color: #999999;
+  font-family: 'Courier New', monospace;
+}
+
+.abnormal-item-reason {
+  font-size: 24rpx;
+  color: #E65100;
+  line-height: 1.5;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.abnormal-item-report {
+  display: inline-flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: #D32F2F;
+  font-weight: 500;
+  padding: 8rpx 20rpx;
+  background: #FFEBEE;
+  border-radius: 20rpx;
+  border: 1rpx solid #FFCDD2;
+}
+
+.abnormal-item-report:active {
+  opacity: 0.7;
+  transform: scale(0.96);
+}
+
+/* ==================== 检样追溯模块样式 ==================== */
+.sample-trace-module-card {
+  transition: all 0.3s ease;
+}
+
+.sample-trace-module-card.has-abnormal {
+  border: 2rpx solid #FFC107;
+  background: linear-gradient(180deg, #FFFDE7 0%, #FFFFFF 10%);
+}
+
+.title-badge.warning-badge {
+  background: linear-gradient(135deg, #FFC107, #FFD54F);
+  color: #5D4037;
+}
+
+.sample-abnormal-warning {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #FFF8E1, #FFFDE7);
+  border: 2rpx solid #FFC107;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-top: 24rpx;
+}
+
+.abnormal-warning-icon {
+  font-size: 48rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.abnormal-warning-content {
+  flex: 1;
+}
+
+.abnormal-warning-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #F57F17;
+  margin-bottom: 6rpx;
+}
+
+.abnormal-warning-desc {
+  font-size: 24rpx;
+  color: #795548;
+  line-height: 1.5;
+}
+
+.abnormal-warning-action {
+  flex-shrink: 0;
+  padding: 12rpx 24rpx;
+  background: linear-gradient(135deg, #FF6F00, #FF8F00);
+  color: #FFFFFF;
+  border-radius: 24rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  margin-left: 16rpx;
+}
+
+.abnormal-warning-action:active {
+  opacity: 0.8;
+  transform: scale(0.96);
+}
+
 /* ==================== 窨制工艺深化功能样式 ==================== */
 
 /* 工艺模块 Tab 导航 */

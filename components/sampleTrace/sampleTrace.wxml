@@ -1,0 +1,172 @@
+<view class="sample-trace">
+
+  <view class="trace-summary">
+    <view class="summary-item" wx:if="{{sampleNo}}">
+      <text class="summary-label">样品编号</text>
+      <text class="summary-value">{{sampleNo}}</text>
+    </view>
+    <view class="summary-item" wx:if="{{reportNo}}">
+      <text class="summary-label">关联报告</text>
+      <text class="summary-value report-link">{{reportNo}}</text>
+    </view>
+  </view>
+
+  <view class="trace-steps">
+    <view
+      wx:for="{{steps}}"
+      wx:key="index"
+      class="step-item {{item.isAbnormal ? 'abnormal' : ''}} {{expandedSteps[index] ? 'expanded' : ''}}"
+    >
+      <view class="step-connector" wx:if="{{index < steps.length - 1}}"></view>
+
+      <view class="step-header" data-step="{{index}}" bindtap="toggleStep">
+        <view class="step-dot {{item.isAbnormal ? 'abnormal' : ''}}">
+          <text class="dot-number">{{index + 1}}</text>
+        </view>
+        <view class="step-info">
+          <view class="step-title-row">
+            <text class="step-name">{{item.name}}</text>
+            <view class="step-tag {{item.isAbnormal ? 'abnormal' : ''}}">
+              <text>{{item.isAbnormal ? '异常' : item.status || '正常'}}</text>
+            </view>
+          </view>
+          <text class="step-time" wx:if="{{item.time}}">{{item.time}}</text>
+        </view>
+        <text class="step-expand-icon">{{expandedSteps[index] ? '▲' : '▼'}}</text>
+      </view>
+
+      <view class="step-abnormal-reason" wx:if="{{item.isAbnormal && item.abnormalReason}}">
+        <text class="abnormal-reason-icon">⚠️</text>
+        <text class="abnormal-reason-text">{{item.abnormalReason}}</text>
+      </view>
+
+      <view class="step-detail" wx:if="{{expandedSteps[index]}}">
+
+        <view class="detail-grid" wx:if="{{item.type === 'sampling'}}">
+          <view class="detail-item" wx:if="{{item.samplingTime}}">
+            <text class="detail-label">采样时间</text>
+            <text class="detail-value">{{item.samplingTime}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.samplingPerson}}">
+            <text class="detail-label">采样人</text>
+            <text class="detail-value">{{item.samplingPerson}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.sealingNo}}">
+            <text class="detail-label">封样编号</text>
+            <text class="detail-value">{{item.sealingNo}}</text>
+          </view>
+        </view>
+
+        <view class="detail-grid" wx:if="{{item.type === 'sealing'}}">
+          <view class="detail-item" wx:if="{{item.sealingNo}}">
+            <text class="detail-label">封样编号</text>
+            <text class="detail-value">{{item.sealingNo}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.sealingTime}}">
+            <text class="detail-label">封样时间</text>
+            <text class="detail-value">{{item.sealingTime}}</text>
+          </view>
+        </view>
+
+        <view class="detail-grid" wx:if="{{item.type === 'delivery'}}">
+          <view class="detail-item" wx:if="{{item.logisticsCompany}}">
+            <text class="detail-label">物流公司</text>
+            <text class="detail-value">{{item.logisticsCompany}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.trackingNo}}">
+            <text class="detail-label">运单号</text>
+            <text class="detail-value">{{item.trackingNo}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.deliveryTime}}">
+            <text class="detail-label">发货时间</text>
+            <text class="detail-value">{{item.deliveryTime}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.arrivalTime}}">
+            <text class="detail-label">到达时间</text>
+            <text class="detail-value">{{item.arrivalTime}}</text>
+          </view>
+        </view>
+
+        <view class="detail-grid" wx:if="{{item.type === 'labReceipt'}}">
+          <view class="detail-item" wx:if="{{item.receiptTime}}">
+            <text class="detail-label">签收时间</text>
+            <text class="detail-value">{{item.receiptTime}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.receiptPerson}}">
+            <text class="detail-label">签收人</text>
+            <text class="detail-value">{{item.receiptPerson}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.sampleStatus}}">
+            <text class="detail-label">样品状态</text>
+            <text class="detail-value">{{item.sampleStatus}}</text>
+          </view>
+        </view>
+
+        <view class="detail-grid" wx:if="{{item.type === 'testStart'}}">
+          <view class="detail-item" wx:if="{{item.startTime}}">
+            <text class="detail-label">开始时间</text>
+            <text class="detail-value">{{item.startTime}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.tester}}">
+            <text class="detail-label">检测人</text>
+            <text class="detail-value">{{item.tester}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.laboratory}}">
+            <text class="detail-label">实验室</text>
+            <text class="detail-value">{{item.laboratory}}</text>
+          </view>
+        </view>
+
+        <view class="detail-grid" wx:if="{{item.type === 'testComplete'}}">
+          <view class="detail-item" wx:if="{{item.completeTime}}">
+            <text class="detail-label">完成时间</text>
+            <text class="detail-value">{{item.completeTime}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.reportNo}}">
+            <text class="detail-label">报告编号</text>
+            <text class="detail-value">{{item.reportNo}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.testResult}}">
+            <text class="detail-label">检测结果</text>
+            <text class="detail-value">{{item.testResult}}</text>
+          </view>
+        </view>
+
+        <view class="photos-section" wx:if="{{item.photos && item.photos.length > 0}}">
+          <text class="photos-title">现场照片</text>
+          <view class="photos-grid">
+            <image
+              wx:for="{{item.photos}}"
+              wx:for-item="photo"
+              wx:key="*this"
+              class="photo-thumb"
+              src="{{photo}}"
+              mode="aspectFill"
+              data-url="{{photo}}"
+              data-urls="{{item.photos}}"
+              catchtap="previewPhoto"
+            />
+          </view>
+        </view>
+
+        <view class="signature-section" wx:if="{{item.signature}}">
+          <text class="signature-title">签名确认</text>
+          <image
+            class="signature-img"
+            src="{{item.signature}}"
+            mode="aspectFit"
+            data-url="{{item.signature}}"
+            catchtap="previewSignature"
+          />
+        </view>
+
+        <view class="report-btn-wrap" wx:if="{{item.isAbnormal}}">
+          <view class="report-btn" data-step="{{index}}" data-sampleno="{{sampleNo}}" catchtap="goToReport">
+            <text>举报此异常</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+</view>

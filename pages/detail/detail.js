@@ -23,6 +23,7 @@ const ANCHOR_TABS_BASE = [
   { key: 'green', icon: '♻️', i18nKey: 'detail.tabs.green' },
   { key: 'giftbox', icon: '🎁', i18nKey: 'detail.tabs.giftbox', conditional: true },
   { key: 'test', icon: '🔬', i18nKey: 'detail.tabs.test' },
+  { key: 'sampleTrace', icon: '🧪', label: '检样追溯' },
   { key: 'brew', icon: '☕', i18nKey: 'detail.tabs.brew' },
   { key: 'blockchain', icon: '🔗', i18nKey: 'detail.tabs.blockchain' },
   { key: 'reviews', icon: '⭐', i18nKey: 'detail.tabs.reviews' }
@@ -114,6 +115,7 @@ Page({
       process: false,
       green: false,
       test: true,
+      sampleTrace: true,
       brew: true,
       blockchain: true,
       reviews: false
@@ -131,6 +133,8 @@ Page({
     verifyInput: '',
     verifyResult: null,
     verifying: false,
+    sampleTraceData: null,
+    sampleTraceAbnormalCount: 0,
     // 历史报告时间轴展开状态
     showHistoryTimeline: false,
     // 当前选中的历史报告
@@ -480,6 +484,14 @@ Page({
         var storageRiskData = that.checkStorageRisk(traceId);
         var shelfLifeSubscribed = subscription.isShelfLifeSubscribed(traceId);
 
+        var sampleTraceInfo = mockData.getSampleTrace(traceId);
+        var sampleTraceAbnormalCount = 0;
+        if (sampleTraceInfo && sampleTraceInfo.steps) {
+          sampleTraceInfo.steps.forEach(function(step) {
+            if (step.isAbnormal) sampleTraceAbnormalCount++;
+          });
+        }
+
         that.setData({
           traceData: data,
           originalTraceData: data,
@@ -513,7 +525,9 @@ Page({
           showVersionUpdateToast: !!versionUpdateInfo,
           shelfLifeData: shelfLifeData,
           storageRiskData: storageRiskData,
-          shelfLifeSubscribed: shelfLifeSubscribed
+          shelfLifeSubscribed: shelfLifeSubscribed,
+          sampleTraceData: sampleTraceInfo,
+          sampleTraceAbnormalCount: sampleTraceAbnormalCount
         });
 
         that.setData({ anchorTabs: buildAnchorTabs(!!giftBoxInfo, !!shelfLifeData) });
@@ -574,6 +588,7 @@ Page({
       '#anchor-process',
       '#anchor-green',
       '#anchor-test',
+      '#anchor-sampleTrace',
       '#anchor-brew',
       '#anchor-blockchain',
       '#anchor-reviews',
@@ -911,6 +926,15 @@ Page({
     if (!teamId) return;
     wx.navigateTo({
       url: '/pages/teaMaster/teaMaster?teamId=' + teamId
+    });
+  },
+
+  goToSampleAbnormalReport: function(e) {
+    var sampleNo = e.currentTarget.dataset.sampleno || '';
+    var abnormalReason = e.currentTarget.dataset.abnormalreason || '';
+    var traceId = this.data.traceId || '';
+    wx.navigateTo({
+      url: '/pages/reportProduct/reportProduct?type=sample_abnormal&sampleNo=' + encodeURIComponent(sampleNo) + '&abnormalReason=' + encodeURIComponent(abnormalReason) + '&traceId=' + traceId
     });
   },
 

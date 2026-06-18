@@ -1621,6 +1621,39 @@
       </view>
     </view>
 
+    <!-- ========== 模块：检样追溯 ========== -->
+    <view class="card animate-card module-card sample-trace-module-card {{sampleTraceAbnormalCount > 0 ? 'has-abnormal' : ''}}" id="anchor-sampleTrace" style="animation-delay: 0.38s;" wx:if="{{sampleTraceData}}">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="sampleTrace">
+        <view class="title-left">
+          <text class="title-icon">🧪</text>
+          <text>检样追溯</text>
+          <view class="title-badge {{sampleTraceAbnormalCount > 0 ? 'warning-badge' : 'green'}}" wx:if="{{sampleTraceData}}">
+            {{sampleTraceAbnormalCount > 0 ? '存在异常' : '流转正常'}}
+          </view>
+        </view>
+        <view class="module-toggle {{moduleCollapsed.sampleTrace ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
+        </view>
+      </view>
+      <view class="module-content {{moduleCollapsed.sampleTrace ? 'hidden' : ''}}">
+        <sample-trace
+          steps="{{sampleTraceData.steps}}"
+          sampleNo="{{sampleTraceData.sampleNo}}"
+          reportNo="{{sampleTraceData.reportNo}}"
+        />
+        <view class="sample-abnormal-warning" wx:if="{{sampleTraceAbnormalCount > 0}}">
+          <view class="abnormal-warning-icon">⚠️</view>
+          <view class="abnormal-warning-content">
+            <view class="abnormal-warning-title">检测样品流转异常</view>
+            <view class="abnormal-warning-desc">共 {{sampleTraceAbnormalCount}} 个异常环节，详情请展开查看。如涉及您购买的产品，可点击举报。</view>
+          </view>
+          <view class="abnormal-warning-action" data-sampleno="{{sampleTraceData.sampleNo}}" data-abnormalreason="样品流转存在异常" bindtap="goToSampleAbnormalReport">
+            <text>举报 ›</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
     <!-- ========== 模块7：冲泡建议 ========== -->
     <view class="card animate-card module-card" id="anchor-brew" style="animation-delay: 0.4s;">
       <view class="card-title module-header" bindtap="toggleModule" data-key="brew">
@@ -2829,6 +2862,30 @@
             <view class="verify-row">
               <text class="verify-row-label">验真时间</text>
               <text class="verify-row-value">{{verifyResult.verifyTime}}</text>
+            </view>
+            <view class="verify-divider" wx:if="{{verifyResult.sampleNo}}"></view>
+            <view class="verify-row" wx:if="{{verifyResult.sampleNo}}">
+              <text class="verify-row-label">样品编号</text>
+              <text class="verify-row-value highlight-sample">{{verifyResult.sampleNo}}</text>
+            </view>
+            <view class="verify-row" wx:if="{{verifyResult.sampleReportConsistent !== undefined}}">
+              <text class="verify-row-label">样品-报告一致性</text>
+              <text class="verify-row-value {{verifyResult.sampleReportConsistent ? 'consistency-pass' : 'consistency-fail'}}">{{verifyResult.sampleReportConsistent ? '✓ 一致' : '✗ 不一致'}}</text>
+            </view>
+            <view class="verify-abnormal-section" wx:if="{{verifyResult.abnormalSamples && verifyResult.abnormalSamples.length > 0}}">
+              <view class="verify-abnormal-title">⚠️ 异常检样</view>
+              <view class="verify-abnormal-list">
+                <view class="verify-abnormal-item" wx:for="{{verifyResult.abnormalSamples}}" wx:key="stepType">
+                  <view class="abnormal-item-header">
+                    <text class="abnormal-item-step">{{item.stepType}}</text>
+                    <text class="abnormal-item-sample">{{item.sampleNo}}</text>
+                  </view>
+                  <text class="abnormal-item-reason">{{item.abnormalReason}}</text>
+                  <view class="abnormal-item-report" data-sampleno="{{item.sampleNo}}" data-abnormalreason="{{item.abnormalReason}}" bindtap="goToSampleAbnormalReport">
+                    <text>举报此异常 ›</text>
+                  </view>
+                </view>
+              </view>
             </view>
           </view>
           <view class="verify-result-body invalid-body" wx:else>
