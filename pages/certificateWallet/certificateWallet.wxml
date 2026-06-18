@@ -1,0 +1,119 @@
+<view class="cert-wallet-page">
+  <view wx:if="{{isEmpty}}" class="empty-state">
+    <view class="empty-icon">📜</view>
+    <view class="empty-title">证书钱包空空如也</view>
+    <view class="empty-desc">在产品溯源页将有机认证、检测报告、区块链存证加入证书钱包，随时验真、分享、导出</view>
+    <view class="empty-btn" bindtap="onGoScan">去扫码查看产品</view>
+  </view>
+
+  <block wx:else>
+    <view class="wallet-header">
+      <view class="wallet-stats">
+        <view class="stat-card">
+          <view class="stat-icon">📜</view>
+          <view class="stat-info">
+            <view class="stat-value">{{certificates.length}}</view>
+            <view class="stat-label">全部证书</view>
+          </view>
+        </view>
+        <view class="stat-card organic">
+          <view class="stat-icon">🌱</view>
+          <view class="stat-info">
+            <view class="stat-value">{{organicCount}}</view>
+            <view class="stat-label">有机认证</view>
+          </view>
+        </view>
+        <view class="stat-card test">
+          <view class="stat-icon">🔬</view>
+          <view class="stat-info">
+            <view class="stat-value">{{testReportCount}}</view>
+            <view class="stat-label">检测报告</view>
+          </view>
+        </view>
+        <view class="stat-card bc">
+          <view class="stat-icon">🔗</view>
+          <view class="stat-info">
+            <view class="stat-value">{{blockchainCount}}</view>
+            <view class="stat-label">区块链存证</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="filter-tabs">
+      <view
+        wx:for="{{tabs}}"
+        wx:key="key"
+        class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onTabTap"
+      >
+        <text class="tab-icon">{{item.icon}}</text>
+        <text class="tab-label">{{item.label}}</text>
+      </view>
+      <view class="clear-btn" catchtap="onClearAll">清空</view>
+    </view>
+
+    <view wx:if="{{filteredCertificates.length === 0}}" class="empty-filter">
+      <view class="empty-filter-text">该分类暂无证书</view>
+    </view>
+
+    <view class="cert-list">
+      <view
+        wx:for="{{filteredCertificates}}"
+        wx:key="certId"
+        class="cert-card"
+        data-certid="{{item.certId}}"
+        bindtap="onItemTap"
+      >
+        <view class="cert-left-border" style="background: {{item.typeColor}};"></view>
+
+        <view class="cert-body">
+          <view class="cert-top">
+            <view class="cert-type-badge" style="background: {{item.typeColor}}22; color: {{item.typeColor}};">
+              <text class="cert-type-icon">{{item.typeIcon}}</text>
+              <text class="cert-type-text">{{item.typeLabel}}</text>
+            </view>
+            <view wx:if="{{item.status === 'verified'}}" class="cert-status verified">✅ 已验真</view>
+            <view wx:elif="{{item.status === 'warning'}}" class="cert-status warning">⚠️ 注意</view>
+            <view wx:else class="cert-status pending">⏳ 待验证</view>
+          </view>
+
+          <view class="cert-title">{{item.title}}</view>
+          <view class="cert-subtitle">{{item.subtitle}}</view>
+
+          <view class="cert-meta">
+            <view wx:if="{{item.productName}}" class="meta-item">
+              <text class="meta-label">产品：</text>
+              <text class="meta-value">{{item.productName}}</text>
+            </view>
+            <view wx:if="{{item.batchNo}}" class="meta-item">
+              <text class="meta-label">批次：</text>
+              <text class="meta-value">{{item.batchNo}}</text>
+            </view>
+            <view wx:if="{{item.issuer}}" class="meta-item">
+              <text class="meta-label">颁发：</text>
+              <text class="meta-value">{{item.issuer}}</text>
+            </view>
+            <view wx:if="{{item.certNo}}" class="meta-item">
+              <text class="meta-label">编号：</text>
+              <text class="meta-value mono">{{item.certNo}}</text>
+            </view>
+          </view>
+
+          <view class="cert-footer">
+            <view class="cert-time">{{item.formatAddTime}}</view>
+            <view class="cert-actions">
+              <view class="action-btn remove" catchtap="onRemoveCert" data-certid="{{item.certId}}">删除</view>
+              <view class="action-btn primary">验真 →</view>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{item.productImage}}" class="cert-product-img">
+          <image src="{{item.productImage}}" mode="aspectFill" class="product-img" />
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

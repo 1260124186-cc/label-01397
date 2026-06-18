@@ -9,7 +9,9 @@
     "pages/webview/webview",
     "pages/dealer/index",
     "pages/dealer/stockIn",
-    "pages/dealer/stockOut"
+    "pages/dealer/stockOut",
+    "pages/certificateWallet/certificateWallet",
+    "pages/certificateDetail/certificateDetail"
   ],
   "window": {
     "backgroundTextStyle": "dark",

@@ -496,6 +496,36 @@
   color: #999999;
 }
 
+/* 模块标题右侧操作区 */
+.title-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-left: auto;
+}
+
+.cert-wallet-mini-btn {
+  padding: 8rpx 20rpx;
+  border-radius: 24rpx;
+  font-size: 22rpx;
+  color: #2E8B57;
+  background: rgba(46, 139, 87, 0.08);
+  border: 1rpx solid rgba(46, 139, 87, 0.25);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.cert-wallet-mini-btn:active {
+  opacity: 0.7;
+  transform: scale(0.96);
+}
+
+.cert-wallet-mini-btn.saved {
+  color: #DAA520;
+  background: rgba(218, 165, 32, 0.1);
+  border-color: rgba(218, 165, 32, 0.35);
+}
+
 /* 模块内容区域 */
 .module-content {
   margin-top: 24rpx;
@@ -1785,10 +1815,12 @@
   background: linear-gradient(135deg, #FFFFFF 0%, #F8F8FF 100%);
 }
 
-.title-right {
+.title-right,
+.title-right-actions {
   display: flex;
   align-items: center;
   gap: 12rpx;
+  margin-left: auto;
 }
 
 .bc-verified-badge {

@@ -1,0 +1,247 @@
+<view class="detail-page" wx:if="{{!isLoading && cert}}">
+  <view class="cert-hero" style="background: linear-gradient(135deg, {{typeColor}}, {{typeColor}}88);">
+    <view class="hero-icon">{{typeIcon}}</view>
+    <view class="hero-type">{{typeLabel}}</view>
+    <view class="hero-title">{{cert.title}}</view>
+    <view class="hero-status">
+      <view wx:if="{{cert.status === 'verified'}}" class="status-chip verified">✅ 已验真</view>
+      <view wx:elif="{{cert.status === 'warning'}}" class="status-chip warning">⚠️ 存在异常</view>
+      <view wx:else class="status-chip pending">⏳ 待验证</view>
+    </view>
+  </view>
+
+  <view class="action-bar">
+    <view class="action-item" bindtap="onVerify">
+      <view class="action-icon">🔍</view>
+      <view class="action-label">验真</view>
+    </view>
+    <view class="action-divider"></view>
+    <button class="action-item" open-type="share" hover-class="none">
+      <view class="action-icon">📤</view>
+      <view class="action-label">分享</view>
+    </button>
+    <view class="action-divider"></view>
+    <view class="action-item" bindtap="onExportPdf">
+      <view class="action-icon">📄</view>
+      <view class="action-label">导出</view>
+    </view>
+    <view class="action-divider"></view>
+    <view class="action-item danger" bindtap="onRemoveCert">
+      <view class="action-icon">🗑️</view>
+      <view class="action-label">删除</view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">证书信息</view>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">证书编号</text>
+        <view class="info-value-row">
+          <text class="info-value mono">{{cert.certNo || '-'}}</text>
+          <view wx:if="{{cert.certNo}}" class="copy-btn" catchtap="onCopyCertNo">复制</view>
+        </view>
+      </view>
+      <view class="info-divider"></view>
+      <view class="info-row">
+        <text class="info-label">颁发机构</text>
+        <text class="info-value">{{cert.issuer || '-'}}</text>
+      </view>
+      <view class="info-divider"></view>
+      <view class="info-row">
+        <text class="info-label">颁发日期</text>
+        <text class="info-value">{{cert.issueDate || '-'}}</text>
+      </view>
+      <view class="info-divider"></view>
+      <view class="info-row">
+        <text class="info-label">收藏时间</text>
+        <text class="info-value">{{cert.formatAddTime}}</text>
+      </view>
+      <view wx:if="{{cert.verifyUrl}}" class="info-divider"></view>
+      <view wx:if="{{cert.verifyUrl}}" class="info-row">
+        <text class="info-label">官方验真</text>
+        <text class="info-value link" bindtap="onOpenVerifyUrl">前往验真 →</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section" wx:if="{{cert.productName || cert.batchNo}}">
+    <view class="section-title">关联产品</view>
+    <view class="product-card" bindtap="onGoProductTrace">
+      <view wx:if="{{cert.productImage}}" class="product-img">
+        <image src="{{cert.productImage}}" mode="aspectFill" />
+      </view>
+      <view wx:else class="product-img placeholder">📦</view>
+      <view class="product-info">
+        <view class="product-name">{{cert.productName || '未知产品'}}</view>
+        <view wx:if="{{cert.batchNo}}" class="product-batch">批次号：{{cert.batchNo}}</view>
+        <view wx:if="{{cert.traceId}}" class="product-trace">溯源ID：{{cert.traceId}}</view>
+      </view>
+      <view class="product-arrow">›</view>
+    </view>
+  </view>
+
+  <block wx:if="{{cert.type === 'organic' && cert.summary}}">
+    <view class="section">
+      <view class="section-title">🌱 认证详情</view>
+      <view class="info-card">
+        <view class="info-row">
+          <text class="info-label">认证类型</text>
+          <text class="info-value highlight-green">{{cert.summary.certificationType || '-'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row column">
+          <text class="info-label">生态种植记录</text>
+          <view class="tag-list">
+            <view wx:for="{{cert.summary.plantingRecords}}" wx:key="*this" class="tag green">{{item}}</view>
+          </view>
+        </view>
+        <view wx:if="{{cert.summary.packingCert}}" class="info-divider"></view>
+        <view wx:if="{{cert.summary.packingCert}}" class="info-row">
+          <text class="info-label">包装认证</text>
+          <text class="info-value">{{cert.summary.packingCert}}</text>
+        </view>
+        <view wx:if="{{cert.summary.logisticsCarbon}}" class="info-divider"></view>
+        <view wx:if="{{cert.summary.logisticsCarbon}}" class="info-row">
+          <text class="info-label">绿色物流</text>
+          <text class="info-value">{{cert.summary.logisticsCarbon}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{cert.type === 'testReport' && cert.summary}}">
+    <view class="section">
+      <view class="section-title">🔬 检测摘要</view>
+      <view class="summary-stats">
+        <view class="stat-box pass">
+          <view class="stat-num">{{cert.summary.passItems || 0}}</view>
+          <view class="stat-text">合格项</view>
+        </view>
+        <view class="stat-box total">
+          <view class="stat-num">{{cert.summary.totalItems || 0}}</view>
+          <view class="stat-text">总检测项</view>
+        </view>
+        <view class="stat-box {{cert.summary.failItems > 0 ? 'fail' : 'ok'}}">
+          <view class="stat-num">{{cert.summary.failItems || 0}}</view>
+          <view class="stat-text">不合格项</view>
+        </view>
+      </view>
+      <view class="info-card mt-md">
+        <view class="info-row">
+          <text class="info-label">检测机构</text>
+          <text class="info-value">{{cert.summary.institution || '-'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">检测日期</text>
+          <text class="info-value">{{cert.summary.testDate || '-'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">执行标准</text>
+          <text class="info-value">{{cert.summary.standard || '-'}}</text>
+        </view>
+        <view wx:if="{{cert.summary.comparisonTip}}" class="info-divider"></view>
+        <view wx:if="{{cert.summary.comparisonTip}}" class="info-row column">
+          <text class="info-label">检测说明</text>
+          <text class="info-value {{cert.summary.hasAbnormal ? 'text-warning' : 'text-success'}}">{{cert.summary.comparisonTip}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{cert.type === 'blockchain' && cert.summary}}">
+    <view class="section">
+      <view class="section-title">🔗 区块链存证</view>
+      <view class="bc-banner">
+        <view class="bc-icon">⛓️</view>
+        <view class="bc-info">
+          <view class="bc-title">数据已上链存证</view>
+          <view class="bc-desc">真实可查 · 不可篡改 · {{cert.summary.consensusType || 'PBFT'}}共识</view>
+        </view>
+      </view>
+      <view class="info-card mt-md">
+        <view class="info-row">
+          <text class="info-label">链名称</text>
+          <text class="info-value">{{cert.summary.chainName || '-'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">区块高度</text>
+          <text class="info-value mono">{{cert.summary.blockHeight || '-'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">交易哈希</text>
+          <view class="info-value-row">
+            <text class="info-value mono small">{{cert.summary.txHashShort || '-'}}</text>
+          </view>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">上链时间</text>
+          <text class="info-value">{{cert.summary.timestamp || '-'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">共识节点数</text>
+          <text class="info-value">{{cert.summary.nodeCount || '-'}} 节点</text>
+        </view>
+      </view>
+
+      <view wx:if="{{cert.summary.onChainFields && cert.summary.onChainFields.length > 0}}" class="info-card mt-md">
+        <view class="section-subtitle">📝 上链核心数据</view>
+        <view wx:for="{{cert.summary.onChainFields}}" wx:key="key" class="chain-field">
+          <view class="chain-field-left">
+            <text class="chain-check">✅</text>
+            <text class="chain-label">{{item.label}}</text>
+          </view>
+          <text class="chain-value">{{item.value}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{cert.summary.tsaCertificate}}" class="info-card mt-md">
+        <view class="section-subtitle">🕐 可信时间戳证书</view>
+        <view class="info-row">
+          <text class="info-label">颁发机构</text>
+          <text class="info-value">{{cert.summary.tsaCertificate.issuer || '-'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">证书编号</text>
+          <text class="info-value mono small">{{cert.summary.tsaCertificate.certSerial || '-'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">时间精度</text>
+          <text class="info-value">{{cert.summary.tsaCertificate.accuracy || '-'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">法律依据</text>
+          <text class="info-value small">{{cert.summary.tsaCertificate.legalBasis || '-'}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <view class="section">
+    <view class="trust-tip">
+      <view class="trust-icon">🛡️</view>
+      <view class="trust-content">
+        <view class="trust-title">信任与保障</view>
+        <view class="trust-desc">本证书通过区块链技术存证，数据真实可查、不可篡改，用于增强产品信任与复购信心。</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showExportCanvas}}" class="canvas-container">
+    <canvas type="2d" id="exportCanvas" class="export-canvas"></canvas>
+  </view>
+</view>
+
+<view wx:else class="loading-page">
+  <view class="loading-icon">📜</view>
+  <view class="loading-text">加载中...</view>
+</view>

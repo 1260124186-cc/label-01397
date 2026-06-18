@@ -2,6 +2,7 @@ var auth = require('../../utils/auth.js');
 var userStore = require('../../utils/userStore.js');
 var storage = require('../../utils/storage.js');
 var greenPoints = require('../../utils/greenPoints.js');
+var certWallet = require('../../utils/certificateWallet.js');
 
 Page({
   data: {
@@ -12,6 +13,7 @@ Page({
     favoriteCount: 0,
     noteCount: 0,
     scanCount: 0,
+    certCount: 0,
     unreadCount: 0,
     greenPoints: 0,
     memberLevel: {},
@@ -28,6 +30,7 @@ Page({
       {
         title: '溯源服务',
         items: [
+          { key: 'certWallet', icon: '📜', name: '证书钱包', desc: '有机认证·检测报告·区块链存证', url: '/pages/certificateWallet/certificateWallet', badge: '' },
           { key: 'history', icon: '📋', name: '查询历史', desc: '扫码与手动查询记录', url: '/pages/history/history', badge: '' },
           { key: 'favorites', icon: '⭐', name: '收藏产品', desc: '我收藏的茶叶产品', url: '/pages/favorites/favorites', badge: '' },
           { key: 'notes', icon: '📝', name: '品鉴笔记', desc: '我的茶叶品鉴记录', url: '/pages/tastingNotes/tastingNotes', badge: '' }
@@ -63,6 +66,7 @@ Page({
     var unreadCount = userStore.getUnreadNotificationCount();
     var points = greenPoints.getPoints();
     var level = greenPoints.getUserLevel(points);
+    var certCount = certWallet.getCertificateCount();
 
     var menuSections = this.data.menuSections;
     for (var s = 0; s < menuSections.length; s++) {
@@ -73,6 +77,9 @@ Page({
         if (menuSections[s].items[i].key === 'favorites') {
           menuSections[s].items[i].badge = favorites.length > 0 ? String(favorites.length) : '';
         }
+        if (menuSections[s].items[i].key === 'certWallet') {
+          menuSections[s].items[i].badge = certCount > 0 ? String(certCount) : '';
+        }
       }
     }
 
@@ -82,6 +89,7 @@ Page({
       favoriteCount: favorites.length,
       noteCount: notes.length,
       scanCount: scanHistory.length,
+      certCount: certCount,
       unreadCount: unreadCount,
       greenPoints: points,
       memberLevel: level,

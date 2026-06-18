@@ -8,6 +8,7 @@
 const mockData = require('../../utils/mockData.js');
 const shareUtil = require('../../utils/share.js');
 const i18n = require('../../utils/i18n/index.js');
+const certWallet = require('../../utils/certificateWallet.js');
 
 // 锚点 Tab 配置（将在运行时根据语言填充 label）
 const ANCHOR_TABS_BASE = [
@@ -198,7 +199,15 @@ Page({
     certGenerating: false,
     certImage: '',
     showRewardModal: false,
-    lastRewardResult: null
+    lastRewardResult: null,
+
+    // ========== 证书钱包功能 ==========
+    certWalletStatus: {
+      organic: false,
+      testReport: false,
+      blockchain: false,
+      totalSaved: 0
+    }
   },
 
   /**
@@ -237,6 +246,9 @@ Page({
     this.refreshA11yData();
     this.refreshI18nTexts();
     this.setData({ anchorTabs: buildAnchorTabs() });
+    if (this.data.traceData) {
+      this.refreshCertWalletStatus();
+    }
   },
 
   // ===== i18n 与无障碍 =====
@@ -362,6 +374,8 @@ Page({
           shareInviteConfig: shareInviteConfig,
           shareInviteData: shareInviteData
         });
+
+        that.refreshCertWalletStatus();
 
         // 设置导航栏标题
         wx.setNavigationBarTitle({
@@ -2033,6 +2047,140 @@ Page({
       query: `traceId=${traceId}&invite=1`,
       imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || ''
     };
+  },
+
+  /**
+   * ==================== 证书钱包功能方法 ====================
+   */
+
+  /**
+   * 刷新当前产品的证书收藏状态
+   */
+  refreshCertWalletStatus: function() {
+    var that = this;
+    var traceData = this.data.traceData;
+    if (!traceData) return;
+
+    var traceId = traceData.basicInfo.traceId;
+    var allCerts = certWallet.getCertificates();
+
+    var status = {
+      organic: false,
+      testReport: false,
+      blockchain: false,
+      totalSaved: 0
+    };
+
+    allCerts.forEach(function(cert) {
+      if (cert.traceId === traceId) {
+        if (cert.type === 'organic') status.organic = true;
+        if (cert.type === 'testReport') status.testReport = true;
+        if (cert.type === 'blockchain') status.blockchain = true;
+      }
+    });
+
+    status.totalSaved = (status.organic ? 1 : 0) + (status.testReport ? 1 : 0) + (status.blockchain ? 1 : 0);
+
+    this.setData({ certWalletStatus: status });
+  },
+
+  /**
+   * 一键收藏全部三张证书
+   */
+  onSaveAllCerts: function() {
+    var that = this;
+    var traceData = this.data.traceData;
+    if (!traceData) return;
+
+    var certs = certWallet.buildAllCertificatesFromTrace(traceData);
+    var addedCount = 0;
+    certs.forEach(function(cert) {
+      var result = certWallet.addCertificate(cert);
+      if (result.success) addedCount++;
+    });
+
+    that.refreshCertWalletStatus();
+
+    if (addedCount > 0) {
+      wx.showToast({
+        title: '已收藏 ' + addedCount + ' 张证书',
+        icon: 'success',
+        duration: 2000
+      });
+    } else {
+      wx.showToast({
+        title: '证书已全部收藏过',
+        icon: 'none',
+        duration: 1500
+      });
+    }
+  },
+
+  /**
+   * 收藏单张证书
+   */
+  onSaveSingleCert: function(e) {
+    var that = this;
+    var type = e.currentTarget.dataset.type;
+    var traceData = this.data.traceData;
+    if (!traceData || !type) return;
+
+    var cert = null;
+    if (type === 'organic') {
+      cert = certWallet.buildOrganicCert(traceData);
+    } else if (type === 'testReport') {
+      cert = certWallet.buildTestReportCert(traceData);
+    } else if (type === 'blockchain') {
+      cert = certWallet.buildBlockchainCert(traceData);
+    }
+
+    if (!cert) return;
+
+    var result = certWallet.addCertificate(cert);
+    that.refreshCertWalletStatus();
+
+    if (result.success) {
+      wx.showToast({
+        title: '已加入证书钱包',
+        icon: 'success',
+        duration: 1500
+      });
+    } else {
+      wx.showToast({
+        title: result.message || '收藏失败',
+        icon: 'none',
+        duration: 1500
+      });
+    }
+  },
+
+  /**
+   * 取消收藏单张证书
+   */
+  onRemoveSingleCert: function(e) {
+    var that = this;
+    var type = e.currentTarget.dataset.type;
+    var traceData = this.data.traceData;
+    if (!traceData || !type) return;
+
+    var certId = type + '_' + traceData.basicInfo.traceId;
+    certWallet.removeCertificate(certId);
+    that.refreshCertWalletStatus();
+
+    wx.showToast({
+      title: '已取消收藏',
+      icon: 'none',
+      duration: 1500
+    });
+  },
+
+  /**
+   * 跳转证书钱包页面
+   */
+  goCertificateWallet: function() {
+    wx.navigateTo({
+      url: '/pages/certificateWallet/certificateWallet'
+    });
   },
 
   /**

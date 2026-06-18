@@ -996,14 +996,23 @@
 
     <!-- ========== 模块5：绿色溯源（新增核心模块） ========== -->
     <view class="card animate-card green-card module-card" id="anchor-green" style="animation-delay: 0.3s;">
-      <view class="card-title module-header" bindtap="toggleModule" data-key="green">
-        <view class="title-left">
+      <view class="card-title module-header">
+        <view class="title-left" bindtap="toggleModule" data-key="green">
           <text class="title-icon">♻️</text>
           <text>绿色溯源</text>
           <view class="title-badge green">环保认证</view>
         </view>
-        <view class="module-toggle {{moduleCollapsed.green ? 'collapsed' : ''}}">
-          <text class="toggle-icon">▾</text>
+        <view class="title-right-actions">
+          <view
+            class="cert-wallet-mini-btn {{certWalletStatus.organic ? 'saved' : ''}}"
+            catchtap="{{certWalletStatus.organic ? 'onRemoveSingleCert' : 'onSaveSingleCert'}}"
+            data-type="organic"
+          >
+            <text>{{certWalletStatus.organic ? '★ 已收藏' : '☆ 收藏证书'}}</text>
+          </view>
+          <view class="module-toggle {{moduleCollapsed.green ? 'collapsed' : ''}}" bindtap="toggleModule" data-key="green">
+            <text class="toggle-icon">▾</text>
+          </view>
         </view>
       </view>
       <view class="module-content {{moduleCollapsed.green ? 'hidden' : ''}}">
@@ -1102,16 +1111,25 @@
 
     <!-- ========== 模块6：农残检测 ========== -->
     <view class="card animate-card module-card test-module-card {{testChartData.overallPass ? '' : 'test-abnormal-card'}}" id="anchor-test" role="region" aria-label="{{i18n.tabTitleTest}}" style="animation-delay: 0.35s;">
-      <view class="card-title module-header" bindtap="toggleModule" data-key="test" role="button" aria-expanded="{{!moduleCollapsed.test}}" aria-label="{{i18n.tabTitleTest}}">
-        <view class="title-left">
+      <view class="card-title module-header">
+        <view class="title-left" bindtap="toggleModule" data-key="test" role="button" aria-expanded="{{!moduleCollapsed.test}}" aria-label="{{i18n.tabTitleTest}}">
           <text class="title-icon" aria-hidden="true">🔬</text>
           <text role="heading" aria-level="2">{{i18n.tabTitleTest}}</text>
           <view class="title-badge {{testChartData.overallPass ? 'status-badge-pass' : 'status-badge-fail'}} status-badge {{testChartData.overallPass ? '' : 'danger'}}" wx:if="{{traceData.pesticideTest}}" data-status="{{testChartData.overallPass ? 'pass' : 'fail'}}">
             {{testChartData.overallPass ? (currentLang === 'en-US' ? 'All Passed' : '全部合格' : (currentLang === 'en-US' ? 'Abnormal' : '存在异常'}}
           </view>
         </view>
-        <view class="module-toggle {{moduleCollapsed.test ? 'collapsed' : ''}}" aria-hidden="true">
-          <text class="toggle-icon">▾</text>
+        <view class="title-right-actions">
+          <view
+            class="cert-wallet-mini-btn {{certWalletStatus.testReport ? 'saved' : ''}}"
+            catchtap="{{certWalletStatus.testReport ? 'onRemoveSingleCert' : 'onSaveSingleCert'}}"
+            data-type="testReport"
+          >
+            <text>{{certWalletStatus.testReport ? '★ 已收藏' : '☆ 收藏证书'}}</text>
+          </view>
+          <view class="module-toggle {{moduleCollapsed.test ? 'collapsed' : ''}}" aria-hidden="true" bindtap="toggleModule" data-key="test">
+            <text class="toggle-icon">▾</text>
+          </view>
         </view>
       </view>
       <view class="module-content {{moduleCollapsed.test ? 'hidden' : ''}}">
@@ -1570,17 +1588,24 @@
 
     <!-- ========== 区块链存证详情 ========== -->
     <view class="card animate-card blockchain-card module-card" id="anchor-blockchain" style="animation-delay: 0.45s;" wx:if="{{traceData.blockchainInfo}}">
-      <view class="card-title module-header" bindtap="toggleModule" data-key="blockchain">
-        <view class="title-left">
+      <view class="card-title module-header">
+        <view class="title-left" bindtap="toggleModule" data-key="blockchain">
           <text class="title-icon">🔗</text>
           <text>区块链存证信息</text>
         </view>
-        <view class="title-right">
+        <view class="title-right-actions">
           <view class="bc-verified-badge" wx:if="{{traceData.blockchainInfo.verifyStatus === '已验证'}}">
             <text class="bc-badge-icon">✓</text>
             <text class="bc-badge-text">已验证</text>
           </view>
-          <view class="module-toggle {{moduleCollapsed.blockchain ? 'collapsed' : ''}}">
+          <view
+            class="cert-wallet-mini-btn {{certWalletStatus.blockchain ? 'saved' : ''}}"
+            catchtap="{{certWalletStatus.blockchain ? 'onRemoveSingleCert' : 'onSaveSingleCert'}}"
+            data-type="blockchain"
+          >
+            <text>{{certWalletStatus.blockchain ? '★ 已收藏' : '☆ 收藏证书'}}</text>
+          </view>
+          <view class="module-toggle {{moduleCollapsed.blockchain ? 'collapsed' : ''}}" bindtap="toggleModule" data-key="blockchain">
             <text class="toggle-icon">▾</text>
           </view>
         </view>
@@ -1887,6 +1912,22 @@
             </view>
             <text class="action-title">溯源证书</text>
             <text class="action-desc">区块链验真长图</text>
+          </view>
+
+          <view class="share-action-card" bindtap="onSaveAllCerts">
+            <view class="action-icon-wrap" style="background: linear-gradient(135deg, #52C41A 0%, #73D13D 100%);">
+              <text class="action-icon">💼</text>
+            </view>
+            <text class="action-title">收藏全部证书</text>
+            <text class="action-desc">已收藏 {{certWalletStatus.totalSaved}}/3 张</text>
+          </view>
+
+          <view class="share-action-card" bindtap="goCertificateWallet">
+            <view class="action-icon-wrap" style="background: linear-gradient(135deg, #FA8C16 0%, #FFA940 100%);">
+              <text class="action-icon">📂</text>
+            </view>
+            <text class="action-title">证书钱包</text>
+            <text class="action-desc">电子质检单夹</text>
           </view>
 
           <view class="share-action-card" bindtap="doInviteShare">
