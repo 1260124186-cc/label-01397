@@ -1,0 +1,208 @@
+<view class="page-container">
+
+  <view class="dealer-header" bindtap="openDealerSelector">
+    <view class="dealer-avatar">🏢</view>
+    <view class="dealer-info">
+      <view class="dealer-name">{{dealer.name}}</view>
+      <view class="dealer-meta">
+        <text class="level-badge level-{{dealer.level}}">{{dealer.levelLabel}}</text>
+        <text class="dealer-location">📍 {{dealer.location}}</text>
+      </view>
+    </view>
+    <view class="dealer-arrow">▼</view>
+  </view>
+
+  <view class="quick-actions">
+    <view class="action-btn action-in" bindtap="goToStockIn">
+      <view class="action-icon">📥</view>
+      <view class="action-text">扫码入库</view>
+    </view>
+    <view class="action-btn action-out" bindtap="goToStockOut">
+      <view class="action-icon">📤</view>
+      <view class="action-text">扫码出库</view>
+    </view>
+    <view class="action-btn action-home" bindtap="goHome">
+      <view class="action-icon">🏠</view>
+      <view class="action-text">返回首页</view>
+    </view>
+  </view>
+
+  <view class="tabs">
+    <view class="tab-item {{activeTab === 'overview' ? 'active' : ''}}" data-tab="overview" bindtap="switchTab">
+      <text>概览</text>
+    </view>
+    <view class="tab-item {{activeTab === 'inventory' ? 'active' : ''}}" data-tab="inventory" bindtap="switchTab">
+      <text>库存</text>
+    </view>
+    <view class="tab-item {{activeTab === 'records' ? 'active' : ''}}" data-tab="records" bindtap="switchTab">
+      <text>出入库</text>
+    </view>
+    <view class="tab-item {{activeTab === 'alerts' ? 'active' : ''}}" data-tab="alerts" bindtap="switchTab">
+      <text>窜货预警</text>
+      <view wx:if="{{divergenceAlerts.length > 0}}" class="alert-badge">{{divergenceAlerts.length}}</view>
+    </view>
+  </view>
+
+  <view class="tab-content">
+
+    <view wx:if="{{activeTab === 'overview'}}" class="overview-panel">
+      <view class="stats-row">
+        <view class="stat-card">
+          <view class="stat-value">{{inventoryStats.totalSkus}}</view>
+          <view class="stat-label">SKU种类</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-value highlight">{{inventoryStats.totalQuantity}}</view>
+          <view class="stat-label">库存总量</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-value {{divergenceAlerts.length > 0 ? 'danger' : ''}}">{{divergenceAlerts.length}}</view>
+          <view class="stat-label">窜货预警</view>
+        </view>
+      </view>
+
+      <view class="section">
+        <view class="section-title">
+          <text class="section-icon">📊</text>
+          <text>最近出入库</text>
+        </view>
+        <view wx:if="{{inOutRecords.length === 0}}" class="empty-state">
+          <text>暂无记录</text>
+        </view>
+        <view wx:else class="record-list">
+          <block wx:for="{{inOutRecords}}" wx:key="id">
+            <view class="record-item">
+              <view class="record-icon {{item.type}}">
+                <text>{{item.type === 'in' ? '入' : '出'}}</text>
+              </view>
+              <view class="record-info">
+                <view class="record-product">{{item.productName}}</view>
+                <view class="record-meta">
+                  <text class="code-type">{{item.codeTypeLabel}}</text>
+                  <text class="record-time">{{item.timestampStr}}</text>
+                </view>
+              </view>
+              <view class="record-qty {{item.type}}">
+                {{item.type === 'in' ? '+' : '-'}}{{item.quantity}}
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <view wx:if="{{divergenceAlerts.length > 0}}" class="section">
+        <view class="section-title">
+          <text class="section-icon">🚨</text>
+          <text>窜货预警（{{divergenceAlerts.length}}）</text>
+        </view>
+        <view class="alert-list">
+          <block wx:for="{{divergenceAlerts}}" wx:key="id">
+            <view class="alert-item {{item.status}}" data-alertid="{{item.id}}" bindtap="viewAlert">
+              <view class="alert-icon">⚠️</view>
+              <view class="alert-info">
+                <view class="alert-title">产品 {{item.traceId}} 疑似窜货</view>
+                <view class="alert-desc">扫码地区：{{item.scanCity || item.scanLocation}}，授权区域：{{item.authorizedRegions}}</view>
+              </view>
+              <view class="alert-status {{item.status}}">
+                {{item.status === 'pending' ? '待处理' : '已处理'}}
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{activeTab === 'inventory'}}" class="inventory-panel">
+      <view wx:if="{{inventoryList.length === 0}}" class="empty-state">
+        <text>暂无库存</text>
+      </view>
+      <view wx:else class="inventory-list">
+        <block wx:for="{{inventoryList}}" wx:key="traceId">
+          <view class="inventory-item" data-traceid="{{item.traceId}}" bindtap="goToDetail">
+            <view class="inv-icon">📦</view>
+            <view class="inv-info">
+              <view class="inv-product">{{item.productName}}</view>
+              <view class="inv-batch">批次：{{item.batchNo}}</view>
+            </view>
+            <view class="inv-qty">{{item.quantity}}</view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view wx:if="{{activeTab === 'records'}}" class="records-panel">
+      <view wx:if="{{inOutRecords.length === 0}}" class="empty-state">
+        <text>暂无出入库记录</text>
+      </view>
+      <view wx:else class="record-list full">
+        <block wx:for="{{inOutRecords}}" wx:key="id">
+          <view class="record-item">
+            <view class="record-icon {{item.type}}">
+              <text>{{item.type === 'in' ? '入' : '出'}}</text>
+            </view>
+            <view class="record-info">
+              <view class="record-product">{{item.productName}}</view>
+              <view class="record-meta">
+                <text class="code-type">{{item.codeTypeLabel}}</text>
+                <text class="record-code">{{item.code}}</text>
+              </view>
+              <view class="record-partner">
+                {{item.type === 'in' ? '来自：' + item.fromDealerName : '发往：' + item.toDealerName}}
+              </view>
+              <view class="record-time-full">{{item.timestampStr}}</view>
+            </view>
+            <view class="record-qty {{item.type}}">
+              {{item.type === 'in' ? '+' : '-'}}{{item.quantity}}
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view wx:if="{{activeTab === 'alerts'}}" class="alerts-panel">
+      <view wx:if="{{divergenceAlerts.length === 0}}" class="empty-state">
+        <text class="empty-icon">✅</text>
+        <text>暂无窜货预警</text>
+        <text class="empty-desc">所有产品流通正常</text>
+      </view>
+      <view wx:else class="alert-list full">
+        <block wx:for="{{divergenceAlerts}}" wx:key="id">
+          <view class="alert-item {{item.status}}" data-alertid="{{item.id}}" bindtap="viewAlert">
+            <view class="alert-icon">⚠️</view>
+            <view class="alert-info">
+              <view class="alert-title">产品 {{item.traceId}} 疑似窜货</view>
+              <view class="alert-desc">扫码地区：{{item.scanCity || item.scanLocation}}</view>
+              <view class="alert-desc">授权区域：{{item.authorizedRegions}}</view>
+              <view class="alert-time">{{item.timestampStr}}</view>
+            </view>
+            <view class="alert-status {{item.status}}">
+              {{item.status === 'pending' ? '待处理' : '已处理'}}
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+  </view>
+
+  <view wx:if="{{showDealerSelector}}" class="modal-mask" bindtap="closeDealerSelector">
+    <view class="modal-content" catchtap="">
+      <view class="modal-header">
+        <text>选择经销商</text>
+        <text class="modal-close" bindtap="closeDealerSelector">✕</text>
+      </view>
+      <view class="dealer-select-list">
+        <block wx:for="{{dealerList}}" wx:key="id">
+          <view class="dealer-select-item {{dealer.id === item.id ? 'selected' : ''}}" data-dealerid="{{item.id}}" bindtap="selectDealer">
+            <view class="ds-name">{{item.name}}</view>
+            <view class="ds-meta">
+              <text class="level-badge level-{{item.level}}">{{item.levelLabel}}</text>
+              <text class="ds-location">📍 {{item.location}}</text>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+</view>

@@ -1,0 +1,139 @@
+@import "./stockIn.wxss";
+
+.scan-btn {
+  background: linear-gradient(135deg, #DAA520 0%, #FFC107 100%);
+  box-shadow: 0 8rpx 24rpx rgba(218, 165, 32, 0.3);
+}
+
+.result-header.out {
+  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+}
+
+.btn-confirm.out {
+  background: linear-gradient(135deg, #DAA520 0%, #FFC107 100%);
+}
+
+.ri-icon.out {
+  background: #DAA520;
+}
+
+.ri-qty.out {
+  color: #DAA520;
+}
+
+.dealer-select-row {
+  align-items: center;
+}
+
+.dealer-select-value {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.selected-dealer {
+  font-size: 26rpx;
+  color: #2E8B57;
+  margin-right: 8rpx;
+}
+
+.placeholder {
+  font-size: 26rpx;
+  color: #bbb;
+  margin-right: 8rpx;
+}
+
+.arrow {
+  font-size: 32rpx;
+  color: #ccc;
+}
+
+.ri-to {
+  font-size: 22rpx;
+  color: #666;
+  margin-top: 4rpx;
+}
+
+.dealer-select-list {
+  padding: 16rpx 24rpx 32rpx;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.dealer-select-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+  background: #F8F8F5;
+}
+
+.dealer-select-item.consumer {
+  background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+}
+
+.ds-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+}
+
+.ds-info {
+  flex: 1;
+}
+
+.ds-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 6rpx;
+}
+
+.ds-desc {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.ds-meta {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.ds-meta .level-badge {
+  background: #E8E8E8;
+  color: #666;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+
+.ds-meta .level-city {
+  background: rgba(218, 165, 32, 0.15);
+  color: #DAA520;
+}
+
+.ds-meta .level-store {
+  background: rgba(46, 139, 87, 0.15);
+  color: #2E8B57;
+}
+
+.ds-location {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.ds-check {
+  font-size: 36rpx;
+  color: #2E8B57;
+  font-weight: bold;
+  padding-left: 16rpx;
+}
+
+.empty-dealer {
+  padding: 60rpx 0;
+  text-align: center;
+  color: #999;
+  font-size: 28rpx;
+}

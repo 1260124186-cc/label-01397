@@ -1,0 +1,105 @@
+<view class="page-container">
+
+  <view class="dealer-info-bar">
+    <text class="dealer-label">当前经销商：</text>
+    <text class="dealer-name">{{dealer.name}}</text>
+    <text class="level-badge level-{{dealer.level}}">{{dealer.levelLabel}}</text>
+  </view>
+
+  <view class="scan-section">
+    <view class="scan-btn" bindtap="scanCode">
+      <text class="scan-icon">📷</text>
+      <text class="scan-text">扫码入库</text>
+    </view>
+  </view>
+
+  <view class="divider">
+    <text class="divider-text">或手动输入</text>
+  </view>
+
+  <view class="input-section">
+    <view class="input-group">
+      <input
+        class="code-input"
+        placeholder="请输入溯源码（生产码/箱码/门店码）"
+        value="{{inputCode}}"
+        bindinput="onInputChange"
+      />
+      <button class="btn-parse" bindtap="manualParse">解析</button>
+    </view>
+    <view class="test-codes">
+      <text class="test-label">测试码：</text>
+      <block wx:for="{{testCodes}}" wx:key="*this">
+        <text class="test-code" data-code="{{item}}" bindtap="fillTestCode">{{item}}</text>
+      </block>
+    </view>
+  </view>
+
+  <view wx:if="{{parsedResult}}" class="parsed-result">
+    <view class="result-header">
+      <view class="code-type-badge" style="background: {{parsedResult.codeTypeInfo.color}}">
+        <text class="ct-icon">{{parsedResult.codeTypeInfo.icon}}</text>
+        <text class="ct-label">{{parsedResult.codeTypeInfo.label}}</text>
+      </view>
+      <text class="result-code">{{parsedResult.code}}</text>
+    </view>
+
+    <view class="result-body">
+      <view class="info-row">
+        <text class="info-label">产品名称</text>
+        <text class="info-value">{{parsedResult.traceInfo.productName}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">规格</text>
+        <text class="info-value">{{parsedResult.traceInfo.specification}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">批次号</text>
+        <text class="info-value">{{parsedResult.traceInfo.batchNo}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">来源</text>
+        <text class="info-value">{{parsedResult.traceInfo.fromDealerName}}</text>
+      </view>
+
+      <view class="quantity-row">
+        <text class="info-label">入库数量</text>
+        <view class="qty-control">
+          <view class="qty-btn" bindtap="decreaseQty">-</view>
+          <input
+            class="qty-input"
+            type="number"
+            value="{{quantity}}"
+            bindinput="onQuantityChange"
+          />
+          <view class="qty-btn" bindtap="increaseQty">+</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="result-footer">
+      <button class="btn btn-cancel" bindtap="goBack">取消</button>
+      <button class="btn btn-confirm" bindtap="confirmStockIn">确认入库</button>
+    </view>
+  </view>
+
+  <view wx:if="{{recentResults.length > 0}}" class="recent-section">
+    <view class="section-title">最近入库</view>
+    <view class="recent-list">
+      <block wx:for="{{recentResults}}" wx:key="id">
+        <view class="recent-item">
+          <view class="ri-icon in">入</view>
+          <view class="ri-info">
+            <view class="ri-product">{{item.productName}}</view>
+            <view class="ri-meta">
+              <text class="ri-code">{{item.code}}</text>
+              <text class="ri-time">{{item.showTime}}</text>
+            </view>
+          </view>
+          <view class="ri-qty in">+{{item.quantity}}</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+</view>

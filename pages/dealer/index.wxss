@@ -1,0 +1,556 @@
+.page-container {
+  min-height: 100vh;
+  background: #F5F5F0;
+  padding-bottom: 40rpx;
+}
+
+.dealer-header {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: white;
+}
+
+.dealer-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  margin-right: 24rpx;
+}
+
+.dealer-info {
+  flex: 1;
+}
+
+.dealer-name {
+  font-size: 34rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.dealer-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.level-badge {
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  background: rgba(255,255,255,0.2);
+}
+
+.level-province {
+  background: rgba(114, 46, 209, 0.3);
+}
+
+.level-city {
+  background: rgba(218, 165, 32, 0.3);
+}
+
+.level-store {
+  background: rgba(46, 139, 87, 0.3);
+}
+
+.dealer-location {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.dealer-arrow {
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+.quick-actions {
+  display: flex;
+  padding: 32rpx;
+  gap: 24rpx;
+  background: white;
+  margin-bottom: 16rpx;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx 0;
+  border-radius: 16rpx;
+  background: #F8F8F5;
+}
+
+.action-icon {
+  font-size: 48rpx;
+  margin-bottom: 8rpx;
+}
+
+.action-text {
+  font-size: 26rpx;
+  color: #333;
+}
+
+.action-in {
+  background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+}
+
+.action-out {
+  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+}
+
+.action-home {
+  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+}
+
+.tabs {
+  display: flex;
+  background: white;
+  padding: 0 16rpx;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 28rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #2E8B57;
+  font-weight: bold;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 30%;
+  right: 30%;
+  height: 6rpx;
+  background: #2E8B57;
+  border-radius: 3rpx;
+}
+
+.alert-badge {
+  position: absolute;
+  top: 16rpx;
+  right: 20rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  line-height: 32rpx;
+  padding: 0 8rpx;
+  border-radius: 16rpx;
+  background: #ff4d4f;
+  color: white;
+  font-size: 20rpx;
+  text-align: center;
+}
+
+.tab-content {
+  padding: 24rpx;
+}
+
+.stats-row {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 32rpx;
+}
+
+.stat-card {
+  flex: 1;
+  background: white;
+  border-radius: 16rpx;
+  padding: 28rpx 16rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.stat-value {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.stat-value.highlight {
+  color: #2E8B57;
+}
+
+.stat-value.danger {
+  color: #ff4d4f;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.section {
+  background: white;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.section-icon {
+  margin-right: 12rpx;
+}
+
+.empty-state {
+  padding: 60rpx 0;
+  text-align: center;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.empty-icon {
+  display: block;
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+}
+
+.empty-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #bbb;
+  margin-top: 8rpx;
+}
+
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.record-list.full .record-item {
+  padding: 24rpx 0;
+}
+
+.record-item:last-child {
+  border-bottom: none;
+}
+
+.record-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: white;
+  margin-right: 20rpx;
+}
+
+.record-icon.in {
+  background: #2E8B57;
+}
+
+.record-icon.out {
+  background: #DAA520;
+}
+
+.record-info {
+  flex: 1;
+}
+
+.record-product {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 6rpx;
+}
+
+.record-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 4rpx;
+}
+
+.code-type {
+  padding: 2rpx 12rpx;
+  background: #F0F5FF;
+  color: #1890FF;
+  font-size: 22rpx;
+  border-radius: 8rpx;
+}
+
+.record-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.record-code {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.record-partner {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 4rpx;
+}
+
+.record-time-full {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.record-qty {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.record-qty.in {
+  color: #2E8B57;
+}
+
+.record-qty.out {
+  color: #DAA520;
+}
+
+.inventory-list {
+  background: white;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.inventory-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.inventory-item:last-child {
+  border-bottom: none;
+}
+
+.inv-icon {
+  width: 72rpx;
+  height: 72rpx;
+  background: #F8F8F5;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  margin-right: 20rpx;
+}
+
+.inv-info {
+  flex: 1;
+}
+
+.inv-product {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 6rpx;
+}
+
+.inv-batch {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.inv-qty {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #2E8B57;
+}
+
+.alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #FFF8F0;
+  border-radius: 12rpx;
+  border-left: 6rpx solid #faad14;
+}
+
+.alert-item.resolved {
+  background: #F6FFED;
+  border-left-color: #52c41a;
+}
+
+.alert-list.full .alert-item {
+  padding: 28rpx 24rpx;
+}
+
+.alert-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
+
+.alert-info {
+  flex: 1;
+}
+
+.alert-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 6rpx;
+}
+
+.alert-desc {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 4rpx;
+}
+
+.alert-time {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+.alert-status {
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+
+.alert-status.pending {
+  background: #FFF1F0;
+  color: #ff4d4f;
+}
+
+.alert-status.resolved {
+  background: #F6FFED;
+  color: #52c41a;
+}
+
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-content {
+  width: 100%;
+  background: white;
+  border-radius: 24rpx 24rpx 0 0;
+  max-height: 70vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-close {
+  font-size: 36rpx;
+  color: #999;
+  padding: 0 16rpx;
+}
+
+.dealer-select-list {
+  padding: 16rpx 24rpx 32rpx;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.dealer-select-item {
+  padding: 24rpx;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+  background: #F8F8F5;
+}
+
+.dealer-select-item.selected {
+  background: #E8F5E9;
+  border: 2rpx solid #2E8B57;
+}
+
+.ds-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.ds-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.ds-meta .level-badge {
+  background: #E8E8E8;
+  color: #666;
+}
+
+.ds-meta .level-province {
+  background: rgba(114, 46, 209, 0.15);
+  color: #722ED1;
+}
+
+.ds-meta .level-city {
+  background: rgba(218, 165, 32, 0.15);
+  color: #DAA520;
+}
+
+.ds-meta .level-store {
+  background: rgba(46, 139, 87, 0.15);
+  color: #2E8B57;
+}
+
+.ds-location {
+  font-size: 24rpx;
+  color: #999;
+}

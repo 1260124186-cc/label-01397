@@ -1,35 +1,15 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/shop/list",
-    "pages/shop/cart",
-    "pages/profile/profile",
     "pages/detail/detail",
-    "pages/shop/detail",
-    "pages/shop/orderTrace",
     "pages/scanResult/scanResult",
-    "pages/reportProduct/reportProduct",
     "pages/batchList/batchList",
     "pages/greenTrace/greenTrace",
     "pages/brandStory/brandStory",
     "pages/webview/webview",
-    "pages/favorites/favorites",
-    "pages/tastingNotes/tastingNotes",
-    "pages/tastingNoteDetail/tastingNoteDetail",
-    "pages/notifications/notifications",
-    "pages/privacy/privacy",
-    "pages/knowledge/list",
-    "pages/knowledge/detail",
-    "pages/supplyChainTimeline/supplyChainTimeline",
-    "pages/service/index",
-    "pages/service/ticketCreate",
-    "pages/service/ticketList",
-    "pages/service/ticketDetail",
-    "pages/subscription/subscription",
-    "pages/member/index",
-    "pages/member/pointsDetail",
-    "pages/member/level",
-    "pages/arExperience/arExperience"
+    "pages/dealer/index",
+    "pages/dealer/stockIn",
+    "pages/dealer/stockOut"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -38,30 +18,6 @@
     "navigationBarTextStyle": "white",
     "backgroundColor": "#F5F5F5",
     "enablePullDownRefresh": false
-  },
-  "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#2E8B57",
-    "backgroundColor": "#FFFFFF",
-    "borderStyle": "white",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "溯源"
-      },
-      {
-        "pagePath": "pages/shop/list",
-        "text": "商城"
-      },
-      {
-        "pagePath": "pages/shop/cart",
-        "text": "购物车"
-      },
-      {
-        "pagePath": "pages/profile/profile",
-        "text": "我的"
-      }
-    ]
   },
   "permission": {
     "scope.userLocation": {
@@ -72,9 +28,6 @@
     },
     "scope.writePhotosAlbum": {
       "desc": "保存分享卡片和溯源证书到你的相册"
-    },
-    "scope.camera": {
-      "desc": "你的摄像头将用于AR增强现实体验，展示3D桂花树和茶园实景"
     }
   },
   "requiredPrivateInfos": [

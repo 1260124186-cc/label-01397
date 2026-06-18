@@ -2855,37 +2855,6 @@ function getTsaCertificate(traceId) {
   });
 }
 
-function getInviteRewardConfig() {
-  return {
-    inviterPoints: 100,
-    inviteePoints: 50,
-    inviterCoupon: {
-      name: '邀请好友专属券',
-      type: 'cash',
-      value: 20,
-      minAmount: 100,
-      desc: '满100元可用，全场通用',
-      expireDays: 30
-    },
-    inviteeCoupon: {
-      name: '新用户专属券',
-      type: 'cash',
-      value: 15,
-      minAmount: 80,
-      desc: '满80元可用，新用户专享',
-      expireDays: 15
-    },
-    maxDailyInvites: 10,
-    activityTip: '每邀请1位好友扫码溯源，双方各得好礼！',
-    rules: [
-      '分享带有专属邀请码的溯源卡片给好友',
-      '好友通过扫码进入并完成首次溯源查看',
-      '系统自动发放积分和优惠券奖励',
-      '每日邀请奖励上限10次，超出不再发放'
-    ]
-  };
-}
-
 function getAvailableCoupons() {
   return [
     {
@@ -3150,29 +3119,6 @@ function getSkuById(traceId, skuId) {
     }
   }
   return null;
-}
-
-// ==================== 会员等级 ====================
-
-var memberLevels = [
-  { level: 1, name: '普通会员', minPoints: 0, discount: 1.0, icon: '🌱', benefits: ['基础价格购买', '积分累计'] },
-  { level: 2, name: '银卡会员', minPoints: 500, discount: 0.95, icon: '🥈', benefits: ['9.5折会员价', '专属优惠券', '积分1.2倍'] },
-  { level: 3, name: '金卡会员', minPoints: 2000, discount: 0.88, icon: '🥇', benefits: ['8.8折会员价', '专属优惠券', '积分1.5倍', '生日双倍积分', '优先发货'] },
-  { level: 4, name: '钻石会员', minPoints: 5000, discount: 0.8, icon: '💎', benefits: ['8折会员价', '专属大礼包', '积分2倍', '生日3倍积分', '专属客服', '免费试用'] }
-];
-
-function getMemberLevels() {
-  return memberLevels;
-}
-
-function getMemberLevelByPoints(points) {
-  var level = memberLevels[0];
-  for (var i = 0; i < memberLevels.length; i++) {
-    if (points >= memberLevels[i].minPoints) {
-      level = memberLevels[i];
-    }
-  }
-  return level;
 }
 
 // ==================== 满减活动 ====================
@@ -4576,6 +4522,487 @@ function getAllSupplyChainTimeline() {
   return JSON.parse(JSON.stringify(SUPPLY_CHAIN_TIMELINE));
 }
 
+// ==================== 经销商与渠道溯源数据 ====================
+
+const DEALERS = {
+  'D-HB-PROV-001': {
+    id: 'D-HB-PROV-001',
+    name: '湖北桂花茶业省级总代理',
+    level: 'province',
+    levelLabel: '省级代理',
+    contact: '张总',
+    phone: '13800000001',
+    location: '湖北省武汉市',
+    province: '湖北',
+    city: '武汉',
+    authorizedRegions: ['湖北省'],
+    authorizedProducts: ['G001', 'G002', 'G003', 'G004'],
+    status: 'active'
+  },
+  'D-FJ-PROV-001': {
+    id: 'D-FJ-PROV-001',
+    name: '福建茶叶省级总代理',
+    level: 'province',
+    levelLabel: '省级代理',
+    contact: '李总',
+    phone: '13800000002',
+    location: '福建省福州市',
+    province: '福建',
+    city: '福州',
+    authorizedRegions: ['福建省'],
+    authorizedProducts: ['G001', 'G002', 'G003'],
+    status: 'active'
+  },
+  'D-GD-PROV-001': {
+    id: 'D-GD-PROV-001',
+    name: '广东南方茶叶省级总代理',
+    level: 'province',
+    levelLabel: '省级代理',
+    contact: '王总',
+    phone: '13800000003',
+    location: '广东省广州市',
+    province: '广东',
+    city: '广州',
+    authorizedRegions: ['广东省'],
+    authorizedProducts: ['G001', 'G002', 'G003', 'G004'],
+    status: 'active'
+  },
+  'D-HB-WH-001': {
+    id: 'D-HB-WH-001',
+    name: '武汉鑫源茶业',
+    level: 'city',
+    levelLabel: '市级代理',
+    contact: '陈经理',
+    phone: '13900000001',
+    location: '湖北省武汉市武昌区',
+    province: '湖北',
+    city: '武汉',
+    parentId: 'D-HB-PROV-001',
+    parentName: '湖北桂花茶业省级总代理',
+    authorizedRegions: ['湖北省武汉市', '湖北省鄂州市'],
+    authorizedProducts: ['G001', 'G002', 'G003', 'G004'],
+    status: 'active'
+  },
+  'D-HB-YC-001': {
+    id: 'D-HB-YC-001',
+    name: '宜昌茗香茶行',
+    level: 'city',
+    levelLabel: '市级代理',
+    contact: '刘经理',
+    phone: '13900000002',
+    location: '湖北省宜昌市西陵区',
+    province: '湖北',
+    city: '宜昌',
+    parentId: 'D-HB-PROV-001',
+    parentName: '湖北桂花茶业省级总代理',
+    authorizedRegions: ['湖北省宜昌市', '湖北省荆州市'],
+    authorizedProducts: ['G001', 'G002', 'G004'],
+    status: 'active'
+  },
+  'D-FJ-XM-001': {
+    id: 'D-FJ-XM-001',
+    name: '厦门鹭岛茶城',
+    level: 'city',
+    levelLabel: '市级代理',
+    contact: '赵经理',
+    phone: '13900000003',
+    location: '福建省厦门市思明区',
+    province: '福建',
+    city: '厦门',
+    parentId: 'D-FJ-PROV-001',
+    parentName: '福建茶叶省级总代理',
+    authorizedRegions: ['福建省厦门市', '福建省漳州市'],
+    authorizedProducts: ['G001', 'G002', 'G003'],
+    status: 'active'
+  },
+  'S-HB-WH-001': {
+    id: 'S-HB-WH-001',
+    name: '武昌中南路旗舰店',
+    level: 'store',
+    levelLabel: '授权门店',
+    contact: '店长小王',
+    phone: '13700000001',
+    location: '湖北省武汉市武昌区中南路88号',
+    province: '湖北',
+    city: '武汉',
+    parentId: 'D-HB-WH-001',
+    parentName: '武汉鑫源茶业',
+    authorizedRegions: ['湖北省武汉市武昌区'],
+    authorizedProducts: ['G001', 'G002', 'G003', 'G004'],
+    status: 'active'
+  },
+  'S-HB-WH-002': {
+    id: 'S-HB-WH-002',
+    name: '江汉路步行街店',
+    level: 'store',
+    levelLabel: '授权门店',
+    contact: '店长小李',
+    phone: '13700000002',
+    location: '湖北省武汉市江汉区江汉路128号',
+    province: '湖北',
+    city: '武汉',
+    parentId: 'D-HB-WH-001',
+    parentName: '武汉鑫源茶业',
+    authorizedRegions: ['湖北省武汉市江汉区', '湖北省武汉市江岸区'],
+    authorizedProducts: ['G001', 'G002', 'G004'],
+    status: 'active'
+  },
+  'S-FJ-XM-001': {
+    id: 'S-FJ-XM-001',
+    name: '鼓浪屿茶文化馆',
+    level: 'store',
+    levelLabel: '授权门店',
+    contact: '店长小陈',
+    phone: '13700000003',
+    location: '福建省厦门市思明区鼓浪屿龙头路66号',
+    province: '福建',
+    city: '厦门',
+    parentId: 'D-FJ-XM-001',
+    parentName: '厦门鹭岛茶城',
+    authorizedRegions: ['福建省厦门市思明区'],
+    authorizedProducts: ['G001', 'G002', 'G003'],
+    status: 'active'
+  }
+};
+
+const TRACE_CODES = {
+  'G001': {
+    code: 'G001',
+    type: 'production',
+    typeLabel: '生产码',
+    traceId: 'G001',
+    productName: '金桂花茶',
+    batchNo: 'GH202503',
+    specification: '100g/罐',
+    quantity: 1,
+    parentCode: null,
+    boxCode: 'B-GH202503-001',
+    fromDealerId: 'factory',
+    fromDealerName: '湖北桂花茶厂'
+  },
+  'G002': {
+    code: 'G002',
+    type: 'production',
+    typeLabel: '生产码',
+    traceId: 'G002',
+    productName: '银桂花茶',
+    batchNo: 'GH202504',
+    specification: '100g/罐',
+    quantity: 1,
+    parentCode: null,
+    boxCode: 'B-GH202504-001',
+    fromDealerId: 'factory',
+    fromDealerName: '湖北桂花茶厂'
+  },
+  'G003': {
+    code: 'G003',
+    type: 'production',
+    typeLabel: '生产码',
+    traceId: 'G003',
+    productName: '金桂花茶礼盒装',
+    batchNo: 'GH202503',
+    specification: '250g/礼盒',
+    quantity: 1,
+    parentCode: null,
+    boxCode: 'B-GH202503-002',
+    fromDealerId: 'factory',
+    fromDealerName: '湖北桂花茶厂'
+  },
+  'G004': {
+    code: 'G004',
+    type: 'production',
+    typeLabel: '生产码',
+    traceId: 'G004',
+    productName: '金桂花茶便携装',
+    batchNo: 'GH202503',
+    specification: '3g*12袋/盒',
+    quantity: 1,
+    parentCode: null,
+    boxCode: 'B-GH202503-003',
+    fromDealerId: 'factory',
+    fromDealerName: '湖北桂花茶厂'
+  },
+  'B-GH202503-001': {
+    code: 'B-GH202503-001',
+    type: 'box',
+    typeLabel: '箱码',
+    traceId: 'G001',
+    productName: '金桂花茶',
+    batchNo: 'GH202503',
+    specification: '100g/罐 x 24罐/箱',
+    quantity: 24,
+    parentCode: null,
+    childCodes: ['G001'],
+    fromDealerId: 'factory',
+    fromDealerName: '湖北桂花茶厂'
+  },
+  'B-GH202504-001': {
+    code: 'B-GH202504-001',
+    type: 'box',
+    typeLabel: '箱码',
+    traceId: 'G002',
+    productName: '银桂花茶',
+    batchNo: 'GH202504',
+    specification: '100g/罐 x 24罐/箱',
+    quantity: 24,
+    parentCode: null,
+    childCodes: ['G002'],
+    fromDealerId: 'factory',
+    fromDealerName: '湖北桂花茶厂'
+  },
+  'B-GH202503-002': {
+    code: 'B-GH202503-002',
+    type: 'box',
+    typeLabel: '箱码',
+    traceId: 'G003',
+    productName: '金桂花茶礼盒装',
+    batchNo: 'GH202503',
+    specification: '250g/礼盒 x 12盒/箱',
+    quantity: 12,
+    parentCode: null,
+    childCodes: ['G003'],
+    fromDealerId: 'factory',
+    fromDealerName: '湖北桂花茶厂'
+  },
+  'S-HB-WH-001-MAIN': {
+    code: 'S-HB-WH-001-MAIN',
+    type: 'store',
+    typeLabel: '门店码',
+    traceId: null,
+    productName: '武昌中南路旗舰店专用码',
+    batchNo: null,
+    specification: '门店码',
+    quantity: 1,
+    parentCode: null,
+    storeId: 'S-HB-WH-001',
+    storeName: '武昌中南路旗舰店',
+    fromDealerId: 'factory',
+    fromDealerName: '品牌总部'
+  },
+  'S-FJ-XM-001-MAIN': {
+    code: 'S-FJ-XM-001-MAIN',
+    type: 'store',
+    typeLabel: '门店码',
+    traceId: null,
+    productName: '鼓浪屿茶文化馆专用码',
+    batchNo: null,
+    specification: '门店码',
+    quantity: 1,
+    parentCode: null,
+    storeId: 'S-FJ-XM-001',
+    storeName: '鼓浪屿茶文化馆',
+    fromDealerId: 'factory',
+    fromDealerName: '品牌总部'
+  }
+};
+
+const CHANNEL_FLOW = {
+  'G001': {
+    traceId: 'G001',
+    factory: {
+      id: 'factory',
+      name: '湖北桂花茶厂',
+      location: '湖北省咸宁市',
+      time: '2025-09-25 14:32:18',
+      authorizedRegions: []
+    },
+    provinceDealer: {
+      id: 'D-HB-PROV-001',
+      name: '湖北桂花茶业省级总代理',
+      location: '湖北省武汉市',
+      time: '2025-09-26 09:15:00',
+      authorizedRegions: ['湖北省']
+    },
+    cityDealer: {
+      id: 'D-HB-WH-001',
+      name: '武汉鑫源茶业',
+      location: '湖北省武汉市武昌区',
+      time: '2025-09-27 10:30:00',
+      authorizedRegions: ['湖北省武汉市', '湖北省鄂州市']
+    },
+    store: {
+      id: 'S-HB-WH-001',
+      name: '武昌中南路旗舰店',
+      location: '湖北省武汉市武昌区中南路88号',
+      time: '2025-09-28 08:45:00',
+      authorizedRegions: ['湖北省武汉市武昌区']
+    }
+  },
+  'G002': {
+    traceId: 'G002',
+    factory: {
+      id: 'factory',
+      name: '湖北桂花茶厂',
+      location: '湖北省咸宁市',
+      time: '2025-09-30 10:15:42',
+      authorizedRegions: []
+    },
+    provinceDealer: {
+      id: 'D-HB-PROV-001',
+      name: '湖北桂花茶业省级总代理',
+      location: '湖北省武汉市',
+      time: '2025-10-01 14:20:00',
+      authorizedRegions: ['湖北省']
+    },
+    cityDealer: {
+      id: 'D-HB-YC-001',
+      name: '宜昌茗香茶行',
+      location: '湖北省宜昌市西陵区',
+      time: '2025-10-02 11:00:00',
+      authorizedRegions: ['湖北省宜昌市', '湖北省荆州市']
+    },
+    store: null
+  },
+  'G003': {
+    traceId: 'G003',
+    factory: {
+      id: 'factory',
+      name: '湖北桂花茶厂',
+      location: '湖北省咸宁市',
+      time: '2025-09-25 14:35:22',
+      authorizedRegions: []
+    },
+    provinceDealer: {
+      id: 'D-FJ-PROV-001',
+      name: '福建茶叶省级总代理',
+      location: '福建省福州市',
+      time: '2025-09-26 16:40:00',
+      authorizedRegions: ['福建省']
+    },
+    cityDealer: {
+      id: 'D-FJ-XM-001',
+      name: '厦门鹭岛茶城',
+      location: '福建省厦门市思明区',
+      time: '2025-09-27 09:50:00',
+      authorizedRegions: ['福建省厦门市', '福建省漳州市']
+    },
+    store: {
+      id: 'S-FJ-XM-001',
+      name: '鼓浪屿茶文化馆',
+      location: '福建省厦门市思明区鼓浪屿龙头路66号',
+      time: '2025-09-28 15:30:00',
+      authorizedRegions: ['福建省厦门市思明区']
+    }
+  },
+  'G004': {
+    traceId: 'G004',
+    factory: {
+      id: 'factory',
+      name: '湖北桂花茶厂',
+      location: '湖北省咸宁市',
+      time: '2025-09-25 15:00:00',
+      authorizedRegions: []
+    },
+    provinceDealer: {
+      id: 'D-GD-PROV-001',
+      name: '广东南方茶叶省级总代理',
+      location: '广东省广州市',
+      time: '2025-09-26 18:00:00',
+      authorizedRegions: ['广东省']
+    },
+    cityDealer: null,
+    store: null
+  }
+};
+
+function getDefaultDealer() {
+  return {
+    id: 'D-HB-WH-001',
+    name: '武汉鑫源茶业',
+    level: 'city',
+    levelLabel: '市级代理',
+    contact: '陈经理',
+    phone: '13900000001',
+    location: '湖北省武汉市武昌区',
+    province: '湖北',
+    city: '武汉',
+    authorizedRegions: ['湖北省武汉市', '湖北省鄂州市']
+  };
+}
+
+function getDealer(dealerId) {
+  return DEALERS[dealerId] || null;
+}
+
+function getDealerList() {
+  return Object.values(DEALERS);
+}
+
+function getDealerByLevel(level) {
+  return Object.values(DEALERS).filter(d => d.level === level);
+}
+
+function getChildDealers(parentId) {
+  return Object.values(DEALERS).filter(d => d.parentId === parentId);
+}
+
+function getTraceInfoByCode(code, codeType) {
+  if (TRACE_CODES[code]) {
+    return TRACE_CODES[code];
+  }
+  if (mockTraceData[code]) {
+    const data = mockTraceData[code];
+    return {
+      code: code,
+      type: 'production',
+      typeLabel: '生产码',
+      traceId: code,
+      productName: data.basicInfo.productName,
+      batchNo: data.basicInfo.batchNo,
+      specification: data.basicInfo.specification,
+      quantity: 1,
+      parentCode: null,
+      fromDealerId: 'factory',
+      fromDealerName: '湖北桂花茶厂'
+    };
+  }
+  return null;
+}
+
+function getChannelFlow(traceId) {
+  return CHANNEL_FLOW[traceId] || null;
+}
+
+function updateCodeFlow(code, codeType, flowInfo) {
+  if (!code || !flowInfo) return false;
+
+  if (TRACE_CODES[code]) {
+    TRACE_CODES[code].currentHolder = flowInfo;
+    TRACE_CODES[code].lastUpdate = flowInfo.timestamp;
+  }
+
+  const traceId = TRACE_CODES[code] ? TRACE_CODES[code].traceId : code;
+  if (CHANNEL_FLOW[traceId]) {
+    const flow = CHANNEL_FLOW[traceId];
+    const now = flowInfo.timestamp ? new Date(flowInfo.timestamp) : new Date();
+    const timeStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+
+    const dealerInfo = {
+      id: flowInfo.dealerId,
+      name: flowInfo.dealerName,
+      location: DEALERS[flowInfo.dealerId] ? DEALERS[flowInfo.dealerId].location : '',
+      time: timeStr,
+      authorizedRegions: DEALERS[flowInfo.dealerId] ? DEALERS[flowInfo.dealerId].authorizedRegions : []
+    };
+
+    if (flowInfo.action === 'stockIn') {
+      if (flowInfo.dealerLevel === 'province') {
+        flow.provinceDealer = dealerInfo;
+      } else if (flowInfo.dealerLevel === 'city') {
+        flow.cityDealer = dealerInfo;
+      } else if (flowInfo.dealerLevel === 'store') {
+        flow.store = dealerInfo;
+      }
+    }
+  }
+
+  return true;
+}
+
+function getTraceCode(code) {
+  return TRACE_CODES[code] || null;
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -4630,5 +5057,14 @@ module.exports = {
   getPointsMallItems,
   getPointsMallItemById,
   getMarketingActivities,
-  getMarketingActivityById
+  getMarketingActivityById,
+  getDefaultDealer,
+  getDealer,
+  getDealerList,
+  getDealerByLevel,
+  getChildDealers,
+  getTraceInfoByCode,
+  getChannelFlow,
+  updateCodeFlow,
+  getTraceCode
 };

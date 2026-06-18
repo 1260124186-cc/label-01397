@@ -108,6 +108,7 @@ Page({
       { key: 'green', icon: '♻️', name: '绿色认证', desc: '生态种植与环保包装', anchor: 'anchor-green', color: '#52C41A', type: 'detail' },
       { key: 'report', icon: '📋', name: '检测报告', desc: '农残检测安全保障', anchor: 'anchor-process', color: '#1890FF', type: 'detail' },
       { key: 'treeAge', icon: '🌳', name: '百年茶树', desc: '古茶树的故事', anchor: 'anchor-treeAge', color: '#8B4513', type: 'detail' },
+      { key: 'dealer', icon: '🏬', name: '经销商渠道', desc: '入库出库·渠道溯源', color: '#722ED1', type: 'dealer' },
       { key: 'brand', icon: '🏯', name: '品牌故事', desc: '一茶一品的前世今生', color: '#B8860B', type: 'brand' }
     ],
 
@@ -686,6 +687,10 @@ Page({
       const defaultTraceId = 'G001';
       wx.navigateTo({
         url: '/pages/detail/detail?traceId=' + defaultTraceId + '&anchor=' + card.anchor
+      });
+    } else if (card.type === 'dealer') {
+      wx.navigateTo({
+        url: '/pages/dealer/index'
       });
     }
   },

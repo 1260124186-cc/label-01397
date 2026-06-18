@@ -1,12 +1,12 @@
 <view class="page-container">
-  
+
   <view wx:if="{{loading}}" class="loading-container">
     <view class="loading-icon">🔍</view>
     <view class="loading-text">正在进行防伪验证...</view>
   </view>
 
   <view wx:else class="result-container">
-    
+
     <view class="verify-header {{verifyResult.scanType}}">
       <view class="verify-icon-wrapper">
         <view class="verify-icon {{verifyResult.authenticity}}">
@@ -100,6 +100,70 @@
             <text wx:else class="status-good">正常</text>
             <text class="report-no">{{verifyResult.factoryInfo.testReportNo}}</text>
           </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{divergenceAlert}}" class="card divergence-card">
+      <view class="card-header divergence" bindtap="toggleDivergenceAlert">
+        <view class="card-title-wrap">
+          <text class="card-icon">🚨</text>
+          <text class="card-title">窜货预警</text>
+          <view class="divergence-badge">疑似窜货</view>
+        </view>
+        <text class="toggle-icon">{{showDivergenceAlert ? '▲' : '▼'}}</text>
+      </view>
+      <view wx:if="{{showDivergenceAlert}}" class="card-body">
+        <view class="divergence-content">
+          <view class="divergence-row">
+            <text class="div-label">扫码地区</text>
+            <text class="div-value danger">{{divergenceAlert.scanCity || '未知地区'}}</text>
+          </view>
+          <view class="divergence-row">
+            <text class="div-label">授权区域</text>
+            <text class="div-value">{{divergenceAlert.authorizedRegions}}</text>
+          </view>
+          <view class="divergence-tip">
+            ⚠️ 该产品首次在非授权区域被扫码，存在窜货风险，请谨慎购买或联系客服核实。
+          </view>
+          <view class="divergence-actions">
+            <button class="divergence-btn report" bindtap="goToReport">举报可疑产品</button>
+            <button class="divergence-btn contact" bindtap="goToDealerPage">联系渠道商</button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{channelFlow.length > 0}}" class="card channel-card">
+      <view class="card-header" bindtap="toggleChannelFlow">
+        <view class="card-title-wrap">
+          <text class="card-icon">🛤️</text>
+          <text class="card-title">渠道溯源</text>
+        </view>
+        <text class="toggle-icon">{{showChannelFlow ? '▲' : '▼'}}</text>
+      </view>
+      <view class="card-body">
+        <view class="channel-summary">
+          <text class="summary-label">流通路径：</text>
+          <text class="summary-text">{{channelSummary}}</text>
+        </view>
+        <view wx:if="{{showChannelFlow}}" class="channel-timeline">
+          <block wx:for="{{channelFlow}}" wx:key="step">
+            <view class="channel-step">
+              <view class="step-indicator">
+                <view class="step-icon" style="background: {{item.color}}">
+                  <text>{{item.icon}}</text>
+                </view>
+                <view wx:if="{{index < channelFlow.length - 1}}" class="step-line"></view>
+              </view>
+              <view class="step-content">
+                <view class="step-role">{{item.role}}</view>
+                <view class="step-name">{{item.name}}</view>
+                <view class="step-location">📍 {{item.location}}</view>
+                <view class="step-time">{{item.time}}</view>
+              </view>
+            </view>
+          </block>
         </view>
       </view>
     </view>

@@ -1,0 +1,146 @@
+<view class="page-container">
+
+  <view class="dealer-info-bar">
+    <text class="dealer-label">当前经销商：</text>
+    <text class="dealer-name">{{dealer.name}}</text>
+    <text class="level-badge level-{{dealer.level}}">{{dealer.levelLabel}}</text>
+  </view>
+
+  <view class="scan-section">
+    <view class="scan-btn" bindtap="scanCode">
+      <text class="scan-icon">📷</text>
+      <text class="scan-text">扫码出库</text>
+    </view>
+  </view>
+
+  <view class="divider">
+    <text class="divider-text">或手动输入</text>
+  </view>
+
+  <view class="input-section">
+    <view class="input-group">
+      <input
+        class="code-input"
+        placeholder="请输入溯源码（生产码/箱码/门店码）"
+        value="{{inputCode}}"
+        bindinput="onInputChange"
+      />
+      <button class="btn-parse" bindtap="manualParse">解析</button>
+    </view>
+    <view class="test-codes">
+      <text class="test-label">测试码：</text>
+      <block wx:for="{{testCodes}}" wx:key="*this">
+        <text class="test-code" data-code="{{item}}" bindtap="fillTestCode">{{item}}</text>
+      </block>
+    </view>
+  </view>
+
+  <view wx:if="{{parsedResult}}" class="parsed-result">
+    <view class="result-header out">
+      <view class="code-type-badge" style="background: {{parsedResult.codeTypeInfo.color}}">
+        <text class="ct-icon">{{parsedResult.codeTypeInfo.icon}}</text>
+        <text class="ct-label">{{parsedResult.codeTypeInfo.label}}</text>
+      </view>
+      <text class="result-code">{{parsedResult.code}}</text>
+    </view>
+
+    <view class="result-body">
+      <view class="info-row">
+        <text class="info-label">产品名称</text>
+        <text class="info-value">{{parsedResult.traceInfo.productName}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">规格</text>
+        <text class="info-value">{{parsedResult.traceInfo.specification}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">批次号</text>
+        <text class="info-value">{{parsedResult.traceInfo.batchNo}}</text>
+      </view>
+
+      <view class="info-row dealer-select-row" bindtap="openDealerSelector">
+        <text class="info-label">出库去向</text>
+        <view class="dealer-select-value">
+          <text wx:if="{{selectedToDealer}}" class="selected-dealer">{{selectedToDealer.name}}</text>
+          <text wx:else class="placeholder">请选择出库去向</text>
+          <text class="arrow">›</text>
+        </view>
+      </view>
+
+      <view class="quantity-row">
+        <text class="info-label">出库数量</text>
+        <view class="qty-control">
+          <view class="qty-btn" bindtap="decreaseQty">-</view>
+          <input
+            class="qty-input"
+            type="number"
+            value="{{quantity}}"
+            bindinput="onQuantityChange"
+          />
+          <view class="qty-btn" bindtap="increaseQty">+</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="result-footer">
+      <button class="btn btn-cancel" bindtap="goBack">取消</button>
+      <button class="btn btn-confirm out" bindtap="confirmStockOut">确认出库</button>
+    </view>
+  </view>
+
+  <view wx:if="{{recentResults.length > 0}}" class="recent-section">
+    <view class="section-title">最近出库</view>
+    <view class="recent-list">
+      <block wx:for="{{recentResults}}" wx:key="id">
+        <view class="recent-item">
+          <view class="ri-icon out">出</view>
+          <view class="ri-info">
+            <view class="ri-product">{{item.productName}}</view>
+            <view class="ri-meta">
+              <text class="ri-code">{{item.code}}</text>
+              <text class="ri-time">{{item.showTime}}</text>
+            </view>
+            <view class="ri-to">发往：{{item.toDealerName}}</view>
+          </view>
+          <view class="ri-qty out">-{{item.quantity}}</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view wx:if="{{showDealerSelector}}" class="modal-mask" bindtap="closeDealerSelector">
+    <view class="modal-content" catchtap="">
+      <view class="modal-header">
+        <text>选择出库去向</text>
+        <text class="modal-close" bindtap="closeDealerSelector">✕</text>
+      </view>
+      <view class="dealer-select-list">
+        <view class="dealer-select-item consumer" bindtap="selectDirectConsumer">
+          <view class="ds-icon">🏪</view>
+          <view class="ds-info">
+            <view class="ds-name">零售门店/消费者</view>
+            <view class="ds-desc">直接面向终端销售</view>
+          </view>
+          <view wx:if="{{selectedToDealer && selectedToDealer.id === 'store'}}" class="ds-check">✓</view>
+        </view>
+        <block wx:for="{{toDealerList}}" wx:key="id">
+          <view class="dealer-select-item" data-dealerid="{{item.id}}" bindtap="selectToDealer">
+            <view class="ds-icon">{{item.level === 'city' ? '🏬' : '🏪'}}</view>
+            <view class="ds-info">
+              <view class="ds-name">{{item.name}}</view>
+              <view class="ds-meta">
+                <text class="level-badge level-{{item.level}}">{{item.levelLabel}}</text>
+                <text class="ds-location">📍 {{item.location}}</text>
+              </view>
+            </view>
+            <view wx:if="{{selectedToDealer && selectedToDealer.id === item.id}}" class="ds-check">✓</view>
+          </view>
+        </block>
+        <view wx:if="{{toDealerList.length === 0}}" class="empty-dealer">
+          <text>暂无下级经销商</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+</view>

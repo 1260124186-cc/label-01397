@@ -8,10 +8,6 @@
 const mockData = require('../../utils/mockData.js');
 const shareUtil = require('../../utils/share.js');
 const i18n = require('../../utils/i18n/index.js');
-const shop = require('../../utils/shop.js');
-const subscription = require('../../utils/subscription.js');
-const greenPoints = require('../../utils/greenPoints.js');
-const auth = require('../../utils/auth.js');
 
 // 锚点 Tab 配置（将在运行时根据语言填充 label）
 const ANCHOR_TABS_BASE = [
@@ -76,8 +72,7 @@ Page({
       shareBtn: '',
       pdfBtn: '',
       verifyBtn: '',
-      loadingText: '',
-      serviceBtn: ''
+      loadingText: ''
     },
     // 是否显示返回顶部按钮
     showBackTop: false,
@@ -134,10 +129,6 @@ Page({
     // 工艺对比数据
     showProcessComparison: false,
     processComparisonData: null,
-
-    // ========== 车间环境监测 ==========
-    activeCurveTab: 'both',
-    workshopCurveStats: null,
 
     // ========== 新增功能数据 ==========
     // 品种样式配置
@@ -207,13 +198,7 @@ Page({
     certGenerating: false,
     certImage: '',
     showRewardModal: false,
-    lastRewardResult: null,
-
-    // ========== 商城与购买功能 ==========
-    cartCount: 0,
-
-    // ========== 批次订阅功能 ==========
-    batchSubscribed: false
+    lastRewardResult: null
   },
 
   /**
@@ -229,14 +214,6 @@ Page({
     this.setData({ anchorTabs: buildAnchorTabs() });
 
     const traceId = options.traceId;
-
-    if (options && options.invite) {
-      var app = getApp();
-      if (app.globalData) {
-        app.globalData.pendingInviter = options.invite;
-        console.log('[Invite] 详情页检测到邀请人:', options.invite);
-      }
-    }
 
     if (traceId) {
       this.setData({ traceId: traceId });
@@ -260,7 +237,6 @@ Page({
     this.refreshA11yData();
     this.refreshI18nTexts();
     this.setData({ anchorTabs: buildAnchorTabs() });
-    this.refreshCartCount();
   },
 
   // ===== i18n 与无障碍 =====
@@ -298,8 +274,7 @@ Page({
       'i18n.shareBtn': t('nav.share'),
       'i18n.pdfBtn': t('detail.share.downloadPdf'),
       'i18n.verifyBtn': t('detail.test.verifyReport'),
-      'i18n.loadingText': t('common.loading'),
-      'i18n.serviceBtn': t('service.floatingBtn')
+      'i18n.loadingText': t('common.loading')
     });
   },
 
@@ -371,11 +346,6 @@ Page({
         var shareInviteConfig = mockData.getInviteRewardConfig();
         var shareInviteData = shareUtil.getShareInviteData();
 
-        var workshopCurveStats = null;
-        if (data.workshopEnv && data.workshopEnv.curveData) {
-          workshopCurveStats = that.calculateWorkshopCurveStats(data.workshopEnv.curveData);
-        }
-
         that.setData({
           traceData: data,
           loading: false,
@@ -390,9 +360,7 @@ Page({
           brewStepTotalSeconds: initialBrewStepSeconds,
           brewStepTimerText: initialBrewStepTimerText,
           shareInviteConfig: shareInviteConfig,
-          shareInviteData: shareInviteData,
-          batchSubscribed: subscription.isBatchSubscribed(data.basicInfo.batchNo),
-          workshopCurveStats: workshopCurveStats
+          shareInviteData: shareInviteData
         });
 
         // 设置导航栏标题
@@ -400,32 +368,10 @@ Page({
           title: data.basicInfo.productName + '溯源'
         });
 
-        var viewPointsResult = greenPoints.earnPoints('viewTrace', '查看溯源信息:' + traceId);
-        if (viewPointsResult.earned > 0) {
-          console.log('[Detail] 查看溯源获得积分:', viewPointsResult.earned);
-        }
-
-        try {
-          if (typeof getApp === 'function') {
-            var app = getApp();
-            if (app && app.processInviteReward) {
-              app.processInviteReward(traceId);
-            }
-          }
-        } catch (e) {
-          console.warn('[Detail] 处理邀请奖励失败:', e);
-        }
-
         // 数据加载完成后测量模块位置
         setTimeout(() => {
           that.measureModulePositions();
         }, 300);
-
-        if (data.workshopEnv && data.workshopEnv.curveData) {
-          setTimeout(() => {
-            that.drawWorkshopCurve();
-          }, 600);
-        }
       } else {
         that.setData({ skeletonLoading: false, loading: false });
         wx.showToast({
@@ -701,20 +647,13 @@ Page({
    */
   toggleModule: function(e) {
     const key = e.currentTarget.dataset.key;
-    const wasCollapsed = this.data.moduleCollapsed[key];
     const updates = {};
-    updates[`moduleCollapsed.${key}`] = !wasCollapsed;
+    updates[`moduleCollapsed.${key}`] = !this.data.moduleCollapsed[key];
     this.setData(updates, () => {
       // 模块高度变化后重新测量位置
       setTimeout(() => {
         this.measureModulePositions();
       }, 350);
-
-      if (key === 'process' && wasCollapsed && this.data.traceData && this.data.traceData.workshopEnv) {
-        setTimeout(() => {
-          this.drawWorkshopCurve();
-        }, 400);
-      }
     });
   },
 
@@ -809,29 +748,29 @@ Page({
     });
   },
 
-  onJumpKnowledgeDetail: function(e) {
-    const varietyName = e.currentTarget.dataset.variety;
-    if (!varietyName) {
-      wx.navigateTo({ url: '/pages/knowledge/list' });
-      return;
-    }
-    const matchedArticle = mockData.getKnowledgeArticleByVariety(varietyName);
-    if (matchedArticle) {
-      wx.navigateTo({
-        url: '/pages/knowledge/detail?id=' + matchedArticle.id
-      });
-    } else {
-      wx.showToast({
-        title: '暂无该品种百科',
-        icon: 'none',
-        duration: 1500
-      });
-      setTimeout(function() {
-        wx.navigateTo({
-          url: '/pages/knowledge/list?categoryKey=variety'
-        });
-      }, 1500);
-    }
+  /**
+   * 用户点击右上角分享
+   * 修改为直达详情页路径，减少跳转步骤
+   */
+  onShareAppMessage: function() {
+    const data = this.data.traceData;
+    return {
+      title: `${data.basicInfo.productName} - 全链路溯源信息`,
+      path: `/pages/detail/detail?traceId=${this.data.traceId}`,
+      imageUrl: data.basicInfo.thumbnail || ''
+    };
+  },
+
+  /**
+   * 分享到朋友圈
+   */
+  onShareTimeline: function() {
+    const data = this.data.traceData;
+    return {
+      title: `${data.basicInfo.productName} - 全链路溯源信息`,
+      query: `traceId=${this.data.traceId}`,
+      imageUrl: data.basicInfo.thumbnail || ''
+    };
   },
 
   /**
@@ -1245,191 +1184,6 @@ Page({
   },
 
   // ============================================================
-  // ==================== 车间环境监测方法 ====================
-  // ============================================================
-
-  calculateWorkshopCurveStats: function(curveData) {
-    if (!curveData || !curveData.temperatureData || !curveData.humidityData) return null;
-    var tempArr = curveData.temperatureData;
-    var humArr = curveData.humidityData;
-    var tempMin = Math.min.apply(null, tempArr);
-    var tempMax = Math.max.apply(null, tempArr);
-    var tempSum = tempArr.reduce(function(a, b) { return a + b; }, 0);
-    var humMin = Math.min.apply(null, humArr);
-    var humMax = Math.max.apply(null, humArr);
-    var humSum = humArr.reduce(function(a, b) { return a + b; }, 0);
-    return {
-      tempMin: Math.round(tempMin * 10) / 10,
-      tempMax: Math.round(tempMax * 10) / 10,
-      tempAvg: Math.round(tempSum / tempArr.length * 10) / 10,
-      humidityMin: Math.round(humMin * 10) / 10,
-      humidityMax: Math.round(humMax * 10) / 10,
-      humidityAvg: Math.round(humSum / humArr.length * 10) / 10
-    };
-  },
-
-  switchCurveTab: function(e) {
-    var tab = e.currentTarget.dataset.tab;
-    this.setData({ activeCurveTab: tab });
-    var that = this;
-    setTimeout(function() {
-      that.drawWorkshopCurve();
-    }, 100);
-  },
-
-  drawWorkshopCurve: function() {
-    var that = this;
-    var envData = this.data.traceData && this.data.traceData.workshopEnv;
-    if (!envData || !envData.curveData) return;
-
-    var query = wx.createSelectorQuery();
-    query.select('#envCurveCanvas')
-      .fields({ node: true, size: true })
-      .exec(function(res) {
-        if (!res || !res[0] || !res[0].node) {
-          console.warn('[Detail] Canvas node not found');
-          return;
-        }
-        var canvas = res[0].node;
-        var ctx = canvas.getContext('2d');
-        var dpr = wx.getWindowInfo().pixelRatio || 2;
-        var width = res[0].width;
-        var height = res[0].height;
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        ctx.scale(dpr, dpr);
-
-        var curveData = envData.curveData;
-        var activeTab = that.data.activeCurveTab;
-        var showTemp = activeTab === 'temp' || activeTab === 'both';
-        var showHumidity = activeTab === 'humidity' || activeTab === 'both';
-
-        var padding = { top: 30, right: 20, bottom: 36, left: 44 };
-        var chartW = width - padding.left - padding.right;
-        var chartH = height - padding.top - padding.bottom;
-
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = '#FAFCFF';
-        ctx.fillRect(0, 0, width, height);
-
-        var tempArr = curveData.temperatureData || [];
-        var humArr = curveData.humidityData || [];
-        var count = tempArr.length;
-        if (count === 0) return;
-
-        var tempMin = 20, tempMax = 38;
-        var humMin = 55, humMax = 90;
-
-        ctx.strokeStyle = '#E8E8E8';
-        ctx.lineWidth = 0.5;
-        var gridLines = 5;
-        for (var g = 0; g <= gridLines; g++) {
-          var gy = padding.top + (chartH / gridLines) * g;
-          ctx.beginPath();
-          ctx.moveTo(padding.left, gy);
-          ctx.lineTo(width - padding.right, gy);
-          ctx.stroke();
-        }
-
-        var xLabels = [0, 12, 24, 36, 48, 60, 72];
-        ctx.fillStyle = '#999999';
-        ctx.font = '9px sans-serif';
-        ctx.textAlign = 'center';
-        for (var xi = 0; xi < xLabels.length; xi++) {
-          var lx = padding.left + (xLabels[xi] / (count - 1)) * chartW;
-          ctx.fillText(xLabels[xi] + 'h', lx, height - 8);
-        }
-
-        if (showTemp) {
-          ctx.fillStyle = '#FF6B6B';
-          ctx.font = '9px sans-serif';
-          ctx.textAlign = 'right';
-          for (var ti = 0; ti <= gridLines; ti++) {
-            var tv = tempMax - (tempMax - tempMin) / gridLines * ti;
-            var ty = padding.top + (chartH / gridLines) * ti;
-            ctx.fillText(tv.toFixed(0), padding.left - 6, ty + 3);
-          }
-        }
-
-        if (showHumidity && !showTemp) {
-          ctx.fillStyle = '#1890FF';
-          ctx.font = '9px sans-serif';
-          ctx.textAlign = 'right';
-          for (var hi = 0; hi <= gridLines; hi++) {
-            var hv = humMax - (humMax - humMin) / gridLines * hi;
-            var hy = padding.top + (chartH / gridLines) * hi;
-            ctx.fillText(hv.toFixed(0), padding.left - 6, hy + 3);
-          }
-        }
-
-        var scentingRanges = curveData.scentingRanges || [];
-        for (var si = 0; si < scentingRanges.length; si++) {
-          var sr = scentingRanges[si];
-          var sx1 = padding.left + (sr.startHour / (count - 1)) * chartW;
-          var sx2 = padding.left + (sr.endHour / (count - 1)) * chartW;
-          ctx.fillStyle = 'rgba(218, 165, 32, 0.12)';
-          ctx.fillRect(sx1, padding.top, sx2 - sx1, chartH);
-          ctx.fillStyle = '#DAA520';
-          ctx.font = '8px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('\u7b2d' + sr.round + '\u7aaf', (sx1 + sx2) / 2, padding.top + 14);
-        }
-
-        function drawLine(dataArr, minVal, maxVal, color, lineWidth) {
-          if (dataArr.length === 0) return;
-          ctx.beginPath();
-          ctx.strokeStyle = color;
-          ctx.lineWidth = lineWidth || 1.5;
-          ctx.lineJoin = 'round';
-          for (var i = 0; i < dataArr.length; i++) {
-            var x = padding.left + (i / (dataArr.length - 1)) * chartW;
-            var y = padding.top + (1 - (dataArr[i] - minVal) / (maxVal - minVal)) * chartH;
-            if (i === 0) {
-              ctx.moveTo(x, y);
-            } else {
-              ctx.lineTo(x, y);
-            }
-          }
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.moveTo(padding.left + chartW, padding.top + chartH);
-          ctx.lineTo(padding.left, padding.top + chartH);
-          for (var j = 0; j < dataArr.length; j++) {
-            var xf = padding.left + (j / (dataArr.length - 1)) * chartW;
-            var yf = padding.top + (1 - (dataArr[j] - minVal) / (maxVal - minVal)) * chartH;
-            ctx.lineTo(xf, yf);
-          }
-          ctx.closePath();
-          var grad = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH);
-          var baseColor = color === '#FF6B6B' ? '255,107,107' : '24,144,255';
-          grad.addColorStop(0, 'rgba(' + baseColor + ',0.18)');
-          grad.addColorStop(1, 'rgba(' + baseColor + ',0.02)');
-          ctx.fillStyle = grad;
-          ctx.fill();
-        }
-
-        if (showTemp) {
-          drawLine(tempArr, tempMin, tempMax, '#FF6B6B', 1.5);
-        }
-        if (showHumidity) {
-          drawLine(humArr, humMin, humMax, '#1890FF', 1.5);
-        }
-
-        if (showTemp && showHumidity) {
-          ctx.fillStyle = '#1890FF';
-          ctx.font = '9px sans-serif';
-          ctx.textAlign = 'right';
-          for (var ri = 0; ri <= gridLines; ri++) {
-            var rv = humMax - (humMax - humMin) / gridLines * ri;
-            var ry = padding.top + (chartH / gridLines) * ri;
-            ctx.fillText(rv.toFixed(0) + '%', width - 2, ry + 3);
-          }
-        }
-      });
-  },
-
-  // ============================================================
   // ==================== 新增功能方法 ====================
   // ============================================================
 
@@ -1541,13 +1295,6 @@ Page({
   /**
    * 打开导航：跳转地图导航
    */
-  openARGarden: function() {
-    var traceId = this.data.traceId;
-    wx.navigateTo({
-      url: '/pages/arExperience/arExperience?mode=detail&traceId=' + traceId + '&scene=garden'
-    });
-  },
-
   openLocationNavigation: function() {
     const marker = this.data.selectedMapMarker;
     if (!marker) return;
@@ -2268,39 +2015,10 @@ Page({
   onShareAppMessage: function() {
     const data = this.data.traceData;
     const traceId = this.data.traceId;
-    var inviterId = '1';
-    try {
-      var userInfo = auth.getUserInfo();
-      inviterId = userInfo && userInfo.openid ? userInfo.openid : '1';
-    } catch (e) {
-      console.warn('[Share] 获取用户信息失败，使用默认邀请人ID');
-    }
-    var that = this;
     return {
       title: `${data.basicInfo.productName} - 扫码查看全链路溯源信息，邀请双方得积分好礼！`,
-      path: `/pages/detail/detail?traceId=${traceId}&invite=${inviterId}`,
-      imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || '',
-      success: function(res) {
-        console.log('[Share] 分享成功:', res);
-        try {
-          var pointsResult = greenPoints.earnPoints('share', '分享产品:' + traceId);
-          if (pointsResult.earned > 0) {
-            console.log('[Share] 分享获得积分:', pointsResult.earned);
-            if (typeof wx !== 'undefined' && wx.showToast) {
-              wx.showToast({
-                title: '分享成功 +' + pointsResult.earned + '积分',
-                icon: 'success',
-                duration: 2000
-              });
-            }
-          }
-        } catch (e) {
-          console.warn('[Share] 积分奖励失败:', e);
-        }
-      },
-      fail: function(err) {
-        console.error('[Share] 分享失败:', err);
-      }
+      path: `/pages/detail/detail?traceId=${traceId}&invite=1`,
+      imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || ''
     };
   },
 
@@ -2310,127 +2028,11 @@ Page({
   onShareTimeline: function() {
     const data = this.data.traceData;
     const traceId = this.data.traceId;
-    var inviterId = '1';
-    try {
-      var userInfo = auth.getUserInfo();
-      inviterId = userInfo && userInfo.openid ? userInfo.openid : '1';
-    } catch (e) {
-      console.warn('[Share] 获取用户信息失败，使用默认邀请人ID');
-    }
-    var that = this;
     return {
       title: `${data.basicInfo.productName} | 全链路溯源 · 区块链验真 · 扫码邀请双方得好礼`,
-      query: `traceId=${traceId}&invite=${inviterId}`,
-      imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || '',
-      success: function(res) {
-        console.log('[Share] 朋友圈分享成功:', res);
-        try {
-          var pointsResult = greenPoints.earnPoints('share', '分享到朋友圈:' + traceId);
-          if (pointsResult.earned > 0) {
-            console.log('[Share] 朋友圈分享获得积分:', pointsResult.earned);
-          }
-        } catch (e) {
-          console.warn('[Share] 积分奖励失败:', e);
-        }
-      }
+      query: `traceId=${traceId}&invite=1`,
+      imageUrl: this.data.shareCardImage || data.basicInfo.thumbnail || ''
     };
-  },
-
-  /**
-   * ==================== 商城与购买功能 ====================
-   */
-
-  refreshCartCount: function() {
-    var count = shop.getCartCount();
-    this.setData({ cartCount: count });
-  },
-
-  toggleBatchSubscription: function() {
-    var that = this;
-    var data = this.data.traceData;
-    if (!data || !data.basicInfo) return;
-
-    var batchNo = data.basicInfo.batchNo;
-    var productName = data.basicInfo.productName;
-    var traceId = this.data.traceId;
-
-    if (this.data.batchSubscribed) {
-      wx.showModal({
-        title: '取消订阅',
-        content: '确定取消订阅批次 ' + batchNo + ' 的动态吗？',
-        confirmColor: '#ff4d4f',
-        success: function(res) {
-          if (res.confirm) {
-            subscription.unsubscribeBatch(batchNo);
-            that.setData({ batchSubscribed: false });
-            wx.showToast({ title: '已取消订阅', icon: 'success', duration: 1500 });
-          }
-        }
-      });
-    } else {
-      subscription.subscribeBatch(batchNo, traceId, productName);
-      this.setData({ batchSubscribed: true });
-      wx.showToast({ title: '已订阅本批次动态', icon: 'success', duration: 1500 });
-    }
-  },
-
-  goToSubscriptionPage: function() {
-    wx.navigateTo({ url: '/pages/subscription/subscription' });
-  },
-
-  goToShopHome: function() {
-    wx.switchTab({
-      url: '/pages/shop/list'
-    });
-  },
-
-  goToCart: function() {
-    wx.switchTab({
-      url: '/pages/shop/cart'
-    });
-  },
-
-  buySameStyle: function() {
-    var traceId = this.data.traceId;
-    if (!traceId) {
-      wx.showToast({ title: '参数错误', icon: 'none' });
-      return;
-    }
-
-    var product = mockData.getShopProduct(traceId);
-    if (!product) {
-      wx.showToast({ title: '商品已下架', icon: 'none' });
-      return;
-    }
-
-    wx.navigateTo({
-      url: '/pages/shop/detail?traceId=' + traceId
-    });
-  },
-
-  buyAgain: function() {
-    var traceId = this.data.traceId;
-    if (!traceId) {
-      wx.showToast({ title: '参数错误', icon: 'none' });
-      return;
-    }
-
-    var product = mockData.getShopProduct(traceId);
-    if (!product) {
-      wx.showToast({ title: '商品已下架', icon: 'none' });
-      return;
-    }
-
-    wx.navigateTo({
-      url: '/pages/shop/detail?traceId=' + traceId + '&buyNow=1'
-    });
-  },
-
-  goService: function() {
-    var traceId = this.data.traceId;
-    wx.navigateTo({
-      url: '/pages/service/index?traceId=' + (traceId || '')
-    });
   },
 
   /**

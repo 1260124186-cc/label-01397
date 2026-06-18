@@ -1,6 +1,7 @@
 const mockData = require('../../utils/mockData.js');
 const antiCounterfeit = require('../../utils/antiCounterfeit.js');
 const greenPoints = require('../../utils/greenPoints.js');
+const channelTrace = require('../../utils/channelTrace.js');
 
 Page({
   data: {
@@ -10,7 +11,12 @@ Page({
     verifyResult: null,
     showAlerts: false,
     showHistory: false,
-    productInfo: null
+    showChannelFlow: true,
+    productInfo: null,
+    channelFlow: [],
+    channelSummary: '',
+    divergenceAlert: null,
+    showDivergenceAlert: false
   },
 
   onLoad: function(options) {
@@ -51,11 +57,25 @@ Page({
 
       if (result.success) {
         const traceData = mockData.getTraceData(traceId);
+        const channelFlow = channelTrace.getDisplayChannelFlow(traceId);
+        const channelSummary = that.buildChannelSummary(channelFlow);
+
+        const currentScan = result.scanInfo.currentScan;
+        const divergenceResult = channelTrace.checkDivergence(
+          traceId,
+          currentScan.location,
+          currentScan.location
+        );
+
         that.setData({
           verifyResult: result,
           productInfo: traceData ? traceData.basicInfo : null,
           loading: false,
-          showAlerts: result.abnormal && result.abnormal.isAbnormal
+          showAlerts: result.abnormal && result.abnormal.isAbnormal,
+          channelFlow: channelFlow,
+          channelSummary: channelSummary,
+          divergenceAlert: divergenceResult.isDivergence ? divergenceResult : null,
+          showDivergenceAlert: divergenceResult.isDivergence
         });
 
         var pointsResult = greenPoints.earnPoints('scan', '扫码溯源:' + traceId);
@@ -170,5 +190,39 @@ Page({
       'fake': '仿冒'
     };
     return map[authenticity] || '未知';
+  },
+
+  buildChannelSummary: function(channelFlow) {
+    if (!channelFlow || channelFlow.length === 0) {
+      return '渠道信息暂无';
+    }
+    const names = channelFlow
+      .filter(f => f.role !== '生产厂家')
+      .map(f => f.name);
+    if (names.length === 0) {
+      return '厂家直供';
+    }
+    return '经 ' + names.join('、');
+  },
+
+  toggleChannelFlow: function() {
+    this.setData({
+      showChannelFlow: !this.data.showChannelFlow
+    });
+  },
+
+  toggleDivergenceAlert: function() {
+    this.setData({
+      showDivergenceAlert: !this.data.showDivergenceAlert
+    });
+  },
+
+  goToDealerPage: function() {
+    wx.navigateTo({
+      url: '/pages/dealer/index',
+      fail: function(err) {
+        console.error('跳转经销商页失败:', err);
+      }
+    });
   }
 });
