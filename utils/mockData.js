@@ -4,6 +4,8 @@
  * 说明：实际项目中应通过 wx.request 从后端获取数据
  */
 
+var reviewTrust = require('./reviewTrust.js');
+
 // ==================== 桂花品种配置（扩展枚举） ====================
 const OSMANTHUS_VARIETIES = {
   '金桂': {
@@ -5413,6 +5415,7 @@ const PRODUCT_REVIEWS = {
     reviews: [
       {
         id: 'REV-G001-001',
+        traceId: 'G001',
         userId: 'U001',
         userName: '茶韵悠悠',
         userAvatar: 'https://picsum.photos/id/1001/100/100',
@@ -5437,19 +5440,34 @@ const PRODUCT_REVIEWS = {
         auditStatus: 'approved',
         isPinned: true,
         isQuality: true,
+        isScanVerified: true,
+        trustLevel: {
+          key: 'verified_purchase',
+          name: '已验真购买',
+          weight: 10,
+          icon: '✓',
+          color: '#52C41A',
+          bgColor: '#F6FFED',
+          borderColor: '#B7EB8F'
+        },
         orderInfo: {
           orderId: 'ORD202511200015',
           sku: '100g/罐',
           buyTime: '2025-11-20'
         },
-        reply: {
+        brandReply: {
+          replyId: 'BR-REV-G001-001',
+          reviewId: 'REV-G001-001',
           content: '感谢您的用心评价！您的认可是我们最大的动力。我们坚持选用咸宁50年以上树龄金桂，搭配武夷山200年古茶树茶底，传承非遗窨制工艺，只为给您带来最纯正的桂花茶香。期待您继续关注和支持！',
           replyTime: '2025-12-05 16:00:00',
-          replier: '一茶一品官方客服'
+          replierName: '一茶一品官方客服',
+          replierAvatar: '',
+          isOfficial: true
         }
       },
       {
         id: 'REV-G001-002',
+        traceId: 'G001',
         userId: 'U002',
         userName: '山间品茶人',
         userAvatar: 'https://picsum.photos/id/1002/100/100',
@@ -5472,6 +5490,16 @@ const PRODUCT_REVIEWS = {
         auditStatus: 'approved',
         isPinned: true,
         isQuality: true,
+        isScanVerified: false,
+        trustLevel: {
+          key: 'regular_purchase',
+          name: '普通购买',
+          weight: 5,
+          icon: '🛒',
+          color: '#1890FF',
+          bgColor: '#E6F7FF',
+          borderColor: '#91D5FF'
+        },
         orderInfo: {
           orderId: 'ORD202511150008',
           sku: '250g/礼盒装',
@@ -5480,6 +5508,7 @@ const PRODUCT_REVIEWS = {
       },
       {
         id: 'REV-G001-003',
+        traceId: 'G001',
         userId: 'U003',
         userName: '小叶子',
         userAvatar: 'https://picsum.photos/id/1003/100/100',
@@ -5500,6 +5529,16 @@ const PRODUCT_REVIEWS = {
         auditStatus: 'approved',
         isPinned: false,
         isQuality: false,
+        isScanVerified: false,
+        trustLevel: {
+          key: 'regular_purchase',
+          name: '普通购买',
+          weight: 5,
+          icon: '🛒',
+          color: '#1890FF',
+          bgColor: '#E6F7FF',
+          borderColor: '#91D5FF'
+        },
         orderInfo: {
           orderId: 'ORD202511250023',
           sku: '100g/罐',
@@ -5508,6 +5547,7 @@ const PRODUCT_REVIEWS = {
       },
       {
         id: 'REV-G001-004',
+        traceId: 'G001',
         userId: 'U004',
         userName: '茶香袭人',
         userAvatar: 'https://picsum.photos/id/1004/100/100',
@@ -5531,6 +5571,16 @@ const PRODUCT_REVIEWS = {
         auditStatus: 'approved',
         isPinned: false,
         isQuality: true,
+        isScanVerified: true,
+        trustLevel: {
+          key: 'verified_purchase',
+          name: '已验真购买',
+          weight: 10,
+          icon: '✓',
+          color: '#52C41A',
+          bgColor: '#F6FFED',
+          borderColor: '#B7EB8F'
+        },
         orderInfo: {
           orderId: 'ORD202511180005',
           sku: '250g/礼盒装',
@@ -5539,10 +5589,11 @@ const PRODUCT_REVIEWS = {
       },
       {
         id: 'REV-G001-005',
-        userId: 'U005',
-        userName: '上班族小王',
-        userAvatar: 'https://picsum.photos/id/1005/100/100',
-        userLevel: 1,
+        traceId: 'G001',
+        userId: null,
+        userName: '微信用户',
+        userAvatar: '',
+        userLevel: 0,
         rating: 4,
         dimensions: {
           aroma: 4,
@@ -5561,14 +5612,21 @@ const PRODUCT_REVIEWS = {
         auditStatus: 'approved',
         isPinned: false,
         isQuality: false,
-        orderInfo: {
-          orderId: 'ORD202511100012',
-          sku: '3g*12袋/盒',
-          buyTime: '2025-11-10'
-        }
+        isScanVerified: false,
+        trustLevel: {
+          key: 'anonymous',
+          name: '匿名评价',
+          weight: 1,
+          icon: '👤',
+          color: '#8C8C8C',
+          bgColor: '#FAFAFA',
+          borderColor: '#D9D9D9'
+        },
+        orderInfo: null
       },
       {
         id: 'REV-G001-006',
+        traceId: 'G001',
         userId: 'U006',
         userName: '茶艺爱好者',
         userAvatar: 'https://picsum.photos/id/1006/100/100',
@@ -5593,15 +5651,29 @@ const PRODUCT_REVIEWS = {
         auditStatus: 'approved',
         isPinned: false,
         isQuality: true,
+        isScanVerified: true,
+        trustLevel: {
+          key: 'verified_purchase',
+          name: '已验真购买',
+          weight: 10,
+          icon: '✓',
+          color: '#52C41A',
+          bgColor: '#F6FFED',
+          borderColor: '#B7EB8F'
+        },
         orderInfo: {
           orderId: 'ORD202511050002',
           sku: '200g/罐',
           buyTime: '2025-11-05'
         },
-        reply: {
+        brandReply: {
+          replyId: 'BR-REV-G001-006',
+          reviewId: 'REV-G001-006',
           content: '感谢您的专业评价！您的认可对我们来说意义重大。我们会继续坚守品质，传承非遗窨制技艺，为茶友们带来更多好茶。',
           replyTime: '2025-11-21 09:30:00',
-          replier: '一茶一品官方客服'
+          replierName: '一茶一品官方客服',
+          replierAvatar: '',
+          isOfficial: true
         }
       }
     ]
@@ -5633,6 +5705,7 @@ const PRODUCT_REVIEWS = {
     reviews: [
       {
         id: 'REV-G002-001',
+        traceId: 'G002',
         userId: 'U007',
         userName: '清淡人生',
         userAvatar: 'https://picsum.photos/id/1007/100/100',
@@ -5655,6 +5728,16 @@ const PRODUCT_REVIEWS = {
         auditStatus: 'approved',
         isPinned: true,
         isQuality: true,
+        isScanVerified: true,
+        trustLevel: {
+          key: 'verified_purchase',
+          name: '已验真购买',
+          weight: 10,
+          icon: '✓',
+          color: '#52C41A',
+          bgColor: '#F6FFED',
+          borderColor: '#B7EB8F'
+        },
         orderInfo: {
           orderId: 'ORD202511220018',
           sku: '100g/罐',
@@ -5663,6 +5746,7 @@ const PRODUCT_REVIEWS = {
       },
       {
         id: 'REV-G002-002',
+        traceId: 'G002',
         userId: 'U008',
         userName: '养生达人',
         userAvatar: 'https://picsum.photos/id/1008/100/100',
@@ -5683,6 +5767,16 @@ const PRODUCT_REVIEWS = {
         auditStatus: 'approved',
         isPinned: false,
         isQuality: false,
+        isScanVerified: false,
+        trustLevel: {
+          key: 'regular_purchase',
+          name: '普通购买',
+          weight: 5,
+          icon: '🛒',
+          color: '#1890FF',
+          bgColor: '#E6F7FF',
+          borderColor: '#91D5FF'
+        },
         orderInfo: {
           orderId: 'ORD202511180012',
           sku: '200g/罐',
@@ -5713,8 +5807,23 @@ function getReportReasons() {
   return JSON.parse(JSON.stringify(REPORT_REASONS));
 }
 
-function submitReview(traceId, reviewData) {
+function submitReview(traceId, reviewData, trustContext) {
   var normalizedId = traceId.trim().toUpperCase();
+
+  var validation = reviewTrust.validateReviewSubmission(
+    normalizedId,
+    reviewData.content,
+    reviewData.rating
+  );
+
+  if (!validation.valid) {
+    return {
+      success: false,
+      message: validation.errors[0] || '评价提交失败',
+      errors: validation.errors
+    };
+  }
+
   if (!PRODUCT_REVIEWS[normalizedId]) {
     PRODUCT_REVIEWS[normalizedId] = {
       traceId: normalizedId,
@@ -5744,12 +5853,30 @@ function submitReview(traceId, reviewData) {
     };
   }
 
+  var isScanVerified = reviewTrust.isScanVerified(normalizedId);
+  var hasOrderInfo = !!(reviewData.orderInfo || (trustContext && trustContext.hasOrder));
+  var trustLevel = reviewTrust.determineTrustLevel(
+    normalizedId,
+    reviewData.userId,
+    hasOrderInfo
+  );
+
+  var auditStatus = 'approved';
+  if (validation.needAudit) {
+    auditStatus = 'pending';
+  }
+
+  var auth = require('./auth.js');
+  var userInfo = auth.getUserInfo();
+  var isLoggedIn = auth.isLoggedIn();
+
   var newReview = {
     id: 'REV-' + normalizedId + '-' + Date.now(),
-    userId: 'U000',
-    userName: '当前用户',
-    userAvatar: 'https://picsum.photos/id/1010/100/100',
-    userLevel: 1,
+    traceId: normalizedId,
+    userId: isLoggedIn ? (userInfo?.openid || 'U000') : null,
+    userName: isLoggedIn ? (userInfo?.nickname || '茶友用户') : '微信用户',
+    userAvatar: isLoggedIn ? (userInfo?.avatarUrl || 'https://picsum.photos/id/1010/100/100') : '',
+    userLevel: isLoggedIn ? 1 : 0,
     rating: reviewData.rating,
     dimensions: reviewData.dimensions,
     tasteTags: reviewData.tasteTags,
@@ -5759,19 +5886,36 @@ function submitReview(traceId, reviewData) {
     isLiked: false,
     commentCount: 0,
     createTime: new Date().toLocaleString('zh-CN'),
-    auditStatus: 'pending',
+    auditStatus: auditStatus,
     isPinned: false,
     isQuality: false,
-    orderInfo: reviewData.orderInfo || null
+    isScanVerified: isScanVerified,
+    trustLevel: trustLevel,
+    orderInfo: reviewData.orderInfo || null,
+    fromNote: reviewData.fromNote || false,
+    noteId: reviewData.noteId || null
   };
+
+  reviewTrust.addReviewSubmitRecord(normalizedId, newReview.id);
 
   PRODUCT_REVIEWS[normalizedId].reviews.unshift(newReview);
   PRODUCT_REVIEWS[normalizedId].summary.totalCount += 1;
 
+  var allReviews = PRODUCT_REVIEWS[normalizedId].reviews;
+  var weightedRating = reviewTrust.calculateWeightedRating(allReviews);
+  PRODUCT_REVIEWS[normalizedId].summary.averageRating = weightedRating;
+
+  var message = '评价提交成功';
+  if (auditStatus === 'pending') {
+    message = '评价提交成功，进入人工审核';
+  }
+
   return {
     success: true,
-    message: '评价提交成功，等待审核',
-    review: newReview
+    message: message,
+    review: newReview,
+    warnings: validation.warnings,
+    needAudit: validation.needAudit
   };
 }
 
@@ -7338,6 +7482,42 @@ function getAllTeaMasterTeams() {
   });
 })();
 
+function addBrandReply(traceId, reviewId, content) {
+  var normalizedId = traceId.trim().toUpperCase();
+  var data = PRODUCT_REVIEWS[normalizedId];
+  if (!data) return { success: false, message: '产品不存在' };
+
+  for (var i = 0; i < data.reviews.length; i++) {
+    if (data.reviews[i].id === reviewId) {
+      var brandReply = reviewTrust.createBrandReply(reviewId, content);
+      data.reviews[i].brandReply = brandReply;
+      return {
+        success: true,
+        message: '回复已发布',
+        brandReply: brandReply
+      };
+    }
+  }
+  return { success: false, message: '评价不存在' };
+}
+
+function submitReviewFromNote(traceId, note) {
+  var reviewData = reviewTrust.convertTastingNoteToReview(note, traceId);
+  if (!reviewData) {
+    return { success: false, message: '笔记数据无效' };
+  }
+  return submitReview(traceId, reviewData);
+}
+
+function getReviewSortOptions() {
+  return [
+    { key: 'quality', name: '综合排序', icon: '🏆' },
+    { key: 'trust', name: '信任优先', icon: '✓' },
+    { key: 'newest', name: '最新发布', icon: '🕐' },
+    { key: 'highest', name: '评分最高', icon: '⭐' }
+  ];
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -7409,8 +7589,11 @@ module.exports = {
   getRatingDimensions,
   getReportReasons,
   submitReview,
+  submitReviewFromNote,
   likeReview,
   reportReview,
+  addBrandReply,
+  getReviewSortOptions,
   getRecallByBatch,
   getRecallByTraceId,
   isRecalledProduct,

@@ -10,6 +10,7 @@ var NOTIFICATIONS_KEY = 'user_notifications';
 var PRIVACY_SETTINGS_KEY = 'user_privacy_settings';
 var KNOWLEDGE_FAVORITES_KEY = 'user_knowledge_favorites';
 var brewRecord = require('./brewRecord.js');
+var reviewTrust = require('./reviewTrust.js');
 var MAX_FAVORITES = 100;
 var MAX_NOTES = 200;
 var MAX_NOTIFICATIONS = 50;
@@ -384,6 +385,14 @@ function adjustBrewParamsByWaterQuality(hardness, teaAmount, duration) { return 
 function getBrewFlavorCurve(traceId) { return brewRecord.getFlavorCurve(traceId); }
 function generateTastingNoteDraft(record, productName) { return brewRecord.generateTastingNoteDraft(record, productName); }
 
+function addScanVerifyRecord(traceId) { return reviewTrust.addScanVerifyRecord(traceId); }
+function isScanVerified(traceId) { return reviewTrust.isScanVerified(traceId); }
+function hasSubmittedReview(traceId) { return reviewTrust.hasSubmittedReview(traceId); }
+function addReviewSubmitRecord(traceId, reviewId) { return reviewTrust.addReviewSubmitRecord(traceId, reviewId); }
+function determineTrustLevel(traceId, userId, hasOrderInfo) { return reviewTrust.determineTrustLevel(traceId, userId, hasOrderInfo); }
+function getTrustLevels() { return reviewTrust.TRUST_LEVELS; }
+function getAntiSpamConfig() { return reviewTrust.ANTI_SPAM_CONFIG; }
+
 module.exports = {
   getFavorites: getFavorites,
   addFavorite: addFavorite,
@@ -418,6 +427,13 @@ module.exports = {
   adjustBrewParamsByWaterQuality: adjustBrewParamsByWaterQuality,
   getBrewFlavorCurve: getBrewFlavorCurve,
   generateTastingNoteDraft: generateTastingNoteDraft,
+  addScanVerifyRecord: addScanVerifyRecord,
+  isScanVerified: isScanVerified,
+  hasSubmittedReview: hasSubmittedReview,
+  addReviewSubmitRecord: addReviewSubmitRecord,
+  determineTrustLevel: determineTrustLevel,
+  getTrustLevels: getTrustLevels,
+  getAntiSpamConfig: getAntiSpamConfig,
   DEFAULT_PRIVACY_SETTINGS: DEFAULT_PRIVACY_SETTINGS,
   FAVORITES_KEY: FAVORITES_KEY,
   NOTES_KEY: NOTES_KEY,

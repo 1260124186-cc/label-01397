@@ -6789,6 +6789,27 @@
   color: #999999;
 }
 
+.trust-badge-main {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  margin-top: 8rpx;
+  padding: 6rpx 12rpx;
+  background: linear-gradient(135deg, #52C41A20 0%, #73D13D20 100%);
+  border-radius: 20rpx;
+  border: 1rpx solid #52C41A;
+}
+
+.trust-badge-icon {
+  font-size: 20rpx;
+}
+
+.trust-badge-text {
+  font-size: 20rpx;
+  font-weight: 600;
+  color: #52C41A;
+}
+
 .review-dimensions {
   flex: 1;
   display: flex;
@@ -6987,6 +7008,72 @@
   font-size: 20rpx;
 }
 
+.verified-filter-icon {
+  color: #52C41A;
+  font-weight: 700;
+  margin-right: 4rpx;
+}
+
+.publish-from-note-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  background: linear-gradient(135deg, #E6F7FF 0%, #F0F8FF 100%);
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  border: 1rpx solid #91D5FF;
+}
+
+.publish-note-tip {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.note-icon {
+  font-size: 32rpx;
+}
+
+.note-tip-text {
+  font-size: 26rpx;
+  color: #1890FF;
+  font-weight: 500;
+}
+
+.publish-note-btn {
+  padding: 12rpx 28rpx;
+  background: #1890FF;
+  color: #FFFFFF;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.scan-verified-tip {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 16rpx 20rpx;
+  background: linear-gradient(135deg, #F6FFED 0%, #FCFFE6 100%);
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  border: 1rpx solid #B7EB8F;
+}
+
+.verified-icon {
+  font-size: 28rpx;
+  color: #52C41A;
+  font-weight: 700;
+}
+
+.verified-text {
+  font-size: 24rpx;
+  color: #52C41A;
+  font-weight: 500;
+}
+
 /* 评价列表 */
 .review-list {
   display: flex;
@@ -7094,6 +7181,25 @@
   border-radius: 12rpx;
 }
 
+.trust-level-badge {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid;
+}
+
+.trust-level-icon {
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.trust-level-name {
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
 .review-meta {
   display: flex;
   align-items: center;
@@ -7120,6 +7226,26 @@
 .review-time {
   font-size: 22rpx;
   color: #999999;
+}
+
+.review-trust-weight {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 2rpx 10rpx;
+  background: #F0F5FF;
+  border-radius: 8rpx;
+}
+
+.trust-weight-label {
+  font-size: 20rpx;
+  color: #8C8C8C;
+}
+
+.trust-weight-value {
+  font-size: 20rpx;
+  color: #2E8B57;
+  font-weight: 600;
 }
 
 .review-more {
@@ -7242,6 +7368,52 @@
   line-height: 1.6;
 }
 
+/* 品牌官方回复 */
+.brand-reply {
+  background: linear-gradient(135deg, #E6F7FF 0%, #F0F8FF 100%);
+  padding: 20rpx;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+  border-left: 4rpx solid #1890FF;
+}
+
+.brand-reply-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 10rpx;
+}
+
+.brand-reply-icon {
+  font-size: 24rpx;
+}
+
+.brand-reply-name {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #1890FF;
+}
+
+.official-badge {
+  padding: 2rpx 10rpx;
+  background: #1890FF;
+  color: #FFFFFF;
+  font-size: 18rpx;
+  border-radius: 8rpx;
+}
+
+.brand-reply-time {
+  font-size: 20rpx;
+  color: #999999;
+  margin-left: auto;
+}
+
+.brand-reply-content {
+  font-size: 24rpx;
+  color: #555555;
+  line-height: 1.6;
+}
+
 /* 操作栏 */
 .review-actions {
   display: flex;
@@ -7268,6 +7440,11 @@
 
 .action-text {
   font-size: 24rpx;
+}
+
+.action-btn.brand-reply-btn {
+  color: #1890FF;
+  margin-left: auto;
 }
 
 /* 无评价 */
@@ -7722,6 +7899,361 @@
   font-weight: 600;
   text-align: center;
   padding: 20rpx;
+  border-radius: 40rpx;
+}
+
+/* 审核提示弹窗 */
+.audit-tip-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.audit-tip-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.audit-tip-content {
+  width: 80%;
+  max-width: 600rpx;
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.audit-tip-modal.show .audit-tip-content {
+  transform: scale(1);
+}
+
+.audit-tip-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 40rpx 32rpx 20rpx;
+}
+
+.audit-tip-icon {
+  font-size: 48rpx;
+}
+
+.audit-tip-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #333333;
+}
+
+.audit-tip-body {
+  padding: 20rpx 32rpx 32rpx;
+}
+
+.audit-tip-text {
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.7;
+  margin-bottom: 20rpx;
+}
+
+.audit-tip-reason {
+  padding: 16rpx 20rpx;
+  background: #FFF7E6;
+  border-radius: 12rpx;
+  border-left: 4rpx solid #FA8C16;
+}
+
+.reason-title {
+  font-size: 24rpx;
+  color: #D46B08;
+  font-weight: 600;
+  margin-right: 8rpx;
+}
+
+.reason-text {
+  font-size: 24rpx;
+  color: #D46B08;
+}
+
+.audit-tip-footer {
+  padding: 24rpx 32rpx 32rpx;
+  border-top: 1rpx solid #EEEEEE;
+}
+
+.audit-tip-confirm-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #FA8C16 0%, #FFA940 100%);
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+  padding: 24rpx;
+  border-radius: 40rpx;
+}
+
+/* 笔记发布弹窗 */
+.note-publish-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.note-publish-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.note-publish-content {
+  width: 100%;
+  max-height: 85vh;
+  background: #FFFFFF;
+  border-radius: 20rpx 20rpx 0 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.note-publish-modal.show .note-publish-content {
+  transform: translateY(0);
+}
+
+.note-publish-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #EEEEEE;
+  flex-shrink: 0;
+}
+
+.note-publish-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #333333;
+}
+
+.note-publish-close {
+  font-size: 40rpx;
+  color: #999999;
+  line-height: 1;
+  padding: 0 8rpx;
+}
+
+.note-publish-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24rpx 32rpx;
+}
+
+.note-publish-preview {
+  background: #FAFAFA;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.preview-label {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 16rpx;
+}
+
+.preview-rating {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.preview-rating-label {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.preview-star {
+  font-size: 28rpx;
+}
+
+.preview-star.filled {
+  color: #FFB800;
+}
+
+.preview-star.empty {
+  color: #DDDDDD;
+}
+
+.preview-rating-value {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #DAA520;
+}
+
+.preview-dimensions {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin-bottom: 16rpx;
+}
+
+.preview-dim-item {
+  display: flex;
+  align-items: center;
+}
+
+.preview-dim-name {
+  font-size: 24rpx;
+  color: #666666;
+  min-width: 100rpx;
+}
+
+.preview-dim-value {
+  font-size: 24rpx;
+  color: #2E8B57;
+  font-weight: 600;
+}
+
+.preview-tags {
+  margin-bottom: 16rpx;
+}
+
+.preview-tags-label {
+  font-size: 24rpx;
+  color: #666666;
+  margin-right: 8rpx;
+}
+
+.preview-tag-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.preview-tag {
+  padding: 4rpx 12rpx;
+  background: #F0F5FF;
+  color: #597EF7;
+  font-size: 22rpx;
+  border-radius: 12rpx;
+}
+
+.preview-content {
+  margin-bottom: 16rpx;
+}
+
+.preview-content-label {
+  font-size: 24rpx;
+  color: #666666;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.preview-content-text {
+  font-size: 26rpx;
+  color: #333333;
+  line-height: 1.7;
+}
+
+.preview-trust {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx dashed #EEEEEE;
+}
+
+.preview-trust-label {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.preview-trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid;
+}
+
+.preview-trust-icon {
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.preview-trust-name {
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.note-publish-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8rpx;
+  padding: 16rpx 20rpx;
+  background: #F6FFED;
+  border-radius: 12rpx;
+}
+
+.tip-icon {
+  font-size: 28rpx;
+}
+
+.tip-text {
+  font-size: 24rpx;
+  color: #52C41A;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.note-publish-footer {
+  display: flex;
+  gap: 24rpx;
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #EEEEEE;
+  flex-shrink: 0;
+}
+
+.note-publish-cancel-btn {
+  flex: 1;
+  background: #F5F5F5;
+  color: #666666;
+  font-size: 28rpx;
+  text-align: center;
+  padding: 24rpx;
+  border-radius: 40rpx;
+}
+
+.note-publish-confirm-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+  padding: 24rpx;
   border-radius: 40rpx;
 }
 

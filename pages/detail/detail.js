@@ -12,6 +12,7 @@ const certWallet = require('../../utils/certificateWallet.js');
 const weatherUtil = require('../../utils/weather.js');
 const userStore = require('../../utils/userStore.js');
 const subscription = require('../../utils/subscription.js');
+const reviewTrust = require('../../utils/reviewTrust.js');
 
 // 锚点 Tab 配置（将在运行时根据语言填充 label）
 const ANCHOR_TABS_BASE = [
@@ -251,6 +252,7 @@ Page({
     reportReasons: [],
     reviewFilter: 'all',
     reviewSortBy: 'quality',
+    reviewSortOptions: [],
     showReviewModal: false,
     showReportModal: false,
     reviewForm: {
@@ -270,6 +272,20 @@ Page({
       content: ''
     },
     currentReportReviewId: '',
+
+    // ========== 评价信任治理 ==========
+    isScanVerified: false,
+    hasSubmittedReview: false,
+    trustLevels: null,
+    weightedAverageRating: 0,
+    reviewSubmitWarning: null,
+    showAuditTip: false,
+    publishFromNoteEnabled: false,
+    currentNoteId: '',
+    showNotePublishModal: false,
+    notePublishData: null,
+    reviewSortIndex: 0,
+    reviewSortLabels: [],
 
     // ========== 礼盒/组合装模块 ==========
     giftBoxInfo: null,
@@ -453,6 +469,9 @@ Page({
         var tasteTags = mockData.getTasteTags();
         var ratingDimensions = mockData.getRatingDimensions();
         var reportReasons = mockData.getReportReasons();
+        var reviewSortOptions = mockData.getReviewSortOptions();
+
+        userStore.addScanVerifyRecord(traceId);
 
         var giftBoxInfo = mockData.getGiftBoxInfo(traceId);
         var giftBoxItems = [];
@@ -467,15 +486,29 @@ Page({
         }
 
         var processedReviews = [];
+        var weightedAverageRating = 0;
         if (reviewData && reviewData.reviews) {
-          var reviews = reviewData.reviews.slice();
-          reviews.sort(function(a, b) {
-            if (a.isPinned !== b.isPinned) return b.isPinned ? 1 : -1;
-            if (a.isQuality !== b.isQuality) return b.isQuality ? 1 : -1;
-            return b.likeCount - a.likeCount;
+          var reviews = reviewData.reviews.map(function(review) {
+            return reviewTrust.prepareReviewForDisplay(review);
           });
-          processedReviews = reviews;
+
+          weightedAverageRating = reviewTrust.calculateWeightedRating(reviews);
+
+          processedReviews = reviewTrust.sortReviewsByTrust(reviews, that.data.reviewSortBy);
         }
+
+        var isScanVerified = userStore.isScanVerified(traceId);
+        var hasSubmittedReview = userStore.hasSubmittedReview(traceId);
+        var trustLevels = userStore.getTrustLevels();
+
+        var reviewSortIndex = 0;
+        for (var si = 0; si < reviewSortOptions.length; si++) {
+          if (reviewSortOptions[si].key === that.data.reviewSortBy) {
+            reviewSortIndex = si;
+            break;
+          }
+        }
+        var reviewSortLabels = reviewSortOptions.map(function(opt) { return opt.label; });
 
         var versionHistory = mockData.getAllVersions(traceId);
         var versionUpdateInfo = that.checkVersionUpdate(traceId, data);
@@ -513,6 +546,13 @@ Page({
           tasteTags: tasteTags,
           ratingDimensions: ratingDimensions,
           reportReasons: reportReasons,
+          reviewSortOptions: reviewSortOptions,
+          reviewSortIndex: reviewSortIndex,
+          reviewSortLabels: reviewSortLabels,
+          isScanVerified: isScanVerified,
+          hasSubmittedReview: hasSubmittedReview,
+          trustLevels: trustLevels,
+          weightedAverageRating: weightedAverageRating,
           giftBoxInfo: giftBoxInfo,
           giftBoxItems: giftBoxItems,
           isGiftBoxMainCode: isMain,
@@ -2661,9 +2701,17 @@ Page({
 
     var reviewData = mockData.getProductReviews(traceId);
     var processedReviews = this.calculateProcessedReviews(reviewData);
+    var weightedAverageRating = 0;
+    if (reviewData && reviewData.reviews) {
+      var reviews = reviewData.reviews.map(function(review) {
+        return reviewTrust.prepareReviewForDisplay(review);
+      });
+      weightedAverageRating = reviewTrust.calculateWeightedRating(reviews);
+    }
     this.setData({
       reviewData: reviewData,
-      processedReviews: processedReviews
+      processedReviews: processedReviews,
+      weightedAverageRating: weightedAverageRating
     });
   },
 
@@ -2682,25 +2730,17 @@ Page({
       reviews = reviews.filter(function(r) { return r.rating === 3; });
     } else if (filter === 'bad') {
       reviews = reviews.filter(function(r) { return r.rating <= 2; });
+    } else if (filter === 'verified') {
+      reviews = reviews.filter(function(r) { return r.isScanVerified; });
     }
 
-    if (sortBy === 'quality') {
-      reviews.sort(function(a, b) {
-        if (a.isPinned !== b.isPinned) return b.isPinned ? 1 : -1;
-        if (a.isQuality !== b.isQuality) return b.isQuality ? 1 : -1;
-        return b.likeCount - a.likeCount;
-      });
-    } else if (sortBy === 'newest') {
-      reviews.sort(function(a, b) {
-        return new Date(b.createTime) - new Date(a.createTime);
-      });
-    } else if (sortBy === 'highest') {
-      reviews.sort(function(a, b) {
-        return b.rating - a.rating;
-      });
-    }
+    reviews = reviews.map(function(review) {
+      return reviewTrust.prepareReviewForDisplay(review);
+    });
 
-    return reviews;
+    var sortedReviews = reviewTrust.sortReviewsByTrust(reviews, sortBy);
+
+    return sortedReviews;
   },
 
   openReviewModal: function() {
@@ -2813,23 +2853,6 @@ Page({
     var form = this.data.reviewForm;
     var traceId = this.data.traceId;
 
-    if (!form.content || form.content.trim().length < 5) {
-      wx.showToast({
-        title: '评价内容至少5个字',
-        icon: 'none'
-      });
-      return;
-    }
-
-    var sensitiveWords = ['广告', '推销', '联系方式'];
-    var hasSensitive = false;
-    for (var i = 0; i < sensitiveWords.length; i++) {
-      if (form.content.indexOf(sensitiveWords[i]) > -1) {
-        hasSensitive = true;
-        break;
-      }
-    }
-
     var overallRating = form.overallRating;
     var dimensionTotal = 0;
     var dimensionKeys = Object.keys(form.dimensionRatings);
@@ -2850,16 +2873,26 @@ Page({
     var result = mockData.submitReview(traceId, reviewData);
 
     if (result.success) {
+      var toastTitle = result.message;
+      if (result.warnings && result.warnings.length > 0) {
+        toastTitle = result.warnings[0].message;
+      }
+
       wx.showToast({
-        title: hasSensitive ? '评价已提交，正在审核' : result.message,
-        icon: 'success'
+        title: toastTitle,
+        icon: 'success',
+        duration: 2000
       });
 
-      this.setData({ showReviewModal: false });
+      that.setData({
+        showReviewModal: false,
+        showAuditTip: result.needAudit,
+        hasSubmittedReview: true
+      });
 
       setTimeout(function() {
         that.loadReviewData();
-      }, 500);
+      }, 800);
     } else {
       wx.showToast({
         title: result.message || '提交失败',
@@ -2961,12 +2994,87 @@ Page({
 
   onReviewSortChange: function(e) {
     var sortIndex = e.detail.value;
+    var sortOptions = this.data.reviewSortOptions;
     var sortBy = 'quality';
-    if (sortIndex === 1) sortBy = 'newest';
-    if (sortIndex === 2) sortBy = 'highest';
-    this.setData({ reviewSortBy: sortBy });
+    if (sortOptions && sortOptions[sortIndex]) {
+      sortBy = sortOptions[sortIndex].key;
+    }
+    this.setData({ reviewSortBy: sortBy, reviewSortIndex: sortIndex });
     var processedReviews = this.calculateProcessedReviews(this.data.reviewData);
     this.setData({ processedReviews: processedReviews });
+  },
+
+  onTrustFilterChange: function(e) {
+    var filter = e.currentTarget.dataset.filter;
+    this.setData({ reviewFilter: filter });
+    var processedReviews = this.calculateProcessedReviews(this.data.reviewData);
+    this.setData({ processedReviews: processedReviews });
+  },
+
+  closeAuditTip: function() {
+    this.setData({ showAuditTip: false });
+  },
+
+  openNotePublishModal: function() {
+    var that = this;
+    var traceId = this.data.traceId;
+    var userNotes = userStore.getTastingNotesByProduct(traceId);
+
+    if (userNotes && userNotes.length > 0) {
+      var publishData = reviewTrust.convertNoteToReviewPreview(userNotes[0], traceId);
+      this.setData({
+        showNotePublishModal: true,
+        notePublishData: publishData,
+        currentNoteId: userNotes[0].id
+      });
+    } else {
+      wx.showToast({
+        title: '暂无品鉴笔记可发布',
+        icon: 'none'
+      });
+    }
+  },
+
+  closeNotePublishModal: function() {
+    this.setData({ showNotePublishModal: false });
+  },
+
+  publishReviewFromNote: function() {
+    var that = this;
+    var noteId = this.data.currentNoteId;
+    var traceId = this.data.traceId;
+
+    var result = mockData.submitReviewFromNote(traceId, noteId);
+
+    if (result.success) {
+      wx.showToast({
+        title: result.needAudit ? '已发布，正在审核' : '发布成功',
+        icon: 'success'
+      });
+
+      that.setData({
+        showNotePublishModal: false,
+        showAuditTip: result.needAudit,
+        hasSubmittedReview: true
+      });
+
+      setTimeout(function() {
+        that.loadReviewData();
+      }, 800);
+    } else {
+      wx.showToast({
+        title: result.message || '发布失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  openBrandReplyModal: function(e) {
+    var reviewId = e.currentTarget.dataset.reviewId;
+    wx.showToast({
+      title: '品牌回复功能仅对管理员开放',
+      icon: 'none'
+    });
   },
 
   previewReviewDetailImage: function(e) {

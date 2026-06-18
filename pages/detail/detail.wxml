@@ -2414,11 +2414,15 @@
         <!-- 评价概览 -->
         <view class="review-overview">
           <view class="review-score-main">
-            <text class="score-number">{{reviewData.summary.averageRating}}</text>
+            <text class="score-number">{{weightedAverageRating || reviewData.summary.averageRating}}</text>
             <view class="score-stars">
-              <text wx:for="{{5}}" wx:key="index" class="star {{index < reviewData.summary.averageRating ? 'filled' : 'empty'}}">★</text>
+              <text wx:for="{{5}}" wx:key="index" class="star {{index < (weightedAverageRating || reviewData.summary.averageRating) ? 'filled' : 'empty'}}">★</text>
             </view>
             <text class="score-count">{{reviewData.summary.totalCount}}人评价</text>
+            <view class="trust-badge-main" wx:if="{{weightedAverageRating > 0}}">
+              <text class="trust-badge-icon">⚖️</text>
+              <text class="trust-badge-text">信任加权</text>
+            </view>
           </view>
 
           <!-- 维度评分 -->
@@ -2468,6 +2472,10 @@
               <view class="filter-tab {{reviewFilter === 'all' ? 'active' : ''}}" bindtap="onReviewFilterChange" data-filter="all">
                 <text>全部({{reviewData.summary.totalCount}})</text>
               </view>
+              <view class="filter-tab {{reviewFilter === 'verified' ? 'active' : ''}}" bindtap="onTrustFilterChange" data-filter="verified">
+                <text class="verified-filter-icon">✓</text>
+                <text>已验真</text>
+              </view>
               <view class="filter-tab {{reviewFilter === 'image' ? 'active' : ''}}" bindtap="onReviewFilterChange" data-filter="image">
                 <text>晒图({{reviewData.summary.hasImageCount}})</text>
               </view>
@@ -2484,13 +2492,30 @@
           </scroll-view>
           <view class="sort-dropdown">
             <text class="sort-label">排序：</text>
-            <picker mode="selector" range="{{['优质优先', '最新发布', '评分最高']}}" value="{{reviewSortBy === 'quality' ? 0 : (reviewSortBy === 'newest' ? 1 : 2)}}" bindchange="onReviewSortChange">
+            <picker mode="selector" range="{{reviewSortLabels}}" value="{{reviewSortIndex}}" bindchange="onReviewSortChange">
               <view class="sort-value">
-                <text>{{reviewSortBy === 'quality' ? '优质优先' : (reviewSortBy === 'newest' ? '最新发布' : '评分最高')}}</text>
+                <text>{{reviewSortLabels[reviewSortIndex] || '综合排序'}}</text>
                 <text class="sort-arrow">▾</text>
               </view>
             </picker>
           </view>
+        </view>
+
+        <!-- 从笔记发布入口 -->
+        <view class="publish-from-note-bar" wx:if="{{!hasSubmittedReview}}">
+          <view class="publish-note-tip">
+            <text class="note-icon">📝</text>
+            <text class="note-tip-text">已写品鉴笔记？一键发布为评价</text>
+          </view>
+          <view class="publish-note-btn" bindtap="openNotePublishModal">
+            <text>发布</text>
+          </view>
+        </view>
+
+        <!-- 已验证标识提示 -->
+        <view class="scan-verified-tip" wx:if="{{isScanVerified && !hasSubmittedReview}}">
+          <text class="verified-icon">✓</text>
+          <text class="verified-text">您已扫码验真，评价将显示「已验真购买」标识</text>
         </view>
 
         <!-- 评价列表 -->
@@ -2524,12 +2549,20 @@
                     <view class="user-level" wx:if="{{review.userLevel > 0}}">
                       <text>Lv.{{review.userLevel}}</text>
                     </view>
+                    <view class="trust-level-badge" wx:if="{{review.trustLevel}}" style="background: {{review.trustLevel.color}}20; border-color: {{review.trustLevel.color}};">
+                      <text class="trust-level-icon" style="color: {{review.trustLevel.color}};">{{review.trustLevel.icon}}</text>
+                      <text class="trust-level-name" style="color: {{review.trustLevel.color}};">{{review.trustLevel.name}}</text>
+                    </view>
                   </view>
                   <view class="review-meta">
                     <view class="review-rating-small">
                       <text wx:for="{{5}}" wx:key="index" class="star-small {{index < review.rating ? 'filled' : 'empty'}}">★</text>
                     </view>
                     <text class="review-time">{{review.createTime}}</text>
+                    <view class="review-trust-weight" wx:if="{{review.qualityScore}}">
+                      <text class="trust-weight-label">质量分:</text>
+                      <text class="trust-weight-value">{{review.qualityScore}}</text>
+                    </view>
                   </view>
                 </view>
                 <view class="review-more" bindtap="openReportModal" data-review-id="{{review.id}}">
@@ -2578,15 +2611,18 @@
                 />
               </view>
 
-              <!-- 商家回复 -->
-              <view class="review-reply" wx:if="{{review.reply}}">
-                <view class="reply-header">
-                  <text class="reply-icon">💬</text>
-                  <text class="reply-name">{{review.reply.replier}}</text>
-                  <text class="reply-time">{{review.reply.replyTime}}</text>
+              <!-- 品牌官方回复 -->
+              <view class="brand-reply" wx:if="{{review.brandReply}}">
+                <view class="brand-reply-header">
+                  <text class="brand-reply-icon">🏢</text>
+                  <text class="brand-reply-name">{{review.brandReply.replierName}}</text>
+                  <view class="official-badge" wx:if="{{review.brandReply.isOfficial}}">
+                    <text>官方</text>
+                  </view>
+                  <text class="brand-reply-time">{{review.brandReply.replyTime}}</text>
                 </view>
-                <view class="reply-content">
-                  <text>{{review.reply.content}}</text>
+                <view class="brand-reply-content">
+                  <text>{{review.brandReply.content}}</text>
                 </view>
               </view>
 
@@ -2599,6 +2635,10 @@
                 <view class="action-btn comment">
                   <text class="action-icon">💬</text>
                   <text class="action-text">{{review.commentCount}}</text>
+                </view>
+                <view class="action-btn brand-reply-btn" bindtap="openBrandReplyModal" data-review-id="{{review.id}}">
+                  <text class="action-icon">🏢</text>
+                  <text class="action-text">品牌回复</text>
                 </view>
               </view>
             </view>
@@ -3259,6 +3299,85 @@
         </view>
         <view class="report-submit-btn" bindtap="submitReport">
           <text>提交举报</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 审核提示弹窗 ==================== -->
+  <view class="audit-tip-modal {{showAuditTip ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeAuditTip">
+    <view class="audit-tip-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="audit-tip-header">
+        <text class="audit-tip-icon">⏳</text>
+        <text class="audit-tip-title">评价审核中</text>
+      </view>
+      <view class="audit-tip-body">
+        <text class="audit-tip-text">您的评价已提交，正在进行人工审核。审核通过后将公开显示，请耐心等待。</text>
+        <view class="audit-tip-reason">
+          <text class="reason-title">审核原因：</text>
+          <text class="reason-text">短时间内评价频率较高，为保障评价真实性需人工审核</text>
+        </view>
+      </view>
+      <view class="audit-tip-footer">
+        <view class="audit-tip-confirm-btn" bindtap="closeAuditTip">
+          <text>我知道了</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 从笔记发布为评价弹窗 ==================== -->
+  <view class="note-publish-modal {{showNotePublishModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeNotePublishModal">
+    <view class="note-publish-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="note-publish-header">
+        <text class="note-publish-title">📝 发布笔记为评价</text>
+        <view class="note-publish-close" bindtap="closeNotePublishModal">×</view>
+      </view>
+      <scroll-view scroll-y="true" class="note-publish-body" wx:if="{{notePublishData}}">
+        <view class="note-publish-preview">
+          <view class="preview-label">评价预览</view>
+          <view class="preview-rating">
+            <text class="preview-rating-label">评分：</text>
+            <text wx:for="{{5}}" wx:key="index" class="preview-star {{index < notePublishData.rating ? 'filled' : 'empty'}}">★</text>
+            <text class="preview-rating-value">{{notePublishData.rating}}.0</text>
+          </view>
+          <view class="preview-dimensions" wx:if="{{notePublishData.dimensions}}">
+            <view class="preview-dim-item" wx:for="{{ratingDimensions}}" wx:key="key" wx:for-item="dim">
+              <text class="preview-dim-name">{{dim.name}}：</text>
+              <text class="preview-dim-value">{{notePublishData.dimensions[dim.key]}}分</text>
+            </view>
+          </view>
+          <view class="preview-tags" wx:if="{{notePublishData.tasteTags && notePublishData.tasteTags.length > 0}}">
+            <text class="preview-tags-label">口感标签：</text>
+            <view class="preview-tag-list">
+              <view class="preview-tag" wx:for="{{notePublishData.tasteTags}}" wx:key="*this" wx:for-item="tag">
+                <text>{{tag}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="preview-content">
+            <text class="preview-content-label">评价内容：</text>
+            <text class="preview-content-text">{{notePublishData.content}}</text>
+          </view>
+          <view class="preview-trust" wx:if="{{notePublishData.trustLevel}}">
+            <text class="preview-trust-label">信任级别：</text>
+            <view class="preview-trust-badge" style="background: {{notePublishData.trustLevel.color}}20; border-color: {{notePublishData.trustLevel.color}};">
+              <text class="preview-trust-icon" style="color: {{notePublishData.trustLevel.color}};">{{notePublishData.trustLevel.icon}}</text>
+              <text class="preview-trust-name" style="color: {{notePublishData.trustLevel.color}};">{{notePublishData.trustLevel.name}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="note-publish-tip">
+          <text class="tip-icon">💡</text>
+          <text class="tip-text">发布后，您的品鉴笔记内容将作为评价公开显示</text>
+        </view>
+      </scroll-view>
+      <view class="note-publish-footer">
+        <view class="note-publish-cancel-btn" bindtap="closeNotePublishModal">
+          <text>取消</text>
+        </view>
+        <view class="note-publish-confirm-btn" bindtap="publishReviewFromNote">
+          <text>发布评价</text>
         </view>
       </view>
     </view>

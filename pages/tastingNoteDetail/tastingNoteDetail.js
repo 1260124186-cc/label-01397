@@ -1,5 +1,7 @@
 var userStore = require('../../utils/userStore.js');
 var greenPoints = require('../../utils/greenPoints.js');
+var mockData = require('../../utils/mockData.js');
+var reviewTrust = require('../../utils/reviewTrust.js');
 
 Page({
   data: {
@@ -12,7 +14,12 @@ Page({
     tags: [],
     inputTag: '',
     presetTags: ['回甘', '花香', '醇厚', '清甜', '浓香', '柔和', '鲜爽', '余韵', '桂花香', '茶韵'],
-    saving: false
+    saving: false,
+    hasSubmittedReview: false,
+    isScanVerified: false,
+    publishing: false,
+    publishPreview: null,
+    showPublishConfirm: false
   },
 
   onLoad: function(options) {
@@ -61,6 +68,14 @@ Page({
       setTimeout(function() { wx.navigateBack(); }, 1500);
       return;
     }
+
+    var hasSubmittedReview = userStore.hasSubmittedReview(note.traceId);
+    var isScanVerified = userStore.isScanVerified(note.traceId);
+    var publishPreview = null;
+    if (!hasSubmittedReview && note.traceId) {
+      publishPreview = reviewTrust.convertNoteToReviewPreview(note, note.traceId);
+    }
+
     this.setData({
       isEdit: true,
       noteId: note.id,
@@ -68,7 +83,10 @@ Page({
       productName: note.productName,
       content: note.content,
       rating: note.rating,
-      tags: note.tags || []
+      tags: note.tags || [],
+      hasSubmittedReview: hasSubmittedReview,
+      isScanVerified: isScanVerified,
+      publishPreview: publishPreview
     });
     wx.setNavigationBarTitle({ title: '编辑笔记' });
   },
@@ -169,5 +187,80 @@ Page({
 
     this.setData({ saving: false });
     setTimeout(function() { wx.navigateBack(); }, 1000);
+  },
+
+  openPublishConfirm: function() {
+    if (!this.data.traceId) {
+      wx.showToast({ title: '该笔记未关联产品', icon: 'none' });
+      return;
+    }
+    if (this.data.hasSubmittedReview) {
+      wx.showToast({ title: '您已评价过该产品', icon: 'none' });
+      return;
+    }
+
+    var noteData = {
+      id: this.data.noteId,
+      traceId: this.data.traceId,
+      productName: this.data.productName,
+      content: this.data.content,
+      rating: this.data.rating,
+      tags: this.data.tags
+    };
+    var publishPreview = reviewTrust.convertNoteToReviewPreview(noteData, this.data.traceId);
+
+    this.setData({
+      showPublishConfirm: true,
+      publishPreview: publishPreview
+    });
+  },
+
+  closePublishConfirm: function() {
+    this.setData({ showPublishConfirm: false });
+  },
+
+  publishAsReview: function() {
+    var that = this;
+    if (this.data.publishing) return;
+    if (!this.data.noteId || !this.data.traceId) {
+      wx.showToast({ title: '数据不完整', icon: 'none' });
+      return;
+    }
+
+    this.setData({ publishing: true });
+
+    var result = mockData.submitReviewFromNote(this.data.traceId, this.data.noteId);
+
+    if (result.success) {
+      var toastTitle = result.needAudit ? '已发布，正在审核' : '发布成功';
+      wx.showToast({
+        title: toastTitle,
+        icon: 'success',
+        duration: 2000
+      });
+
+      this.setData({
+        showPublishConfirm: false,
+        hasSubmittedReview: true
+      });
+
+      setTimeout(function() {
+        that.setData({ publishing: false });
+        wx.navigateBack();
+      }, 1500);
+    } else {
+      this.setData({ publishing: false });
+      wx.showToast({
+        title: result.message || '发布失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  goToProductDetail: function() {
+    if (!this.data.traceId) return;
+    wx.redirectTo({
+      url: '/pages/detail/detail?traceId=' + this.data.traceId
+    });
   }
 });
