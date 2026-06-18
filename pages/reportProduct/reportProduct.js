@@ -13,7 +13,14 @@ Page({
     maxPhotos: 6,
     submitting: false,
     showSuccess: false,
-    submittedReport: null
+    submittedReport: null,
+
+    outerCode: '',
+    innerCode: '',
+    errorType: '',
+    errorMessage: '',
+    hasDualCode: false,
+    autoSelectType: ''
   },
 
   onLoad: function(options) {
@@ -21,11 +28,57 @@ Page({
     
     const traceId = options.traceId || '';
     const productName = decodeURIComponent(options.productName || '');
+    const outerCode = decodeURIComponent(options.outerCode || '');
+    const innerCode = decodeURIComponent(options.innerCode || '');
+    const errorType = decodeURIComponent(options.errorType || '');
+    const errorMessage = decodeURIComponent(options.errorMessage || '');
+    const autoSelectType = options.autoSelectType || '';
+
+    const reportTypes = antiCounterfeit.getReportTypes();
     
+    let selectedType = '';
+    let selectedTypeLabel = '';
+    let description = '';
+    let hasDualCode = !!(outerCode || innerCode);
+
+    if (autoSelectType) {
+      const matchType = reportTypes.find(t => t.key === autoSelectType);
+      if (matchType) {
+        selectedType = matchType.key;
+        selectedTypeLabel = matchType.label;
+      }
+    }
+
+    if (hasDualCode && errorMessage) {
+      const parts = [];
+      if (outerCode) parts.push('外盒码：' + outerCode);
+      if (innerCode) parts.push('内袋码：' + innerCode);
+      if (errorType) parts.push('异常类型：' + errorType);
+      parts.push('异常描述：' + errorMessage);
+      description = parts.join('\n');
+    } else if (hasDualCode && !description) {
+      const parts = [];
+      if (outerCode) parts.push('外盒码：' + outerCode);
+      if (innerCode) parts.push('内袋码：' + innerCode);
+      if (parts.length > 0) {
+        parts.push('问题描述：（请在此填写您遇到的具体问题）');
+        description = parts.join('\n');
+      }
+    }
+
     this.setData({
       traceId: traceId,
       productName: productName,
-      reportTypes: antiCounterfeit.getReportTypes()
+      outerCode: outerCode,
+      innerCode: innerCode,
+      errorType: errorType,
+      errorMessage: errorMessage,
+      hasDualCode: hasDualCode,
+      autoSelectType: autoSelectType,
+      reportTypes: reportTypes,
+      selectedType: selectedType,
+      selectedTypeLabel: selectedTypeLabel,
+      description: description
     });
   },
 
@@ -206,10 +259,15 @@ Page({
         reportTypeLabel: that.data.selectedTypeLabel,
         description: that.data.description.trim(),
         contact: that.data.contact.trim(),
-        photos: that.data.photos
+        photos: that.data.photos,
+        outerCode: that.data.outerCode,
+        innerCode: that.data.innerCode,
+        errorType: that.data.errorType,
+        errorMessage: that.data.errorMessage,
+        hasDualCode: that.data.hasDualCode
       };
 
-      const result = antiCounterfeit.submitReport(reportData);
+      const result = antiCounterfeit.submitDualReport(reportData);
       
       wx.hideLoading();
       that.setData({ submitting: false });

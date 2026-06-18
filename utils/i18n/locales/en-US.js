@@ -441,5 +441,113 @@ module.exports = {
     colorWeakDesc: 'Adds icons & patterns to PASS/FAIL states for better distinction',
     settingsEntry: '⚙️ Settings',
     changed: 'Settings updated'
+  },
+
+  dualVerify: {
+    title: 'Dual Code Verification',
+    subtitle: 'Outer Box + Inner Pouch Dual Anti-Counterfeit Verification',
+    steps: {
+      title: 'Verification Process',
+      step1: 'Scan Outer Code',
+      step1Desc: 'Scan QR code on the outer box',
+      step2: 'Open & Scan Inner Code',
+      step2Desc: 'Open the foil/pouch and scan the inner code',
+      step3: 'Verification Complete',
+      step3Desc: 'Dual check passed, genuine product guaranteed'
+    },
+    guide: {
+      title: 'Usage Guide',
+      tip1: 'First scan the QR code on the outer packaging',
+      tip2: 'Tear open the aluminum foil seal',
+      tip3: 'Scan the QR code inside the pouch to complete binding verification',
+      startBtn: 'Start Verification',
+      demo: 'View Demo'
+    },
+    scan: {
+      outerBtn: 'Scan Outer Box Code',
+      innerBtn: 'Scan Inner Pouch Code',
+      outerLoading: 'Recognizing outer box code...',
+      innerLoading: 'Verifying binding relationship...',
+      outerSuccess: 'Outer box code recognized',
+      innerSuccess: 'Inner pouch code binding verified',
+      retry: 'Scan Again',
+      reset: 'Restart',
+      manualInput: 'Manual Input',
+      mismatchDemo: 'Abnormal Scenario Demo'
+    },
+    outerResult: {
+      title: '📦 Outer Box Product Summary',
+      productName: 'Product Name',
+      spec: 'Specifications',
+      batch: 'Production Batch',
+      highlights: 'Product Highlights',
+      packageTip: 'After confirming package integrity, open the foil and scan the inner pouch QR code to complete final verification',
+      packageWarn: '⚠️ If packaging is damaged, please do not purchase or use'
+    },
+    innerResult: {
+      titleSuccess: '✅ Dual Code Binding Verified',
+      titleFail: '❌ Dual Code Binding Abnormality Detected',
+      titleNoContext: '⚠️ Missing Outer Box Code Context',
+      descSuccess: 'Outer and inner codes are matched as one product pair - Genuine Product!',
+      descFail: 'Detected mismatched outer/inner codes. Please purchase and use with caution',
+      descNoContext: 'Please scan the outer box code first, then scan the inner pouch code',
+      bindInfo: 'Binding Pair Information',
+      outerCode: 'Outer Box Code',
+      innerCode: 'Inner Pouch Code',
+      expected: 'Expected Pair',
+      actual: 'Actually Scanned',
+      traceId: 'Traceability ID',
+      bindBatch: 'Binding Batch',
+      goReport: 'Report Issue Immediately',
+      goReportTip: 'Click to go directly to report page, dual codes will be auto-filled',
+      showDetail: 'View Abnormality Details'
+    },
+    manualInput: {
+      title: 'Manual Code Input',
+      tipOuter: 'Please enter outer box code (OUT- prefix)',
+      tipInner: 'Please enter inner pouch code (INN- prefix)',
+      switchOuter: 'Switch to Outer Code',
+      switchInner: 'Switch to Inner Code',
+      placeholder: 'Enter code',
+      testCodes: 'Test Codes',
+      confirm: 'Confirm'
+    },
+    modal: {
+      mismatchTitle: '⚠️ Abnormality Detected',
+      mismatchContent: 'Inner and outer codes are not bound together. This may indicate a counterfeit product. We recommend reporting it immediately to help us combat counterfeits.',
+      noOuterTitle: '💡 Scan Outer Box Code First',
+      noOuterContent: 'Dual code verification requires scanning the outer QR code first. Would you like to scan it now?',
+      noOuterBtn1: 'Continue to Scan Inner',
+      noOuterBtn2: 'Scan Outer Code First'
+    },
+    complete: {
+      title: '🎉 Dual Verification Complete',
+      desc: 'Congratulations! This product has passed outer box + inner pouch dual anti-counterfeit verification. Authentic product confirmed!',
+      backHome: 'Back to Home',
+      viewDetail: 'View Traceability Details',
+      another: 'Verify Another Product'
+    },
+    stats: {
+      verifyCount: 'Total Verifications',
+      mismatchCount: 'Reported Issues',
+      successRate: 'Verification Pass Rate'
+    }
+  },
+
+  dualReport: {
+    autoFilled: 'Dual code info auto-filled',
+    dualCodeInfo: 'Dual Code Verification Info',
+    outerCode: 'Outer Box Code',
+    innerCode: 'Inner Pouch Code',
+    errorType: 'Issue Type',
+    errorDesc: 'Issue Description',
+    submitTip: 'Dual codes will be used as evidence for investigation',
+    typeMismatch: 'Outer/Inner Mismatch',
+    types: {
+      dual_mismatch: 'Outer/Inner Code Mismatch',
+      code_invalid: 'Invalid Code',
+      code_missing: 'Missing Code',
+      package_tampered: 'Package Tampered'
+    }
   }
 };

@@ -19,6 +19,14 @@
           <text class="label">举报类型</text>
           <text class="value">{{submittedReport.reportTypeLabel}}</text>
         </view>
+        <view wx:if="{{submittedReport.outerCode}}" class="info-row">
+          <text class="label">外盒码</text>
+          <text class="value">{{submittedReport.outerCode}}</text>
+        </view>
+        <view wx:if="{{submittedReport.innerCode}}" class="info-row">
+          <text class="label">内袋码</text>
+          <text class="value">{{submittedReport.innerCode}}</text>
+        </view>
       </view>
 
       <button class="btn-success" bindtap="closeSuccess">我知道了</button>
@@ -31,7 +39,36 @@
       <view class="product-icon">📦</view>
       <view class="product-detail">
         <view class="product-name">{{productName || '未知产品'}}</view>
-        <view class="product-trace">溯源ID: {{traceId}}</view>
+        <view class="product-trace">溯源ID: {{traceId || '暂无'}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{hasDualCode}}" class="dualcode-info-bar">
+      <view class="dualcode-header">
+        <text class="dualcode-icon">🔐</text>
+        <text class="dualcode-title">双码验真信息（已自动带入）</text>
+        <view class="auto-badge">AUTO</view>
+      </view>
+      <view class="dualcode-detail">
+        <view wx:if="{{outerCode}}" class="dc-row">
+          <text class="dc-label">📦 外盒码</text>
+          <text class="dc-value dc-outer">{{outerCode}}</text>
+        </view>
+        <view wx:if="{{innerCode}}" class="dc-row">
+          <text class="dc-label">🫙 内袋码</text>
+          <text class="dc-value dc-inner">{{innerCode}}</text>
+        </view>
+        <view wx:if="{{errorType}}" class="dc-row dc-error">
+          <text class="dc-label">⚠️ 异常类型</text>
+          <text class="dc-value dc-danger">{{errorType}}</text>
+        </view>
+        <view wx:if="{{errorMessage}}" class="dc-row dc-error-desc">
+          <text class="dc-label">📋 异常描述</text>
+          <text class="dc-value">{{errorMessage}}</text>
+        </view>
+      </view>
+      <view class="dualcode-tip">
+        💡 以上双码信息已自动带入，提交后将作为重要证据协助调查核实
       </view>
     </view>
 

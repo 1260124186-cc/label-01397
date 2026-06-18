@@ -103,6 +103,7 @@ Page({
     announcementAnimation: false,
 
     featureCards: [
+      { key: 'dualVerify', icon: '🔐', name: '双码验真', desc: '外盒码+内袋码双重防伪', color: '#8E24AA', type: 'dualVerify' },
       { key: 'origin', icon: '🌱', name: '产地溯源', desc: '茶树与桂花产地信息', anchor: 'anchor-basic', color: '#2E8B57', type: 'detail' },
       { key: 'process', icon: '🫖', name: '工艺追踪', desc: '窨制工艺全流程', anchor: 'anchor-process', color: '#DAA520', type: 'detail' },
       { key: 'green', icon: '♻️', name: '绿色认证', desc: '生态种植与环保包装', anchor: 'anchor-green', color: '#52C41A', type: 'detail' },
@@ -326,6 +327,12 @@ Page({
         const scanResult = res.result;
         const scanType = res.scanType;
 
+        const dualCode = mockData.parseDualCodeFromScanResult(scanResult);
+        if (dualCode) {
+          that.navigateToDualVerify(dualCode);
+          return;
+        }
+
         let traceId = null;
 
         if (scanType === 'barCode') {
@@ -354,6 +361,47 @@ Page({
             icon: 'none',
             duration: 2000
           });
+        }
+      }
+    });
+  },
+
+  navigateToDualVerify: function(dualCode) {
+    const that = this;
+    console.log('[首页] 检测到双码，跳转到双码验真页:', dualCode);
+
+    wx.showModal({
+      title: '🔐 检测到双码产品',
+      content: '该产品支持"外盒码+内袋码"双重防伪验真。是否使用双码验真功能进行更严格的防伪验证？',
+      confirmText: '使用双码验真',
+      cancelText: '普通验真',
+      confirmColor: '#8E24AA',
+      success: function(modalRes) {
+        if (modalRes.confirm) {
+          let url = '/pages/dualVerify/dualVerify';
+          if (dualCode.codeType === 'outer') {
+            url += '?outerCode=' + dualCode.code;
+          }
+          wx.navigateTo({
+            url: url,
+            success: function() {
+              console.log('[首页] 跳转双码验真页成功');
+            },
+            fail: function(err) {
+              console.error('[首页] 跳转双码验真页失败:', err);
+              wx.showToast({ title: '跳转失败', icon: 'none' });
+            }
+          });
+        } else {
+          const info = mockData.getDualCodeInfo(dualCode.code);
+          if (info && info.traceId) {
+            that.navigateToScanResult(info.traceId, 'qrCode');
+          } else {
+            wx.showToast({
+              title: '未找到产品信息',
+              icon: 'none'
+            });
+          }
         }
       }
     });
@@ -691,6 +739,10 @@ Page({
     } else if (card.type === 'dealer') {
       wx.navigateTo({
         url: '/pages/dealer/index'
+      });
+    } else if (card.type === 'dualVerify') {
+      wx.navigateTo({
+        url: '/pages/dualVerify/dualVerify'
       });
     }
   },

@@ -5,6 +5,7 @@
 global.wx = {
   getStorageSync: jest.fn(),
   setStorageSync: jest.fn(),
+  removeStorageSync: jest.fn(),
   getFuzzyLocation: jest.fn((options) => {
     if (options && options.success) {
       options.success({
@@ -21,9 +22,14 @@ global.wx = {
 };
 
 const mockData = require('../utils/mockData.js');
-jest.mock('../utils/mockData.js', () => ({
-  getTraceData: jest.fn()
-}));
+const actualMockData = jest.requireActual('../utils/mockData.js');
+jest.mock('../utils/mockData.js', () => {
+  const actual = jest.requireActual('../utils/mockData.js');
+  return {
+    ...actual,
+    getTraceData: jest.fn()
+  };
+});
 
 const antiCounterfeit = require('../utils/antiCounterfeit.js');
 
@@ -222,6 +228,234 @@ describe('antiCounterfeit.js 防伪验真模块测试', () => {
       expect(antiCounterfeit.ABNORMAL_TIME_WINDOW).toBe(24 * 60 * 60 * 1000);
       expect(antiCounterfeit.ABNORMAL_SCAN_THRESHOLD).toBe(3);
       expect(antiCounterfeit.ABNORMAL_LOCATION_COUNT).toBe(2);
+    });
+  });
+
+  describe('双码验真核心逻辑测试', () => {
+    describe('scanOuterCode 函数测试', () => {
+      test('有效的外码应该扫描成功并返回产品概要', async () => {
+        const result = await antiCounterfeit.scanOuterCode('OUT-G001');
+        expect(result.success).toBe(true);
+        expect(result.scanType).toBe('outer_scan');
+        expect(result.outerCode).toBe('OUT-G001');
+        expect(result.traceId).toBe('G001');
+        expect(result.productSummary).toBeDefined();
+        expect(result.productSummary.traceId).toBe('G001');
+        expect(result.nextStep).toBeDefined();
+        expect(wx.setStorageSync).toHaveBeenCalledWith(
+          'last_scanned_outer_code',
+          expect.anything()
+        );
+      });
+
+      test('无效的外码应该返回失败', async () => {
+        const result = await antiCounterfeit.scanOuterCode('OUT-INVALID');
+        expect(result.success).toBe(false);
+        expect(result.code).toBe('INVALID_OUTER_CODE');
+        expect(result.error).toBeDefined();
+      });
+
+      test('内码作为外码扫描应该返回编码类型错误', async () => {
+        const result = await antiCounterfeit.scanOuterCode('INN-G001');
+        expect(result.success).toBe(false);
+        expect(result.code).toBe('INVALID_OUTER_CODE');
+      });
+
+      test('空值应该返回参数错误', async () => {
+        const result = await antiCounterfeit.scanOuterCode('');
+        expect(result.success).toBe(false);
+        expect(result.code).toBe('INVALID_OUTER_CODE');
+      });
+    });
+
+    describe('scanInnerCode 函数测试', () => {
+      beforeEach(() => {
+        jest.clearAllMocks();
+      });
+
+      test('有外码上下文 + 正确绑定的内码应该验证成功', async () => {
+        wx.getStorageSync.mockImplementation((key) => {
+          if (key === 'last_scanned_outer_code') {
+            return {
+              outerCode: 'OUT-G001',
+              innerCode: 'INN-G001',
+              traceId: 'G001',
+              productName: '金桂花茶',
+              scannedAt: Date.now() - 60000,
+              scannedAtStr: '2025-01-01 10:00:00',
+              location: { city: '武汉' },
+              summary: { bindBatch: 'BIND20250925001' }
+            };
+          }
+          return [];
+        });
+
+        const result = await antiCounterfeit.scanInnerCode('INN-G001');
+        expect(result.success).toBe(true);
+        expect(result.verifyStatus).toBe('binding_success');
+        expect(result.outerCode).toBe('OUT-G001');
+        expect(result.innerCode).toBe('INN-G001');
+        expect(result.bindingDetail).toBeDefined();
+        expect(result.bindingDetail.isBound).toBe(true);
+        expect(result.bindingDetail.matchTraceId).toBe(true);
+        expect(result.riskLevel).toBe('normal');
+      });
+
+      test('有外码上下文 + 不匹配内码应该返回绑定不匹配', async () => {
+        wx.getStorageSync.mockImplementation((key) => {
+          if (key === 'last_scanned_outer_code') {
+            return {
+              outerCode: 'OUT-G001',
+              innerCode: 'INN-G001',
+              traceId: 'G001',
+              productName: '金桂花茶',
+              scannedAt: Date.now() - 60000,
+              scannedAtStr: '2025-01-01 10:00:00',
+              location: { city: '武汉' },
+              summary: { bindBatch: 'BIND20250925001' }
+            };
+          }
+          return [];
+        });
+
+        const result = await antiCounterfeit.scanInnerCode('INN-G002');
+        expect(result.success).toBe(true);
+        expect(result.verifyStatus).toBe('binding_mismatch');
+        expect(result.errorType).toBe('binding_mismatch');
+        expect(result.recommendedAction).toBe('report');
+        expect(result.bindingDetail).toBeDefined();
+        expect(result.bindingDetail.expectedInnerCode).toBe('INN-G001');
+        expect(result.riskLevel).toBe('danger');
+      });
+
+      test('无外码上下文 + 内码应该提示需要先扫外码', async () => {
+        wx.getStorageSync.mockImplementation((key) => {
+          if (key === 'last_scanned_outer_code') return '';
+          return [];
+        });
+
+        const result = await antiCounterfeit.scanInnerCode('INN-G001');
+        expect(result.success).toBe(false);
+        expect(result.needOuterScan).toBe(true);
+        expect(result.code).toBe('NO_OUTER_CODE_SCAN');
+      });
+
+      test('无效内码应该返回编码无效', async () => {
+        wx.getStorageSync.mockImplementation((key) => {
+          if (key === 'last_scanned_outer_code') {
+            return {
+              outerCode: 'OUT-G001',
+              innerCode: 'INN-G001'
+            };
+          }
+          return [];
+        });
+
+        const result = await antiCounterfeit.scanInnerCode('INN-INVALID');
+        expect(result.success).toBe(false);
+        expect(result.code).toBe('INVALID_INNER_CODE');
+      });
+    });
+
+    describe('getDualCodeVerifyStats 函数测试', () => {
+      test('应该返回双码验证统计信息', () => {
+        const stats = antiCounterfeit.getDualCodeVerifyStats();
+        expect(stats).toBeDefined();
+        expect(typeof stats.totalVerifyCount).toBe('number');
+        expect(typeof stats.mismatchCount).toBe('number');
+      });
+    });
+
+    describe('goToDualReport 函数测试', () => {
+      test('应该生成包含所有参数的举报URL', () => {
+        const url = antiCounterfeit.goToDualReport({
+          outerCode: 'OUT-G001',
+          innerCode: 'INN-G002',
+          errorType: 'binding_mismatch',
+          errorMessage: '内外码绑定不匹配',
+          traceId: 'G001',
+          productName: '金桂花茶'
+        });
+
+        expect(url).toContain('/pages/reportProduct/reportProduct');
+        expect(url).toContain('outerCode=OUT-G001');
+        expect(url).toContain('innerCode=INN-G002');
+        expect(url).toContain('errorType=binding_mismatch');
+        expect(url).toContain('autoSelectType=dual_mismatch');
+        expect(url).toContain('productName=');
+      });
+
+      test('URL参数应该进行encodeURI编码', () => {
+        const url = antiCounterfeit.goToDualReport({
+          outerCode: 'OUT-G001',
+          innerCode: 'INN-G002',
+          errorMessage: '异常：中文信息/特殊字符&特殊'
+        });
+        expect(url).toContain('outerCode=OUT-G001');
+        expect(url).not.toContain('异常：');
+        expect(url).toContain(encodeURIComponent('异常：中文信息/特殊字符&特殊'));
+      });
+
+      test('也支持位置参数调用方式', () => {
+        const url = antiCounterfeit.goToDualReport(
+          'OUT-G001',
+          'INN-G002',
+          'binding_mismatch',
+          '测试错误',
+          'G001',
+          '金桂花茶'
+        );
+        expect(url).toContain('outerCode=OUT-G001');
+        expect(url).toContain('innerCode=INN-G002');
+        expect(url).toContain('autoSelectType=dual_mismatch');
+      });
+    });
+
+    describe('submitDualReport 函数测试', () => {
+      test('包含双码信息的举报应该提交成功', () => {
+        const result = antiCounterfeit.submitDualReport({
+          traceId: 'G001',
+          productName: '金桂花茶',
+          reportType: 'dual_mismatch',
+          reportTypeLabel: '双码(内外)不一致',
+          description: '内外码绑定不匹配',
+          contact: '13800138000',
+          photos: [],
+          outerCode: 'OUT-G001',
+          innerCode: 'INN-G002',
+          errorType: 'binding_mismatch',
+          errorMessage: '绑定不匹配',
+          hasDualCode: true
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.reportData).toBeDefined();
+        expect(result.reportData.outerCode).toBe('OUT-G001');
+        expect(result.reportData.innerCode).toBe('INN-G002');
+        expect(result.reportData.id).toMatch(/^RPT-DUAL-/);
+        expect(wx.setStorageSync).toHaveBeenCalled();
+      });
+
+      test('缺少举报类型应该返回失败', () => {
+        const result = antiCounterfeit.submitDualReport({
+          traceId: 'G001',
+          productName: '金桂花茶',
+          description: '测试描述'
+        });
+        expect(result.success).toBe(false);
+        expect(result.error).toBeDefined();
+        expect(result.code).toBe('MISSING_REPORT_TYPE');
+      });
+    });
+
+    describe('举报类型列表测试', () => {
+      test('应该包含 dual_mismatch 举报类型', () => {
+        const types = antiCounterfeit.getReportTypes();
+        const dualType = types.find(t => t.key === 'dual_mismatch');
+        expect(dualType).toBeDefined();
+        expect(dualType.icon).toBeDefined();
+        expect(dualType.label).toContain('双码');
+      });
     });
   });
 });

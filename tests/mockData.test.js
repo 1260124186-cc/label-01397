@@ -408,4 +408,197 @@ describe('mockData 模块测试', () => {
       expect(explanation).toContain('核心差异总结');
     });
   });
+
+  describe('双码验真工具函数测试', () => {
+    describe('isOuterCode / isInnerCode / isDualCode 函数测试', () => {
+      test('isOuterCode 应该正确识别外码', () => {
+        expect(mockData.isOuterCode('OUT-G001')).toBe(true);
+        expect(mockData.isOuterCode('out-g001')).toBe(true);
+        expect(mockData.isOuterCode('INN-G001')).toBe(false);
+        expect(mockData.isOuterCode('G001')).toBe(false);
+        expect(mockData.isOuterCode('')).toBe(false);
+        expect(mockData.isOuterCode(null)).toBe(false);
+      });
+
+      test('isInnerCode 应该正确识别内码', () => {
+        expect(mockData.isInnerCode('INN-G001')).toBe(true);
+        expect(mockData.isInnerCode('inn-g001')).toBe(true);
+        expect(mockData.isInnerCode('OUT-G001')).toBe(false);
+        expect(mockData.isInnerCode('G001')).toBe(false);
+        expect(mockData.isInnerCode('')).toBe(false);
+        expect(mockData.isInnerCode(null)).toBe(false);
+      });
+
+      test('isDualCode 应该正确识别双码', () => {
+        expect(mockData.isDualCode('OUT-G001')).toBe(true);
+        expect(mockData.isDualCode('INN-G001')).toBe(true);
+        expect(mockData.isDualCode('G001')).toBe(false);
+        expect(mockData.isDualCode('X001')).toBe(false);
+        expect(mockData.isDualCode('')).toBe(false);
+      });
+    });
+
+    describe('getDualCodeInfo 函数测试', () => {
+      test('应该能获取有效的双码信息', () => {
+        const outerInfo = mockData.getDualCodeInfo('OUT-G001');
+        expect(outerInfo).not.toBeNull();
+        expect(outerInfo.outerCode).toBe('OUT-G001');
+        expect(outerInfo.innerCode).toBe('INN-G001');
+        expect(outerInfo.codeType).toBe('outer');
+        expect(outerInfo.traceId).toBe('G001');
+        expect(outerInfo.isBound).toBe(true);
+
+        const innerInfo = mockData.getDualCodeInfo('INN-G001');
+        expect(innerInfo).not.toBeNull();
+        expect(innerInfo.outerCode).toBe('OUT-G001');
+        expect(innerInfo.innerCode).toBe('INN-G001');
+        expect(innerInfo.codeType).toBe('inner');
+      });
+
+      test('无效的双码应该返回 null', () => {
+        expect(mockData.getDualCodeInfo('OUT-INVALID')).toBeNull();
+        expect(mockData.getDualCodeInfo('INN-9999')).toBeNull();
+        expect(mockData.getDualCodeInfo('G001')).toBeNull();
+        expect(mockData.getDualCodeInfo('')).toBeNull();
+      });
+
+      test('应该支持大小写和空格', () => {
+        const info1 = mockData.getDualCodeInfo('out-g002');
+        expect(info1).not.toBeNull();
+        expect(info1.outerCode).toBe('OUT-G002');
+
+        const info2 = mockData.getDualCodeInfo('  INN-G003  ');
+        expect(info2).not.toBeNull();
+        expect(info2.innerCode).toBe('INN-G003');
+      });
+    });
+
+    describe('getOuterCodeByInner / getInnerCodeByOuter 函数测试', () => {
+      test('getOuterCodeByInner 应该通过内码反查外码', () => {
+        expect(mockData.getOuterCodeByInner('INN-G001')).toBe('OUT-G001');
+        expect(mockData.getOuterCodeByInner('INN-G002')).toBe('OUT-G002');
+        expect(mockData.getOuterCodeByInner('OUT-G001')).toBeNull();
+        expect(mockData.getOuterCodeByInner('INVALID')).toBeNull();
+      });
+
+      test('getInnerCodeByOuter 应该通过外码查找内码', () => {
+        expect(mockData.getInnerCodeByOuter('OUT-G001')).toBe('INN-G001');
+        expect(mockData.getInnerCodeByOuter('OUT-G003')).toBe('INN-G003');
+        expect(mockData.getInnerCodeByOuter('INN-G001')).toBeNull();
+        expect(mockData.getInnerCodeByOuter('INVALID')).toBeNull();
+      });
+    });
+
+    describe('verifyDualCodeBinding 函数测试', () => {
+      test('绑定的双码对应该校验成功', () => {
+        const result = mockData.verifyDualCodeBinding('OUT-G001', 'INN-G001');
+        expect(result.isBound).toBe(true);
+        expect(result.matchTraceId).toBe(true);
+        expect(result.matchBindBatch).toBe(true);
+        expect(result.errorType).toBeNull();
+        expect(result.isValid).toBe(true);
+      });
+
+      test('不绑定的双码应该返回绑定不匹配', () => {
+        const result = mockData.verifyDualCodeBinding('OUT-G001', 'INN-G002');
+        expect(result.isBound).toBe(false);
+        expect(result.matchTraceId).toBe(false);
+        expect(result.errorType).toBe('binding_mismatch');
+        expect(result.isValid).toBe(true);
+        expect(result.expectedInnerCode).toBe('INN-G001');
+        expect(result.expectedOuterCode).toBe('OUT-G002');
+      });
+
+      test('两个外码应该返回编码类型错误', () => {
+        const result = mockData.verifyDualCodeBinding('OUT-G001', 'OUT-G002');
+        expect(result.isValid).toBe(false);
+        expect(result.errorType).toBe('code_type_error');
+      });
+
+      test('空值应该返回参数错误', () => {
+        const result = mockData.verifyDualCodeBinding('', 'INN-G001');
+        expect(result.isValid).toBe(false);
+        expect(result.errorType).toBe('param_empty');
+      });
+
+      test('无效的编码应该返回编码无效', () => {
+        const result = mockData.verifyDualCodeBinding('OUT-XXXX', 'INN-YYYY');
+        expect(result.isValid).toBe(false);
+        expect(result.errorType).toBe('code_not_found');
+      });
+    });
+
+    describe('getOuterCodeSummary 函数测试', () => {
+      test('有效的外码应该返回产品概要', () => {
+        const summary = mockData.getOuterCodeSummary('OUT-G001');
+        expect(summary).not.toBeNull();
+        expect(summary.outerCode).toBe('OUT-G001');
+        expect(summary.traceId).toBe('G001');
+        expect(summary.productName).toBeDefined();
+        expect(summary.spec).toBeDefined();
+        expect(summary.batchNo).toBeDefined();
+        expect(Array.isArray(summary.highlights)).toBe(true);
+        expect(summary.highlights.length).toBeGreaterThan(0);
+      });
+
+      test('无效的外码应该返回 null', () => {
+        expect(mockData.getOuterCodeSummary('INN-G001')).toBeNull();
+        expect(mockData.getOuterCodeSummary('OUT-XXXX')).toBeNull();
+        expect(mockData.getOuterCodeSummary('')).toBeNull();
+      });
+    });
+
+    describe('parseDualCodeFromScanResult 函数测试', () => {
+      test('应该能从纯文本中解析出双码', () => {
+        const r1 = mockData.parseDualCodeFromScanResult('OUT-G001');
+        expect(r1).not.toBeNull();
+        expect(r1.code).toBe('OUT-G001');
+        expect(r1.codeType).toBe('outer');
+
+        const r2 = mockData.parseDualCodeFromScanResult('INN-G002');
+        expect(r2).not.toBeNull();
+        expect(r2.code).toBe('INN-G002');
+        expect(r2.codeType).toBe('inner');
+      });
+
+      test('应该能从URL参数中解析出双码', () => {
+        const r1 = mockData.parseDualCodeFromScanResult('https://example.com?code=OUT-G003');
+        expect(r1).not.toBeNull();
+        expect(r1.code).toBe('OUT-G003');
+        expect(r1.codeType).toBe('outer');
+
+        const r2 = mockData.parseDualCodeFromScanResult('https://verify.com/trace?dc=INN-G004&t=123');
+        expect(r2).not.toBeNull();
+        expect(r2.code).toBe('INN-G004');
+        expect(r2.codeType).toBe('inner');
+      });
+
+      test('应该能从JSON字符串中解析出双码', () => {
+        const json = '{"outerCode":"OUT-G001","verify":true}';
+        const r1 = mockData.parseDualCodeFromScanResult(json);
+        expect(r1).not.toBeNull();
+        expect(r1.code).toBe('OUT-G001');
+      });
+
+      test('非双码内容应该返回 null', () => {
+        expect(mockData.parseDualCodeFromScanResult('G001')).toBeNull();
+        expect(mockData.parseDualCodeFromScanResult('Hello World')).toBeNull();
+        expect(mockData.parseDualCodeFromScanResult('')).toBeNull();
+        expect(mockData.parseDualCodeFromScanResult('https://example.com')).toBeNull();
+      });
+    });
+
+    describe('getAvailableOuterCodes 函数测试', () => {
+      test('应该返回所有可用的外码列表', () => {
+        const codes = mockData.getAvailableOuterCodes();
+        expect(Array.isArray(codes)).toBe(true);
+        expect(codes.length).toBeGreaterThanOrEqual(4);
+        codes.forEach(code => {
+          expect(mockData.isOuterCode(code)).toBe(true);
+        });
+        expect(codes).toContain('OUT-G001');
+        expect(codes).toContain('OUT-G002');
+      });
+    });
+  });
 });

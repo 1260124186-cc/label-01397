@@ -316,9 +316,11 @@ function getReportRecords() {
 function saveReportRecord(record) {
   try {
     const records = getReportRecords();
+    const isDual = record && (record.reportSource === 'dual_code_verify' || record.hasDualCode || (record.outerCode && record.innerCode));
+    const idPrefix = isDual ? 'RPT-DUAL-' : 'report_';
     const newRecord = {
       ...record,
-      id: `report_${Date.now()}`,
+      id: `${idPrefix}${Date.now()}`,
       status: 'pending',
       createdAt: Date.now(),
       createdAtStr: formatDateTime(Date.now())
@@ -361,6 +363,7 @@ function submitReport(reportData) {
 
 function getReportTypes() {
   return [
+    { key: 'dual_mismatch', label: '双码(内外)不一致', icon: '🔗' },
     { key: 'counterfeit', label: '疑似仿冒产品', icon: '⚠️' },
     { key: 'quality', label: '产品质量问题', icon: '📦' },
     { key: 'expired', label: '产品已过期', icon: '📅' },
@@ -496,6 +499,349 @@ async function verifyProductEnhanced(traceId) {
   return enhanced;
 }
 
+const DUAL_CODE_VERIFY_RECORDS_KEY = 'dual_code_verify_records';
+
+function getDualCodeVerifyRecords() {
+  try {
+    const records = wx.getStorageSync(DUAL_CODE_VERIFY_RECORDS_KEY);
+    return Array.isArray(records) ? records : [];
+  } catch (e) {
+    console.error('[双码验真] 获取双码验证记录失败:', e);
+    return [];
+  }
+}
+
+function saveDualCodeVerifyRecord(record) {
+  try {
+    const records = getDualCodeVerifyRecords();
+    const newRecord = {
+      ...record,
+      id: `dual_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      createdAt: Date.now(),
+      createdAtStr: formatDateTime(Date.now())
+    };
+    records.unshift(newRecord);
+    wx.setStorageSync(DUAL_CODE_VERIFY_RECORDS_KEY, records.slice(0, 100));
+    return newRecord;
+  } catch (e) {
+    console.error('[双码验真] 保存双码验证记录失败:', e);
+    return null;
+  }
+}
+
+function getLastOuterCodeScan() {
+  try {
+    return wx.getStorageSync('last_scanned_outer_code') || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function setLastOuterCodeScan(outerCodeInfo) {
+  try {
+    wx.setStorageSync('last_scanned_outer_code', outerCodeInfo);
+  } catch (e) {
+    console.error('[双码验真] 保存外码扫描状态失败:', e);
+  }
+}
+
+function clearLastOuterCodeScan() {
+  try {
+    wx.removeStorageSync('last_scanned_outer_code');
+  } catch (e) {
+    console.error('[双码验真] 清除外码扫描状态失败:', e);
+  }
+}
+
+async function scanOuterCode(outerCode) {
+  if (!mockData.isOuterCode(outerCode)) {
+    return {
+      success: false,
+      error: '无效的外码',
+      code: 'INVALID_OUTER_CODE'
+    };
+  }
+
+  const summary = mockData.getOuterCodeSummary(outerCode);
+  if (!summary) {
+    return {
+      success: false,
+      error: '外码信息查询失败',
+      code: 'OUTER_CODE_QUERY_FAILED'
+    };
+  }
+
+  const currentLocation = await getCurrentLocation();
+  const now = Date.now();
+
+  const scanRecord = {
+    type: 'outer_scan',
+    code: outerCode,
+    codeType: 'outer',
+    traceId: summary.traceId,
+    productName: summary.productName,
+    timestamp: now,
+    location: currentLocation,
+    summary: summary
+  };
+
+  saveDualCodeVerifyRecord(scanRecord);
+
+  setLastOuterCodeScan({
+    outerCode: outerCode,
+    innerCode: summary.innerCode,
+    traceId: summary.traceId,
+    productName: summary.productName,
+    scannedAt: now,
+    scannedAtStr: formatDateTime(now),
+    location: currentLocation,
+    summary: summary
+  });
+
+  return {
+    success: true,
+    scanType: 'outer_scan',
+    outerCode: outerCode,
+    innerCode: summary.innerCode,
+    traceId: summary.traceId,
+    productSummary: summary,
+    currentLocation: {
+      time: formatDateTime(now),
+      location: getCityFromLocation(currentLocation.city),
+      ip: maskIp(currentLocation.ip)
+    },
+    tip: summary.antiCounterfeitTip,
+    nextStep: '请确认外包装完好后，撕开铝箔/内袋，扫描内码完成双码验真'
+  };
+}
+
+async function scanInnerCode(innerCode, outerCodeContext) {
+  if (!mockData.isInnerCode(innerCode)) {
+    return {
+      success: false,
+      error: '无效的内码',
+      code: 'INVALID_INNER_CODE'
+    };
+  }
+
+  const lastOuter = outerCodeContext || getLastOuterCodeScan();
+
+  if (!lastOuter) {
+    return {
+      success: false,
+      error: '请先扫描外盒二维码，再扫描内码',
+      code: 'NO_OUTER_CODE_SCAN',
+      needOuterScan: true,
+      innerCode: innerCode
+    };
+  }
+
+  const bindingResult = mockData.verifyDualCodeBinding(lastOuter.outerCode, innerCode);
+
+  const currentLocation = await getCurrentLocation();
+  const now = Date.now();
+
+  const dualRecord = {
+    type: 'dual_verify',
+    outerCode: lastOuter.outerCode,
+    innerCode: innerCode,
+    outerScannedAt: lastOuter.scannedAt,
+    innerScannedAt: now,
+    timeInterval: Math.round((now - lastOuter.scannedAt) / 1000),
+    traceId: bindingResult.traceId || lastOuter.traceId,
+    productName: bindingResult.productName || lastOuter.productName,
+    bindBatch: bindingResult.bindBatch,
+    location: {
+      outer: lastOuter.location,
+      inner: currentLocation
+    },
+    bindingResult: {
+      isOuterValid: bindingResult.isOuterValid,
+      isInnerValid: bindingResult.isInnerValid,
+      isBound: bindingResult.isBound,
+      matchTraceId: bindingResult.matchTraceId,
+      matchBindBatch: bindingResult.matchBindBatch
+    }
+  };
+
+  saveDualCodeVerifyRecord(dualRecord);
+
+  if (!bindingResult.isBound) {
+    return {
+      success: true,
+      scanType: 'inner_scan',
+      verifyStatus: 'binding_mismatch',
+      authenticity: 'suspicious',
+      title: '双码验证异常',
+      message: bindingResult.errorMessage,
+      errorType: bindingResult.errorType,
+      errorMessage: bindingResult.errorMessage,
+      outerCode: lastOuter.outerCode,
+      innerCode: innerCode,
+      traceId: lastOuter.traceId,
+      productName: lastOuter.productName,
+      outerScanInfo: {
+        time: lastOuter.scannedAtStr,
+        location: getCityFromLocation(lastOuter.location ? lastOuter.location.city : '')
+      },
+      innerScanInfo: {
+        time: formatDateTime(now),
+        location: getCityFromLocation(currentLocation.city)
+      },
+      bindingDetail: {
+        expectedOuterCode: lastOuter.outerCode,
+        expectedInnerCode: lastOuter.innerCode,
+        actualInnerCode: innerCode,
+        bindBatch: lastOuter.summary ? lastOuter.summary.bindBatch : null
+      },
+      riskLevel: 'danger',
+      riskTitle: '内外码绑定关系异常',
+      riskDescription: bindingResult.errorMessage + '，建议立即举报或联系官方客服核实',
+      recommendedAction: 'report',
+      nextStep: '检测到内外码绑定异常，请立即前往举报页面，双码信息将自动带入'
+    };
+  }
+
+  const traceId = bindingResult.traceId;
+  const baseVerifyResult = await verifyProduct(traceId);
+
+  clearLastOuterCodeScan();
+
+  return {
+    success: true,
+    scanType: 'inner_scan',
+    verifyStatus: 'binding_success',
+    authenticity: baseVerifyResult.success ? baseVerifyResult.authenticity : 'genuine',
+    title: '双码验证通过',
+    message: '内外码绑定关系匹配，产品为正品，双重防伪验证通过！',
+    outerCode: lastOuter.outerCode,
+    innerCode: innerCode,
+    traceId: traceId,
+    productName: bindingResult.productName,
+    bindBatch: bindingResult.bindBatch,
+    outerScanInfo: {
+      time: lastOuter.scannedAtStr,
+      location: getCityFromLocation(lastOuter.location ? lastOuter.location.city : '')
+    },
+    innerScanInfo: {
+      time: formatDateTime(now),
+      location: getCityFromLocation(currentLocation.city)
+    },
+    bindingDetail: {
+      isBound: true,
+      matchTraceId: true,
+      matchBindBatch: true,
+      timeIntervalSeconds: dualRecord.timeInterval,
+      verifiedAt: formatDateTime(now)
+    },
+    baseVerifyResult: baseVerifyResult.success ? baseVerifyResult : null,
+    riskLevel: 'normal',
+    nextStep: baseVerifyResult.success
+      ? '双码验真通过！可查看完整产品溯源信息'
+      : '双码绑定通过，基础防伪信息查询完成'
+  };
+}
+
+function getDualCodeVerifyStats() {
+  const records = getDualCodeVerifyRecords();
+  const total = records.length;
+  const outerScans = records.filter(r => r.type === 'outer_scan').length;
+  const dualVerifications = records.filter(r => r.type === 'dual_verify').length;
+  const passed = records.filter(r => r.type === 'dual_verify' && r.bindingResult && r.bindingResult.isBound).length;
+  const failed = dualVerifications - passed;
+  const mismatchCount = records.filter(r => r.type === 'dual_verify' && r.bindingResult && !r.bindingResult.isBound).length;
+
+  const result = {
+    totalRecords: total,
+    outerScanCount: outerScans,
+    dualVerifyCount: dualVerifications,
+    totalVerifyCount: dualVerifications,
+    passedCount: passed,
+    failedCount: failed,
+    mismatchCount: mismatchCount,
+    successRate: dualVerifications > 0 ? Math.round((passed / dualVerifications) * 100) : 0,
+    passRate: dualVerifications > 0 ? Math.round((passed / dualVerifications) * 100) : 0
+  };
+
+  if (typeof result.totalVerifyCount !== 'number') result.totalVerifyCount = 0;
+  if (typeof result.mismatchCount !== 'number') result.mismatchCount = 0;
+
+  return result;
+}
+
+function goToDualReport(outerCode, innerCode, errorType, errorMessage, traceId, productName) {
+  let params = {};
+
+  if (outerCode && typeof outerCode === 'object') {
+    params = outerCode;
+  } else {
+    params = {
+      traceId: traceId || '',
+      productName: productName || '',
+      outerCode: outerCode || '',
+      innerCode: innerCode || '',
+      errorType: errorType || '',
+      errorMessage: errorMessage || ''
+    };
+  }
+
+  const reportParams = Object.assign({
+    traceId: '',
+    productName: '',
+    outerCode: '',
+    innerCode: '',
+    errorType: '',
+    errorMessage: '',
+    autoSelectType: 'dual_mismatch'
+  }, params);
+
+  const queryString = Object.keys(reportParams)
+    .filter(key => reportParams[key] !== undefined && reportParams[key] !== null && reportParams[key] !== '')
+    .map(key => `${key}=${encodeURIComponent(reportParams[key])}`)
+    .join('&');
+
+  return `/pages/reportProduct/reportProduct?${queryString}`;
+}
+
+function submitDualReport(reportData) {
+  if (!reportData) {
+    return {
+      success: false,
+      error: '缺少举报信息',
+      code: 'MISSING_PARAMS'
+    };
+  }
+
+  if (!reportData.reportType) {
+    return {
+      success: false,
+      error: '请选择举报类型',
+      code: 'MISSING_REPORT_TYPE'
+    };
+  }
+
+  const dualReportData = {
+    ...reportData,
+    reportSource: 'dual_code_verify',
+    hasDualCode: !!(reportData.outerCode && reportData.innerCode),
+    dualCodeInfo: reportData.outerCode || reportData.innerCode ? {
+      outerCode: reportData.outerCode || '',
+      innerCode: reportData.innerCode || '',
+      errorType: reportData.errorType || '',
+      errorMessage: reportData.errorMessage || ''
+    } : null
+  };
+
+  const reportType = dualReportData.reportType || 'dual_mismatch';
+  if (!dualReportData.reportTypeLabel) {
+    dualReportData.reportTypeLabel = getReportTypes().find(t => t.key === reportType)
+      ? getReportTypes().find(t => t.key === reportType).label
+      : '双码异常举报';
+  }
+
+  return submitReport(dualReportData);
+}
+
 module.exports = {
   verifyProduct,
   verifyProductEnhanced,
@@ -511,6 +857,16 @@ module.exports = {
   isFirstScanForTraceId,
   verifyGiftBoxAntiCounterfeit,
   getSubCodeGiftBoxContext,
+  getDualCodeVerifyRecords,
+  saveDualCodeVerifyRecord,
+  getLastOuterCodeScan,
+  setLastOuterCodeScan,
+  clearLastOuterCodeScan,
+  scanOuterCode,
+  scanInnerCode,
+  getDualCodeVerifyStats,
+  goToDualReport,
+  submitDualReport,
   ABNORMAL_TIME_WINDOW,
   ABNORMAL_SCAN_THRESHOLD,
   ABNORMAL_LOCATION_COUNT

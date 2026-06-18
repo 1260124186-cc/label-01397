@@ -1,0 +1,372 @@
+<view class="page-container {{a11yClasses}}">
+
+  <view wx:if="{{loading}}" class="loading-mask">
+    <view class="loading-box">
+      <view class="loading-spinner"></view>
+      <view class="loading-text">{{loadingText}}</view>
+    </view>
+  </view>
+
+  <view class="header-hero">
+    <view class="hero-icon-wrap">
+      <text class="hero-icon">🔐</text>
+    </view>
+    <view class="hero-title">双重防伪验真</view>
+    <view class="hero-subtitle">外盒码 + 内袋码 · 双重验证 · 正品保障</view>
+    <view class="step-indicator">
+      <view class="step-item {{currentStep >= 0 ? 'step-active' : ''}} {{currentStep > 0 ? 'step-done' : ''}}">
+        <view class="step-circle">
+          <text wx:if="{{currentStep > 0}}">✓</text>
+          <text wx:else>1</text>
+        </view>
+        <view class="step-label">扫外盒码</view>
+      </view>
+      <view class="step-line {{currentStep >= 1 ? 'line-active' : ''}}"></view>
+      <view class="step-item {{currentStep >= 1 ? 'step-active' : ''}} {{currentStep > 1 ? 'step-done' : ''}}">
+        <view class="step-circle">
+          <text wx:if="{{currentStep > 1}}">✓</text>
+          <text wx:else>2</text>
+        </view>
+        <view class="step-label">扫内袋码</view>
+      </view>
+      <view class="step-line {{currentStep >= 2 ? 'line-active' : ''}}"></view>
+      <view class="step-item {{currentStep >= 2 ? 'step-active' : ''}}">
+        <view class="step-circle">
+          <text>3</text>
+        </view>
+        <view class="step-label">验真完成</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showGuideAnimation && currentStep === 0}}" class="guide-animation card">
+    <view class="guide-header">
+      <text class="guide-title">📖 双码验真使用指南</text>
+      <view class="guide-skip" bindtap="handleSkipGuide">跳过</view>
+    </view>
+
+    <view class="animation-stage">
+      <view class="anim-box anim-outer {{guideStep === 0 ? 'anim-focus' : ''}}">
+        <view class="anim-icon">📦</view>
+        <view class="anim-label">外盒二维码</view>
+        <view class="anim-desc">外盒底部/侧面</view>
+        <view wx:if="{{guideStep === 0}}" class="anim-pulse"></view>
+      </view>
+
+      <view class="anim-arrow-wrap {{guideStep === 1 ? 'anim-focus' : ''}}">
+        <view wx:if="{{guideStep >= 1}}" class="anim-arrow">✂️ →</view>
+        <view wx:if="{{guideStep === 1}}" class="anim-sub-label">开封</view>
+      </view>
+
+      <view class="anim-box anim-inner {{guideStep === 2 ? 'anim-focus' : ''}}">
+        <view class="anim-icon">🫙</view>
+        <view class="anim-label">内袋二维码</view>
+        <view class="anim-desc">铝箔袋内侧</view>
+        <view wx:if="{{guideStep === 2}}" class="anim-pulse"></view>
+      </view>
+    </view>
+
+    <view class="guide-step-info">
+      <block wx:if="{{guideStep === 0}}">
+        <view class="guide-step-title">第 1 步：扫描外盒二维码</view>
+        <view class="guide-step-desc">找到外盒底部或侧面的二维码标签，扫描获取产品概要信息。</view>
+      </block>
+      <block wx:elif="{{guideStep === 1}}">
+        <view class="guide-step-title">第 2 步：确认包装完整后开封</view>
+        <view class="guide-step-desc">确认防伪封口贴完好后，撕开铝箔密封袋或打开内包装。</view>
+      </block>
+      <block wx:else>
+        <view class="guide-step-title">第 3 步：扫描内袋二维码</view>
+        <view class="guide-step-desc">找到内袋内侧的二维码，扫描验证与外码绑定关系，完成双重防伪。</view>
+      </block>
+    </view>
+
+    <button class="guide-start-btn" bindtap="handleScanOuter">
+      <text class="btn-icon">📷</text>
+      开始扫码验真
+    </button>
+  </view>
+
+  <view wx:if="{{currentStep >= 1 && outerCodeResult}}" class="card outer-result-card">
+    <view class="card-header">
+      <view class="card-title-wrap">
+        <text class="card-icon">📦</text>
+        <text class="card-title">外盒码验证结果</text>
+      </view>
+      <view class="code-badge outer-badge">外码</view>
+    </view>
+
+    <view class="outer-product-hero">
+      <image class="product-thumb" src="{{outerCodeResult.productSummary.basicInfo.thumbnail}}" mode="aspectFill" />
+      <view class="product-info">
+        <view class="product-name">{{outerCodeResult.productSummary.basicInfo.productName}}</view>
+        <view class="product-highlight">{{outerCodeResult.productSummary.highlight}}</view>
+        <view class="product-tags">
+          <block wx:for="{{outerCodeResult.productSummary.tags}}" wx:key="*this">
+            <text class="product-tag">{{item}}</text>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view class="outer-detail-list">
+      <view class="detail-row">
+        <text class="detail-label">规格</text>
+        <text class="detail-value">{{outerCodeResult.productSummary.basicInfo.specification}}</text>
+      </view>
+      <view class="detail-row">
+        <text class="detail-label">批次号</text>
+        <text class="detail-value highlight">{{outerCodeResult.productSummary.basicInfo.batchNo}}</text>
+      </view>
+      <view class="detail-row">
+        <text class="detail-label">出厂日期</text>
+        <text class="detail-value">{{outerCodeResult.productSummary.basicInfo.productionTime}}</text>
+      </view>
+      <view class="detail-row">
+        <text class="detail-label">桂花品种</text>
+        <text class="detail-value">{{outerCodeResult.productSummary.osmanthusVariety}}</text>
+      </view>
+      <view class="detail-row">
+        <text class="detail-label">产地</text>
+        <text class="detail-value">{{outerCodeResult.productSummary.origin}}</text>
+      </view>
+    </view>
+
+    <view class="tip-box tip-warn">
+      <view class="tip-icon">⚠️</view>
+      <view class="tip-content">
+        <view class="tip-title">防伪提示</view>
+        <view class="tip-desc">{{outerCodeResult.productSummary.antiCounterfeitTip}}</view>
+      </view>
+    </view>
+
+    <view class="outer-actions">
+      <button class="action-btn action-primary" bindtap="handleScanInner" wx:if="{{currentStep === 1}}">
+        <text class="btn-icon">📷</text>
+        扫描内袋码
+      </button>
+      <view class="action-secondary-row">
+        <view class="sec-btn" bindtap="handleRescanOuter">
+          <text>重新扫外码</text>
+        </view>
+        <view class="sec-btn" bindtap="goToDetail">
+          <text>查看详情</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{currentStep >= 2 && verifyResult}}" class="card inner-result-card">
+    <view class="card-header">
+      <view class="card-title-wrap">
+        <text class="card-icon">🫙</text>
+        <text class="card-title">内袋码验证结果</text>
+      </view>
+      <view class="code-badge inner-badge">内码</view>
+    </view>
+
+    <view class="verify-status-wrap status-{{verifyResult.verifyStatus}}">
+      <view class="verify-icon-wrap">
+        <block wx:if="{{verifyResult.verifyStatus === 'binding_success'}}">
+          <view class="verify-icon success">✓</view>
+        </block>
+        <block wx:else>
+          <view class="verify-icon danger">!</view>
+        </block>
+      </view>
+      <view class="verify-text-wrap">
+        <view class="verify-title">{{verifyResult.title}}</view>
+        <view class="verify-message">{{verifyResult.message}}</view>
+      </view>
+    </view>
+
+    <view class="binding-info">
+      <view class="binding-header">双码绑定信息</view>
+      <view class="binding-pair">
+        <view class="binding-item">
+          <view class="binding-label">外盒码</view>
+          <view class="binding-code outer-code">{{verifyResult.outerCode}}</view>
+        </view>
+        <view class="binding-link {{verifyResult.verifyStatus === 'binding_success' ? 'link-success' : 'link-fail'}}">
+          <text wx:if="{{verifyResult.verifyStatus === 'binding_success'}}">🔗 绑定匹配</text>
+          <text wx:else>⛓️ 绑定异常</text>
+        </view>
+        <view class="binding-item">
+          <view class="binding-label">内袋码</view>
+          <view class="binding-code inner-code">{{verifyResult.innerCode}}</view>
+        </view>
+      </view>
+
+      <view class="scan-times">
+        <view class="scan-time-item">
+          <text class="st-label">外码扫码</text>
+          <text class="st-value">{{verifyResult.outerScanInfo.time}} · {{verifyResult.outerScanInfo.location}}</text>
+        </view>
+        <view class="scan-time-item">
+          <text class="st-label">内码扫码</text>
+          <text class="st-value">{{verifyResult.innerScanInfo.time}} · {{verifyResult.innerScanInfo.location}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{verifyResult.verifyStatus !== 'binding_success'}}" class="mismatch-detail">
+      <view class="mismatch-title">🔍 异常详情</view>
+      <view class="mismatch-row">
+        <text class="mm-label">异常类型</text>
+        <text class="mm-value danger">{{verifyResult.errorType}}</text>
+      </view>
+      <view class="mismatch-row">
+        <text class="mm-label">期望绑定内码</text>
+        <text class="mm-value">{{verifyResult.bindingDetail.expectedInnerCode}}</text>
+      </view>
+      <view class="mismatch-row">
+        <text class="mm-label">实际扫描内码</text>
+        <text class="mm-value danger">{{verifyResult.bindingDetail.actualInnerCode}}</text>
+      </view>
+      <view class="mismatch-row">
+        <text class="mm-label">绑定批次</text>
+        <text class="mm-value">{{verifyResult.bindingDetail.bindBatch}}</text>
+      </view>
+
+      <view class="tip-box tip-danger">
+        <view class="tip-icon">🚨</view>
+        <view class="tip-content">
+          <view class="tip-title">{{verifyResult.riskTitle}}</view>
+          <view class="tip-desc">{{verifyResult.riskDescription}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{verifyResult.verifyStatus === 'binding_success' && verifyResult.baseVerifyResult}}" class="base-verify-preview">
+      <view class="bv-title">基础防伪验证</view>
+      <view class="bv-row">
+        <text class="bv-label">验证结果</text>
+        <text class="bv-value bv-{{verifyResult.baseVerifyResult.authenticity}}">
+          {{verifyResult.baseVerifyResult.authenticity === 'genuine' ? '正品' : verifyResult.baseVerifyResult.authenticity === 'suspicious' ? '存疑' : '仿冒'}}
+        </text>
+      </view>
+      <view class="bv-row">
+        <text class="bv-label">查询次数</text>
+        <text class="bv-value">{{verifyResult.baseVerifyResult.scanInfo.totalQueryCount}} 次</text>
+      </view>
+    </view>
+
+    <view class="final-actions">
+      <block wx:if="{{verifyResult.verifyStatus !== 'binding_success'}}">
+        <button class="action-btn action-danger big-btn" bindtap="goToReport">
+          <text class="btn-icon">🚨</text>
+          立即举报（自动带入双码信息）
+        </button>
+        <view class="action-secondary-row">
+          <view class="sec-btn" bindtap="handleRescanInner">
+            <text>重新扫内码</text>
+          </view>
+          <view class="sec-btn" bindtap="handleResetAll">
+            <text>重新开始</text>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <button class="action-btn action-primary big-btn" bindtap="goToDetail">
+          <text class="btn-icon">📋</text>
+          查看完整溯源信息
+        </button>
+        <view class="action-secondary-row">
+          <view class="sec-btn" bindtap="goToReport">
+            <text>举报问题</text>
+          </view>
+          <view class="sec-btn" bindtap="handleResetAll">
+            <text>再验一次</text>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view wx:if="{{currentStep === 0 && !showGuideAnimation}}" class="quick-entry-section">
+    <button class="scan-big-btn" bindtap="handleScanOuter">
+      <view class="sbb-icon-wrap">
+        <text class="sbb-icon">📷</text>
+      </view>
+      <view class="sbb-text-wrap">
+        <view class="sbb-title">扫描外盒二维码开始验真</view>
+        <view class="sbb-desc">先扫外盒 → 开封 → 再扫内袋，双重防伪</view>
+      </view>
+    </button>
+  </view>
+
+  <view class="tools-section card">
+    <view class="tools-header">
+      <text class="tools-title">🛠️ 辅助工具</text>
+    </view>
+    <view class="tools-grid">
+      <view class="tool-item" bindtap="toggleManualInput">
+        <view class="tool-icon">⌨️</view>
+        <view class="tool-label">手动输入编码</view>
+      </view>
+      <view class="tool-item" bindtap="testMismatchDemo">
+        <view class="tool-icon">🎬</view>
+        <view class="tool-label">异常场景演示</view>
+      </view>
+      <view class="tool-item" bindtap="goBackHome">
+        <view class="tool-icon">🏠</view>
+        <view class="tool-label">返回首页</view>
+      </view>
+      <view class="tool-item" bindtap="handleResetAll">
+        <view class="tool-icon">🔄</view>
+        <view class="tool-label">重置验真</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showManualInput}}" class="manual-input-modal">
+    <view class="mi-overlay" bindtap="toggleManualInput"></view>
+    <view class="mi-panel">
+      <view class="mi-header">
+        <text class="mi-title">⌨️ 手动输入编码</text>
+        <view class="mi-close" bindtap="toggleManualInput">×</view>
+      </view>
+
+      <view class="mi-mode-switch">
+        <view class="mi-mode-btn {{manualInputMode === 'outer' ? 'mi-mode-active' : ''}}" data-mode="outer" bindtap="setManualMode">
+          📦 外盒码
+        </view>
+        <view class="mi-mode-btn {{manualInputMode === 'inner' ? 'mi-mode-active' : ''}}" data-mode="inner" bindtap="setManualMode">
+          🫙 内袋码
+        </view>
+      </view>
+
+      <input class="mi-input"
+             placeholder="请输入{{manualInputMode === 'outer' ? '外盒码（如 OUT-G001）' : '内袋码（如 INN-G001）'}}"
+             value="{{manualInputCode}}"
+             bindinput="onManualInputChange" />
+
+      <view class="mi-test-label">测试编码（点击填充）：</view>
+      <view class="mi-test-chips">
+        <block wx:if="{{manualInputMode === 'outer'}}">
+          <block wx:for="{{testOuterCodes}}" wx:key="*this">
+            <view class="mi-chip" data-code="{{item}}" bindtap="fillTestCode">{{item}}</view>
+          </block>
+        </block>
+        <block wx:else>
+          <block wx:for="{{testInnerCodes}}" wx:key="*this">
+            <view class="mi-chip" data-code="{{item}}" bindtap="fillTestCode">{{item}}</view>
+          </block>
+        </block>
+      </view>
+
+      <button class="mi-submit" bindtap="submitManualInput">确认验证</button>
+    </view>
+  </view>
+
+  <view class="security-footer">
+    <view class="sf-title">🛡️ 防伪安全小贴士</view>
+    <view class="sf-list">
+      <view class="sf-item">• 双码验真：外码+内码必须一一绑定匹配</view>
+      <view class="sf-item">• 内码位于密封包装内侧，一经开封即无法复原</view>
+      <view class="sf-item">• 如发现内外码不一致，请立即举报</view>
+      <view class="sf-item">• 举报信息将由专人 48 小时内核实处理</view>
+    </view>
+  </view>
+
+</view>

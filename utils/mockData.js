@@ -5682,6 +5682,384 @@ function getGiftBoxMainCodeBySubCode(traceId) {
   };
 }
 
+// ==================== 内外包装双码验真数据 ====================
+
+const DUAL_CODE_DATA = {
+  'OUT-G001': {
+    outerCode: 'OUT-G001',
+    innerCode: 'INN-G001',
+    traceId: 'G001',
+    productName: '金桂花茶',
+    bindTime: '2025-09-25 14:30:00',
+    bindBatch: 'BIND20250925001',
+    packagingInfo: {
+      outerBox: '高档硬纸盒（绿色环保牛皮纸外覆）',
+      innerBag: '食品级铝箔密封袋',
+      antiTamper: '一次性破坏性封口贴',
+      qrLocation: {
+        outer: '外盒底部/侧面',
+        inner: '铝箔袋内侧，撕开后可见'
+      }
+    },
+    summary: {
+      highlight: '200年古树茶底 · 五窨一提',
+      shortDesc: '优选武夷山百年茶树鲜叶与咸宁金桂，非遗窨制工艺',
+      tags: ['有机认证', '五窨工艺', '百年树龄']
+    }
+  },
+  'INN-G001': {
+    outerCode: 'OUT-G001',
+    innerCode: 'INN-G001',
+    traceId: 'G001',
+    productName: '金桂花茶',
+    bindTime: '2025-09-25 14:30:00',
+    bindBatch: 'BIND20250925001'
+  },
+
+  'OUT-G002': {
+    outerCode: 'OUT-G002',
+    innerCode: 'INN-G002',
+    traceId: 'G002',
+    productName: '银桂花茶',
+    bindTime: '2025-09-30 10:15:00',
+    bindBatch: 'BIND20250930001',
+    packagingInfo: {
+      outerBox: 'PET透明罐+彩印纸盒外封',
+      innerBag: '铝箔真空密封袋',
+      antiTamper: '罐口防伪塑封膜+易撕拉环',
+      qrLocation: {
+        outer: '外盒背面/罐底标签',
+        inner: '铝箔袋封口处内侧'
+      }
+    },
+    summary: {
+      highlight: '清雅淡香 · 高性价比',
+      shortDesc: '生态茶园鲜叶窨制咸宁银桂，清雅淡远，适合日常饮用',
+      tags: ['绿色食品', '清雅香型', '日常推荐']
+    }
+  },
+  'INN-G002': {
+    outerCode: 'OUT-G002',
+    innerCode: 'INN-G002',
+    traceId: 'G002',
+    productName: '银桂花茶',
+    bindTime: '2025-09-30 10:15:00',
+    bindBatch: 'BIND20250930001'
+  },
+
+  'OUT-G003': {
+    outerCode: 'OUT-G003',
+    innerCode: 'INN-G003',
+    traceId: 'G003',
+    productName: '金桂花茶礼盒装',
+    bindTime: '2025-10-01 09:00:00',
+    bindBatch: 'BIND20251001001',
+    packagingInfo: {
+      outerBox: '高档竹制礼盒+烫金工艺封套',
+      innerBag: '丝绒内袋+独立铝箔密封分装',
+      antiTamper: '礼盒防伪封签+每件独立防伪码',
+      qrLocation: {
+        outer: '礼盒封底/外封套背面',
+        inner: '内盒丝绒袋内侧，开封后可见'
+      }
+    },
+    summary: {
+      highlight: '臻选礼盒 · 六窨一提',
+      shortDesc: '180年古树鲜叶窨制上等金桂，六窨工艺，礼盒臻品',
+      tags: ['礼盒臻品', '六窨工艺', '送礼首选']
+    }
+  },
+  'INN-G003': {
+    outerCode: 'OUT-G003',
+    innerCode: 'INN-G003',
+    traceId: 'G003',
+    productName: '金桂花茶礼盒装',
+    bindTime: '2025-10-01 09:00:00',
+    bindBatch: 'BIND20251001001'
+  },
+
+  'OUT-G004': {
+    outerCode: 'OUT-G004',
+    innerCode: 'INN-G004',
+    traceId: 'G004',
+    productName: '金桂花茶便携装',
+    bindTime: '2025-09-25 16:45:00',
+    bindBatch: 'BIND20250925002',
+    packagingInfo: {
+      outerBox: '便携硬纸盒+易撕压痕线',
+      innerBag: '独立小袋铝箔真空包装（12袋）',
+      antiTamper: '外盒易撕封条+每袋独立热封',
+      qrLocation: {
+        outer: '外包装盒底部',
+        inner: '小袋铝箔封口内侧，撕开封口后可见'
+      }
+    },
+    summary: {
+      highlight: '便携随享 · 出差旅行',
+      shortDesc: '独立小袋分装，每次一袋，出差旅行随时享用正宗桂花茶',
+      tags: ['便携装', '独立分装', '差旅必备']
+    }
+  },
+  'INN-G004': {
+    outerCode: 'OUT-G004',
+    innerCode: 'INN-G004',
+    traceId: 'G004',
+    productName: '金桂花茶便携装',
+    bindTime: '2025-09-25 16:45:00',
+    bindBatch: 'BIND20250925002'
+  }
+};
+
+const OUTER_CODE_PREFIX = 'OUT-';
+const INNER_CODE_PREFIX = 'INN-';
+
+function isOuterCode(code) {
+  if (!code || typeof code !== 'string') return false;
+  const trimmed = code.trim().toUpperCase();
+  if (trimmed.startsWith(OUTER_CODE_PREFIX) && DUAL_CODE_DATA[trimmed]) {
+    return true;
+  }
+  if (DUAL_CODE_DATA[trimmed] && DUAL_CODE_DATA[trimmed].outerCode === trimmed) {
+    return true;
+  }
+  return false;
+}
+
+function isInnerCode(code) {
+  if (!code || typeof code !== 'string') return false;
+  const trimmed = code.trim().toUpperCase();
+  if (trimmed.startsWith(INNER_CODE_PREFIX) && DUAL_CODE_DATA[trimmed]) {
+    return true;
+  }
+  if (DUAL_CODE_DATA[trimmed] && DUAL_CODE_DATA[trimmed].innerCode === trimmed) {
+    return !isOuterCode(trimmed);
+  }
+  return false;
+}
+
+function isDualCode(code) {
+  return isOuterCode(code) || isInnerCode(code);
+}
+
+function getDualCodeInfo(code) {
+  if (!code || typeof code !== 'string') return null;
+  const trimmed = code.trim().toUpperCase();
+  const raw = DUAL_CODE_DATA[trimmed];
+  if (!raw) return null;
+  const codeType = isOuterCode(trimmed) ? 'outer' : (isInnerCode(trimmed) ? 'inner' : null);
+  return Object.assign({}, raw, {
+    codeType: codeType,
+    isBound: !!(raw.outerCode && raw.innerCode)
+  });
+}
+
+function getOuterCodeByInner(innerCode) {
+  if (!isInnerCode(innerCode)) return null;
+  const info = getDualCodeInfo(innerCode);
+  if (!info) return null;
+  return info.outerCode || null;
+}
+
+function getInnerCodeByOuter(outerCode) {
+  if (!isOuterCode(outerCode)) return null;
+  const info = getDualCodeInfo(outerCode);
+  return info ? info.innerCode : null;
+}
+
+function verifyDualCodeBinding(outerCode, innerCode) {
+  const result = {
+    isValid: false,
+    isOuterValid: false,
+    isInnerValid: false,
+    isBound: false,
+    matchTraceId: false,
+    matchBindBatch: false,
+    outerCode: outerCode,
+    innerCode: innerCode,
+    traceId: null,
+    productName: null,
+    bindBatch: null,
+    errorType: null,
+    errorMessage: null,
+    expectedInnerCode: null,
+    expectedOuterCode: null
+  };
+
+  if (!outerCode || !innerCode || typeof outerCode !== 'string' || typeof innerCode !== 'string') {
+    result.errorType = 'param_empty';
+    result.errorMessage = '外码或内码参数为空或无效';
+    return result;
+  }
+
+  const outerTrimmed = outerCode.trim().toUpperCase();
+  const innerTrimmed = innerCode.trim().toUpperCase();
+  const outerLooksLikeOuter = outerTrimmed.startsWith(OUTER_CODE_PREFIX);
+  const innerLooksLikeInner = innerTrimmed.startsWith(INNER_CODE_PREFIX);
+
+  if (!outerLooksLikeOuter || !innerLooksLikeInner) {
+    result.errorType = 'code_type_error';
+    if (!outerLooksLikeOuter && !innerLooksLikeInner) {
+      result.errorMessage = '编码类型错误：需要外码(OUT-)和内码(INN-)配对';
+    } else if (!outerLooksLikeOuter) {
+      result.errorMessage = '第一个编码类型错误：应为外盒码(OUT-前缀)';
+    } else {
+      result.errorMessage = '第二个编码类型错误：应为内袋码(INN-前缀)';
+    }
+    return result;
+  }
+
+  const outer = getDualCodeInfo(outerCode);
+  const inner = getDualCodeInfo(innerCode);
+  result.isOuterValid = !!outer;
+  result.isInnerValid = !!inner;
+
+  if (!outer || !inner) {
+    result.errorType = 'code_not_found';
+    if (!outer && !inner) {
+      result.errorMessage = '外码和内码均未在系统中登记';
+    } else if (!outer) {
+      result.errorMessage = '外盒码未在系统中登记';
+    } else {
+      result.errorMessage = '内袋码未在系统中登记';
+    }
+    return result;
+  }
+
+  result.isValid = true;
+  result.traceId = outer.traceId;
+  result.productName = outer.productName;
+  result.bindBatch = outer.bindBatch;
+  result.isBound = (outer.innerCode === inner.innerCode) && (inner.outerCode === outer.outerCode);
+  result.matchTraceId = outer.traceId === inner.traceId;
+  result.matchBindBatch = outer.bindBatch === inner.bindBatch;
+  result.expectedInnerCode = outer.innerCode;
+  result.expectedOuterCode = inner.outerCode;
+
+  if (!result.isBound) {
+    result.errorType = 'binding_mismatch';
+    result.errorMessage = '内外码绑定关系不匹配，疑似被调包或仿冒';
+  } else if (!result.matchTraceId) {
+    result.errorType = 'traceid_mismatch';
+    result.errorMessage = '内外码对应产品不一致';
+  } else if (!result.matchBindBatch) {
+    result.errorType = 'batch_mismatch';
+    result.errorMessage = '内外码绑定批次不一致，存在异常';
+  }
+
+  return result;
+}
+
+function getOuterCodeSummary(outerCode) {
+  if (!isOuterCode(outerCode)) return null;
+  const info = getDualCodeInfo(outerCode);
+  const traceData = info ? mockTraceData[info.traceId] : null;
+  if (!info || !traceData) return null;
+
+  const highlights = [
+    info.summary && info.summary.highlight ? info.summary.highlight : null,
+    traceData.basicInfo && traceData.basicInfo.productHighlights ? traceData.basicInfo.productHighlights : null,
+    info.summary && info.summary.shortDesc ? info.summary.shortDesc : null
+  ].filter(Boolean);
+
+  if ((!highlights || highlights.length === 0) && info.summary && info.summary.tags) {
+    for (let i = 0; i < info.summary.tags.length; i++) {
+      highlights.push(info.summary.tags[i]);
+    }
+  }
+
+  return {
+    outerCode: info.outerCode,
+    innerCode: info.innerCode,
+    traceId: info.traceId,
+    productName: info.productName || (traceData.basicInfo && traceData.basicInfo.productName) || '未知产品',
+    spec: (traceData.basicInfo && traceData.basicInfo.specification) || (traceData.basicInfo && traceData.basicInfo.netWeight) || '标准装',
+    batchNo: (traceData.basicInfo && traceData.basicInfo.batchNo) || info.bindBatch || '未知批次',
+    productionTime: traceData.basicInfo && traceData.basicInfo.productionTime,
+    thumbnail: traceData.basicInfo && traceData.basicInfo.thumbnail,
+    osmanthusVariety: traceData.osmanthusInfo && traceData.osmanthusInfo.variety,
+    origin: traceData.osmanthusInfo && traceData.osmanthusInfo.origin,
+    highlights: highlights.length > 0 ? highlights : ['精选原料', '传统工艺', '品质保证'],
+    tags: info.summary ? info.summary.tags : [],
+    packagingInfo: info.packagingInfo,
+    bindBatch: info.bindBatch,
+    bindTime: info.bindTime,
+    antiCounterfeitTip: '请确认外包装完整，防伪封口贴完好无破损后，再开封扫描内码完成最终验真'
+  };
+}
+
+function parseDualCodeFromScanResult(scanResult) {
+  if (!scanResult) return null;
+
+  let code = null;
+  const resultStr = String(scanResult).trim();
+
+  if (resultStr.includes('?')) {
+    try {
+      const urlParts = resultStr.split('?');
+      const queryString = urlParts.length > 1 ? urlParts.slice(1).join('?') : '';
+      const params = new URLSearchParams(queryString);
+      const paramKeys = ['outerCode', 'innerCode', 'dualCode', 'code', 'dc', 'traceCode', 'qc', 'id', 'sn'];
+      for (let i = 0; i < paramKeys.length; i++) {
+        const val = params.get(paramKeys[i]);
+        if (val && isDualCode(val)) {
+          code = val;
+          break;
+        }
+      }
+      if (!code) {
+        for (let i = 0; i < paramKeys.length; i++) {
+          const val = params.get(paramKeys[i]);
+          if (val) {
+            code = val;
+            break;
+          }
+        }
+      }
+    } catch (e) {}
+  }
+
+  if (!code && resultStr.startsWith('{')) {
+    try {
+      const json = JSON.parse(resultStr);
+      const jsonKeys = ['outerCode', 'innerCode', 'dualCode', 'code', 'dc', 'traceCode', 'sn', 'id'];
+      for (let i = 0; i < jsonKeys.length; i++) {
+        const val = json[jsonKeys[i]];
+        if (val) {
+          code = val;
+          break;
+        }
+      }
+    } catch (e) {}
+  }
+
+  if (!code) {
+    const dualPattern = /(OUT-|INN-)[A-Za-z0-9_-]+/i;
+    const match = resultStr.match(dualPattern);
+    if (match) {
+      code = match[0];
+    }
+  }
+
+  if (!code) {
+    code = resultStr;
+  }
+
+  if (isDualCode(code)) {
+    return {
+      code: code.trim().toUpperCase(),
+      codeType: isOuterCode(code) ? 'outer' : 'inner'
+    };
+  }
+
+  return null;
+}
+
+function getAvailableOuterCodes() {
+  return Object.keys(DUAL_CODE_DATA).filter(function(code) {
+    return isOuterCode(code);
+  });
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -5764,5 +6142,15 @@ module.exports = {
   isGiftBoxRelated,
   getAllGiftBoxes,
   getGiftBoxItems,
-  getGiftBoxMainCodeBySubCode
+  getGiftBoxMainCodeBySubCode,
+  isOuterCode,
+  isInnerCode,
+  isDualCode,
+  getDualCodeInfo,
+  getOuterCodeByInner,
+  getInnerCodeByOuter,
+  verifyDualCodeBinding,
+  getOuterCodeSummary,
+  parseDualCodeFromScanResult,
+  getAvailableOuterCodes
 };

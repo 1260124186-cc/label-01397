@@ -3,6 +3,7 @@
     "pages/index/index",
     "pages/detail/detail",
     "pages/scanResult/scanResult",
+    "pages/dualVerify/dualVerify",
     "pages/batchList/batchList",
     "pages/greenTrace/greenTrace",
     "pages/brandStory/brandStory",

@@ -496,7 +496,7 @@ module.exports = {
   },
 
   settings: {
-    title: '无障碍设置',
+    title: '无障碍与个性化设置',
     language: '语言',
     languageZh: '中文',
     languageEn: 'English',
@@ -510,5 +510,113 @@ module.exports = {
     colorWeakDesc: '增强合格/不合格等状态的图案与文字区分',
     settingsEntry: '⚙️ 设置',
     changed: '已更新设置'
+  },
+
+  dualVerify: {
+    title: '双码验真',
+    subtitle: '外盒码+内袋码 双重防伪验证',
+    steps: {
+      title: '验真流程',
+      step1: '扫外盒码',
+      step1Desc: '扫描外盒上的二维码',
+      step2: '开封扫内码',
+      step2Desc: '撕开铝箔/内袋后扫内码',
+      step3: '验真完成',
+      step3Desc: '双重校验通过，正品保障'
+    },
+    guide: {
+      title: '使用引导',
+      tip1: '请先扫描外包装盒二维码',
+      tip2: '撕开铝箔密封层',
+      tip3: '扫描内袋中的二维码完成绑定校验',
+      startBtn: '开始验真',
+      demo: '查看演示'
+    },
+    scan: {
+      outerBtn: '扫描外盒码',
+      innerBtn: '扫描内袋码',
+      outerLoading: '正在识别外盒码...',
+      innerLoading: '正在校验绑定关系...',
+      outerSuccess: '外盒码识别成功',
+      innerSuccess: '内袋码绑定校验通过',
+      retry: '重新扫码',
+      reset: '重新开始',
+      manualInput: '手动输入编码',
+      mismatchDemo: '异常场景演示'
+    },
+    outerResult: {
+      title: '📦 外盒码产品概要',
+      productName: '产品名称',
+      spec: '规格',
+      batch: '生产批次',
+      highlights: '产品亮点',
+      packageTip: '请确认包装完好后，撕开铝箔扫描内袋二维码完成最终验真',
+      packageWarn: '⚠️ 如发现包装破损请不要购买使用'
+    },
+    innerResult: {
+      titleSuccess: '✅ 双码绑定校验通过',
+      titleFail: '❌ 双码绑定校验异常',
+      titleNoContext: '⚠️ 缺少外盒码上下文',
+      descSuccess: '外盒码与内袋码为同一产品配对，正品保障！',
+      descFail: '检测到内外码不是配对关系，请谨慎购买使用',
+      descNoContext: '请先扫描外盒码后再扫描内袋码',
+      bindInfo: '绑定配对信息',
+      outerCode: '外盒码',
+      innerCode: '内袋码',
+      expected: '期望配对',
+      actual: '实际扫描',
+      traceId: '溯源编号',
+      bindBatch: '绑定批次',
+      goReport: '立即上报异常',
+      goReportTip: '点击直达举报页，双码信息将自动带入',
+      showDetail: '查看异常详情'
+    },
+    manualInput: {
+      title: '手动输入编码',
+      tipOuter: '请输入外盒编码（OUT-前缀）',
+      tipInner: '请输入内袋编码（INN-前缀）',
+      switchOuter: '切换输入外盒码',
+      switchInner: '切换输入内袋码',
+      placeholder: '请输入编码',
+      testCodes: '测试编码',
+      confirm: '确认'
+    },
+    modal: {
+      mismatchTitle: '⚠️ 检测到异常',
+      mismatchContent: '内外码绑定关系不匹配，可能存在假冒风险。建议立即举报，帮助我们打击假货。',
+      noOuterTitle: '💡 需要先扫外盒码',
+      noOuterContent: '双码验真需要先扫描外盒二维码建立上下文。是否现在扫描？',
+      noOuterBtn1: '继续扫内码',
+      noOuterBtn2: '先扫外盒码'
+    },
+    complete: {
+      title: '🎉 双重验真完成',
+      desc: '恭喜您，该产品已通过外盒码+内袋码双重防伪验证，为正品行货！',
+      backHome: '返回首页',
+      viewDetail: '查看溯源详情',
+      another: '验真另一产品'
+    },
+    stats: {
+      verifyCount: '累计验真',
+      mismatchCount: '异常上报',
+      successRate: '验真通过率'
+    }
+  },
+
+  dualReport: {
+    autoFilled: '双码信息已自动带入',
+    dualCodeInfo: '双码验真信息',
+    outerCode: '外盒码',
+    innerCode: '内袋码',
+    errorType: '异常类型',
+    errorDesc: '异常描述',
+    submitTip: '双码信息将作为重要证据协助调查',
+    typeMismatch: '内外码不一致',
+    types: {
+      dual_mismatch: '内外码不一致',
+      code_invalid: '编码无效',
+      code_missing: '缺少编码',
+      package_tampered: '包装破损'
+    }
   }
 };
