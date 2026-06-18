@@ -10354,3 +10354,282 @@
   flex: 1;
 }
 
+/* ============================================================
+   ==================== 语音播报功能样式 ====================
+   ============================================================ */
+
+.tts-header-control {
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.tts-header-btn {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 16rpx 32rpx;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 40rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.tts-header-btn.playing {
+  background: rgba(46, 139, 87, 0.8);
+  border-color: #2E8B57;
+  animation: ttsPulse 2s ease-in-out infinite;
+}
+
+@keyframes ttsPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+.tts-header-icon {
+  font-size: 32rpx;
+}
+
+.tts-header-text {
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: 500;
+}
+
+.module-header {
+  position: relative;
+}
+
+.title-actions,
+.title-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.module-speak-btn {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F0F9F4;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.module-speak-btn:active {
+  background: #D4EDDA;
+  transform: scale(0.92);
+}
+
+.speak-icon {
+  font-size: 28rpx;
+}
+
+.module-card.tts-active {
+  border: 3rpx solid #2E8B57;
+  box-shadow: 0 4rpx 20rpx rgba(46, 139, 87, 0.15);
+}
+
+.tts-float-control {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #fff;
+  border-top-left-radius: 24rpx;
+  border-top-right-radius: 24rpx;
+  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.tts-float-control.hidden {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tts-float-control.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.tts-control-bar {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  gap: 24rpx;
+}
+
+.tts-play-btn {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(46, 139, 87, 0.3);
+  transition: all 0.2s ease;
+}
+
+.tts-play-btn:active {
+  transform: scale(0.95);
+}
+
+.tts-play-btn.playing {
+  animation: ttsPulse 2s ease-in-out infinite;
+}
+
+.play-icon {
+  font-size: 32rpx;
+  color: #fff;
+  margin-left: 4rpx;
+}
+
+.tts-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tts-status-text {
+  font-size: 26rpx;
+  color: #333;
+  margin-bottom: 12rpx;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tts-progress-bar {
+  height: 8rpx;
+  background: #F0F0F0;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.tts-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2E8B57, #3CB371);
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}
+
+.tts-stop-btn {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F5F5F5;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 24rpx;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.tts-stop-btn:active {
+  background: #E8E8E8;
+  transform: scale(0.92);
+}
+
+.tts-expanded-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  border-top: 1rpx solid #F0F0F0;
+}
+
+.tts-expanded-panel.show {
+  max-height: 600rpx;
+}
+
+.tts-panel-section {
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.tts-panel-section:last-child {
+  border-bottom: none;
+}
+
+.tts-panel-title {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 20rpx;
+  font-weight: 500;
+}
+
+.tts-speed-options,
+.tts-volume-options {
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+
+.tts-speed-btn,
+.tts-volume-btn {
+  flex: 1;
+  min-width: calc(20% - 16rpx);
+  padding: 16rpx 8rpx;
+  text-align: center;
+  background: #F5F5F5;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.tts-speed-btn {
+  min-width: calc(20% - 16rpx);
+}
+
+.tts-volume-btn {
+  min-width: calc(25% - 16rpx);
+}
+
+.tts-speed-btn.active,
+.tts-volume-btn.active {
+  background: #E6F4EA;
+  color: #2E8B57;
+  font-weight: 600;
+  border: 2rpx solid #2E8B57;
+}
+
+.tts-speed-btn:active,
+.tts-volume-btn:active {
+  transform: scale(0.96);
+}
+
+.tts-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tts-toggle-label {
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 无障碍大号字体适配 */
+.font-large .tts-header-text { font-size: 32rpx; }
+.font-large .tts-status-text { font-size: 30rpx; }
+.font-large .tts-panel-title { font-size: 28rpx; }
+.font-large .tts-speed-btn,
+.font-large .tts-volume-btn { font-size: 26rpx; }
+.font-large .tts-toggle-label { font-size: 30rpx; }
+
+.font-xlarge .tts-header-text { font-size: 36rpx; }
+.font-xlarge .tts-status-text { font-size: 34rpx; }
+.font-xlarge .tts-panel-title { font-size: 32rpx; }
+.font-xlarge .tts-speed-btn,
+.font-xlarge .tts-volume-btn { font-size: 30rpx; }
+.font-xlarge .tts-toggle-label { font-size: 34rpx; }
+

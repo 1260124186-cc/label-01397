@@ -70,26 +70,36 @@
 <view class="page-container {{showPdfModal ? 'no-scroll' : ''}} {{a11yClasses}}" style="{{showPdfModal ? 'top: -' + scrollTop + 'px;' : ''}}" wx:if="{{!skeletonLoading && traceData}}">
 
   <!-- ==================== 顶部产品概览 ==================== -->
-  <view class="product-header">
+  <view class="product-header" role="banner" aria-label="产品信息头部">
     <view class="header-bg-pattern"></view>
     <view class="product-info">
-      <view class="product-icon variety-icon-{{varietyStyle.key}}" wx:if="{{varietyStyle}}">
+      <view class="product-icon variety-icon-{{varietyStyle.key}}" wx:if="{{varietyStyle}}" aria-hidden="true">
         <text>{{varietyStyle.icon}}</text>
       </view>
-      <view class="product-icon" wx:else>
+      <view class="product-icon" wx:else aria-hidden="true">
         <text>🌸</text>
       </view>
-      <view class="product-name">{{traceData.basicInfo.productName}}</view>
-      <view class="product-batch">批次号：{{traceData.basicInfo.batchNo}}</view>
+      <view class="product-name" aria-label="产品名称：{{traceData.basicInfo.productName}}">{{traceData.basicInfo.productName}}</view>
+      <view class="product-batch" aria-label="批次号：{{traceData.basicInfo.batchNo}}">批次号：{{traceData.basicInfo.batchNo}}</view>
 
       <!-- 区块链存证标识 -->
-      <view class="blockchain-badge" wx:if="{{traceData.blockchainInfo}}">
-        <view class="badge-icon">🔗</view>
+      <view class="blockchain-badge" wx:if="{{traceData.blockchainInfo}}" role="status" aria-label="区块链存证，状态：{{traceData.blockchainInfo.verifyStatus}}">
+        <view class="badge-icon" aria-hidden="true">🔗</view>
         <view class="badge-text">
           <text class="badge-title">区块链存证</text>
           <text class="badge-desc">数据真实可查・不可篡改</text>
         </view>
         <view class="badge-status">{{traceData.blockchainInfo.verifyStatus}}</view>
+      </view>
+
+      <!-- 语音播报总控按钮 -->
+      <view class="tts-header-control">
+        <view class="tts-header-btn {{ttsIsPlaying ? 'playing' : ''}}" bindtap="startContinuousSpeak"
+              role="button"
+              aria-label="{{ttsIsPlaying ? '语音播报中，点击暂停' : '点击开始语音播报全部内容'}}">
+          <text class="tts-header-icon">{{ttsIsPlaying ? '🔊' : '🔈'}}</text>
+          <text class="tts-header-text">{{ttsIsPlaying ? '播报中' : '听全文'}}</text>
+        </view>
       </view>
     </view>
   </view>
@@ -132,14 +142,21 @@
     </view>
 
     <!-- ========== 模块1：基础信息 ========== -->
-    <view class="card animate-card module-card" id="anchor-basic" style="animation-delay: 0.1s;">
-      <view class="card-title module-header" bindtap="toggleModule" data-key="basic">
-        <view class="title-left">
-          <text class="title-icon">📋</text>
+    <view class="card animate-card module-card {{ttsCurrentModule === 'basic' ? 'tts-active' : ''}}" id="anchor-basic" role="region" aria-label="基础信息模块" style="animation-delay: 0.1s;">
+      <view class="card-title module-header">
+        <view class="title-left" bindtap="toggleModule" data-key="basic">
+          <text class="title-icon" aria-hidden="true">📋</text>
           <text>基础信息</text>
         </view>
-        <view class="module-toggle {{moduleCollapsed.basic ? 'collapsed' : ''}}">
-          <text class="toggle-icon">▾</text>
+        <view class="title-actions">
+          <view class="module-speak-btn" catchtap="speakModule" data-module="basic"
+                role="button" aria-label="朗读基础信息">
+            <text class="speak-icon">🔊</text>
+          </view>
+          <view class="module-toggle {{moduleCollapsed.basic ? 'collapsed' : ''}}" bindtap="toggleModule" data-key="basic"
+                role="button" aria-label="{{moduleCollapsed.basic ? '展开基础信息' : '收起基础信息'}}">
+            <text class="toggle-icon">▾</text>
+          </view>
         </view>
       </view>
       <view class="module-content {{moduleCollapsed.basic ? 'hidden' : ''}}">
@@ -1395,7 +1412,7 @@
     </view>
 
     <!-- ========== 模块6：农残检测 ========== -->
-    <view class="card animate-card module-card test-module-card {{testChartData.overallPass ? '' : 'test-abnormal-card'}}" id="anchor-test" role="region" aria-label="{{i18n.tabTitleTest}}" style="animation-delay: 0.35s;">
+    <view class="card animate-card module-card test-module-card {{testChartData.overallPass ? '' : 'test-abnormal-card'}} {{ttsCurrentModule === 'test' ? 'tts-active' : ''}}" id="anchor-test" role="region" aria-label="{{i18n.tabTitleTest}}" style="animation-delay: 0.35s;">
       <view class="card-title module-header">
         <view class="title-left" bindtap="toggleModule" data-key="test" role="button" aria-expanded="{{!moduleCollapsed.test}}" aria-label="{{i18n.tabTitleTest}}">
           <text class="title-icon" aria-hidden="true">🔬</text>
@@ -1405,6 +1422,10 @@
           </view>
         </view>
         <view class="title-right-actions">
+          <view class="module-speak-btn" catchtap="speakModule" data-module="test"
+                role="button" aria-label="朗读检测结论">
+            <text class="speak-icon">🔊</text>
+          </view>
           <view
             class="cert-wallet-mini-btn {{certWalletStatus.testReport ? 'saved' : ''}}"
             catchtap="{{certWalletStatus.testReport ? 'onRemoveSingleCert' : 'onSaveSingleCert'}}"
@@ -1655,14 +1676,21 @@
     </view>
 
     <!-- ========== 模块7：冲泡建议 ========== -->
-    <view class="card animate-card module-card" id="anchor-brew" style="animation-delay: 0.4s;">
-      <view class="card-title module-header" bindtap="toggleModule" data-key="brew">
-        <view class="title-left">
-          <text class="title-icon">☕</text>
+    <view class="card animate-card module-card {{ttsCurrentModule === 'brew' ? 'tts-active' : ''}}" id="anchor-brew" role="region" aria-label="冲泡建议模块" style="animation-delay: 0.4s;">
+      <view class="card-title module-header">
+        <view class="title-left" bindtap="toggleModule" data-key="brew">
+          <text class="title-icon" aria-hidden="true">☕</text>
           <text>冲泡建议</text>
         </view>
-        <view class="module-toggle {{moduleCollapsed.brew ? 'collapsed' : ''}}">
-          <text class="toggle-icon">▾</text>
+        <view class="title-actions">
+          <view class="module-speak-btn" catchtap="speakModule" data-module="brew"
+                role="button" aria-label="朗读冲泡建议">
+            <text class="speak-icon">🔊</text>
+          </view>
+          <view class="module-toggle {{moduleCollapsed.brew ? 'collapsed' : ''}}" bindtap="toggleModule" data-key="brew"
+                role="button" aria-label="{{moduleCollapsed.brew ? '展开冲泡建议' : '收起冲泡建议'}}">
+            <text class="toggle-icon">▾</text>
+          </view>
         </view>
       </view>
       <view class="module-content {{moduleCollapsed.brew ? 'hidden' : ''}}">
@@ -3529,6 +3557,87 @@
       <view class="version-history-footer" wx:else>
         <view class="version-history-back-btn" bindtap="restoreCurrentVersion">
           <text>返回当前版本</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 语音播报浮动控制条 ==================== -->
+  <view class="tts-float-control {{ttsShowControl ? 'visible' : 'hidden'}}" role="region" aria-label="语音播报控制">
+    <view class="tts-control-bar">
+      <view class="tts-play-btn {{ttsIsPlaying ? 'playing' : ''}}" bindtap="toggleTTsPlay"
+            role="button" aria-label="{{ttsIsPlaying && !ttsIsPaused ? '暂停播报' : ttsIsPaused ? '继续播报' : '开始播报'}}">
+        <text class="play-icon">{{ttsIsPlaying && !ttsIsPaused ? '⏸' : '▶'}}</text>
+      </view>
+      <view class="tts-info" bindtap="toggleTTSControl">
+        <view class="tts-status-text" aria-live="polite">
+          {{ttsIsPlaying ? (ttsIsPaused ? '已暂停' : '正在播报') : '点击开始语音播报'}}
+        </view>
+        <view class="tts-progress-bar">
+          <view class="tts-progress-fill" style="width: {{ttsProgress}}%;"></view>
+        </view>
+      </view>
+      <view class="tts-stop-btn" bindtap="stopTTS"
+            role="button" aria-label="停止播报">
+        <text>⏹</text>
+      </view>
+    </view>
+
+    <!-- 展开的控制面板 -->
+    <view class="tts-expanded-panel {{ttsShowControl ? 'show' : ''}}">
+      <view class="tts-panel-section">
+        <view class="tts-panel-title">语速调节</view>
+        <view class="tts-speed-options">
+          <view class="tts-speed-btn {{ttsSpeed == 0.5 ? 'active' : ''}}" bindtap="setTTSSpeed" data-speed="0.5"
+                role="button" aria-selected="{{ttsSpeed == 0.5}}" aria-label="慢速 0.5倍">
+            0.5x
+          </view>
+          <view class="tts-speed-btn {{ttsSpeed == 0.75 ? 'active' : ''}}" bindtap="setTTSSpeed" data-speed="0.75"
+                role="button" aria-selected="{{ttsSpeed == 0.75}}" aria-label="较慢 0.75倍">
+            0.75x
+          </view>
+          <view class="tts-speed-btn {{ttsSpeed == 1.0 ? 'active' : ''}}" bindtap="setTTSSpeed" data-speed="1.0"
+                role="button" aria-selected="{{ttsSpeed == 1.0}}" aria-label="正常 1.0倍">
+            1.0x
+          </view>
+          <view class="tts-speed-btn {{ttsSpeed == 1.25 ? 'active' : ''}}" bindtap="setTTSSpeed" data-speed="1.25"
+                role="button" aria-selected="{{ttsSpeed == 1.25}}" aria-label="较快 1.25倍">
+            1.25x
+          </view>
+          <view class="tts-speed-btn {{ttsSpeed == 1.5 ? 'active' : ''}}" bindtap="setTTSSpeed" data-speed="1.5"
+                role="button" aria-selected="{{ttsSpeed == 1.5}}" aria-label="快速 1.5倍">
+            1.5x
+          </view>
+        </view>
+      </view>
+
+      <view class="tts-panel-section">
+        <view class="tts-panel-title">音量调节</view>
+        <view class="tts-volume-options">
+          <view class="tts-volume-btn {{ttsVolume == 0.2 ? 'active' : ''}}" bindtap="setTTSVolume" data-volume="0.2"
+                role="button" aria-selected="{{ttsVolume == 0.2}}" aria-label="低音量">
+            🔈 低
+          </view>
+          <view class="tts-volume-btn {{ttsVolume == 0.5 ? 'active' : ''}}" bindtap="setTTSVolume" data-volume="0.5"
+                role="button" aria-selected="{{ttsVolume == 0.5}}" aria-label="中音量">
+            🔉 中
+          </view>
+          <view class="tts-volume-btn {{ttsVolume == 0.8 ? 'active' : ''}}" bindtap="setTTSVolume" data-volume="0.8"
+                role="button" aria-selected="{{ttsVolume == 0.8}}" aria-label="高音量">
+            🔊 高
+          </view>
+          <view class="tts-volume-btn {{ttsVolume == 1.0 ? 'active' : ''}}" bindtap="setTTSVolume" data-volume="1.0"
+                role="button" aria-selected="{{ttsVolume == 1.0}}" aria-label="最大音量">
+            🔊 最大
+          </view>
+        </view>
+      </view>
+
+      <view class="tts-panel-section">
+        <view class="tts-toggle-row">
+          <text class="tts-toggle-label">语音播报开关</text>
+          <switch checked="{{ttsEnabled}}" bindchange="toggleTTSEnabled" color="#2E8B57"
+                  aria-label="{{ttsEnabled ? '关闭语音播报' : '开启语音播报'}}"/>
         </view>
       </view>
     </view>

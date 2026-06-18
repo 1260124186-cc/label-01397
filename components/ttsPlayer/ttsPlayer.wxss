@@ -1,0 +1,239 @@
+/* 语音播报控制组件样式 */
+
+.tts-player {
+  position: relative;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  overflow: visible;
+}
+
+.tts-player.compact {
+  border-radius: 8rpx;
+}
+
+/* 主体控制条 */
+.tts-player-bar {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  gap: 16rpx;
+}
+
+/* 按钮通用样式 */
+.tts-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 64rpx;
+  height: 64rpx;
+  padding: 0 12rpx;
+  border-radius: 8rpx;
+  background: #f5f7fa;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tts-btn:active {
+  transform: scale(0.95);
+  background: #e8ecf1;
+}
+
+.tts-btn .btn-icon {
+  font-size: 28rpx;
+  line-height: 1;
+}
+
+.tts-btn .btn-label {
+  font-size: 20rpx;
+  color: #4E5969;
+  margin-top: 4rpx;
+}
+
+/* 播放按钮 */
+.play-btn {
+  width: 72rpx;
+  height: 72rpx;
+  min-width: 72rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  box-shadow: 0 4rpx 12rpx rgba(46, 139, 87, 0.3);
+}
+
+.play-btn:active {
+  box-shadow: 0 2rpx 6rpx rgba(46, 139, 87, 0.3);
+}
+
+.play-btn .btn-icon {
+  font-size: 32rpx;
+  color: #fff;
+}
+
+.play-btn.playing {
+  background: linear-gradient(135deg, #F53F3F 0%, #FF6B6B 100%);
+  box-shadow: 0 4rpx 12rpx rgba(245, 63, 63, 0.3);
+}
+
+/* 停止按钮 */
+.stop-btn {
+  background: #FFF0F0;
+}
+
+.stop-btn .btn-icon {
+  font-size: 24rpx;
+}
+
+/* 语速、音量按钮 */
+.speed-btn,
+.volume-btn {
+  min-width: 72rpx;
+}
+
+.speed-btn.active,
+.volume-btn.active {
+  background: #E8F5E9;
+}
+
+/* 信息区域 */
+.tts-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  overflow: hidden;
+}
+
+.tts-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-text {
+  font-size: 22rpx;
+  color: #86909C;
+}
+
+.tts-progress-bar {
+  width: 100%;
+  height: 6rpx;
+  background: #F2F3F5;
+  border-radius: 3rpx;
+  overflow: hidden;
+}
+
+.tts-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2E8B57 0%, #3CB371 100%);
+  border-radius: 3rpx;
+  transition: width 0.1s linear;
+}
+
+.tts-text {
+  width: 100%;
+  overflow: hidden;
+}
+
+.text-preview {
+  display: block;
+  font-size: 24rpx;
+  color: #4E5969;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 右侧控制组 */
+.tts-controls {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+/* 弹出面板 */
+.tts-panel {
+  position: absolute;
+  right: 20rpx;
+  top: calc(100% + 8rpx);
+  background: #ffffff;
+  border-radius: 12rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+  padding: 16rpx;
+  min-width: 200rpx;
+  opacity: 0;
+  transform: translateY(-10rpx);
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 100;
+}
+
+.tts-panel.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.panel-title {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #1D2129;
+  margin-bottom: 12rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 1rpx solid #F2F3F5;
+}
+
+.panel-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.panel-option {
+  padding: 16rpx 20rpx;
+  font-size: 26rpx;
+  color: #4E5969;
+  border-radius: 8rpx;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.panel-option:active {
+  background: #F2F3F5;
+}
+
+.panel-option.active {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* 紧凑模式 */
+.tts-player.compact .tts-player-bar {
+  padding: 12rpx 16rpx;
+  gap: 12rpx;
+}
+
+.tts-player.compact .play-btn {
+  width: 56rpx;
+  height: 56rpx;
+  min-width: 56rpx;
+}
+
+.tts-player.compact .play-btn .btn-icon {
+  font-size: 24rpx;
+}
+
+.tts-player.compact .tts-btn {
+  min-width: 52rpx;
+  height: 52rpx;
+  padding: 0 8rpx;
+}
+
+.tts-player.compact .tts-btn .btn-icon {
+  font-size: 22rpx;
+}
+
+.tts-player.compact .tts-btn .btn-label {
+  display: none;
+}

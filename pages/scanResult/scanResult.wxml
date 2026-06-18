@@ -79,17 +79,17 @@
       </view>
     </view>
 
-    <view class="verify-header {{verifyResult.scanType}}">
+    <view class="verify-header {{verifyResult.scanType}}" role="region" aria-label="防伪验证结果：{{verifyResult.title}}">
       <view class="verify-icon-wrapper">
-        <view class="verify-icon {{verifyResult.authenticity}}">
+        <view class="verify-icon {{verifyResult.authenticity}}" aria-hidden="true">
           <text wx:if="{{verifyResult.authenticity === 'genuine'}}">✓</text>
           <text wx:elif="{{verifyResult.authenticity === 'suspicious'}}">!</text>
           <text wx:else>✗</text>
         </view>
         <view class="scan-type-badge">{{scanType === 'barCode' ? '条形码' : '二维码'}}</view>
       </view>
-      <view class="verify-title">{{verifyResult.title}}</view>
-      <view class="verify-message">{{verifyResult.message}}</view>
+      <view class="verify-title" role="heading" aria-level="1">{{verifyResult.title}}</view>
+      <view class="verify-message" aria-live="polite">{{verifyResult.message}}</view>
       <view class="verify-tags">
         <view class="tag tag-{{verifyResult.scanType}}">
           {{verifyResult.scanType === 'first' ? '首次验证' : '重复验证'}}
@@ -103,6 +103,14 @@
           <text wx:if="{{verifyResult.abnormal.riskLevel === 'warning'}}">⚠️ 警告</text>
           <text wx:elif="{{verifyResult.abnormal.riskLevel === 'danger'}}">🔴 危险</text>
         </view>
+      </view>
+
+      <!-- 语音播报按钮 -->
+      <view class="tts-verify-btn {{ttsIsPlaying ? 'playing' : ''}}" bindtap="toggleTTsPlay"
+            role="button"
+            aria-label="{{ttsIsPlaying ? '语音播报中，点击暂停' : '点击朗读验证结果'}}">
+        <text class="tts-btn-icon">{{ttsIsPlaying ? '🔊' : '🔈'}}</text>
+        <text class="tts-btn-text">{{ttsIsPlaying ? '播报中' : '听结果'}}</text>
       </view>
     </view>
 
@@ -384,6 +392,87 @@
         <view class="tip-item">• 首次扫码显示"正品首次验证"最为可靠</view>
         <view class="tip-item">• 如发现多次异地扫码，请谨慎购买</view>
         <view class="tip-item">• 购买渠道请认准官方授权店铺</view>
+      </view>
+    </view>
+
+    <!-- ==================== 语音播报浮动控制条 ==================== -->
+    <view class="tts-float-control {{ttsShowControl ? 'visible' : 'hidden'}}" role="region" aria-label="语音播报控制">
+      <view class="tts-control-bar">
+        <view class="tts-play-btn {{ttsIsPlaying ? 'playing' : ''}}" bindtap="toggleTTsPlay"
+              role="button" aria-label="{{ttsIsPlaying && !ttsIsPaused ? '暂停播报' : ttsIsPaused ? '继续播报' : '开始播报'}}">
+          <text class="play-icon">{{ttsIsPlaying && !ttsIsPaused ? '⏸' : '▶'}}</text>
+        </view>
+        <view class="tts-info" bindtap="toggleTTSControl">
+          <view class="tts-status-text" aria-live="polite">
+            {{ttsIsPlaying ? (ttsIsPaused ? '已暂停' : '正在播报验证结果') : '点击开始语音播报'}}
+          </view>
+          <view class="tts-progress-bar">
+            <view class="tts-progress-fill" style="width: {{ttsProgress}}%;"></view>
+          </view>
+        </view>
+        <view class="tts-stop-btn" bindtap="stopTTS"
+              role="button" aria-label="停止播报">
+          <text>⏹</text>
+        </view>
+      </view>
+
+      <!-- 展开的控制面板 -->
+      <view class="tts-expanded-panel {{ttsShowControl ? 'show' : ''}}">
+        <view class="tts-panel-section">
+          <view class="tts-panel-title">语速调节</view>
+          <view class="tts-speed-options">
+            <view class="tts-speed-btn {{ttsSpeed == 0.5 ? 'active' : ''}}" bindtap="setTTSSpeed" data-speed="0.5"
+                  role="button" aria-selected="{{ttsSpeed == 0.5}}" aria-label="慢速 0.5倍">
+              0.5x
+            </view>
+            <view class="tts-speed-btn {{ttsSpeed == 0.75 ? 'active' : ''}}" bindtap="setTTSSpeed" data-speed="0.75"
+                  role="button" aria-selected="{{ttsSpeed == 0.75}}" aria-label="较慢 0.75倍">
+              0.75x
+            </view>
+            <view class="tts-speed-btn {{ttsSpeed == 1.0 ? 'active' : ''}}" bindtap="setTTSSpeed" data-speed="1.0"
+                  role="button" aria-selected="{{ttsSpeed == 1.0}}" aria-label="正常 1.0倍">
+              1.0x
+            </view>
+            <view class="tts-speed-btn {{ttsSpeed == 1.25 ? 'active' : ''}}" bindtap="setTTSSpeed" data-speed="1.25"
+                  role="button" aria-selected="{{ttsSpeed == 1.25}}" aria-label="较快 1.25倍">
+              1.25x
+            </view>
+            <view class="tts-speed-btn {{ttsSpeed == 1.5 ? 'active' : ''}}" bindtap="setTTSSpeed" data-speed="1.5"
+                  role="button" aria-selected="{{ttsSpeed == 1.5}}" aria-label="快速 1.5倍">
+              1.5x
+            </view>
+          </view>
+        </view>
+
+        <view class="tts-panel-section">
+          <view class="tts-panel-title">音量调节</view>
+          <view class="tts-volume-options">
+            <view class="tts-volume-btn {{ttsVolume == 0.2 ? 'active' : ''}}" bindtap="setTTSVolume" data-volume="0.2"
+                  role="button" aria-selected="{{ttsVolume == 0.2}}" aria-label="低音量">
+              🔈 低
+            </view>
+            <view class="tts-volume-btn {{ttsVolume == 0.5 ? 'active' : ''}}" bindtap="setTTSVolume" data-volume="0.5"
+                  role="button" aria-selected="{{ttsVolume == 0.5}}" aria-label="中音量">
+              🔉 中
+            </view>
+            <view class="tts-volume-btn {{ttsVolume == 0.8 ? 'active' : ''}}" bindtap="setTTSVolume" data-volume="0.8"
+                  role="button" aria-selected="{{ttsVolume == 0.8}}" aria-label="高音量">
+              🔊 高
+            </view>
+            <view class="tts-volume-btn {{ttsVolume == 1.0 ? 'active' : ''}}" bindtap="setTTSVolume" data-volume="1.0"
+                  role="button" aria-selected="{{ttsVolume == 1.0}}" aria-label="最大音量">
+              🔊 最大
+            </view>
+          </view>
+        </view>
+
+        <view class="tts-panel-section">
+          <view class="tts-toggle-row">
+            <text class="tts-toggle-label">语音播报开关</text>
+            <switch checked="{{ttsEnabled}}" bindchange="toggleTTSEnabled" color="#2E8B57"
+                    aria-label="{{ttsEnabled ? '关闭语音播报' : '开启语音播报'}}"/>
+          </view>
+        </view>
       </view>
     </view>
 

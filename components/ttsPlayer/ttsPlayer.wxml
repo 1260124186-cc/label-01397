@@ -1,0 +1,90 @@
+<!-- 语音播报控制组件 -->
+<view class="tts-player {{compact ? 'compact' : ''}}" catchtap="closePanels">
+
+  <!-- 主体控制条 -->
+  <view class="tts-player-bar" role="toolbar" aria-label="语音播报控制">
+
+    <!-- 播放/暂停按钮 -->
+    <view class="tts-btn play-btn {{isPlaying ? 'playing' : ''}}" bindtap="togglePlay"
+          role="button"
+          aria-label="{{isPlaying ? (isPaused ? '继续播放' : '暂停播放') : '开始播放'}}"
+          aria-pressed="{{isPlaying && !isPaused}}">
+      <text wx:if="{{!isPlaying}}" class="btn-icon">▶️</text>
+      <text wx:elif="{{isPaused}}" class="btn-icon">▶️</text>
+      <text wx:else class="btn-icon">⏸️</text>
+    </view>
+
+    <!-- 进度与状态 -->
+    <view class="tts-info" wx:if="{{!compact}}">
+      <view class="tts-status" wx:if="{{mode === 'queue' && totalCount > 0}}">
+        <text class="status-text">{{currentIndex + 1}} / {{totalCount}}</text>
+      </view>
+      <view class="tts-progress-bar" aria-hidden="true">
+        <view class="tts-progress-fill" style="width: {{progress}}%;"></view>
+      </view>
+      <view class="tts-text" wx:if="{{currentText}}">
+        <text class="text-preview">{{currentText}}</text>
+      </view>
+    </view>
+
+    <!-- 右侧控制按钮组 -->
+    <view class="tts-controls">
+
+      <!-- 停止按钮 -->
+      <view class="tts-btn stop-btn" wx:if="{{isPlaying}}" bindtap="stop"
+            role="button" aria-label="停止播放">
+        <text class="btn-icon">⏹️</text>
+      </view>
+
+      <!-- 语速控制 -->
+      <view class="tts-btn speed-btn {{showSpeedPanel ? 'active' : ''}}" wx:if="{{showSpeedControl}}"
+            catchtap="toggleSpeedPanel"
+            role="button" aria-label="调节语速">
+        <text class="btn-icon">⚡</text>
+        <text class="btn-label">{{speed}}x</text>
+      </view>
+
+      <!-- 音量控制 -->
+      <view class="tts-btn volume-btn {{showVolumePanel ? 'active' : ''}}" wx:if="{{showVolumeControl}}"
+            catchtap="toggleVolumePanel"
+            role="button" aria-label="调节音量">
+        <text class="btn-icon">{{volume >= 0.8 ? '🔊' : volume >= 0.3 ? '🔉' : '🔈'}}</text>
+        <text class="btn-label">{{volume >= 0.8 ? '大' : volume >= 0.5 ? '中' : '小'}}</text>
+      </view>
+
+    </view>
+  </view>
+
+  <!-- 语速选择面板 -->
+  <view class="tts-panel speed-panel {{showSpeedPanel ? 'show' : ''}}"
+        role="listbox" aria-label="选择语速">
+    <view class="panel-title">语速调节</view>
+    <view class="panel-options">
+      <view wx:for="{{speedOptions}}" wx:key="value"
+            class="panel-option {{speed === item.value ? 'active' : ''}}"
+            data-speed="{{item.value}}"
+            bindtap="selectSpeed"
+            role="option"
+            aria-selected="{{speed === item.value}}">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 音量选择面板 -->
+  <view class="tts-panel volume-panel {{showVolumePanel ? 'show' : ''}}"
+        role="listbox" aria-label="选择音量">
+    <view class="panel-title">音量调节</view>
+    <view class="panel-options">
+      <view wx:for="{{volumeOptions}}" wx:key="value"
+            class="panel-option {{volume === item.value ? 'active' : ''}}"
+            data-volume="{{item.value}}"
+            bindtap="selectVolume"
+            role="option"
+            aria-selected="{{volume === item.value}}">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+</view>

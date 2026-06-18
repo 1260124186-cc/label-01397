@@ -6,6 +6,7 @@
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark",
   "usingComponents": {
-    "sample-trace": "/components/sampleTrace/sampleTrace"
+    "sample-trace": "/components/sampleTrace/sampleTrace",
+    "tts-player": "/components/ttsPlayer/ttsPlayer"
   }
 }

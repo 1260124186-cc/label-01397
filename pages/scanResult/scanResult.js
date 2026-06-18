@@ -3,6 +3,7 @@ const antiCounterfeit = require('../../utils/antiCounterfeit.js');
 const greenPoints = require('../../utils/greenPoints.js');
 const channelTrace = require('../../utils/channelTrace.js');
 const i18n = require('../../utils/i18n/index.js');
+const tts = require('../../utils/tts.js');
 
 Page({
   data: {
@@ -25,7 +26,16 @@ Page({
     giftBoxItems: [],
     isGiftBoxMainCode: false,
     isGiftBoxSubCode: false,
-    subCodeContext: null
+    subCodeContext: null,
+    ttsEnabled: true,
+    ttsIsPlaying: false,
+    ttsIsPaused: false,
+    ttsShowControl: false,
+    ttsSpeed: 1.0,
+    ttsVolume: 1.0,
+    ttsProgress: 0,
+    ttsCurrentText: '',
+    autoSpeakDone: false
   },
 
   onLoad: function(options) {
@@ -34,6 +44,8 @@ Page({
     const traceId = options.traceId;
     const scanType = options.scanType || 'qrCode';
     const a11yData = i18n.getA11yData();
+
+    this.initTTS();
 
     if (traceId) {
       this.setData({
@@ -120,7 +132,9 @@ Page({
           }
         }
 
-        that.setData(setDataObj);
+        that.setData(setDataObj, function() {
+          that.autoSpeakVerifyResult();
+        });
 
         if (recallInfo) {
           wx.showModal({
@@ -377,5 +391,191 @@ Page({
         }
       }
     });
+  },
+
+  // ============================================================
+  // ==================== 语音播报功能方法 ====================
+  // ============================================================
+
+  initTTS: function() {
+    var that = this;
+    this._ttsManager = tts.getTTSManager();
+
+    var speed = this._ttsManager.getSpeed();
+    var volume = this._ttsManager.getVolume();
+    var enabled = this._ttsManager.isEnabled();
+
+    this.setData({
+      ttsSpeed: speed,
+      ttsVolume: volume,
+      ttsEnabled: enabled
+    });
+
+    this._ttsManager.onStart(function(info) {
+      that.setData({
+        ttsIsPlaying: true,
+        ttsIsPaused: false,
+        ttsCurrentText: info.text,
+        ttsProgress: 0,
+        ttsShowControl: true
+      });
+    });
+
+    this._ttsManager.onEnd(function(info) {
+      that.setData({
+        ttsIsPlaying: false,
+        ttsIsPaused: false,
+        ttsProgress: 100
+      });
+    });
+
+    this._ttsManager.onError(function(err) {
+      console.error('[ScanResult] TTS 播放错误:', err);
+      that.setData({
+        ttsIsPlaying: false,
+        ttsIsPaused: false
+      });
+    });
+
+    this._ttsManager.onProgress(function(info) {
+      that.setData({
+        ttsProgress: Math.round(info.progress * 100),
+        ttsCurrentText: info.text
+      });
+    });
+  },
+
+  autoSpeakVerifyResult: function() {
+    if (this.data.autoSpeakDone) return;
+    if (!this.data.ttsEnabled) return;
+
+    var verifyResult = this.data.verifyResult;
+    var productInfo = this.data.productInfo;
+    var recallInfo = this.data.recallInfo;
+
+    var speakText = tts.buildScanResultText(verifyResult, {
+      productName: productInfo ? productInfo.productName : '',
+      recallInfo: recallInfo
+    });
+
+    if (speakText) {
+      this.setData({ autoSpeakDone: true });
+      this._ttsManager.speak(speakText);
+    }
+  },
+
+  speakVerifyResult: function() {
+    var verifyResult = this.data.verifyResult;
+    var productInfo = this.data.productInfo;
+    var recallInfo = this.data.recallInfo;
+
+    var speakText = tts.buildScanResultText(verifyResult, {
+      productName: productInfo ? productInfo.productName : '',
+      recallInfo: recallInfo
+    });
+
+    if (speakText) {
+      this._ttsManager.speak(speakText);
+    }
+  },
+
+  toggleTTsPlay: function() {
+    if (this.data.ttsIsPlaying) {
+      if (this.data.ttsIsPaused) {
+        this.resumeTTS();
+      } else {
+        this.pauseTTS();
+      }
+    } else {
+      this.speakVerifyResult();
+    }
+  },
+
+  pauseTTS: function() {
+    if (this._ttsManager) {
+      this._ttsManager.pause();
+      this.setData({ ttsIsPaused: true });
+    }
+  },
+
+  resumeTTS: function() {
+    if (this._ttsManager) {
+      this._ttsManager.resume();
+      this.setData({ ttsIsPaused: false });
+    }
+  },
+
+  stopTTS: function() {
+    if (this._ttsManager) {
+      this._ttsManager.stop();
+      this.setData({
+        ttsIsPlaying: false,
+        ttsIsPaused: false,
+        ttsProgress: 0,
+        ttsCurrentText: ''
+      });
+    }
+  },
+
+  toggleTTSControl: function() {
+    this.setData({
+      ttsShowControl: !this.data.ttsShowControl
+    });
+  },
+
+  setTTSSpeed: function(e) {
+    var speed = e.currentTarget.dataset.speed;
+    if (this._ttsManager && speed) {
+      var newSpeed = this._ttsManager.setSpeed(parseFloat(speed));
+      this.setData({ ttsSpeed: newSpeed });
+      wx.showToast({
+        title: '语速：' + newSpeed + 'x',
+        icon: 'none',
+        duration: 1000
+      });
+    }
+  },
+
+  setTTSVolume: function(e) {
+    var volume = e.currentTarget.dataset.volume;
+    if (this._ttsManager && volume) {
+      var newVolume = this._ttsManager.setVolume(parseFloat(volume));
+      this.setData({ ttsVolume: newVolume });
+      var label = newVolume >= 0.8 ? '最大' : newVolume >= 0.5 ? '高' : newVolume >= 0.2 ? '中' : '低';
+      wx.showToast({
+        title: '音量：' + label,
+        icon: 'none',
+        duration: 1000
+      });
+    }
+  },
+
+  toggleTTSEnabled: function() {
+    var newEnabled = !this.data.ttsEnabled;
+    if (this._ttsManager) {
+      this._ttsManager.setEnabled(newEnabled);
+    }
+    this.setData({ ttsEnabled: newEnabled });
+
+    if (!newEnabled) {
+      this.stopTTS();
+      wx.showToast({
+        title: '已关闭语音播报',
+        icon: 'none'
+      });
+    } else {
+      wx.showToast({
+        title: '已开启语音播报',
+        icon: 'success'
+      });
+    }
+  },
+
+  onUnload: function() {
+    if (this._ttsManager) {
+      this._ttsManager.stop();
+      this._ttsManager.destroy();
+      this._ttsManager = null;
+    }
   }
 });
