@@ -6060,6 +6060,117 @@ function getAvailableOuterCodes() {
   });
 }
 
+function getCompareData(traceIds) {
+  if (!traceIds || !Array.isArray(traceIds) || traceIds.length < 2) return null;
+
+  var products = [];
+  for (var i = 0; i < traceIds.length; i++) {
+    var id = traceIds[i].toUpperCase().trim();
+    var trace = mockTraceData[id];
+    if (!trace) continue;
+    var green = greenTraceExtended[id] || {};
+    var shop = shopProducts[id] || null;
+    var defaultPrice = 0;
+    var priceLabel = '-';
+    if (shop && shop.skuList && shop.skuList.length > 0) {
+      defaultPrice = shop.skuList[shop.defaultSkuIndex || 0].price;
+      priceLabel = '\u00a5' + defaultPrice.toFixed(0);
+    }
+    var carbonValue = 0;
+    var carbonLabel = '-';
+    if (green.carbonFootprint) {
+      carbonValue = green.carbonFootprint.totalEmission;
+      carbonLabel = carbonValue + ' ' + (green.carbonFootprint.unit || '');
+    }
+    var pesticideKey = '\u5168\u90e8\u5408\u683c';
+    var pesticideAbnormal = 0;
+    if (trace.pesticideTest) {
+      pesticideAbnormal = trace.pesticideTest.hasAbnormal ? 1 : 0;
+      var totalTests = (trace.pesticideTest.teaTests ? trace.pesticideTest.teaTests.length : 0) +
+        (trace.pesticideTest.osmanthusTests ? trace.pesticideTest.osmanthusTests.length : 0);
+      if (trace.pesticideTest.hasAbnormal) {
+        pesticideKey = '\u5b58\u5728\u5f02\u5e38(' + pesticideAbnormal + '/' + totalTests + ')';
+      } else {
+        pesticideKey = '\u5168\u90e8\u5408\u683c(' + totalTests + '\u9879)';
+      }
+    }
+    var rating = (3.5 + Math.random() * 1.5);
+    rating = Math.round(rating * 10) / 10;
+    products.push({
+      traceId: id,
+      productName: trace.basicInfo.productName,
+      specification: trace.basicInfo.specification,
+      thumbnail: trace.basicInfo.thumbnail,
+      variety: trace.osmanthusInfo ? trace.osmanthusInfo.variety : '',
+      batchNo: trace.basicInfo.batchNo,
+      dimensions: {
+        treeAge: { label: '\u6811\u9f84', value: trace.treeAge ? trace.treeAge.teaTreeAge : 0, unit: '\u5e74', display: (trace.treeAge ? trace.treeAge.teaTreeAge : '-') + '\u5e74' },
+        scentingTimes: { label: '\u7aa8\u5236\u6b21\u6570', value: trace.scentingProcess ? trace.scentingProcess.scentingTimes : 0, unit: '\u6b21', display: (trace.scentingProcess ? trace.scentingProcess.scentingTimes : '-') + '\u6b21' },
+        pesticideKey: { label: '\u519c\u6b8b\u5173\u952e\u9879', value: pesticideAbnormal === 0 ? 100 : 30, unit: '', display: pesticideKey, isStatus: true, isAbnormal: pesticideAbnormal > 0 },
+        carbonFootprint: { label: '\u78b3\u8db3\u8ff9', value: carbonValue, unit: 'kg CO\u2082e', display: carbonLabel, lowerBetter: true },
+        price: { label: '\u4ef7\u683c', value: defaultPrice, unit: '\u5143', display: priceLabel },
+        rating: { label: '\u7528\u6237\u8bc4\u4ef7', value: rating, unit: '\u5206', display: rating + '\u5206' }
+      }
+    });
+  }
+
+  if (products.length < 2) return null;
+
+  var dimensionKeys = ['treeAge', 'scentingTimes', 'pesticideKey', 'carbonFootprint', 'price', 'rating'];
+  var radarData = [];
+  for (var d = 0; d < dimensionKeys.length; d++) {
+    var key = dimensionKeys[d];
+    var dimVals = [];
+    for (var p = 0; p < products.length; p++) {
+      dimVals.push(products[p].dimensions[key].value);
+    }
+    var maxVal = Math.max.apply(null, dimVals);
+    var minVal = Math.min.apply(null, dimVals);
+    var normalized = [];
+    for (var p2 = 0; p2 < products.length; p2++) {
+      var raw = products[p2].dimensions[key].value;
+      var norm = maxVal > 0 ? (raw / maxVal) * 100 : 0;
+      if (products[p2].dimensions[key].lowerBetter) {
+        norm = maxVal > 0 ? ((maxVal - raw + minVal) / maxVal) * 100 : 0;
+      }
+      normalized.push(Math.round(norm));
+    }
+    radarData.push({
+      key: key,
+      label: products[0].dimensions[key].label,
+      values: normalized,
+      rawValues: dimVals,
+      hasDiff: maxVal !== minVal
+    });
+  }
+
+  var diffItems = [];
+  for (var di = 0; di < dimensionKeys.length; di++) {
+    var dKey = dimensionKeys[di];
+    var vals = [];
+    for (var pi = 0; pi < products.length; pi++) {
+      vals.push(products[pi].dimensions[dKey].value);
+    }
+    var allSame = vals.every(function(v) { return v === vals[0]; });
+    if (!allSame) {
+      diffItems.push({
+        key: dKey,
+        label: products[0].dimensions[dKey].label,
+        advantageIndex: dKey === 'carbonFootprint'
+          ? vals.indexOf(Math.min.apply(null, vals))
+          : vals.indexOf(Math.max.apply(null, vals))
+      });
+    }
+  }
+
+  return {
+    products: products,
+    radarData: radarData,
+    diffItems: diffItems,
+    dimensionKeys: dimensionKeys
+  };
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -6074,6 +6185,7 @@ module.exports = {
   calculateTestPercent,
   getWorkshopEnvData,
   getScentingComparison,
+  getCompareData,
   getGreenTraceExtended,
   getGreenPointsConfig,
   verifyCertificate,

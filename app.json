@@ -18,7 +18,8 @@
     "pages/service/ticketCreate",
     "pages/service/ticketDetail",
     "pages/reportProduct/reportProduct",
-    "pages/arExperience/arExperience"
+    "pages/arExperience/arExperience",
+    "pages/compare/index"
   ],
   "window": {
     "backgroundTextStyle": "dark",

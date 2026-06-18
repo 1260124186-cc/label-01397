@@ -59,6 +59,11 @@
       </view>
     </view>
 
+    <!-- 同批次对比入口 -->
+    <view class="batch-compare-btn" wx:if="{{skuList.length >= 2}}" bindtap="goCompare">
+      <text>⚖️ 同批次规格对比</text>
+    </view>
+
     <!-- 底部提示 -->
     <view class="footer-tip">
       <text>💡 点击任意SKU查看完整溯源信息</text>

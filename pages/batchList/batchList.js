@@ -86,5 +86,11 @@ Page({
 
   goBack: function() {
     wx.navigateBack();
+  },
+
+  goCompare: function() {
+    wx.navigateTo({
+      url: '/pages/compare/index?batchNo=' + this.data.batchNo
+    });
   }
 });

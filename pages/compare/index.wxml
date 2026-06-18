@@ -1,0 +1,215 @@
+<view class="page-container">
+
+  <!-- ========== 选择步骤 ========== -->
+  <view wx:if="{{step === 'select'}}" class="select-step">
+
+    <view class="step-header">
+      <view class="step-icon">⚖️</view>
+      <view class="step-title">选择对比产品</view>
+      <view class="step-desc">请选择 2–3 个产品进行多维对比</view>
+    </view>
+
+    <!-- 已选产品 -->
+    <view class="selected-bar" wx:if="{{selectedIds.length > 0}}">
+      <view class="selected-label">已选 ({{selectedIds.length}}/3)：</view>
+      <view class="selected-tags">
+        <view class="selected-tag" wx:for="{{selectedIds}}" wx:key="*this">
+          <text class="selected-tag-text">{{item}}</text>
+          <view class="selected-tag-close" data-traceid="{{item}}" bindtap="onRemoveSelected">✕</view>
+        </view>
+      </view>
+      <view class="btn-compare" bindtap="onStartCompare">开始对比</view>
+    </view>
+
+    <!-- 收藏夹快速选择 -->
+    <view class="fav-section" wx:if="{{favorites.length > 0}}">
+      <view class="section-title">
+        <text class="section-title-icon">⭐</text>
+        <text>从收藏夹选择</text>
+      </view>
+      <view class="fav-list">
+        <view
+          class="fav-chip {{selectedIds.indexOf(item.traceId) !== -1 ? 'fav-chip-active' : ''}}"
+          wx:for="{{favorites}}"
+          wx:key="traceId"
+          data-traceid="{{item.traceId}}"
+          bindtap="onAddFavorite"
+        >
+          {{item.productName || item.traceId}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 全部产品列表 -->
+    <view class="product-section">
+      <view class="section-title">
+        <text class="section-title-icon">📋</text>
+        <text>全部产品</text>
+      </view>
+      <view class="product-grid">
+        <view
+          class="product-card {{selectedIds.indexOf(item.traceId) !== -1 ? 'product-card-selected' : ''}}"
+          wx:for="{{availableProducts}}"
+          wx:key="traceId"
+          data-traceid="{{item.traceId}}"
+          bindtap="onToggleSelect"
+        >
+          <view class="product-check">
+            <view class="check-circle {{selectedIds.indexOf(item.traceId) !== -1 ? 'check-circle-active' : ''}}">
+              <text wx:if="{{selectedIds.indexOf(item.traceId) !== -1}}">✓</text>
+            </view>
+          </view>
+          <image class="product-thumb" src="{{item.thumbnail}}" mode="aspectFill" />
+          <view class="product-info-mini">
+            <view class="product-name-mini">{{item.productName}}</view>
+            <view class="product-variety-tag" style="background: {{item.variety === '金桂' ? 'rgba(218,165,32,0.1)' : item.variety === '银桂' ? 'rgba(192,192,192,0.15)' : item.variety === '丹桂' ? 'rgba(205,92,92,0.1)' : 'rgba(144,238,144,0.1)'}}; color: {{item.variety === '金桂' ? '#DAA520' : item.variety === '银桂' ? '#888' : item.variety === '丹桂' ? '#CD5C5C' : '#90EE90'}}">
+              {{item.variety}}
+            </view>
+            <view class="product-spec-mini">{{item.specification}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部操作栏 -->
+    <view class="bottom-bar" wx:if="{{selectedIds.length >= 2}}">
+      <view class="btn-start" bindtap="onStartCompare">
+        ⚖️ 开始对比（{{selectedIds.length}} 个产品）
+      </view>
+    </view>
+  </view>
+
+  <!-- ========== 对比结果 ========== -->
+  <view wx:if="{{step === 'result'}}" class="result-step">
+
+    <!-- 产品头卡 -->
+    <view class="product-headers">
+      <view class="header-card" wx:for="{{productHeaders}}" wx:key="traceId" data-traceid="{{item.traceId}}" bindtap="onViewDetail">
+        <view class="header-variety" style="background: {{item.varietyBg}}; border: 2rpx solid {{item.varietyBorder}};">
+          <view class="variety-dot" style="background: {{item.varietyColor}};"></view>
+          <text style="color: {{item.varietyColor}};">{{item.variety}}</text>
+        </view>
+        <image class="header-thumb" src="{{item.thumbnail}}" mode="aspectFill" />
+        <view class="header-name">{{item.productName}}</view>
+        <view class="header-spec">{{item.specification}}</view>
+      </view>
+    </view>
+
+    <!-- 差异亮点提示 -->
+    <view class="diff-banner" wx:if="{{diffItems.length > 0}}">
+      <view class="diff-banner-icon">🌟</view>
+      <view class="diff-banner-text">
+        发现 {{diffItems.length}} 项差异：
+        <text wx:for="{{diffItems}}" wx:key="key">{{item.label}}{{index < diffItems.length - 1 ? '、' : ''}}</text>
+      </view>
+    </view>
+
+    <!-- 视图切换 -->
+    <view class="view-switcher">
+      <view class="switch-btn {{viewMode === 'radar' ? 'switch-btn-active' : ''}}" data-mode="radar" bindtap="onSwitchView">
+        🕸️ 雷达图
+      </view>
+      <view class="switch-btn {{viewMode === 'table' ? 'switch-btn-active' : ''}}" data-mode="table" bindtap="onSwitchView">
+        📊 对比表
+      </view>
+    </view>
+
+    <!-- 雷达图视图 -->
+    <view class="radar-view" wx:if="{{viewMode === 'radar'}}">
+      <view class="card radar-card">
+        <canvas
+          id="radarCanvas"
+          type="2d"
+          class="radar-canvas"
+        ></canvas>
+      </view>
+      <view class="radar-legend">
+        <view class="legend-item" wx:for="{{productHeaders}}" wx:key="traceId">
+          <view class="legend-dot" style="background: {{item.varietyColor}};"></view>
+          <text>{{item.variety}} · {{item.productName}}</text>
+        </view>
+      </view>
+      <view class="radar-tip">
+        <text>★ 标记维度为存在差异项</text>
+      </view>
+    </view>
+
+    <!-- 表格视图 -->
+    <view class="table-view" wx:if="{{viewMode === 'table'}}">
+      <view class="card compare-table">
+        <view class="table-row table-header-row">
+          <view class="table-cell table-cell-label">对比维度</view>
+          <view class="table-cell table-cell-value" wx:for="{{productHeaders}}" wx:key="traceId">
+            <view class="cell-variety-mini" style="background: {{item.varietyBg}}; color: {{item.varietyColor}};">
+              {{item.variety}}
+            </view>
+          </view>
+        </view>
+        <view
+          class="table-row {{item.isDiffRow ? 'table-row-diff' : ''}}"
+          wx:for="{{tableRows}}"
+          wx:key="key"
+        >
+          <view class="table-cell table-cell-label {{item.isDiffRow ? 'table-cell-diff-label' : ''}}">
+            <text wx:if="{{item.isDiffRow}}" class="diff-star">★</text>
+            {{item.label}}
+          </view>
+          <view
+            class="table-cell table-cell-value {{cell.isAdvantage ? 'table-cell-advantage' : ''}} {{cell.isAbnormal ? 'table-cell-abnormal' : ''}}"
+            wx:for="{{item.cells}}"
+            wx:for-item="cell"
+            wx:key="index"
+          >
+            <text class="cell-text">{{cell.display}}</text>
+            <text wx:if="{{cell.isAdvantage}}" class="advantage-arrow">↑</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 差异详情 -->
+    <view class="diff-detail card" wx:if="{{diffItems.length > 0}}">
+      <view class="diff-detail-title">🌟 差异亮点解析</view>
+      <view class="diff-detail-item" wx:for="{{diffItems}}" wx:key="key">
+        <view class="diff-item-dot"></view>
+        <view class="diff-item-text">
+          <text class="diff-dim-name">{{item.label}}</text>：
+          <text class="diff-winner">{{compareResult.products[item.advantageIndex].variety}}</text>
+          领先（{{compareResult.products[item.advantageIndex].dimensions[item.key].display}}）
+        </view>
+      </view>
+    </view>
+
+    <!-- 金桂 vs 银桂 特殊高亮 -->
+    <view class="variety-highlight card" wx:if="{{compareResult && compareResult.products.length >= 2}}">
+      <view class="highlight-title">🌸 品种差异对照</view>
+      <view class="highlight-grid">
+        <view class="highlight-row" wx:for="{{compareResult.dimensionKeys}}" wx:key="*this">
+          <view class="highlight-dim">{{compareResult.products[0].dimensions[item].label}}</view>
+          <view class="highlight-val" style="color: {{productHeaders[0].varietyColor}};">
+            {{compareResult.products[0].dimensions[item].display}}
+          </view>
+          <view class="highlight-vs">vs</view>
+          <view class="highlight-val" style="color: {{productHeaders[1].varietyColor}};">
+            {{compareResult.products[1].dimensions[item].display}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-bar">
+      <view class="btn-back-select" bindtap="onBackSelect">← 重新选择</view>
+      <view class="btn-share-img" bindtap="onShareLongImage">📷 分享对比长图</view>
+    </view>
+  </view>
+
+  <!-- ========== 分享长图 Canvas ========== -->
+  <view class="share-canvas-overlay" wx:if="{{showShareCanvas}}" bindtap="onShareCancel">
+    <view class="share-canvas-wrapper" catchtap="">
+      <canvas id="shareCanvas" type="2d" class="share-canvas"></canvas>
+      <view class="share-canvas-tip">正在生成对比长图...</view>
+    </view>
+  </view>
+
+</view>
