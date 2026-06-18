@@ -1,12 +1,12 @@
 <view class="page-container">
-
+  
   <view wx:if="{{loading}}" class="loading-container">
     <view class="loading-icon">🔍</view>
     <view class="loading-text">正在进行防伪验证...</view>
   </view>
 
   <view wx:else class="result-container">
-
+    
     <view class="verify-header {{verifyResult.scanType}}">
       <view class="verify-icon-wrapper">
         <view class="verify-icon {{verifyResult.authenticity}}">
