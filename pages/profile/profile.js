@@ -4,6 +4,8 @@ var storage = require('../../utils/storage.js');
 var greenPoints = require('../../utils/greenPoints.js');
 var certWallet = require('../../utils/certificateWallet.js');
 var dealerAuth = require('../../utils/dealerAuth.js');
+var i18n = require('../../utils/i18n/index.js');
+var theme = require('../../utils/theme.js');
 
 Page({
   data: {
@@ -21,6 +23,15 @@ Page({
     hasActivatedDealer: false,
     dealerLoggedIn: false,
     dealerUser: null,
+
+    pageClass: '',
+    currentLang: 'zh-CN',
+    currentFontSize: 'normal',
+    currentColorWeak: false,
+    currentThemeMode: 'system',
+    availableLanguages: [],
+    availableThemes: [],
+    showSettingsPanel: false,
 
     menuSections: [
       {
@@ -57,8 +68,21 @@ Page({
     }
   },
 
-  onShow: function() {
-    this.refreshUserData();
+  refreshSettings: function() {
+    var app = getApp();
+    var a11yClasses = app.globalData.a11yClasses || '';
+    var themeClass = app.globalData.themeClass || '';
+    var pageClass = a11yClasses + ' ' + themeClass;
+
+    this.setData({
+      pageClass: pageClass.trim(),
+      currentLang: i18n.getLanguage(),
+      currentFontSize: i18n.getFontSize(),
+      currentColorWeak: i18n.getColorWeak(),
+      currentThemeMode: theme.getThemeMode(),
+      availableLanguages: i18n.getAvailableLanguages(),
+      availableThemes: theme.getAvailableThemes()
+    });
   },
 
   refreshUserData: function() {
@@ -87,6 +111,8 @@ Page({
       }
     }
 
+    this.refreshSettings();
+
     this.setData({
       isLoggedIn: loggedIn,
       userInfo: userInfo,
@@ -102,6 +128,10 @@ Page({
       dealerLoggedIn: dealerAuth.isDealerLoggedIn(),
       dealerUser: dealerAuth.getDealerUser()
     });
+  },
+
+  onShow: function() {
+    this.refreshUserData();
   },
 
   onPrivacyAgree: function() {
@@ -197,6 +227,62 @@ Page({
         }
       }
     });
+  },
+
+  toggleSettingsPanel: function() {
+    this.setData({ showSettingsPanel: !this.data.showSettingsPanel });
+  },
+
+  onLanguageTap: function(e) {
+    var lang = e.currentTarget.dataset.lang;
+    if (!lang) return;
+    var app = getApp();
+    var result = app.switchLanguage(lang);
+    if (result) {
+      this.refreshSettings();
+      wx.showToast({ title: this.t('settings.changed'), icon: 'success', duration: 1500 });
+    }
+  },
+
+  onFontSizeTap: function(e) {
+    var size = e.currentTarget.dataset.size;
+    if (!size) return;
+    var app = getApp();
+    var result = app.switchFontSize(size);
+    if (result) {
+      this.refreshSettings();
+      wx.showToast({ title: this.t('settings.changed'), icon: 'success', duration: 1500 });
+    }
+  },
+
+  onColorWeakTap: function() {
+    var newValue = !this.data.currentColorWeak;
+    var app = getApp();
+    var result = app.switchColorWeak(newValue);
+    if (result) {
+      this.refreshSettings();
+      wx.showToast({ title: this.t('settings.changed'), icon: 'success', duration: 1500 });
+    }
+  },
+
+  onThemeTap: function(e) {
+    var mode = e.currentTarget.dataset.mode;
+    if (!mode) return;
+    var app = getApp();
+    var result = app.switchTheme(mode);
+    if (result) {
+      this.refreshSettings();
+      wx.showToast({ title: this.t('settings.themeChanged'), icon: 'success', duration: 1500 });
+    }
+  },
+
+  onThemeChange: function(resolvedTheme, tokens, themeClass) {
+    console.log('[Profile] 主题变化:', resolvedTheme);
+    this.refreshSettings();
+  },
+
+  t: function(key) {
+    return i18n.t.apply(i18n, arguments);
   },
 
   onMenuItemTap: function(e) {

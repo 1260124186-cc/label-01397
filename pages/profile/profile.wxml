@@ -1,4 +1,4 @@
-<view class="profile-page">
+<view class="profile-page {{pageClass}}">
   <privacy-popup
     show="{{showPrivacyPopup}}"
     bind:agree="onPrivacyAgree"
@@ -99,6 +99,116 @@
           <view class="menu-item-right">
             <view wx:if="{{dealerLoggedIn}}" class="dealer-logout" catchtap="dealerLogout">退出</view>
             <view class="menu-item-arrow">›</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="settings-entry" bindtap="toggleSettingsPanel">
+      <view class="settings-entry-icon">⚙️</view>
+      <view class="settings-entry-content">
+        <view class="settings-entry-title">{{t('settings.title')}}</view>
+        <view class="settings-entry-desc">{{t('settings.language')}} · {{t('settings.fontSize')}} · {{t('settings.theme')}}</view>
+      </view>
+      <view class="settings-entry-arrow">{{showSettingsPanel ? '▲' : '▼'}}</view>
+    </view>
+
+    <view wx:if="{{showSettingsPanel}}" class="settings-panel">
+      <view class="a11y-panel">
+        <view class="a11y-panel-title">
+          <text class="a11y-panel-title-icon">🌐</text>
+          <text>{{t('settings.language')}}</text>
+        </view>
+        <view class="a11y-row">
+          <view class="a11y-label">
+            <view class="a11y-label-stack">
+              <text class="a11y-label-text">{{t('settings.language')}}</text>
+            </view>
+          </view>
+          <view class="a11y-options">
+            <view
+              wx:for="{{availableLanguages}}"
+              wx:key="code"
+              class="a11y-option {{currentLang === item.code ? 'active' : ''}}"
+              data-lang="{{item.code}}"
+              bindtap="onLanguageTap"
+            >{{item.label}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="a11y-panel">
+        <view class="a11y-panel-title">
+          <text class="a11y-panel-title-icon">🔤</text>
+          <text>{{t('settings.fontSize')}}</text>
+        </view>
+        <view class="a11y-row">
+          <view class="a11y-label">
+            <view class="a11y-label-stack">
+              <text class="a11y-label-text">{{t('settings.fontSize')}}</text>
+            </view>
+          </view>
+          <view class="a11y-options">
+            <view
+              class="a11y-option {{currentFontSize === 'normal' ? 'active' : ''}}"
+              data-size="normal"
+              bindtap="onFontSizeTap"
+            >{{t('settings.fontSizeNormal')}}</view>
+            <view
+              class="a11y-option {{currentFontSize === 'large' ? 'active' : ''}}"
+              data-size="large"
+              bindtap="onFontSizeTap"
+            >{{t('settings.fontSizeLarge')}}</view>
+            <view
+              class="a11y-option {{currentFontSize === 'extra' ? 'active' : ''}}"
+              data-size="extra"
+              bindtap="onFontSizeTap"
+            >{{t('settings.fontSizeExtra')}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="a11y-panel">
+        <view class="a11y-panel-title">
+          <text class="a11y-panel-title-icon">👁️</text>
+          <text>{{t('settings.colorWeak')}}</text>
+        </view>
+        <view class="a11y-row">
+          <view class="a11y-label">
+            <view class="a11y-label-stack">
+              <text class="a11y-label-text">{{t('settings.colorWeak')}}</text>
+              <text class="a11y-label-desc">{{t('settings.colorWeakDesc')}}</text>
+            </view>
+          </view>
+          <view class="a11y-switch {{currentColorWeak ? 'on' : ''}}" bindtap="onColorWeakTap">
+            <view class="a11y-switch-dot"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="a11y-panel">
+        <view class="a11y-panel-title">
+          <text class="a11y-panel-title-icon">🎨</text>
+          <text>{{t('settings.theme')}}</text>
+        </view>
+        <view class="a11y-row">
+          <view class="a11y-label">
+            <view class="a11y-label-stack">
+              <text class="a11y-label-text">{{t('settings.theme')}}</text>
+              <text class="a11y-label-desc">{{t('settings.themeDesc')}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="a11y-row theme-options">
+          <view
+            wx:for="{{availableThemes}}"
+            wx:key="mode"
+            class="a11y-option theme-option {{currentThemeMode === item.mode ? 'active' : ''}}"
+            data-mode="{{item.mode}}"
+            bindtap="onThemeTap"
+          >
+            <text class="theme-option-icon">{{item.icon}}</text>
+            <text class="theme-option-label">{{item.label}}</text>
           </view>
         </view>
       </view>

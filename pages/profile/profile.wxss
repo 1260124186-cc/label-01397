@@ -1,7 +1,8 @@
 .profile-page {
   min-height: 100vh;
-  background: #F5F5F0;
+  background: var(--color-bg-primary);
   padding-bottom: calc(env(safe-area-inset-bottom) + 120rpx);
+  transition: background-color 0.3s ease;
 }
 
 .profile-header {
@@ -16,7 +17,7 @@
   left: 0;
   right: 0;
   bottom: -40rpx;
-  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 50%, #228B22 100%);
+  background: var(--gradient-header);
   border-radius: 0 0 60rpx 60rpx;
 }
 
@@ -30,6 +31,87 @@
   background-image:
     radial-gradient(circle at 20% 40%, rgba(255,255,255,0.08) 0%, transparent 50%),
     radial-gradient(circle at 80% 60%, rgba(218,165,32,0.12) 0%, transparent 40%);
+}
+
+.settings-entry {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  background: var(--color-bg-card);
+  border-radius: 24rpx;
+  margin-bottom: 32rpx;
+  box-shadow: var(--shadow-card);
+  border: 1rpx solid var(--color-border-light);
+  transition: all 0.3s ease;
+}
+
+page.theme-dark .settings-entry {
+  border-color: var(--color-border);
+}
+
+.settings-entry-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  margin-right: 24rpx;
+  background: linear-gradient(135deg, rgba(46, 139, 87, 0.1), rgba(218, 165, 32, 0.1));
+  flex-shrink: 0;
+}
+
+.settings-entry-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-entry-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 6rpx;
+}
+
+.settings-entry-desc {
+  font-size: 24rpx;
+  color: var(--color-text-hint);
+}
+
+.settings-entry-arrow {
+  font-size: 28rpx;
+  color: var(--color-text-hint);
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+.settings-panel {
+  margin-bottom: 32rpx;
+}
+
+.theme-options {
+  flex-wrap: wrap;
+  gap: 16rpx;
+  padding-top: 16rpx;
+}
+
+.theme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 32rpx;
+  min-width: 180rpx;
+  gap: 8rpx;
+}
+
+.theme-option-icon {
+  font-size: 40rpx;
+}
+
+.theme-option-label {
+  font-size: 24rpx;
 }
 
 .profile-header-content {

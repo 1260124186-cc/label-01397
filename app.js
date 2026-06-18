@@ -6,6 +6,7 @@
  */
 
 const i18n = require('./utils/i18n/index.js');
+const theme = require('./utils/theme.js');
 const auth = require('./utils/auth.js');
 const userStore = require('./utils/userStore.js');
 const greenPoints = require('./utils/greenPoints.js');
@@ -20,10 +21,13 @@ App({
     console.log('[App] 启动参数:', options);
 
     i18n.applySettingsToApp(this);
-    console.log('无障碍设置:', {
+    theme.applySettingsToApp(this);
+    console.log('无障碍与主题设置:', {
       lang: this.globalData.currentLang,
       fontSize: this.globalData.currentFontSize,
-      colorWeak: this.globalData.currentColorWeak
+      colorWeak: this.globalData.currentColorWeak,
+      themeMode: this.globalData.currentThemeMode,
+      isDarkMode: this.globalData.isDarkMode
     });
 
     this.checkPrivacyCompliance();
@@ -171,6 +175,56 @@ App({
   },
 
   /**
+   * 切换主题模式并返回新的主题数据
+   * @param {string} mode - 'system' | 'light' | 'dark'
+   */
+  switchTheme: function(mode) {
+    const ok = theme.setThemeMode(mode);
+    if (ok) {
+      theme.applySettingsToApp(this);
+      return this.getThemeData();
+    }
+    return null;
+  },
+
+  /**
+   * 获取当前主题配置
+   */
+  getThemeData: function() {
+    return {
+      currentThemeMode: theme.getThemeMode(),
+      resolvedTheme: theme.getResolvedTheme(),
+      isDarkMode: theme.isDarkMode(),
+      themeTokens: theme.getThemeTokens(),
+      themeClass: theme.getThemeClass(),
+      canvasColors: theme.getCanvasThemeColors()
+    };
+  },
+
+  /**
+   * 主题变化回调 - 由 theme.js 调用
+   */
+  onThemeChange: function(resolvedTheme, tokens, themeClass) {
+    console.log('[App] 主题变化:', resolvedTheme);
+    this.globalData.resolvedTheme = resolvedTheme;
+    this.globalData.isDarkMode = theme.isDarkMode();
+    this.globalData.themeTokens = tokens;
+    this.globalData.themeClass = themeClass;
+
+    try {
+      const pages = getCurrentPages();
+      if (pages && pages.length > 0) {
+        const currentPage = pages[pages.length - 1];
+        if (currentPage && typeof currentPage.onThemeChange === 'function') {
+          currentPage.onThemeChange(resolvedTheme, tokens, themeClass);
+        }
+      }
+    } catch (e) {
+      console.warn('[App] 通知页面主题变化失败:', e);
+    }
+  },
+
+  /**
    * 获取当前无障碍配置
    */
   getA11yData: function() {
@@ -266,6 +320,11 @@ App({
     currentColorWeak: false,
     fontMultiplier: 1.0,
     a11yClasses: 'font-normal',
+    currentThemeMode: theme.THEME_SYSTEM,
+    resolvedTheme: theme.THEME_LIGHT,
+    isDarkMode: false,
+    themeTokens: theme.getThemeTokens(),
+    themeClass: 'theme-light',
     dealerLoggedIn: false,
     dealerUser: null
   }

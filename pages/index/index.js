@@ -7,6 +7,7 @@
 const mockData = require('../../utils/mockData.js');
 const storage = require('../../utils/storage.js');
 const i18n = require('../../utils/i18n/index.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
@@ -29,6 +30,9 @@ Page({
     currentFontSize: i18n.FONT_NORMAL,
     currentColorWeak: false,
     a11yClasses: 'font-normal',
+    currentThemeMode: 'system',
+    themeClass: 'theme-light',
+    pageClass: '',
     availableLanguages: i18n.getAvailableLanguages(),
     availableFontSizes: [
       { key: i18n.FONT_NORMAL, labelZh: '标准', labelEn: 'Standard' },
@@ -161,6 +165,7 @@ Page({
   onShow: function() {
     this.setData({ inputTraceId: '', inputBatchNo: '' });
     this.refreshA11yData();
+    this.refreshThemeData();
     this.refreshI18nTexts();
     this.loadScanHistory();
     this.checkClipboard();
@@ -177,6 +182,29 @@ Page({
       currentColorWeak: a11y.colorWeak,
       a11yClasses: a11y.classes
     });
+  },
+
+  /** 刷新当前主题状态 */
+  refreshThemeData: function() {
+    var app = null;
+    try {
+      app = getApp();
+    } catch (e) {
+      // 测试环境可能没有 getApp
+    }
+    const themeClass = theme.getThemeClass();
+    const pageClass = this.data.a11yClasses + ' ' + themeClass;
+    this.setData({
+      currentThemeMode: theme.getThemeMode(),
+      themeClass: themeClass,
+      pageClass: pageClass.trim()
+    });
+  },
+
+  /** 主题变化回调 */
+  onThemeChange: function(resolvedTheme, tokens, themeClass) {
+    console.log('[Index] 主题变化:', resolvedTheme);
+    this.refreshThemeData();
   },
 
   /** 刷新页面上所有 i18n 文本字段 */

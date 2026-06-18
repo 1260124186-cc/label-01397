@@ -1,74 +1,160 @@
 /**
  * 桂花茶溯源小程序 - 全局样式文件
- * 定义：全局变量、通用样式、主题色彩
+ * 定义：主题令牌体系、通用样式、深色模式支持
  * 色系：青色(#2E8B57) + 金色(#DAA520)
  */
 
-/* ==================== CSS变量定义 ==================== */
+/* ==================== 主题令牌定义 ==================== */
 page {
+  /* ========== 颜色令牌 ========== */
   /* 主题色 - 青色系 */
-  --color-primary: #2E8B57;          /* 海绿色 - 主色调 */
-  --color-primary-light: #3CB371;    /* 中海绿 - 浅色 */
-  --color-primary-dark: #228B22;     /* 森林绿 - 深色 */
-  
+  --color-primary: #2E8B57;
+  --color-primary-light: #3CB371;
+  --color-primary-dark: #228B22;
+
   /* 辅助色 - 金色系 */
-  --color-secondary: #DAA520;        /* 金麒麟色 - 辅助主色 */
-  --color-secondary-light: #F0C75E;  /* 浅金色 */
-  --color-secondary-dark: #B8860B;   /* 暗金色 */
-  
-  /* 背景色 */
-  --bg-primary: #F5F5F0;             /* 米白色背景 */
-  --bg-secondary: #FFFFFF;           /* 白色背景 */
-  --bg-card: #FFFFFF;                /* 卡片背景 */
-  
-  /* 文字色 */
-  --text-primary: #333333;           /* 主文字 */
-  --text-secondary: #666666;         /* 次要文字 */
-  --text-hint: #999999;              /* 提示文字 */
-  --text-white: #FFFFFF;             /* 白色文字 */
-  
-  /* 边框色 */
-  --border-color: #E8E8E8;           /* 边框颜色 */
-  --border-light: #F0F0F0;           /* 浅边框 */
-  
-  /* 状态色 */
-  --color-success: #52C41A;          /* 成功 */
-  --color-warning: #FAAD14;          /* 警告 */
-  --color-error: #FF4D4F;            /* 错误 */
-  --color-info: #1890FF;             /* 信息 */
-  
-  /* 间距 */
+  --color-secondary: #DAA520;
+  --color-secondary-light: #F0C75E;
+  --color-secondary-dark: #B8860B;
+
+  /* 背景色令牌 */
+  --color-bg-primary: #F5F5F0;
+  --color-bg-secondary: #FFFFFF;
+  --color-bg-card: #FFFFFF;
+  --color-bg-elevated: #FAFAF7;
+
+  /* 文字色令牌 */
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-hint: #999999;
+  --color-text-white: #FFFFFF;
+  --color-text-inverse: #FFFFFF;
+
+  /* 边框色令牌 */
+  --color-border: #E8E8E8;
+  --color-border-light: #F0F0F0;
+  --color-border-strong: #D0D0D0;
+
+  /* 状态色令牌 */
+  --color-success: #52C41A;
+  --color-warning: #FAAD14;
+  --color-error: #FF4D4F;
+  --color-info: #1890FF;
+
+  /* 渐变令牌 */
+  --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  --gradient-secondary: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-light));
+  --gradient-header: linear-gradient(135deg, #2E8B57 0%, #3CB371 50%, #228B22 100%);
+
+  /* ========== 间距令牌 ========== */
   --spacing-xs: 8rpx;
   --spacing-sm: 16rpx;
   --spacing-md: 24rpx;
   --spacing-lg: 32rpx;
   --spacing-xl: 48rpx;
-  
-  /* 圆角 */
+  --spacing-2xl: 64rpx;
+
+  /* ========== 圆角令牌 ========== */
   --radius-sm: 8rpx;
   --radius-md: 16rpx;
   --radius-lg: 24rpx;
+  --radius-xl: 32rpx;
   --radius-round: 50%;
-  
-  /* 阴影 */
+
+  /* ========== 阴影令牌 ========== */
   --shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.16);
-  
-  /* 字体大小 */
+  --shadow-card: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+
+  /* ========== 字体大小令牌 ========== */
   --font-xs: 22rpx;
   --font-sm: 24rpx;
   --font-md: 28rpx;
   --font-lg: 32rpx;
   --font-xl: 36rpx;
   --font-xxl: 44rpx;
-  
+
+  /* ========== 行高令牌 ========== */
+  --line-height-tight: 1.4;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.8;
+
+  /* ========== 兼容旧变量名 ========== */
+  --bg-primary: var(--color-bg-primary);
+  --bg-secondary: var(--color-bg-secondary);
+  --bg-card: var(--color-bg-card);
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-hint: var(--color-text-hint);
+  --text-white: var(--color-text-white);
+  --border-color: var(--color-border);
+  --border-light: var(--color-border-light);
+
   /* 页面基础样式 */
-  background-color: var(--bg-primary);
+  background-color: var(--color-bg-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: var(--font-md);
-  color: var(--text-primary);
-  line-height: 1.6;
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ==================== 深色模式变量覆盖 ==================== */
+page.theme-dark {
+  /* 主题色 - 调整为更适合深色背景 */
+  --color-primary: #3CB371;
+  --color-primary-light: #66CDAA;
+  --color-primary-dark: #2E8B57;
+
+  /* 辅助色 */
+  --color-secondary: #F0C75E;
+  --color-secondary-light: #FFD700;
+  --color-secondary-dark: #DAA520;
+
+  /* 背景色 - 深色 */
+  --color-bg-primary: #121212;
+  --color-bg-secondary: #1E1E1E;
+  --color-bg-card: #2A2A2A;
+  --color-bg-elevated: #323232;
+
+  /* 文字色 - 深色模式下调整对比度 */
+  --color-text-primary: #E8E8E8;
+  --color-text-secondary: #A0A0A0;
+  --color-text-hint: #707070;
+  --color-text-white: #FFFFFF;
+  --color-text-inverse: #121212;
+
+  /* 边框色 - 深色模式下更明显 */
+  --color-border: #3A3A3A;
+  --color-border-light: #2F2F2F;
+  --color-border-strong: #4A4A4A;
+
+  /* 状态色 - 深色模式下更柔和 */
+  --color-success: #52C41A;
+  --color-warning: #FAAD14;
+  --color-error: #FF7875;
+  --color-info: #40A9FF;
+
+  /* 渐变 - 深色模式调整 */
+  --gradient-header: linear-gradient(135deg, #1B5E3A 0%, #2E8B57 50%, #1B5E3A 100%);
+
+  /* 阴影 - 深色模式下更柔和但有层次感 */
+  --shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 2rpx 12rpx rgba(0, 0, 0, 0.25);
+
+  /* 兼容旧变量名 */
+  --bg-primary: var(--color-bg-primary);
+  --bg-secondary: var(--color-bg-secondary);
+  --bg-card: var(--color-bg-card);
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-hint: var(--color-text-hint);
+  --text-white: var(--color-text-white);
+  --border-color: var(--color-border);
+  --border-light: var(--color-border-light);
 }
 
 /* ==================== 通用容器样式 ==================== */
@@ -78,20 +164,28 @@ page {
   min-height: 100vh;
 }
 
-/* 卡片样式 */
+/* 卡片样式 - 使用主题令牌 */
 .card {
-  background-color: var(--bg-card);
+  background-color: var(--color-bg-card);
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-card);
+  border: 1rpx solid var(--color-border-light);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* 深色模式卡片优化 - 增强边框对比度 */
+page.theme-dark .card {
+  box-shadow: var(--shadow-card);
+  border-color: var(--color-border);
 }
 
 /* 卡片标题 */
 .card-title {
   font-size: var(--font-lg);
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   margin-bottom: var(--spacing-md);
   display: flex;
   align-items: center;
@@ -106,10 +200,10 @@ page {
   margin-right: var(--spacing-sm);
 }
 
-/* ==================== 按钮样式 ==================== */
+/* ==================== 按钮样式 - 使用主题令牌 ==================== */
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-  color: var(--text-white);
+  background: var(--gradient-primary);
+  color: var(--color-text-white);
   border: none;
   border-radius: var(--radius-lg);
   padding: var(--spacing-md) var(--spacing-xl);
@@ -125,8 +219,8 @@ page {
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-light));
-  color: var(--text-white);
+  background: var(--gradient-secondary);
+  color: var(--color-text-white);
   border: none;
   border-radius: var(--radius-lg);
   padding: var(--spacing-md) var(--spacing-xl);
@@ -144,7 +238,7 @@ page {
   font-size: var(--font-md);
 }
 
-/* ==================== 文字样式 ==================== */
+/* ==================== 文字样式 - 使用主题令牌 ==================== */
 .text-primary {
   color: var(--color-primary);
 }
@@ -154,7 +248,7 @@ page {
 }
 
 .text-hint {
-  color: var(--text-hint);
+  color: var(--color-text-hint);
   font-size: var(--font-sm);
 }
 
@@ -226,14 +320,14 @@ page {
   height: 64rpx;
 }
 
-/* ==================== 分隔线 ==================== */
+/* ==================== 分隔线 - 使用主题令牌 ==================== */
 .divider {
   height: 1rpx;
-  background-color: var(--border-color);
+  background-color: var(--color-border);
   margin: var(--spacing-md) 0;
 }
 
-/* ==================== 标签样式 ==================== */
+/* ==================== 标签样式 - 使用主题令牌 ==================== */
 .tag {
   display: inline-flex;
   align-items: center;
@@ -255,6 +349,19 @@ page {
 .tag-warning {
   background-color: rgba(250, 173, 20, 0.1);
   color: var(--color-warning);
+}
+
+/* 深色模式标签透明度调整 */
+page.theme-dark .tag-success {
+  background-color: rgba(82, 196, 26, 0.15);
+}
+
+page.theme-dark .tag-primary {
+  background-color: rgba(60, 179, 113, 0.15);
+}
+
+page.theme-dark .tag-warning {
+  background-color: rgba(250, 173, 20, 0.15);
 }
 
 /* ==================== 动画 ==================== */
@@ -474,20 +581,27 @@ page.color-weak .status-badge-fail::after {
   font-weight: 900;
 }
 
-/* ==================== 无障碍设置面板（通用） ==================== */
+/* ==================== 无障碍设置面板（通用）- 使用主题令牌 ==================== */
 
 .a11y-panel {
-  background: var(--bg-secondary);
+  background: var(--color-bg-secondary);
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-md);
   margin-bottom: var(--spacing-lg);
+  border: 1rpx solid var(--color-border-light);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* 深色模式面板优化 */
+page.theme-dark .a11y-panel {
+  border-color: var(--color-border);
 }
 
 .a11y-panel-title {
   font-size: var(--font-lg);
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   margin-bottom: var(--spacing-md);
   display: flex;
   align-items: center;
@@ -502,7 +616,7 @@ page.color-weak .status-badge-fail::after {
   justify-content: space-between;
   align-items: center;
   padding: var(--spacing-md) 0;
-  border-bottom: 1rpx solid var(--border-light);
+  border-bottom: 1rpx solid var(--color-border-light);
 }
 
 .a11y-row:last-child {
@@ -511,7 +625,7 @@ page.color-weak .status-badge-fail::after {
 
 .a11y-label {
   font-size: var(--font-md);
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   display: flex;
   align-items: center;
   flex: 1;
@@ -528,7 +642,7 @@ page.color-weak .status-badge-fail::after {
 
 .a11y-label-desc {
   font-size: var(--font-sm);
-  color: var(--text-hint);
+  color: var(--color-text-hint);
   margin-top: 4rpx;
   line-height: 1.4;
 }
@@ -546,16 +660,16 @@ page.color-weak .status-badge-fail::after {
 .a11y-option {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-md);
-  border: 2rpx solid var(--border-color);
+  border: 2rpx solid var(--color-border);
   font-size: var(--font-sm);
-  color: var(--text-secondary);
-  background: var(--bg-primary);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-primary);
   transition: all 0.2s ease;
 }
 
 .a11y-option.active {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-  color: var(--text-white);
+  background: var(--gradient-primary);
+  color: var(--color-text-white);
   border-color: var(--color-primary);
   font-weight: 500;
 }
@@ -564,13 +678,13 @@ page.color-weak .status-badge-fail::after {
   width: 96rpx;
   height: 52rpx;
   border-radius: 26rpx;
-  background: var(--border-color);
+  background: var(--color-border);
   position: relative;
   transition: all 0.3s ease;
 }
 
 .a11y-switch.on {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  background: var(--gradient-primary);
 }
 
 .a11y-switch-dot {
@@ -580,12 +694,11 @@ page.color-weak .status-badge-fail::after {
   width: 44rpx;
   height: 44rpx;
   border-radius: 50%;
-  background: #FFFFFF;
-  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.15);
+  background: var(--color-text-white);
+  box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
 }
 
 .a11y-switch.on .a11y-switch-dot {
   left: 48rpx;
 }
-

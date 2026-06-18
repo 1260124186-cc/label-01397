@@ -4,6 +4,7 @@
  */
 
 const greenPoints = require('./greenPoints.js');
+const theme = require('./theme.js');
 
 var SHARE_INVITE_KEY = 'share_invite_data';
 var COUPON_KEY = 'user_coupons';
@@ -185,11 +186,14 @@ function drawShareCard(canvasId, traceData, themeColors, callback) {
       canvas.height = height * dpr;
       ctx.scale(dpr, dpr);
 
-      var primary = (themeColors && themeColors.primary) || '#2E8B57';
-      var secondary = (themeColors && themeColors.secondary) || '#DAA520';
-      var bgColor = (themeColors && themeColors.background) || '#F5F5F0';
-      var textColor = (themeColors && themeColors.text) || '#333333';
-      var lightText = (themeColors && themeColors.lightText) || '#666666';
+      var currentThemeColors = theme.getCanvasThemeColors();
+      var primary = (themeColors && themeColors.primary) || currentThemeColors.primary;
+      var secondary = (themeColors && themeColors.secondary) || currentThemeColors.secondary;
+      var bgColor = (themeColors && themeColors.background) || currentThemeColors.background;
+      var cardBg = (themeColors && themeColors.cardBg) || currentThemeColors.cardBg;
+      var textColor = (themeColors && themeColors.text) || currentThemeColors.text;
+      var lightText = (themeColors && themeColors.lightText) || currentThemeColors.lightText;
+      var borderColor = (themeColors && themeColors.border) || currentThemeColors.border;
 
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, width, height);
@@ -346,12 +350,15 @@ function drawTraceCertificate(canvasId, traceData, themeColors, callback) {
       canvas.height = height * dpr;
       ctx.scale(dpr, dpr);
 
-      var primary = (themeColors && themeColors.primary) || '#2E8B57';
-      var secondary = (themeColors && themeColors.secondary) || '#DAA520';
-      var textColor = (themeColors && themeColors.text) || '#333333';
-      var lightText = (themeColors && themeColors.lightText) || '#666666';
+      var currentThemeColors = theme.getCanvasThemeColors();
+      var primary = (themeColors && themeColors.primary) || currentThemeColors.primary;
+      var secondary = (themeColors && themeColors.secondary) || currentThemeColors.secondary;
+      var textColor = (themeColors && themeColors.text) || currentThemeColors.text;
+      var lightText = (themeColors && themeColors.lightText) || currentThemeColors.lightText;
+      var cardBg = (themeColors && themeColors.cardBg) || currentThemeColors.cardBg;
+      var borderColor = (themeColors && themeColors.border) || currentThemeColors.border;
 
-      ctx.fillStyle = '#FFFFFF';
+      ctx.fillStyle = cardBg;
       ctx.fillRect(0, 0, width, height);
 
       ctx.strokeStyle = primary;
@@ -552,7 +559,8 @@ function _drawCertSection(ctx, width, startY, title, fields, primary, secondary,
   var contentWidth = width - padding * 2;
   var rowHeight = 48;
 
-  ctx.fillStyle = '#F8F9FA';
+  var isDark = theme.isDarkMode();
+  ctx.fillStyle = isDark ? '#3A3A3A' : '#F8F9FA';
   _roundRect(ctx, padding - 15, startY, contentWidth + 30, 60 + fields.length * rowHeight, 12);
   ctx.fill();
 

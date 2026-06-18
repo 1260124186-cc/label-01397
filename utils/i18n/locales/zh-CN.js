@@ -508,6 +508,12 @@ module.exports = {
     colorWeakOn: '已开启',
     colorWeakOff: '已关闭',
     colorWeakDesc: '增强合格/不合格等状态的图案与文字区分',
+    theme: '主题',
+    themeFollowSystem: '跟随系统',
+    themeLight: '浅色模式',
+    themeDark: '深色模式',
+    themeDesc: '切换浅色/深色主题，支持跟随系统自动切换',
+    themeChanged: '主题已切换',
     settingsEntry: '⚙️ 设置',
     changed: '已更新设置'
   },

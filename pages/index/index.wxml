@@ -3,7 +3,7 @@
   功能：品牌展示、扫码溯源、手动输入查询、批量查询、扫码历史
 -->
 
-<view class="page-container {{pageLoaded ? 'page-loaded' : ''}} {{a11yClasses}}">
+<view class="page-container {{pageLoaded ? 'page-loaded' : ''}} {{pageClass}}">
 
   <!-- 剪贴板识别弹窗 -->
   <view wx:if="{{showClipboardModal}}" class="modal-overlay" catchtap="handleClipboardCancel" role="dialog" aria-label="{{i18n.clipboardTitle}}">

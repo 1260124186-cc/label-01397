@@ -439,6 +439,12 @@ module.exports = {
     colorWeakOn: 'ON',
     colorWeakOff: 'OFF',
     colorWeakDesc: 'Adds icons & patterns to PASS/FAIL states for better distinction',
+    theme: 'Theme',
+    themeFollowSystem: 'System',
+    themeLight: 'Light Mode',
+    themeDark: 'Dark Mode',
+    themeDesc: 'Switch between light/dark themes, supports system auto-switch',
+    themeChanged: 'Theme changed',
     settingsEntry: '⚙️ Settings',
     changed: 'Settings updated'
   },
