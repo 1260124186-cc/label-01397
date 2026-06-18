@@ -1,4 +1,7 @@
 const channelTrace = require('../../utils/channelTrace.js');
+const dealerAuth = require('../../utils/dealerAuth.js');
+const dealerAudit = require('../../utils/dealerAudit.js');
+const dealerSession = require('../../utils/dealerSession.js');
 
 Page({
   data: {
@@ -8,13 +11,30 @@ Page({
     quantity: 1,
     showQuantitySelector: false,
     testCodes: ['G001', 'G002', 'B-GH202503-001', 'B-GH202504-001'],
-    recentResults: []
+    recentResults: [],
+    dealerUser: null
   },
 
   onLoad: function() {
+    if (!dealerAuth.isDealerLoggedIn()) {
+      wx.redirectTo({ url: '/pages/dealer/login' });
+      return;
+    }
+    if (!dealerAuth.hasPermission('stockIn')) {
+      wx.showToast({ title: '无入库操作权限', icon: 'none' });
+      setTimeout(function() { wx.navigateBack(); }, 1000);
+      return;
+    }
+
     this.setData({
-      dealer: channelTrace.getCurrentDealer()
+      dealer: channelTrace.getCurrentDealer(),
+      dealerUser: dealerAuth.getDealerUser()
     });
+  },
+
+  onShow: function() {
+    dealerSession.updateActivity();
+    getApp().touchDealerSession();
   },
 
   onInputChange: function(e) {
@@ -44,6 +64,7 @@ Page({
   },
 
   scanCode: function() {
+    getApp().touchDealerSession();
     const that = this;
     wx.showLoading({
       title: '正在启动扫码...',
@@ -54,6 +75,10 @@ Page({
       scanType: ['qrCode', 'barCode'],
       success: function(res) {
         wx.hideLoading();
+        dealerAudit.addAuditLog(dealerAudit.ACTION_SCAN_CODE, {
+          code: res.result,
+          action: 'stockInScan'
+        });
         that.parseCode(res.result);
       },
       fail: function(err) {
@@ -77,6 +102,7 @@ Page({
   },
 
   manualParse: function() {
+    getApp().touchDealerSession();
     const code = this.data.inputCode.trim();
     if (!code) {
       wx.showToast({
@@ -108,6 +134,7 @@ Page({
   },
 
   confirmStockIn: function() {
+    getApp().touchDealerSession();
     const that = this;
     const parsed = this.data.parsedResult;
     if (!parsed) {
@@ -120,7 +147,7 @@ Page({
 
     wx.showModal({
       title: '确认入库',
-      content: `确认入库：${parsed.traceInfo.productName}\n数量：${this.data.quantity}\n来源：${parsed.traceInfo.fromDealerName}`,
+      content: '确认入库：' + parsed.traceInfo.productName + '\n数量：' + this.data.quantity + '\n来源：' + parsed.traceInfo.fromDealerName,
       success: function(res) {
         if (res.confirm) {
           that.doStockIn();
@@ -130,6 +157,7 @@ Page({
   },
 
   doStockIn: function() {
+    getApp().touchDealerSession();
     const parsed = this.data.parsedResult;
     const dealer = this.data.dealer;
 
@@ -142,6 +170,16 @@ Page({
     );
 
     if (result.success) {
+      dealerAudit.addAuditLog(dealerAudit.ACTION_STOCK_IN, {
+        code: parsed.code,
+        codeType: parsed.codeType,
+        traceId: parsed.traceInfo.traceId,
+        productName: parsed.traceInfo.productName,
+        batchNo: parsed.traceInfo.batchNo,
+        quantity: this.data.quantity,
+        fromDealerName: parsed.traceInfo.fromDealerName
+      });
+
       wx.showToast({
         title: '入库成功',
         icon: 'success'

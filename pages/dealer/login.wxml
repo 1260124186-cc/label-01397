@@ -1,0 +1,68 @@
+<view class="login-page">
+  <view class="login-header">
+    <view class="back-btn" bindtap="goBack">‹</view>
+    <view class="logo-icon">🏢</view>
+    <view class="login-title">经销商工作台</view>
+    <view class="login-subtitle">桂花茶溯源管理系统</view>
+  </view>
+
+  <view class="login-tabs">
+    <view class="tab-item {{activeTab === 'login' ? 'active' : ''}}" data-tab="login" bindtap="switchTab">账号登录</view>
+    <view class="tab-item {{activeTab === 'auth' ? 'active' : ''}}" data-tab="auth" bindtap="switchTab">授权开通</view>
+  </view>
+
+  <view wx:if="{{activeTab === 'login'}}" class="login-form">
+    <view class="form-item">
+      <text class="form-label">账号</text>
+      <input class="form-input" placeholder="请输入经销商账号" value="{{account}}" bindinput="onAccountInput" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">密码</text>
+      <input class="form-input" type="password" placeholder="请输入密码" value="{{password}}" bindinput="onPasswordInput" password="{{true}}" />
+    </view>
+
+    <view class="sample-accounts">
+      <view class="sample-title">测试账号：</view>
+      <view class="sample-list">
+        <block wx:for="{{sampleAccounts}}" wx:key="account">
+          <view class="sample-tag" data-account="{{item.account}}" bindtap="fillSampleAccount">
+            <text class="sample-role">[{{item.role}}]</text>
+            <text class="sample-account">{{item.account}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <button class="login-btn" bindtap="doLogin" loading="{{loading}}" disabled="{{loading}}">
+      登 录
+    </button>
+    <view class="login-tip">默认密码：123456</view>
+  </view>
+
+  <view wx:if="{{activeTab === 'auth'}}" class="auth-form">
+    <view class="form-item">
+      <text class="form-label">授权码</text>
+      <input class="form-input" placeholder="请输入经销商授权码" value="{{authCode}}" bindinput="onAuthCodeInput" />
+    </view>
+
+    <view class="sample-accounts">
+      <view class="sample-title">测试授权码：</view>
+      <view class="sample-list">
+        <block wx:for="{{sampleAuthCodes}}" wx:key="*this">
+          <view class="sample-tag" data-code="{{item}}" bindtap="fillSampleCode">
+            <text>{{item}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <button class="login-btn" bindtap="verifyCode" loading="{{loading}}" disabled="{{loading}}">
+      验 证 授 权
+    </button>
+    <view class="login-tip">授权码由系统管理员发放</view>
+  </view>
+
+  <view class="login-footer">
+    <text>© 2025 一茶一品·桂花茶溯源系统</text>
+  </view>
+</view>

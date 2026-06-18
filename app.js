@@ -10,6 +10,9 @@ const auth = require('./utils/auth.js');
 const userStore = require('./utils/userStore.js');
 const greenPoints = require('./utils/greenPoints.js');
 const shareUtil = require('./utils/share.js');
+const dealerSession = require('./utils/dealerSession.js');
+const dealerAuth = require('./utils/dealerAuth.js');
+const dealerAudit = require('./utils/dealerAudit.js');
 
 App({
   onLaunch: function(options) {
@@ -25,6 +28,7 @@ App({
 
     this.checkPrivacyCompliance();
     this.initUserData();
+    this.initDealerSession();
 
     if (options && options.query && options.query.invite) {
       this.globalData.pendingInviter = options.query.invite;
@@ -204,6 +208,42 @@ App({
     return 0;
   },
 
+  initDealerSession: function() {
+    var that = this;
+    dealerSession.initSession(
+      function() {
+        that.globalData.dealerLoggedIn = false;
+        that.globalData.dealerUser = null;
+      },
+      function(remainingSec) {
+        console.info('[DealerSession] 会话即将超时，剩余', remainingSec, '秒');
+      }
+    );
+    this.globalData.dealerLoggedIn = dealerAuth.isDealerLoggedIn();
+    this.globalData.dealerUser = dealerAuth.getDealerUser();
+  },
+
+  touchDealerSession: function() {
+    if (dealerAuth.isDealerLoggedIn()) {
+      dealerSession.updateActivity();
+    }
+  },
+
+  dealerLoginSuccess: function(userInfo) {
+    this.globalData.dealerLoggedIn = true;
+    this.globalData.dealerUser = userInfo;
+    dealerSession.resetSession();
+    dealerAudit.addAuditLog(dealerAudit.ACTION_LOGIN, {});
+  },
+
+  dealerLogoutSuccess: function() {
+    dealerAudit.addAuditLog(dealerAudit.ACTION_LOGOUT, { reason: 'manual' });
+    dealerAuth.dealerLogout();
+    this.globalData.dealerLoggedIn = false;
+    this.globalData.dealerUser = null;
+    dealerSession.clearTimers();
+  },
+
   /**
    * 全局数据
    * 存储应用级别的共享数据
@@ -225,6 +265,8 @@ App({
     currentFontSize: i18n.FONT_NORMAL,
     currentColorWeak: false,
     fontMultiplier: 1.0,
-    a11yClasses: 'font-normal'
+    a11yClasses: 'font-normal',
+    dealerLoggedIn: false,
+    dealerUser: null
   }
 });

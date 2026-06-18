@@ -1,0 +1,87 @@
+<view class="approval-page">
+  <view class="page-header">
+    <view class="back-btn" bindtap="goBack">‹</view>
+    <view class="header-title">出库审批</view>
+    <view class="header-right"></view>
+  </view>
+
+  <view class="tabs">
+    <view class="tab-item {{activeTab === 'pending' ? 'active' : ''}}" data-tab="pending" bindtap="switchTab">
+      待审批 <text wx:if="{{pendingList.length > 0}}" class="tab-badge">{{pendingList.length}}</text>
+    </view>
+    <view class="tab-item {{activeTab === 'approved' ? 'active' : ''}}" data-tab="approved" bindtap="switchTab">已批准</view>
+    <view class="tab-item {{activeTab === 'rejected' ? 'active' : ''}}" data-tab="rejected" bindtap="switchTab">已驳回</view>
+  </view>
+
+  <view class="approval-list">
+    <block wx:if="{{activeTab === 'pending'}}">
+      <view wx:if="{{pendingList.length === 0}}" class="empty-state">
+        <text class="empty-icon">✅</text>
+        <text class="empty-text">暂无待审批项</text>
+      </view>
+      <block wx:for="{{pendingList}}" wx:key="id">
+        <view class="approval-item pending" data-id="{{item.id}}" bindtap="viewApproval">
+          <view class="approval-icon">⏳</view>
+          <view class="approval-content">
+            <view class="approval-header">
+              <text class="approval-title">{{item.data.productName}}</text>
+              <text class="approval-status pending">待审批</text>
+            </view>
+            <view class="approval-info">数量：{{item.data.quantity}} 件</view>
+            <view class="approval-info">发往：{{item.data.toDealerName}}</view>
+            <view class="approval-info">申请人：{{item.submitUserName}}</view>
+            <view class="approval-time">{{item.submitTimeStr}}</view>
+          </view>
+          <view class="approval-arrow">›</view>
+        </view>
+      </block>
+    </block>
+
+    <block wx:if="{{activeTab === 'approved'}}">
+      <view wx:if="{{approvedList.length === 0}}" class="empty-state">
+        <text class="empty-icon">📋</text>
+        <text class="empty-text">暂无已批准项</text>
+      </view>
+      <block wx:for="{{approvedList}}" wx:key="id">
+        <view class="approval-item approved" data-id="{{item.id}}" bindtap="viewApproval">
+          <view class="approval-icon">✅</view>
+          <view class="approval-content">
+            <view class="approval-header">
+              <text class="approval-title">{{item.data.productName}}</text>
+              <text class="approval-status approved">已批准</text>
+            </view>
+            <view class="approval-info">数量：{{item.data.quantity}} 件</view>
+            <view class="approval-info">发往：{{item.data.toDealerName}}</view>
+            <view class="approval-info">批准人：{{item.approveUserName}}</view>
+            <view class="approval-time">{{item.approveTimeStr}}</view>
+          </view>
+          <view class="approval-arrow">›</view>
+        </view>
+      </block>
+    </block>
+
+    <block wx:if="{{activeTab === 'rejected'}}">
+      <view wx:if="{{rejectedList.length === 0}}" class="empty-state">
+        <text class="empty-icon">📋</text>
+        <text class="empty-text">暂无已驳回项</text>
+      </view>
+      <block wx:for="{{rejectedList}}" wx:key="id">
+        <view class="approval-item rejected" data-id="{{item.id}}" bindtap="viewApproval">
+          <view class="approval-icon">❌</view>
+          <view class="approval-content">
+            <view class="approval-header">
+              <text class="approval-title">{{item.data.productName}}</text>
+              <text class="approval-status rejected">已驳回</text>
+            </view>
+            <view class="approval-info">数量：{{item.data.quantity}} 件</view>
+            <view class="approval-info">发往：{{item.data.toDealerName}}</view>
+            <view class="approval-info">驳回人：{{item.rejectUserName}}</view>
+            <view wx:if="{{item.remark}}" class="approval-info">原因：{{item.remark}}</view>
+            <view class="approval-time">{{item.rejectTimeStr}}</view>
+          </view>
+          <view class="approval-arrow">›</view>
+        </view>
+      </block>
+    </block>
+  </view>
+</view>

@@ -6198,6 +6198,157 @@ const CHANNEL_FLOW = {
   }
 };
 
+const DEALER_ACCOUNTS = {
+  'admin_wh001': {
+    id: 'U-WH-001',
+    account: 'admin_wh001',
+    password: '123456',
+    name: '王仓管',
+    role: 'warehouse',
+    dealerId: 'D-HB-WH-001',
+    dealerName: '武汉鑫源茶业',
+    avatar: '',
+    phone: '13900000101',
+    status: 'active'
+  },
+  'sales_lx001': {
+    id: 'U-SALES-001',
+    account: 'sales_lx001',
+    password: '123456',
+    name: '李销售',
+    role: 'sales',
+    dealerId: 'D-HB-WH-001',
+    dealerName: '武汉鑫源茶业',
+    avatar: '',
+    phone: '13900000102',
+    status: 'active'
+  },
+  'admin_zq001': {
+    id: 'U-ADMIN-001',
+    account: 'admin_zq001',
+    password: '123456',
+    name: '张经理',
+    role: 'admin',
+    dealerId: 'D-HB-PROV-001',
+    dealerName: '湖北桂花茶业省级总代理',
+    avatar: '',
+    phone: '13800000001',
+    status: 'active'
+  },
+  'admin_cy001': {
+    id: 'U-ADMIN-002',
+    account: 'admin_cy001',
+    password: '123456',
+    name: '陈区域',
+    role: 'admin',
+    dealerId: 'D-HB-WH-001',
+    dealerName: '武汉鑫源茶业',
+    avatar: '',
+    phone: '13900000103',
+    status: 'active'
+  },
+  'warehouse_yc001': {
+    id: 'U-WH-002',
+    account: 'warehouse_yc001',
+    password: '123456',
+    name: '宜昌仓管',
+    role: 'warehouse',
+    dealerId: 'D-HB-YC-001',
+    dealerName: '宜昌茗香茶行',
+    avatar: '',
+    phone: '13900000201',
+    status: 'active'
+  },
+  'sales_xm001': {
+    id: 'U-SALES-002',
+    account: 'sales_xm001',
+    password: '123456',
+    name: '厦门销售',
+    role: 'sales',
+    dealerId: 'D-FJ-XM-001',
+    dealerName: '厦门鹭岛茶城',
+    avatar: '',
+    phone: '13900000301',
+    status: 'active'
+  }
+};
+
+const DEALER_AUTH_CODES = {
+  'DEALER-2025-HB-8888': {
+    code: 'DEALER-2025-HB-8888',
+    valid: true,
+    dealerId: 'D-HB-WH-001',
+    dealerName: '武汉鑫源茶业',
+    account: 'admin_cy001',
+    expireTime: Date.now() + 365 * 24 * 60 * 60 * 1000,
+    createdBy: 'system'
+  },
+  'DEALER-2025-HB-9999': {
+    code: 'DEALER-2025-HB-9999',
+    valid: true,
+    dealerId: 'D-HB-PROV-001',
+    dealerName: '湖北桂花茶业省级总代理',
+    account: 'admin_zq001',
+    expireTime: Date.now() + 365 * 24 * 60 * 60 * 1000,
+    createdBy: 'system'
+  },
+  'DEALER-2025-YC-6666': {
+    code: 'DEALER-2025-YC-6666',
+    valid: true,
+    dealerId: 'D-HB-YC-001',
+    dealerName: '宜昌茗香茶行',
+    account: 'warehouse_yc001',
+    expireTime: Date.now() + 365 * 24 * 60 * 60 * 1000,
+    createdBy: 'system'
+  },
+  'DEALER-2025-XM-7777': {
+    code: 'DEALER-2025-XM-7777',
+    valid: true,
+    dealerId: 'D-FJ-XM-001',
+    dealerName: '厦门鹭岛茶城',
+    account: 'sales_xm001',
+    expireTime: Date.now() + 365 * 24 * 60 * 60 * 1000,
+    createdBy: 'system'
+  }
+};
+
+function verifyDealerAccount(account, password) {
+  const user = DEALER_ACCOUNTS[account];
+  if (!user) return null;
+  if (user.password !== password) return null;
+  if (user.status !== 'active') return null;
+  return {
+    id: user.id,
+    account: user.account,
+    name: user.name,
+    role: user.role,
+    dealerId: user.dealerId,
+    dealerName: user.dealerName,
+    avatar: user.avatar,
+    phone: user.phone
+  };
+}
+
+function verifyDealerAuthCode(code) {
+  const authCode = DEALER_AUTH_CODES[code];
+  if (!authCode) return null;
+  if (!authCode.valid) return null;
+  if (authCode.expireTime && authCode.expireTime < Date.now()) return null;
+  return {
+    code: authCode.code,
+    valid: authCode.valid,
+    dealerId: authCode.dealerId,
+    dealerName: authCode.dealerName,
+    account: authCode.account
+  };
+}
+
+function getDealerAccountList(dealerId) {
+  const list = Object.values(DEALER_ACCOUNTS);
+  if (!dealerId) return list;
+  return list.filter(function(a) { return a.dealerId === dealerId; });
+}
+
 function getDefaultDealer() {
   return {
     id: 'D-HB-WH-001',
@@ -7288,5 +7439,8 @@ module.exports = {
   getAllVersions,
   getTeaMasterTeam,
   getTeaMasterTeamByTraceId,
-  getAllTeaMasterTeams
+  getAllTeaMasterTeams,
+  verifyDealerAccount,
+  verifyDealerAuthCode,
+  getDealerAccountList
 };

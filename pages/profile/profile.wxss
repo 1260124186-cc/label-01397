@@ -314,3 +314,31 @@
   color: #666666;
   line-height: 1.5;
 }
+
+.dealer-workbench {
+  background: linear-gradient(135deg, #F0FFF4 0%, #FFF8E1 100%);
+}
+
+.dealer-workbench .menu-item-icon {
+  background: #E8F5E9;
+}
+
+.dealer-status {
+  font-size: 22rpx;
+  color: #999;
+  margin-left: 12rpx;
+  font-weight: normal;
+}
+
+.dealer-status.online {
+  color: #2E8B57;
+}
+
+.dealer-logout {
+  font-size: 24rpx;
+  color: #ff4d4f;
+  padding: 8rpx 18rpx;
+  border: 1rpx solid #ff4d4f;
+  border-radius: 20rpx;
+  margin-right: 12rpx;
+}

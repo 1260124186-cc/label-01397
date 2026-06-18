@@ -80,6 +80,30 @@
       </view>
     </block>
 
+    <view wx:if="{{hasActivatedDealer}}" class="menu-section">
+      <view class="menu-section-title">经销商工作台</view>
+      <view class="menu-list">
+        <view class="menu-item dealer-workbench" bindtap="goToDealer">
+          <view class="menu-item-icon">🏢</view>
+          <view class="menu-item-content">
+            <view class="menu-item-name">
+              经销商工作台
+              <text wx:if="{{dealerLoggedIn && dealerUser}}" class="dealer-status online">[已登录·{{dealerUser.roleLabel}}]</text>
+              <text wx:else class="dealer-status">[未登录]</text>
+            </view>
+            <view class="menu-item-desc">
+              <text wx:if="{{dealerLoggedIn && dealerUser}}">{{dealerUser.dealerName}} · {{dealerUser.name}}</text>
+              <text wx:else>扫码出入库、窜货告警管理</text>
+            </view>
+          </view>
+          <view class="menu-item-right">
+            <view wx:if="{{dealerLoggedIn}}" class="dealer-logout" catchtap="dealerLogout">退出</view>
+            <view class="menu-item-arrow">›</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
     <view class="privacy-reminder">
       <view class="privacy-reminder-icon">🛡️</view>
       <view class="privacy-reminder-text">

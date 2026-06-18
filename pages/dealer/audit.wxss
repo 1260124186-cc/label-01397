@@ -1,0 +1,284 @@
+.audit-page {
+  min-height: 100vh;
+  background: #F5F5F0;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  background: #2E8B57;
+  padding: 24rpx 30rpx;
+  position: relative;
+}
+
+.back-btn {
+  font-size: 56rpx;
+  color: #fff;
+  width: 60rpx;
+  height: 60rpx;
+  line-height: 54rpx;
+}
+
+.header-title {
+  flex: 1;
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+.export-btn {
+  font-size: 28rpx;
+  color: #fff;
+  padding: 10rpx 20rpx;
+  border: 1rpx solid rgba(255,255,255,0.5);
+  border-radius: 8rpx;
+}
+
+.stats-bar {
+  display: flex;
+  background: #fff;
+  padding: 30rpx 0;
+  margin-bottom: 20rpx;
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #2E8B57;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: #EEE;
+  align-self: center;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 20rpx 24rpx;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.search-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #F5F5F5;
+  border-radius: 36rpx;
+  padding: 12rpx 24rpx;
+}
+
+.search-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #2E8B57;
+  padding: 12rpx 20rpx;
+  border: 1rpx solid #2E8B57;
+  border-radius: 8rpx;
+}
+
+.filter-hint {
+  color: #ff4d4f;
+  margin-left: 6rpx;
+  font-size: 24rpx;
+}
+
+.filter-panel {
+  background: #fff;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+.filter-title {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+}
+
+.filter-option {
+  padding: 12rpx 24rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: #F5F5F5;
+  border-radius: 8rpx;
+}
+
+.filter-option.active {
+  background: #E8F5E9;
+  color: #2E8B57;
+  border: 1rpx solid #2E8B57;
+}
+
+.log-list {
+  padding: 0 24rpx 40rpx;
+}
+
+.log-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.04);
+}
+
+.log-icon-wrap {
+  width: 72rpx;
+  height: 72rpx;
+  background: #F0FFF0;
+  border-radius: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.log-icon {
+  font-size: 36rpx;
+}
+
+.log-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.log-action {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.log-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.log-user {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 6rpx;
+}
+
+.log-role {
+  color: #DAA520;
+}
+
+.log-detail {
+  font-size: 24rpx;
+  color: #2E8B57;
+  margin-bottom: 4rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.log-device {
+  font-size: 22rpx;
+  color: #aaa;
+}
+
+.log-arrow {
+  font-size: 40rpx;
+  color: #ccc;
+  margin-left: 10rpx;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 120rpx 0;
+}
+
+.empty-icon {
+  display: block;
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.4;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.loading-box {
+  background: #fff;
+  padding: 40rpx 60rpx;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loading-spin {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #E8F5E9;
+  border-top-color: #2E8B57;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}

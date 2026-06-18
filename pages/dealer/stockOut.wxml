@@ -4,6 +4,12 @@
     <text class="dealer-label">当前经销商：</text>
     <text class="dealer-name">{{dealer.name}}</text>
     <text class="level-badge level-{{dealer.level}}">{{dealer.levelLabel}}</text>
+    <text wx:if="{{dealerUser}}" class="user-role-badge">{{dealerUser.roleLabel}} · {{dealerUser.name}}</text>
+  </view>
+
+  <view class="permission-tip">
+    <text class="tip-icon">ℹ️</text>
+    <text class="tip-text">出库超过 {{largeThreshold}} 件需区域经理审批</text>
   </view>
 
   <view class="scan-section">
@@ -79,6 +85,10 @@
           />
           <view class="qty-btn" bindtap="increaseQty">+</view>
         </view>
+      </view>
+      <view wx:if="{{quantity >= largeThreshold}}" class="warn-row">
+        <text class="warn-icon">⚠️</text>
+        <text class="warn-text">超过阈值 {{largeThreshold}} 件，需区域经理审批</text>
       </view>
     </view>
 

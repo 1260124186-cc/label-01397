@@ -1,5 +1,8 @@
 const channelTrace = require('../../utils/channelTrace.js');
 const mockData = require('../../utils/mockData.js');
+const dealerAuth = require('../../utils/dealerAuth.js');
+const dealerAudit = require('../../utils/dealerAudit.js');
+const dealerSession = require('../../utils/dealerSession.js');
 
 Page({
   data: {
@@ -11,16 +14,35 @@ Page({
     toDealerList: [],
     showDealerSelector: false,
     testCodes: ['G001', 'G002', 'B-GH202503-001'],
-    recentResults: []
+    recentResults: [],
+    largeThreshold: 10,
+    dealerUser: null
   },
 
   onLoad: function() {
+    if (!dealerAuth.isDealerLoggedIn()) {
+      wx.redirectTo({ url: '/pages/dealer/login' });
+      return;
+    }
+    if (!dealerAuth.hasPermission('stockOut')) {
+      wx.showToast({ title: '无出库操作权限', icon: 'none' });
+      setTimeout(function() { wx.navigateBack(); }, 1000);
+      return;
+    }
+
     const dealer = channelTrace.getCurrentDealer();
     const toDealerList = mockData.getChildDealers(dealer.id);
     this.setData({
       dealer: dealer,
-      toDealerList: toDealerList
+      toDealerList: toDealerList,
+      largeThreshold: dealerAuth.getLargeStockOutThreshold(),
+      dealerUser: dealerAuth.getDealerUser()
     });
+  },
+
+  onShow: function() {
+    dealerSession.updateActivity();
+    getApp().touchDealerSession();
   },
 
   onInputChange: function(e) {
@@ -50,6 +72,7 @@ Page({
   },
 
   scanCode: function() {
+    getApp().touchDealerSession();
     const that = this;
     wx.showLoading({
       title: '正在启动扫码...',
@@ -60,6 +83,10 @@ Page({
       scanType: ['qrCode', 'barCode'],
       success: function(res) {
         wx.hideLoading();
+        dealerAudit.addAuditLog(dealerAudit.ACTION_SCAN_CODE, {
+          code: res.result,
+          action: 'stockOutScan'
+        });
         that.parseCode(res.result);
       },
       fail: function(err) {
@@ -83,6 +110,7 @@ Page({
   },
 
   manualParse: function() {
+    getApp().touchDealerSession();
     const code = this.data.inputCode.trim();
     if (!code) {
       wx.showToast({
@@ -149,6 +177,7 @@ Page({
   },
 
   confirmStockOut: function() {
+    getApp().touchDealerSession();
     const that = this;
     const parsed = this.data.parsedResult;
     if (!parsed) {
@@ -166,9 +195,28 @@ Page({
       return;
     }
 
+    const qty = this.data.quantity;
+    const isLarge = dealerAuth.needsApprovalForStockOut(qty);
+    const hasAdminPermission = dealerAuth.hasPermission('stockOutLarge');
+
+    if (isLarge && !hasAdminPermission) {
+      wx.showModal({
+        title: '大额出库需审批',
+        content: '出库数量 ' + qty + ' 件超过阈值 ' + this.data.largeThreshold + ' 件，需区域经理审批。是否提交审批申请？',
+        confirmText: '提交审批',
+        cancelText: '取消',
+        success: function(res) {
+          if (res.confirm) {
+            that.submitApproval();
+          }
+        }
+      });
+      return;
+    }
+
     wx.showModal({
       title: '确认出库',
-      content: `确认出库：${parsed.traceInfo.productName}\n数量：${this.data.quantity}\n发往：${this.data.selectedToDealer.name}`,
+      content: '确认出库：' + parsed.traceInfo.productName + '\n数量：' + qty + (isLarge ? '（大额出库，您拥有审批权限）' : '') + '\n发往：' + that.data.selectedToDealer.name,
       success: function(res) {
         if (res.confirm) {
           that.doStockOut();
@@ -177,7 +225,53 @@ Page({
     });
   },
 
+  submitApproval: function() {
+    const that = this;
+    const parsed = this.data.parsedResult;
+    const approvalData = {
+      code: parsed.code,
+      codeType: parsed.codeType,
+      traceId: parsed.traceInfo.traceId,
+      productName: parsed.traceInfo.productName,
+      batchNo: parsed.traceInfo.batchNo,
+      quantity: this.data.quantity,
+      toDealerId: this.data.selectedToDealer.id,
+      toDealerName: this.data.selectedToDealer.name,
+      fromDealerId: this.data.dealer.id,
+      fromDealerName: this.data.dealer.name
+    };
+
+    const result = dealerAuth.submitStockOutApproval(approvalData);
+    if (result.success) {
+      dealerAudit.addAuditLog(dealerAudit.ACTION_STOCK_OUT_APPROVAL_SUBMIT, {
+        code: approvalData.code,
+        productName: approvalData.productName,
+        quantity: approvalData.quantity,
+        toDealerName: approvalData.toDealerName,
+        approvalId: result.approval.id
+      });
+
+      wx.showModal({
+        title: '审批已提交',
+        content: '您的大额出库申请已提交，请等待区域经理审批。审批通过后即可完成出库。',
+        showCancel: false,
+        confirmText: '我知道了',
+        success: function() {
+          that.setData({
+            inputCode: '',
+            parsedResult: null,
+            quantity: 1,
+            selectedToDealer: null
+          });
+        }
+      });
+    } else {
+      wx.showToast({ title: result.error || '提交失败', icon: 'none' });
+    }
+  },
+
   doStockOut: function() {
+    getApp().touchDealerSession();
     const parsed = this.data.parsedResult;
     const dealer = this.data.dealer;
     const toDealer = this.data.selectedToDealer.id === 'store' ? null : this.data.selectedToDealer;
@@ -192,6 +286,17 @@ Page({
     );
 
     if (result.success) {
+      dealerAudit.addAuditLog(dealerAudit.ACTION_STOCK_OUT, {
+        code: parsed.code,
+        codeType: parsed.codeType,
+        traceId: parsed.traceInfo.traceId,
+        productName: parsed.traceInfo.productName,
+        batchNo: parsed.traceInfo.batchNo,
+        quantity: this.data.quantity,
+        toDealerId: this.data.selectedToDealer.id,
+        toDealerName: this.data.selectedToDealer.name
+      });
+
       wx.showToast({
         title: '出库成功',
         icon: 'success'

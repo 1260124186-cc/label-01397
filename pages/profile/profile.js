@@ -3,6 +3,7 @@ var userStore = require('../../utils/userStore.js');
 var storage = require('../../utils/storage.js');
 var greenPoints = require('../../utils/greenPoints.js');
 var certWallet = require('../../utils/certificateWallet.js');
+var dealerAuth = require('../../utils/dealerAuth.js');
 
 Page({
   data: {
@@ -17,6 +18,9 @@ Page({
     unreadCount: 0,
     greenPoints: 0,
     memberLevel: {},
+    hasActivatedDealer: false,
+    dealerLoggedIn: false,
+    dealerUser: null,
 
     menuSections: [
       {
@@ -93,7 +97,10 @@ Page({
       unreadCount: unreadCount,
       greenPoints: points,
       memberLevel: level,
-      menuSections: menuSections
+      menuSections: menuSections,
+      hasActivatedDealer: dealerAuth.hasActivatedDealer(),
+      dealerLoggedIn: dealerAuth.isDealerLoggedIn(),
+      dealerUser: dealerAuth.getDealerUser()
     });
   },
 
@@ -165,6 +172,30 @@ Page({
           wx.showToast({ title: '已退出登录', icon: 'success', duration: 1500 });
         }
       }.bind(this)
+    });
+  },
+
+  goToDealer: function() {
+    if (dealerAuth.isDealerLoggedIn()) {
+      wx.navigateTo({ url: '/pages/dealer/index' });
+    } else {
+      wx.navigateTo({ url: '/pages/dealer/login' });
+    }
+  },
+
+  dealerLogout: function() {
+    var that = this;
+    wx.showModal({
+      title: '退出经销商模式',
+      content: '确定要退出经销商工作台吗？',
+      confirmColor: '#ff4d4f',
+      success: function(res) {
+        if (res.confirm) {
+          getApp().dealerLogoutSuccess();
+          that.refreshUserData();
+          wx.showToast({ title: '已退出', icon: 'success' });
+        }
+      }
     });
   },
 

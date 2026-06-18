@@ -4,6 +4,7 @@
     <text class="dealer-label">当前经销商：</text>
     <text class="dealer-name">{{dealer.name}}</text>
     <text class="level-badge level-{{dealer.level}}">{{dealer.levelLabel}}</text>
+    <text wx:if="{{dealerUser}}" class="user-role-badge">{{dealerUser.roleLabel}} · {{dealerUser.name}}</text>
   </view>
 
   <view class="scan-section">

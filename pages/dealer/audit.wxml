@@ -1,0 +1,84 @@
+<view class="audit-page">
+  <view class="page-header">
+    <view class="back-btn" bindtap="goBack">‹</view>
+    <view class="header-title">操作审计日志</view>
+    <view class="export-btn" bindtap="exportLogs">导出</view>
+  </view>
+
+  <view class="stats-bar">
+    <view class="stat-item">
+      <view class="stat-value">{{stats ? stats.total : 0}}</view>
+      <view class="stat-label">总记录</view>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <view class="stat-value">{{stats ? stats.todayCount : 0}}</view>
+      <view class="stat-label">今日</view>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <view class="stat-value">{{stats ? stats.last7DaysCount : 0}}</view>
+      <view class="stat-label">近7天</view>
+    </view>
+  </view>
+
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" placeholder="搜索操作人、产品、溯源码..." value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" bindconfirm="doSearch" />
+    </view>
+    <view class="filter-btn" bindtap="toggleFilter">
+      <text>筛选</text>
+      <text class="filter-hint">{{actionFilter ? '●' : ''}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{showFilter}}" class="filter-panel">
+    <view class="filter-title">操作类型</view>
+    <view class="filter-options">
+      <block wx:for="{{actionOptions}}" wx:key="value">
+        <view class="filter-option {{actionFilter === item.value ? 'active' : ''}}" data-value="{{item.value}}" bindtap="selectAction">
+          {{item.label}}
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="log-list">
+    <view wx:if="{{logs.length === 0}}" class="empty-state">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无审计日志</text>
+    </view>
+    <block wx:for="{{logs}}" wx:key="id">
+      <view class="log-item" data-id="{{item.id}}" bindtap="viewLogDetail">
+        <view class="log-icon-wrap">
+          <text class="log-icon">{{item.action === 'stockIn' ? '📥' : item.action === 'stockOut' ? '📤' : item.action === 'login' ? '🔐' : item.action === 'logout' ? '🚪' : item.action === 'scanCode' ? '📷' : item.action === 'resolveAlert' ? '⚠️' : item.action === 'exportAudit' ? '📤' : '📝'}}</text>
+        </view>
+        <view class="log-content">
+          <view class="log-header">
+            <text class="log-action">{{item.actionLabel}}</text>
+            <text class="log-time">{{item.timestampStr}}</text>
+          </view>
+          <view class="log-user">{{item.userName}} <text class="log-role">（{{item.userRoleLabel}}）</text></view>
+          <view wx:if="{{item.details && (item.details.code || item.details.productName)}}" class="log-detail">
+            <text wx:if="{{item.details.code}}">{{item.details.code}}</text>
+            <text wx:if="{{item.details.productName}}"> · {{item.details.productName}}</text>
+            <text wx:if="{{item.details.quantity}}"> × {{item.details.quantity}}</text>
+          </view>
+          <view class="log-device">
+            <text wx:if="{{item.device}}">{{item.device.platform}} · {{item.device.model}}</text>
+            <text wx:if="{{item.network && item.network.networkType}}"> · {{item.network.networkType}}</text>
+          </view>
+        </view>
+        <view class="log-arrow">›</view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-mask">
+    <view class="loading-box">
+      <view class="loading-spin"></view>
+      <text class="loading-text">正在导出...</text>
+    </view>
+  </view>
+</view>

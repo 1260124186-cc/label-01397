@@ -4,6 +4,83 @@
   padding-bottom: 40rpx;
 }
 
+.user-header {
+  background: white;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #E8E8E0;
+}
+
+.user-info-row {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  background: #E8F5E9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  margin-right: 20rpx;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.user-role {
+  display: flex;
+  align-items: center;
+}
+
+.role-badge {
+  font-size: 22rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+}
+
+.role-warehouse {
+  background: #E3F2FD;
+  color: #1976D2;
+}
+
+.role-sales {
+  background: #FFF3E0;
+  color: #F57C00;
+}
+
+.role-admin {
+  background: #FCE4EC;
+  color: #C2185B;
+}
+
+.user-session {
+  margin-right: 20rpx;
+}
+
+.session-text {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.logout-btn {
+  font-size: 24rpx;
+  color: #ff4d4f;
+  padding: 8rpx 20rpx;
+  border: 1rpx solid #ff4d4f;
+  border-radius: 24rpx;
+}
+
 .dealer-header {
   display: flex;
   align-items: center;
@@ -107,6 +184,31 @@
 
 .action-home {
   background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+}
+
+.action-approval {
+  background: linear-gradient(135deg, #FCE4EC 0%, #F8BBD0 100%);
+  position: relative;
+}
+
+.action-audit {
+  background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+  position: relative;
+}
+
+.action-badge {
+  position: absolute;
+  top: 12rpx;
+  right: 20rpx;
+  min-width: 36rpx;
+  height: 36rpx;
+  line-height: 36rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: white;
+  background: #ff4d4f;
+  border-radius: 18rpx;
+  padding: 0 8rpx;
 }
 
 .tabs {
