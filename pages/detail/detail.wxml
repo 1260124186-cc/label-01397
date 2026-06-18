@@ -121,6 +121,16 @@
   <!-- ==================== 主要内容区域 ==================== -->
   <view class="main-content">
 
+    <!-- ========== 储存风险预警 ========== -->
+    <view class="storage-risk-card animate-card" wx:if="{{storageRiskData && storageRiskData.hasRisk}}" bindtap="viewStorageRiskDetail">
+      <view class="storage-risk-icon">⚠️</view>
+      <view class="storage-risk-content">
+        <view class="storage-risk-title">储存风险预警</view>
+        <view class="storage-risk-desc">检测到物流过程最高温度 {{storageRiskData.maxTemp}}℃（超过 {{storageRiskData.warningThreshold}}℃），可能影响茶叶品质</view>
+      </view>
+      <view class="storage-risk-arrow">›</view>
+    </view>
+
     <!-- ========== 模块1：基础信息 ========== -->
     <view class="card animate-card module-card" id="anchor-basic" style="animation-delay: 0.1s;">
       <view class="card-title module-header" bindtap="toggleModule" data-key="basic">
@@ -190,6 +200,115 @@
             <text class="placeholder-icon">🖼️</text>
           </view>
         </view>
+      </view>
+    </view>
+
+    <!-- ========== 保质期与最佳品饮期 ========== -->
+    <view class="card animate-card module-card shelf-life-card" id="anchor-shelfLife" wx:if="{{shelfLifeData}}" style="animation-delay: 0.12s;">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="shelfLife">
+        <view class="title-left">
+          <text class="title-icon">📅</text>
+          <text>保质期与储存</text>
+        </view>
+        <view class="module-toggle {{moduleCollapsed.shelfLife ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
+        </view>
+      </view>
+      <view class="module-content {{moduleCollapsed.shelfLife ? 'hidden' : ''}}">
+
+        <!-- 状态标签 -->
+        <view class="shelf-life-status">
+          <view class="status-badge" style="background: {{shelfLifeData.statusColor}};">
+            <text class="status-icon">
+              <block wx:if="{{shelfLifeData.status === 'fresh'}}">🌱</block>
+              <block wx:elif="{{shelfLifeData.status === 'best'}}">✨</block>
+              <block wx:elif="{{shelfLifeData.status === 'declining'}}">⏰</block>
+              <block wx:else>🚫</block>
+            </text>
+            <text class="status-text">{{shelfLifeData.statusLabel}}</text>
+          </view>
+          <view class="status-remaining" wx:if="{{shelfLifeData.status !== 'expired'}}">
+            剩余 <text class="remaining-days">{{shelfLifeData.remainingDays}}</text> 天保质期
+          </view>
+          <view class="status-remaining expired" wx:else>已超出保质期</view>
+        </view>
+
+        <!-- 保质期总进度条 -->
+        <view class="shelf-life-section">
+          <view class="section-label">保质周期进度</view>
+          <view class="progress-track">
+            <view class="progress-fill" style="width: {{shelfLifeData.overallProgress}}%; background: {{shelfLifeData.statusColor}};"></view>
+            <view class="progress-marker" style="left: {{shelfLifeData.bestTasteStartProgress}}%;">
+              <view class="marker-dot"></view>
+              <view class="marker-label">最佳期开始</view>
+            </view>
+            <view class="progress-marker" style="left: {{shelfLifeData.bestTasteEndProgress}}%;">
+              <view class="marker-dot orange"></view>
+              <view class="marker-label">最佳期结束</view>
+            </view>
+          </view>
+          <view class="progress-dates">
+            <text class="date-text">{{shelfLifeData.productionDate}} 出厂</text>
+            <text class="date-text">{{shelfLifeData.bestBeforeDate}} 到期</text>
+          </view>
+        </view>
+
+        <!-- 最佳品饮期进度条 -->
+        <view class="shelf-life-section">
+          <view class="section-label">最佳品饮期进度</view>
+          <view class="best-taste-track">
+            <view class="best-taste-gradient">
+              <view class="best-taste-fill" style="width: {{shelfLifeData.bestTasteProgress}}%;"></view>
+              <view class="best-taste-cursor" style="left: {{shelfLifeData.bestTasteProgress}}%;">
+                <view class="cursor-dot"></view>
+              </view>
+            </view>
+          </view>
+          <view class="progress-meta">
+            <text class="meta-text">已进入最佳期 {{shelfLifeData.elapsedDays > shelfLifeData.bestTasteStartDays ? (shelfLifeData.elapsedDays - shelfLifeData.bestTasteStartDays) : 0}} 天</text>
+            <text class="meta-text highlight" wx:if="{{shelfLifeData.daysUntilBestEnd > 0 && shelfLifeData.daysUntilBestEnd <= 30}}">
+              📢 距最佳期结束仅 {{shelfLifeData.daysUntilBestEnd}} 天
+            </text>
+            <text class="meta-text" wx:elif="{{shelfLifeData.daysUntilBestEnd > 0}}">
+              最佳期剩余 {{shelfLifeData.daysUntilBestEnd}} 天
+            </text>
+          </view>
+        </view>
+
+        <!-- 订阅提醒开关 -->
+        <view class="shelf-life-subscribe" bindtap="toggleShelfLifeSubscription">
+          <view class="subscribe-left">
+            <view class="subscribe-icon">🔔</view>
+            <view class="subscribe-info">
+              <view class="subscribe-title">开启最佳品饮期提醒</view>
+              <view class="subscribe-desc">到期前30天将向您推送通知</view>
+            </view>
+          </view>
+          <view class="subscribe-switch {{shelfLifeSubscribed ? 'on' : ''}}">
+            <view class="switch-knob"></view>
+          </view>
+        </view>
+
+        <!-- 储存条件 -->
+        <view class="shelf-life-section">
+          <view class="section-label">储存条件</view>
+          <view class="storage-condition">
+            <text class="condition-icon">💧</text>
+            <text class="condition-text">{{shelfLifeData.storageCondition}}</text>
+          </view>
+        </view>
+
+        <!-- 储存小贴士 -->
+        <view class="shelf-life-section">
+          <view class="section-label">储存小贴士</view>
+          <view class="storage-tips">
+            <view class="tip-item" wx:for="{{shelfLifeData.storageTips}}" wx:key="*this">
+              <text class="tip-icon">💡</text>
+              <text class="tip-text">{{item}}</text>
+            </view>
+          </view>
+        </view>
+
       </view>
     </view>
 

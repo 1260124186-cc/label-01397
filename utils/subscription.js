@@ -4,7 +4,8 @@ var BATCH_SUBSCRIPTION_KEY = 'user_batch_subscriptions';
 var MESSAGE_TYPES = {
   newBatch: { key: 'newBatch', label: '新批次上市', icon: '📦', color: '#2E8B57' },
   reportUpdate: { key: 'reportUpdate', label: '检测报告更新', icon: '🔬', color: '#1890FF' },
-  promotion: { key: 'promotion', label: '促销活动', icon: '🎉', color: '#DAA520' }
+  promotion: { key: 'promotion', label: '促销活动', icon: '🎉', color: '#DAA520' },
+  bestTasteReminder: { key: 'bestTasteReminder', label: '最佳品饮期提醒', icon: '🍵', color: '#FF6B6B' }
 };
 
 var VARIETIES = [
@@ -23,7 +24,8 @@ var DEFAULT_SUBSCRIPTION = {
   messageTypes: {
     newBatch: true,
     reportUpdate: true,
-    promotion: false
+    promotion: false,
+    bestTasteReminder: true
   },
   varieties: {
     'jin-gui': true,
@@ -38,6 +40,8 @@ var DEFAULT_SUBSCRIPTION = {
   enabled: true,
   lastUpdated: Date.now()
 };
+
+var SHELF_LIFE_SUBSCRIPTION_KEY = 'user_shelf_life_subscriptions';
 
 function getSubscriptions() {
   try {
@@ -227,7 +231,95 @@ function generateMockSubscriptionNotifications() {
     });
   }
 
+  if (sub.messageTypes.bestTasteReminder) {
+    var shelfLifeSubs = getShelfLifeSubscriptions();
+    var now = Date.now();
+    var thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+    shelfLifeSubs.forEach(function(subItem) {
+      if (subItem.bestBeforeTimestamp) {
+        var diff = subItem.bestBeforeTimestamp - now;
+        if (diff > 0 && diff <= thirtyDaysMs) {
+          var daysLeft = Math.ceil(diff / (24 * 60 * 60 * 1000));
+          notifications.push({
+            type: 'bestTasteReminder',
+            title: '最佳品饮期即将结束',
+            content: '您关注的「' + (subItem.productName || '桂花茶') + '」还有' + daysLeft + '天到达最佳品饮期末尾，建议尽快饮用。',
+            extra: { traceId: subItem.traceId, batchNo: subItem.batchNo }
+          });
+        }
+      }
+    });
+  }
+
   return notifications;
+}
+
+function getShelfLifeSubscriptions() {
+  try {
+    return wx.getStorageSync(SHELF_LIFE_SUBSCRIPTION_KEY) || [];
+  } catch (e) {
+    console.error('[Subscription] 获取保质期订阅失败:', e);
+    return [];
+  }
+}
+
+function subscribeShelfLife(traceId, batchNo, productName, bestBeforeDate) {
+  if (!traceId) return getShelfLifeSubscriptions();
+  try {
+    var list = getShelfLifeSubscriptions();
+    var idx = -1;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].traceId === traceId) { idx = i; break; }
+    }
+    if (idx !== -1) return list;
+    var bestBeforeTimestamp = null;
+    if (bestBeforeDate) {
+      var dateParts = bestBeforeDate.split('-');
+      if (dateParts.length === 3) {
+        bestBeforeTimestamp = new Date(
+          parseInt(dateParts[0]),
+          parseInt(dateParts[1]) - 1,
+          parseInt(dateParts[2])
+        ).getTime();
+      }
+    }
+    list.unshift({
+      traceId: traceId,
+      batchNo: batchNo || '',
+      productName: productName || '',
+      bestBeforeDate: bestBeforeDate || '',
+      bestBeforeTimestamp: bestBeforeTimestamp,
+      subscribeTime: Date.now()
+    });
+    if (list.length > 100) list.splice(100);
+    wx.setStorageSync(SHELF_LIFE_SUBSCRIPTION_KEY, list);
+    console.info('[Subscription] 已订阅保质期提醒:', traceId);
+    return list;
+  } catch (e) {
+    console.error('[Subscription] 订阅保质期提醒失败:', e);
+    return getShelfLifeSubscriptions();
+  }
+}
+
+function unsubscribeShelfLife(traceId) {
+  try {
+    var list = getShelfLifeSubscriptions();
+    var filtered = list.filter(function(item) { return item.traceId !== traceId; });
+    wx.setStorageSync(SHELF_LIFE_SUBSCRIPTION_KEY, filtered);
+    console.info('[Subscription] 已取消保质期提醒:', traceId);
+    return filtered;
+  } catch (e) {
+    console.error('[Subscription] 取消保质期提醒失败:', e);
+    return getShelfLifeSubscriptions();
+  }
+}
+
+function isShelfLifeSubscribed(traceId) {
+  var list = getShelfLifeSubscriptions();
+  for (var i = 0; i < list.length; i++) {
+    if (list[i].traceId === traceId) return true;
+  }
+  return false;
 }
 
 module.exports = {
@@ -252,5 +344,10 @@ module.exports = {
   shouldNotify: shouldNotify,
   generateMockSubscriptionNotifications: generateMockSubscriptionNotifications,
   SUBSCRIPTION_KEY: SUBSCRIPTION_KEY,
-  BATCH_SUBSCRIPTION_KEY: BATCH_SUBSCRIPTION_KEY
+  BATCH_SUBSCRIPTION_KEY: BATCH_SUBSCRIPTION_KEY,
+  SHELF_LIFE_SUBSCRIPTION_KEY: SHELF_LIFE_SUBSCRIPTION_KEY,
+  getShelfLifeSubscriptions: getShelfLifeSubscriptions,
+  subscribeShelfLife: subscribeShelfLife,
+  unsubscribeShelfLife: unsubscribeShelfLife,
+  isShelfLifeSubscribed: isShelfLifeSubscribed
 };

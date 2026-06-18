@@ -11,10 +11,12 @@ const i18n = require('../../utils/i18n/index.js');
 const certWallet = require('../../utils/certificateWallet.js');
 const weatherUtil = require('../../utils/weather.js');
 const userStore = require('../../utils/userStore.js');
+const subscription = require('../../utils/subscription.js');
 
 // 锚点 Tab 配置（将在运行时根据语言填充 label）
 const ANCHOR_TABS_BASE = [
   { key: 'basic', icon: '📋', i18nKey: 'detail.tabs.basic' },
+  { key: 'shelfLife', icon: '📅', label: '保质期', conditional: true },
   { key: 'treeAge', icon: '🌳', i18nKey: 'detail.tabs.treeAge' },
   { key: 'location', icon: '📍', i18nKey: 'detail.tabs.location' },
   { key: 'process', icon: '🫖', i18nKey: 'detail.tabs.process' },
@@ -30,17 +32,20 @@ const ANCHOR_TABS_BASE = [
 const CORE_MODULES = ['treeAge', 'process', 'green'];
 
 /** 根据当前语言生成带标签的 Tab 列表 */
-function buildAnchorTabs(showGiftBox) {
+function buildAnchorTabs(showGiftBox, hasShelfLife) {
   return ANCHOR_TABS_BASE
     .filter(item => {
       if (!item.conditional) return true;
       if (item.key === 'giftbox') return !!showGiftBox;
+      if (item.key === 'shelfLife') return !!hasShelfLife;
       return true;
     })
     .map(item => ({
       key: item.key,
       icon: item.icon,
-      label: item.i18nKey === 'detail.tabs.giftbox' ? '礼盒组成' : i18n.t(item.i18nKey)
+      label: item.i18nKey
+        ? (item.i18nKey === 'detail.tabs.giftbox' ? '礼盒组成' : i18n.t(item.i18nKey))
+        : (item.label || item.key)
     }));
 }
 
@@ -282,7 +287,13 @@ Page({
     isViewingHistoryVersion: false,
     originalTraceData: null,
     bcVersionTxHashList: [],
-    activeBcVersion: 'current'
+    activeBcVersion: 'current',
+
+    // ========== 保质期与储存提醒 ==========
+    shelfLifeData: null,
+    storageRiskData: null,
+    shelfLifeSubscribed: false,
+    showShelfLifeDetailModal: false
   },
 
   /**
@@ -321,7 +332,7 @@ Page({
     // 用户可能从首页修改了设置，返回后立即刷新
     this.refreshA11yData();
     this.refreshI18nTexts();
-    this.setData({ anchorTabs: buildAnchorTabs(!!this.data.giftBoxInfo) });
+    this.setData({ anchorTabs: buildAnchorTabs(!!this.data.giftBoxInfo, !!this.data.shelfLifeData) });
     if (this.data.traceData) {
       this.refreshCertWalletStatus();
     }
@@ -465,6 +476,10 @@ Page({
         var versionHistory = mockData.getAllVersions(traceId);
         var versionUpdateInfo = that.checkVersionUpdate(traceId, data);
 
+        var shelfLifeData = that.calculateShelfLifeData(data);
+        var storageRiskData = that.checkStorageRisk(traceId);
+        var shelfLifeSubscribed = subscription.isShelfLifeSubscribed(traceId);
+
         that.setData({
           traceData: data,
           originalTraceData: data,
@@ -495,10 +510,13 @@ Page({
           versionHistoryList: versionHistory,
           bcVersionTxHashList: versionHistory,
           versionUpdateInfo: versionUpdateInfo,
-          showVersionUpdateToast: !!versionUpdateInfo
+          showVersionUpdateToast: !!versionUpdateInfo,
+          shelfLifeData: shelfLifeData,
+          storageRiskData: storageRiskData,
+          shelfLifeSubscribed: shelfLifeSubscribed
         });
 
-        that.setData({ anchorTabs: buildAnchorTabs(!!giftBoxInfo) });
+        that.setData({ anchorTabs: buildAnchorTabs(!!giftBoxInfo, !!shelfLifeData) });
 
         that.refreshCertWalletStatus();
 
@@ -3173,6 +3191,208 @@ Page({
           duration: 400
         });
       }, 200);
+    });
+  },
+
+  /**
+   * ==================== 保质期与储存提醒功能 ====================
+   */
+
+  /**
+   * 计算保质期进度数据
+   */
+  calculateShelfLifeData: function(traceData) {
+    if (!traceData || !traceData.basicInfo || !traceData.basicInfo.shelfLife) {
+      return null;
+    }
+
+    var shelfLife = traceData.basicInfo.shelfLife;
+    var now = new Date();
+    var todayStr = now.getFullYear() + '-' +
+      String(now.getMonth() + 1).padStart(2, '0') + '-' +
+      String(now.getDate()).padStart(2, '0');
+
+    var parseDate = function(dateStr) {
+      var parts = dateStr.split('-');
+      return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    };
+
+    var productionDate = parseDate(shelfLife.productionDate);
+    var bestBeforeDate = parseDate(shelfLife.bestBeforeDate);
+    var today = parseDate(todayStr);
+
+    var totalDays = Math.max(1, Math.ceil((bestBeforeDate - productionDate) / (24 * 60 * 60 * 1000)));
+    var elapsedDays = Math.max(0, Math.ceil((today - productionDate) / (24 * 60 * 60 * 1000)));
+    var remainingDays = Math.max(0, Math.ceil((bestBeforeDate - today) / (24 * 60 * 60 * 1000)));
+    var overallProgress = Math.min(100, Math.max(0, Math.round(elapsedDays / totalDays * 100)));
+
+    var bestTasteStartDays = shelfLife.bestTasteStartDays || 7;
+    var bestTasteEndDays = shelfLife.bestTasteEndDays || 270;
+    var bestTasteTotalDays = bestTasteEndDays - bestTasteStartDays;
+    var bestTasteElapsedDays = Math.max(0, elapsedDays - bestTasteStartDays);
+    var bestTasteProgress = Math.min(100, Math.max(0, Math.round(bestTasteElapsedDays / bestTasteTotalDays * 100)));
+
+    var bestTasteStartProgress = Math.round(bestTasteStartDays / totalDays * 100);
+    var bestTasteEndProgress = Math.round(bestTasteEndDays / totalDays * 100);
+
+    var status = 'fresh';
+    var statusLabel = '新鲜期';
+    var statusColor = '#52C41A';
+    if (elapsedDays < bestTasteStartDays) {
+      status = 'fresh';
+      statusLabel = '新鲜期';
+      statusColor = '#52C41A';
+    } else if (elapsedDays >= bestTasteStartDays && elapsedDays <= bestTasteEndDays) {
+      status = 'best';
+      statusLabel = '最佳品饮期';
+      statusColor = '#2E8B57';
+    } else if (elapsedDays > bestTasteEndDays && elapsedDays <= totalDays) {
+      status = 'declining';
+      statusLabel = '品质下降期';
+      statusColor = '#FAAD14';
+    } else {
+      status = 'expired';
+      statusLabel = '已过保质期';
+      statusColor = '#FF4D4F';
+    }
+
+    var daysUntilBestEnd = Math.max(0, bestTasteEndDays - elapsedDays);
+    var notify30DaysBefore = daysUntilBestEnd <= 30 && daysUntilBestEnd > 0;
+
+    return {
+      productionDate: shelfLife.productionDate,
+      bestBeforeDate: shelfLife.bestBeforeDate,
+      totalDays: totalDays,
+      elapsedDays: elapsedDays,
+      remainingDays: remainingDays,
+      overallProgress: overallProgress,
+      bestTasteStartProgress: bestTasteStartProgress,
+      bestTasteEndProgress: bestTasteEndProgress,
+      bestTasteProgress: bestTasteProgress,
+      status: status,
+      statusLabel: statusLabel,
+      statusColor: statusColor,
+      daysUntilBestEnd: daysUntilBestEnd,
+      notify30DaysBefore: notify30DaysBefore,
+      storageCondition: shelfLife.storageCondition,
+      storageTips: shelfLife.storageTips || []
+    };
+  },
+
+  /**
+   * 检查储存风险（物流温度是否超过35℃）
+   */
+  checkStorageRisk: function(traceId) {
+    var timeline = mockData.getSupplyChainTimeline(traceId);
+    if (!timeline || !timeline.timeline) {
+      return null;
+    }
+
+    var riskData = {
+      hasRisk: false,
+      maxTemp: null,
+      warningThreshold: 35,
+      warningRecords: [],
+      allRecords: [],
+      carrier: '',
+      waybillNo: ''
+    };
+
+    for (var i = 0; i < timeline.timeline.length; i++) {
+      var node = timeline.timeline[i];
+      if (node.type === 'logistics' && node.detail && node.detail.temperatureMonitor) {
+        var tempMonitor = node.detail.temperatureMonitor;
+        riskData.carrier = node.detail.carrier || '';
+        riskData.waybillNo = node.detail.waybillNo || '';
+        riskData.maxTemp = tempMonitor.maxTemp || null;
+        riskData.warningThreshold = tempMonitor.warningThreshold || 35;
+        riskData.allRecords = tempMonitor.records || [];
+        if (tempMonitor.tempWarning) {
+          riskData.hasRisk = true;
+          riskData.warningRecords = (tempMonitor.records || []).filter(function(r) {
+            return r.status === 'warning' || r.temp > riskData.warningThreshold;
+          });
+        }
+        break;
+      }
+    }
+
+    return riskData;
+  },
+
+  /**
+   * 切换保质期提醒订阅状态
+   */
+  toggleShelfLifeSubscription: function() {
+    var that = this;
+    var traceData = this.data.traceData;
+    if (!traceData || !traceData.basicInfo) return;
+
+    var basicInfo = traceData.basicInfo;
+    var traceId = basicInfo.traceId;
+    var batchNo = basicInfo.batchNo;
+    var productName = basicInfo.productName;
+    var bestBeforeDate = basicInfo.shelfLife ? basicInfo.shelfLife.bestBeforeDate : '';
+
+    if (this.data.shelfLifeSubscribed) {
+      subscription.unsubscribeShelfLife(traceId);
+      this.setData({ shelfLifeSubscribed: false });
+      wx.showToast({
+        title: '已关闭提醒',
+        icon: 'none',
+        duration: 1500
+      });
+    } else {
+      subscription.subscribeShelfLife(traceId, batchNo, productName, bestBeforeDate);
+      this.setData({ shelfLifeSubscribed: true });
+      wx.showToast({
+        title: '已开启提醒',
+        icon: 'success',
+        duration: 1500
+      });
+      setTimeout(function() {
+        wx.showModal({
+          title: '订阅成功',
+          content: '我们将在最佳品饮期结束前30天通过消息通知您，请保持小程序消息通知开启。',
+          showCancel: false,
+          confirmText: '知道了'
+        });
+      }, 600);
+    }
+  },
+
+  /**
+   * 打开保质期详情弹窗
+   */
+  openShelfLifeDetail: function() {
+    if (!this.data.shelfLifeData) return;
+    this.setData({ showShelfLifeDetailModal: true });
+  },
+
+  /**
+   * 关闭保质期详情弹窗
+   */
+  closeShelfLifeDetail: function() {
+    this.setData({ showShelfLifeDetailModal: false });
+  },
+
+  /**
+   * 查看储存风险详情
+   */
+  viewStorageRiskDetail: function() {
+    var risk = this.data.storageRiskData;
+    if (!risk || !risk.hasRisk) return;
+
+    var warningList = risk.warningRecords.map(function(r) {
+      return '• ' + r.time + ' ' + r.location + '：' + r.temp + '℃';
+    }).join('\n');
+
+    wx.showModal({
+      title: '储存风险预警详情',
+      content: '检测到物流运输过程中温度超过' + risk.warningThreshold + '℃，可能影响茶叶品质。\n\n异常记录：\n' + warningList + '\n\n建议：\n1. 收到茶叶后尽快转移至阴凉干燥处\n2. 建议在2个月内饮用完毕\n3. 饮用前检查茶叶是否有异味或霉变',
+      showCancel: false,
+      confirmText: '我知道了',
+      confirmColor: '#FF4D4F'
     });
   },
 

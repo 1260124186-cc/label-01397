@@ -61,7 +61,16 @@ const mockTraceData = {
       productionTime: '2025年9月25日',            // 出厂时间
       productName: '金桂花茶',                    // 产品名称
       specification: '100g/罐',                   // 规格
-      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20golden%20osmanthus%20tea%20tin%20can%20product%20photo&image_size=square'
+      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20golden%20osmanthus%20tea%20tin%20can%20product%20photo&image_size=square',
+      shelfLife: {
+        productionDate: '2025-09-25',
+        bestBeforeDate: '2026-09-25',
+        totalDays: 365,
+        bestTasteStartDays: 7,
+        bestTasteEndDays: 270,
+        storageCondition: '阴凉干燥处，避免阳光直射，温度≤25℃，湿度≤65%',
+        storageTips: ['开封后请密封保存', '建议3个月内饮用完毕', '避免与异味物品放在一起']
+      }
     },
 
     // 树龄信息（桂花茶核心特色）
@@ -512,7 +521,16 @@ const mockTraceData = {
       productionTime: '2025年9月30日',
       productName: '银桂花茶',
       specification: '100g/罐',
-      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20packaging%20elegant%20product%20photo&image_size=square'
+      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20packaging%20elegant%20product%20photo&image_size=square',
+      shelfLife: {
+        productionDate: '2025-09-30',
+        bestBeforeDate: '2026-09-30',
+        totalDays: 365,
+        bestTasteStartDays: 7,
+        bestTasteEndDays: 270,
+        storageCondition: '阴凉干燥处，避免阳光直射，温度≤25℃，湿度≤65%',
+        storageTips: ['开封后请密封保存', '建议3个月内饮用完毕', '避免与异味物品放在一起']
+      }
     },
 
 
@@ -952,7 +970,16 @@ const mockTraceData = {
       productionTime: '2025年9月25日',
       productName: '金桂花茶礼盒装',
       specification: '250g/礼盒',
-      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20golden%20osmanthus%20tea%20gift%20box%20premium%20packaging&image_size=square'
+      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20golden%20osmanthus%20tea%20gift%20box%20premium%20packaging&image_size=square',
+      shelfLife: {
+        productionDate: '2025-09-25',
+        bestBeforeDate: '2026-09-25',
+        totalDays: 365,
+        bestTasteStartDays: 7,
+        bestTasteEndDays: 270,
+        storageCondition: '阴凉干燥处，避免阳光直射，温度≤25℃，湿度≤65%',
+        storageTips: ['礼盒装开封后请将茶叶转移至密封罐', '建议6个月内饮用完毕', '避免与异味物品放在一起']
+      }
     },
 
     // 树龄信息
@@ -1161,7 +1188,16 @@ const mockTraceData = {
       productionTime: '2025年9月25日',
       productName: '金桂花茶便携装',
       specification: '3g*12袋/盒',
-      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20portable%20sachet%20packaging%20convenient&image_size=square'
+      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20portable%20sachet%20packaging%20convenient&image_size=square',
+      shelfLife: {
+        productionDate: '2025-09-25',
+        bestBeforeDate: '2026-09-25',
+        totalDays: 365,
+        bestTasteStartDays: 7,
+        bestTasteEndDays: 270,
+        storageCondition: '阴凉干燥处，避免阳光直射，温度≤25℃，湿度≤65%',
+        storageTips: ['独立小包装，开封后立即冲泡', '随身携带方便', '避免高温暴晒']
+      }
     },
 
     // 树龄信息
@@ -1367,7 +1403,16 @@ const mockTraceData = {
       productionTime: '2025年10月5日',
       productName: '丹桂窨花茶（典藏版）',
       specification: '120g/礼盒',
-      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20red%20orange%20dan%20gui%20osmanthus%20tea%20luxury%20gift%20box&image_size=square'
+      thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20red%20orange%20dan%20gui%20osmanthus%20tea%20luxury%20gift%20box&image_size=square',
+      shelfLife: {
+        productionDate: '2025-10-05',
+        bestBeforeDate: '2026-10-05',
+        totalDays: 365,
+        bestTasteStartDays: 10,
+        bestTasteEndDays: 240,
+        storageCondition: '阴凉干燥处，避免阳光直射，温度≤25℃，湿度≤65%',
+        storageTips: ['典藏版请妥善保存', '建议密封冷藏（5℃-10℃）以延长最佳口感', '避免温度剧烈波动']
+      }
     },
 
     treeAge: {
@@ -4552,6 +4597,22 @@ const SUPPLY_CHAIN_TIMELINE = {
           status: '派送中',
           estimatedDelivery: '2025-09-28',
           currentLocation: '北京市朝阳区',
+          temperatureMonitor: {
+            hasData: true,
+            maxTemp: 37.2,
+            minTemp: 22.5,
+            avgTemp: 28.3,
+            tempWarning: true,
+            warningThreshold: 35,
+            records: [
+              { time: '2025-09-25 10:00', location: '武汉出库', temp: 23.5, status: 'normal' },
+              { time: '2025-09-25 16:00', location: '武汉转运中心', temp: 25.2, status: 'normal' },
+              { time: '2025-09-26 08:00', location: '郑州转运中心', temp: 37.2, status: 'warning' },
+              { time: '2025-09-26 18:00', location: '运输途中', temp: 35.8, status: 'warning' },
+              { time: '2025-09-27 08:00', location: '石家庄转运', temp: 28.6, status: 'normal' },
+              { time: '2025-09-27 16:30', location: '北京朝阳转运中心', temp: 24.8, status: 'normal' }
+            ]
+          },
           transitStops: [
             { time: '2025-09-25 10:00', location: '武汉出库', status: '已完成' },
             { time: '2025-09-26 08:00', location: '郑州转运中心', status: '已完成' },
@@ -4805,6 +4866,22 @@ const SUPPLY_CHAIN_TIMELINE = {
           status: '已派送',
           estimatedDelivery: '2025-10-03',
           currentLocation: '上海市浦东新区',
+          temperatureMonitor: {
+            hasData: true,
+            maxTemp: 29.8,
+            minTemp: 21.2,
+            avgTemp: 25.6,
+            tempWarning: false,
+            warningThreshold: 35,
+            records: [
+              { time: '2025-09-30 09:00', location: '武汉出库', temp: 23.5, status: 'normal' },
+              { time: '2025-09-30 18:00', location: '武汉转运中心', temp: 25.2, status: 'normal' },
+              { time: '2025-10-01 12:00', location: '南京转运中心', temp: 28.6, status: 'normal' },
+              { time: '2025-10-01 20:00', location: '运输途中', temp: 29.8, status: 'normal' },
+              { time: '2025-10-02 08:00', location: '苏州转运', temp: 26.3, status: 'normal' },
+              { time: '2025-10-02 14:00', location: '上海浦东转运中心', temp: 24.1, status: 'normal' }
+            ]
+          },
           transitStops: [
             { time: '2025-09-30 09:00', location: '武汉出库', status: '已完成' },
             { time: '2025-10-01 12:00', location: '南京转运中心', status: '已完成' },

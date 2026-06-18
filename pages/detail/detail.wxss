@@ -9314,3 +9314,350 @@
   color: #ffffff;
 }
 
+/* ==================== 储存风险预警 ==================== */
+.storage-risk-card {
+  background: linear-gradient(135deg, #FFF1F0 0%, #FFE7E4 100%);
+  border-radius: 16rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  border: 2rpx solid #FFCCC7;
+  box-shadow: 0 4rpx 16rpx rgba(255, 77, 79, 0.08);
+}
+
+.storage-risk-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.storage-risk-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.storage-risk-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #CF1322;
+  margin-bottom: 6rpx;
+}
+
+.storage-risk-desc {
+  font-size: 24rpx;
+  color: #A8071A;
+  line-height: 1.5;
+}
+
+.storage-risk-arrow {
+  font-size: 36rpx;
+  color: #FF4D4F;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+/* ==================== 保质期与最佳品饮期 ==================== */
+.shelf-life-card {
+  margin-bottom: 20rpx;
+}
+
+.shelf-life-status {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32rpx;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  padding: 10rpx 24rpx;
+  border-radius: 32rpx;
+  color: #ffffff;
+}
+
+.status-icon {
+  font-size: 28rpx;
+  margin-right: 10rpx;
+}
+
+.status-text {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.status-remaining {
+  font-size: 26rpx;
+  color: #636E72;
+}
+
+.status-remaining .remaining-days {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #2E8B57;
+  margin: 0 4rpx;
+}
+
+.status-remaining.expired {
+  color: #FF4D4F;
+  font-weight: 600;
+}
+
+.shelf-life-section {
+  margin-bottom: 28rpx;
+}
+
+.shelf-life-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-label {
+  font-size: 26rpx;
+  color: #636E72;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.progress-track {
+  position: relative;
+  height: 16rpx;
+  background: #F0F0EB;
+  border-radius: 8rpx;
+  overflow: visible;
+  margin-bottom: 40rpx;
+}
+
+.progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 8rpx;
+  transition: width 0.4s ease;
+}
+
+.progress-marker {
+  position: absolute;
+  top: -6rpx;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.marker-dot {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  background: #52C41A;
+  border: 4rpx solid #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+}
+
+.marker-dot.orange {
+  background: #FAAD14;
+}
+
+.marker-label {
+  font-size: 20rpx;
+  color: #8C8C8C;
+  margin-top: 8rpx;
+  white-space: nowrap;
+}
+
+.progress-dates {
+  display: flex;
+  justify-content: space-between;
+}
+
+.date-text {
+  font-size: 22rpx;
+  color: #9CA0A4;
+}
+
+/* 最佳品饮期进度条 */
+.best-taste-track {
+  margin-bottom: 16rpx;
+}
+
+.best-taste-gradient {
+  position: relative;
+  height: 20rpx;
+  background: linear-gradient(90deg, #E8F5E9 0%, #A5D6A7 50%, #FFE0B2 100%);
+  border-radius: 10rpx;
+  overflow: visible;
+}
+
+.best-taste-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #52C41A 0%, #2E8B57 100%);
+  border-radius: 10rpx;
+  transition: width 0.4s ease;
+}
+
+.best-taste-cursor {
+  position: absolute;
+  top: -6rpx;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.cursor-dot {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4rpx solid #2E8B57;
+  box-shadow: 0 4rpx 12rpx rgba(46, 139, 87, 0.3);
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.meta-text {
+  font-size: 24rpx;
+  color: #8C8C8C;
+}
+
+.meta-text.highlight {
+  color: #FA8C16;
+  font-weight: 600;
+  background: #FFF7E6;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+/* 订阅开关 */
+.shelf-life-subscribe {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 28rpx;
+  background: linear-gradient(135deg, #F6FFED 0%, #FCFFE6 100%);
+  border-radius: 16rpx;
+  margin-bottom: 28rpx;
+  border: 2rpx solid #B7EB8F;
+}
+
+.subscribe-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.subscribe-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.subscribe-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.subscribe-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 6rpx;
+}
+
+.subscribe-desc {
+  font-size: 22rpx;
+  color: #8C8C8C;
+}
+
+.subscribe-switch {
+  width: 88rpx;
+  height: 48rpx;
+  background: #D9D9D9;
+  border-radius: 24rpx;
+  position: relative;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+  margin-left: 20rpx;
+}
+
+.subscribe-switch.on {
+  background: #52C41A;
+}
+
+.subscribe-switch .switch-knob {
+  position: absolute;
+  top: 4rpx;
+  left: 4rpx;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.subscribe-switch.on .switch-knob {
+  transform: translateX(40rpx);
+}
+
+/* 储存条件 */
+.storage-condition {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 24rpx;
+  background: #F5F5F0;
+  border-radius: 12rpx;
+}
+
+.condition-icon {
+  font-size: 32rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.condition-text {
+  font-size: 26rpx;
+  color: #595959;
+  line-height: 1.6;
+  flex: 1;
+}
+
+/* 储存小贴士 */
+.storage-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 16rpx 20rpx;
+  background: #FFFBE6;
+  border-radius: 10rpx;
+  border-left: 6rpx solid #FAAD14;
+}
+
+.tip-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  font-size: 24rpx;
+  color: #595959;
+  line-height: 1.6;
+  flex: 1;
+}
+
