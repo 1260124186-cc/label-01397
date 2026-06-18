@@ -21,7 +21,8 @@
     "pages/arExperience/arExperience",
     "pages/compare/index",
     "pages/brewEnvironment/brewEnvironment",
-    "pages/brewRecord/brewRecord"
+    "pages/brewRecord/brewRecord",
+    "pages/teaMaster/teaMaster"
   ],
   "window": {
     "backgroundTextStyle": "dark",

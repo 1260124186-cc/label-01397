@@ -888,6 +888,14 @@ Page({
     });
   },
 
+  goToTeaMaster: function(e) {
+    var teamId = e.currentTarget.dataset.teamid;
+    if (!teamId) return;
+    wx.navigateTo({
+      url: '/pages/teaMaster/teaMaster?teamId=' + teamId
+    });
+  },
+
   /**
    * 用户点击右上角分享
    * 修改为直达详情页路径，减少跳转步骤

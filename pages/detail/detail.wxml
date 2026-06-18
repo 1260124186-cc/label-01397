@@ -685,6 +685,29 @@
           </view>
         </view>
 
+        <!-- 窨制班组信息 -->
+        <view class="team-info-card" wx:if="{{traceData.scentingProcess.teaMasterTeam}}" bindtap="goToTeaMaster" data-teamid="{{traceData.scentingProcess.teaMasterTeam.teamId}}">
+          <view class="team-info-left">
+            <view class="team-icon">👨‍🍳</view>
+            <view class="team-info-content">
+              <view class="team-info-title">
+                <text>本次窨制由 </text>
+                <text class="team-name-highlight">{{traceData.scentingProcess.teaMasterTeam.teamName}}</text>
+                <text> 完成</text>
+                <text class="team-link-arrow">›</text>
+              </view>
+              <view class="team-info-sub">
+                <text class="team-master-tag">{{traceData.scentingProcess.teaMasterTeam.leaderQualification}}</text>
+                <text class="team-master-name">{{traceData.scentingProcess.teaMasterTeam.leaderNameMasked}}</text>
+                <text class="team-master-exp"> · {{traceData.scentingProcess.teaMasterTeam.leaderExperienceYears}}年经验</text>
+              </view>
+            </view>
+          </view>
+          <view class="team-info-right">
+            <text class="team-cta">查看档案</text>
+          </view>
+        </view>
+
         <!-- 环境参数 -->
         <view class="env-params">
           <view class="env-item">

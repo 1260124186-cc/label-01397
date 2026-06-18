@@ -1,0 +1,624 @@
+/**
+ * 桂花茶溯源小程序 - 制茶师/窨制班组档案页样式
+ */
+
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #F5F5F0 0%, #FAFAF5 100%);
+  padding-bottom: 40rpx;
+}
+
+/* ========== 顶部头部 ========== */
+.master-header {
+  position: relative;
+  padding: 48rpx 32rpx 80rpx;
+  overflow: hidden;
+}
+
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 50%, #228B22 100%);
+  border-radius: 0 0 48rpx 48rpx;
+}
+
+.header-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  margin-right: 28rpx;
+}
+
+.master-avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.2);
+  background: #E8F5E9;
+}
+
+.avatar-badge {
+  position: absolute;
+  bottom: -8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #DAA520, #B8860B);
+  color: #FFFFFF;
+  font-size: 20rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  white-space: nowrap;
+  box-shadow: 0 4rpx 12rpx rgba(218, 165, 32, 0.4);
+}
+
+.master-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.master-name-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.master-name {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.master-jobno {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.15);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.master-team {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 16rpx;
+}
+
+.master-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.tag-item {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+.tag-item.primary {
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.9), rgba(184, 134, 11, 0.9));
+  font-weight: 500;
+}
+
+/* ========== 核心数据卡片 ========== */
+.stats-card {
+  margin: -40rpx 24rpx 24rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx 16rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 3;
+}
+
+.stats-item {
+  flex: 1;
+  text-align: center;
+}
+
+.stats-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #2E8B57;
+  line-height: 1.2;
+}
+
+.stats-label {
+  font-size: 22rpx;
+  color: #888888;
+  margin-top: 6rpx;
+}
+
+.stats-divider {
+  width: 1rpx;
+  height: 60rpx;
+  background: #EEEEEE;
+}
+
+/* ========== Tab 导航 ========== */
+.tab-bar {
+  display: flex;
+  background: #FFFFFF;
+  margin: 0 24rpx 24rpx;
+  border-radius: 20rpx;
+  padding: 8rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 8rpx;
+  border-radius: 16rpx;
+  transition: all 0.25s ease;
+}
+
+.tab-item.active {
+  background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+}
+
+.tab-icon {
+  font-size: 36rpx;
+  margin-bottom: 4rpx;
+}
+
+.tab-label {
+  font-size: 22rpx;
+  color: #666666;
+}
+
+.tab-item.active .tab-label {
+  color: #2E8B57;
+  font-weight: 600;
+}
+
+/* ========== Tab 内容 ========== */
+.tab-content {
+  padding: 0 24rpx;
+}
+
+.tab-pane {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.title-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.section-title text:last-child {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.section-content {
+  line-height: 1.7;
+}
+
+.intro-text {
+  font-size: 28rpx;
+  color: #555555;
+  line-height: 1.8;
+}
+
+/* ========== 专长标签 ========== */
+.specialty-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.specialty-tag {
+  font-size: 26rpx;
+  color: #2E8B57;
+  background: #E8F5E9;
+  padding: 10rpx 24rpx;
+  border-radius: 24rpx;
+}
+
+/* ========== 证书列表 ========== */
+.cert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.cert-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.cert-item:last-child {
+  border-bottom: none;
+}
+
+.cert-icon {
+  font-size: 32rpx;
+  margin-right: 16rpx;
+}
+
+.cert-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.cert-arrow {
+  font-size: 32rpx;
+  color: #CCCCCC;
+}
+
+/* ========== 奖项列表 ========== */
+.award-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.award-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.award-item:last-child {
+  border-bottom: none;
+}
+
+.award-year {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #DAA520;
+  width: 100rpx;
+  flex-shrink: 0;
+}
+
+.award-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.award-title {
+  font-size: 28rpx;
+  color: #333333;
+  margin-bottom: 4rpx;
+}
+
+.award-level {
+  font-size: 22rpx;
+  color: #888888;
+}
+
+.award-arrow {
+  font-size: 32rpx;
+  color: #CCCCCC;
+  flex-shrink: 0;
+}
+
+/* ========== 工艺理念 ========== */
+.philosophy-card {
+  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+  border-radius: 24rpx;
+  padding: 40rpx 32rpx;
+  margin-bottom: 24rpx;
+  text-align: center;
+  box-shadow: 0 6rpx 20rpx rgba(218, 165, 32, 0.12);
+}
+
+.philosophy-icon {
+  font-size: 64rpx;
+  margin-bottom: 20rpx;
+}
+
+.philosophy-quote {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #5D4037;
+  line-height: 1.8;
+  margin-bottom: 20rpx;
+  font-style: italic;
+}
+
+.philosophy-author {
+  font-size: 26rpx;
+  color: #8D6E63;
+}
+
+/* ========== 资质网格 ========== */
+.qualification-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+}
+
+.qual-item {
+  display: flex;
+  align-items: center;
+  background: #FAFAF5;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.qual-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.qual-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.qual-label {
+  font-size: 22rpx;
+  color: #888888;
+  margin-bottom: 4rpx;
+}
+
+.qual-value {
+  font-size: 26rpx;
+  color: #333333;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qual-value.highlight {
+  color: #DAA520;
+  font-weight: 600;
+}
+
+/* ========== 传承信息 ========== */
+.heritage-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.heritage-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.heritage-row:last-child {
+  border-bottom: none;
+}
+
+.heritage-label {
+  font-size: 26rpx;
+  color: #888888;
+}
+
+.heritage-value {
+  font-size: 26rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+/* ========== 代表批次 ========== */
+.batch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.batch-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  border-left: 6rpx solid #2E8B57;
+}
+
+.batch-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.batch-no-badge {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.batch-year {
+  font-size: 24rpx;
+  color: #888888;
+}
+
+.batch-product {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 12rpx;
+}
+
+.batch-remark {
+  display: flex;
+  align-items: flex-start;
+  background: #FFF8E1;
+  border-radius: 12rpx;
+  padding: 12rpx 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.remark-icon {
+  font-size: 24rpx;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.remark-text {
+  font-size: 24rpx;
+  color: #5D4037;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.batch-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.batch-link {
+  font-size: 24rpx;
+  color: #2E8B57;
+  font-weight: 500;
+}
+
+/* ========== 工作照片 ========== */
+.photo-section {
+  margin-bottom: 24rpx;
+}
+
+.photo-swiper {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.swiper-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 20rpx;
+}
+
+.photo-counter {
+  position: absolute;
+  right: 24rpx;
+  bottom: 24rpx;
+  background: rgba(0, 0, 0, 0.5);
+  color: #FFFFFF;
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.photo-grid-section {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.photo-grid-item {
+  border-radius: 16rpx;
+  overflow: hidden;
+  aspect-ratio: 1;
+}
+
+.grid-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 16rpx;
+}
+
+/* ========== 空状态 ========== */
+.empty-tip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #AAAAAA;
+}
+
+/* ========== 加载状态 ========== */
+.loading-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #F5F5F0 0%, #FAFAF5 100%);
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #E0E0E0;
+  border-top-color: #2E8B57;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #888888;
+}

@@ -6501,6 +6501,176 @@ function getCompareData(traceIds) {
   };
 }
 
+// ==================== 制茶师/窨制班组数据 ====================
+
+const TEA_MASTER_TEAMS = {
+  'TM-001': {
+    teamId: 'TM-001',
+    teamName: '金桂窨制一组',
+    leaderName: '李建国',
+    leaderNameMasked: maskOperator('李建国'),
+    leaderJobNo: 'ZC2018001',
+    leaderQualification: '国家级非遗传承人',
+    leaderQualificationLevel: '特级',
+    leaderExperienceYears: 35,
+    teamSize: 8,
+    foundingYear: 2008,
+    specialty: '金桂窨制、高端产品',
+    photo: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20tea%20master%20artisan%20portrait%20traditional%20workshop%20elderly&image_size=portrait_4_3',
+    teamPhotos: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20scenting%20workshop%20team%20of%20artisans%20processing%20osmanthus%20tea&image_size=landscape_16_9',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20chinese%20tea%20master%20team%20group%20photo%20workshop&image_size=landscape_16_9'
+    ],
+    introduction: '金桂窨制一组由国家级非物质文化遗产桂花茶窨制技艺传承人李建国师傅领衔，团队成员均拥有10年以上窨制经验。团队专注于高端金桂花茶的窨制工艺，以"慢工出细活，花香入骨来"为理念，严格把控每一次窨制的温湿度、时长与配比，所产茶叶曾获多项国内外金奖。',
+    craftPhilosophy: '传承古法，守正创新。窨制如育人，需耐心、细心、恒心。花与茶的相遇，是时间的艺术，更是匠心的沉淀。',
+    representativeBatches: [
+      { batchNo: 'GH202503', productName: '金桂花茶', year: 2025, remark: '获2025年中国茶叶博览会金奖' },
+      { batchNo: 'GH202409', productName: '金桂花茶（礼盒装）', year: 2024, remark: '入选国礼茶名单' },
+      { batchNo: 'GH202306', productName: '金桂花茶', year: 2023, remark: '获世界红茶品鉴大赛银奖' }
+    ],
+    certifications: [
+      '国家级非物质文化遗产传承团队',
+      '中国茶叶学会窨制工艺示范组',
+      '2024年度全国制茶工匠班组'
+    ],
+    awards: [
+      { year: 2025, title: '中国茶叶博览会金奖', level: '国家级' },
+      { year: 2024, title: '国礼茶入选', level: '国家级' },
+      { year: 2023, title: '世界红茶品鉴大赛银奖', level: '国际级' },
+      { year: 2022, title: '省级制茶大师工作室', level: '省级' }
+    ]
+  },
+  'TM-002': {
+    teamId: 'TM-002',
+    teamName: '金桂窨制二组',
+    leaderName: '王德发',
+    leaderNameMasked: maskOperator('王德发'),
+    leaderJobNo: 'ZC2015023',
+    leaderQualification: '高级制茶师',
+    leaderQualificationLevel: '一级',
+    leaderExperienceYears: 22,
+    teamSize: 6,
+    foundingYear: 2015,
+    specialty: '金桂窨制、精品礼盒',
+    photo: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20tea%20master%20artisan%20middle%20aged%20portrait%20workshop&image_size=portrait_4_3',
+    teamPhotos: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20processing%20workshop%20team%20scenting%20premium%20tea&image_size=landscape_16_9'
+    ],
+    introduction: '金桂窨制二组由高级制茶师王德发师傅带队，主攻金桂系列精品礼盒装产品。团队在传统窨制技艺基础上，创新引入温湿度智能监控辅助，使产品稳定性大幅提升，连续三年客户满意度98%以上。',
+    craftPhilosophy: '精益求精，追求极致。每一次窨制都是对品质的承诺，让每一缕桂花香都恰到好处。',
+    representativeBatches: [
+      { batchNo: 'GH202503', productName: '金桂花茶礼盒装', year: 2025, remark: '高端礼盒六窨工艺' },
+      { batchNo: 'GH202411', productName: '金桂花茶便携装', year: 2024, remark: '年度热销产品' }
+    ],
+    certifications: [
+      '高级制茶师示范班组',
+      '质量信得过团队'
+    ],
+    awards: [
+      { year: 2024, title: '年度品质标兵班组', level: '企业级' },
+      { year: 2023, title: '创新工艺奖', level: '省级' }
+    ]
+  },
+  'TM-003': {
+    teamId: 'TM-003',
+    teamName: '银桂窨制组',
+    leaderName: '张清泉',
+    leaderNameMasked: maskOperator('张清泉'),
+    leaderJobNo: 'ZC2012008',
+    leaderQualification: '制茶技师',
+    leaderQualificationLevel: '二级',
+    leaderExperienceYears: 18,
+    teamSize: 5,
+    foundingYear: 2012,
+    specialty: '银桂窨制、清雅系列',
+    photo: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20tea%20artisan%20craftsman%20portrait%20processing%20silver%20osmanthus%20tea&image_size=portrait_4_3',
+    teamPhotos: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20processing%20workshop%20gentle%20team&image_size=landscape_16_9'
+    ],
+    introduction: '银桂窨制组专注于银桂系列清雅型桂花茶的研发与生产，由制茶技师张清泉师傅带领。团队擅长把控银桂淡雅清香的特点，窨制出的茶汤口感清甜柔和，深受年轻消费者喜爱。',
+    craftPhilosophy: '清雅为本，淡而不薄。银桂之香贵在清雅，窨制之道在于平衡，让花香与茶香和谐共生。',
+    representativeBatches: [
+      { batchNo: 'GH202504', productName: '银桂花茶', year: 2025, remark: '清雅系列代表产品' },
+      { batchNo: 'GH202408', productName: '银桂花茶', year: 2024, remark: '青年消费者首选' }
+    ],
+    certifications: [
+      '青年创新工作室'
+    ],
+    awards: [
+      { year: 2024, title: '最受年轻人喜爱产品', level: '行业级' },
+      { year: 2023, title: '创新产品奖', level: '省级' }
+    ]
+  },
+  'TM-004': {
+    teamId: 'TM-004',
+    teamName: '窨制学徒组',
+    leaderName: '刘芳',
+    leaderNameMasked: maskOperator('刘芳'),
+    leaderJobNo: 'ZC2020045',
+    leaderQualification: '制茶技师',
+    leaderQualificationLevel: '三级',
+    leaderExperienceYears: 12,
+    teamSize: 4,
+    foundingYear: 2020,
+    specialty: '标准化窨制、人才培养',
+    photo: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=young%20female%20chinese%20tea%20master%20artisan%20portrait%20modern%20workshop&image_size=portrait_4_3',
+    teamPhotos: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=young%20tea%20apprentice%20team%20learning%20scenting%20craft&image_size=landscape_16_9'
+    ],
+    introduction: '窨制学徒组由青年制茶技师刘芳带领，承担标准化窨制生产与技艺传承双重任务。团队积极探索传统工艺的标准化路径，同时为其他班组输送优秀窨制人才，是公司技艺传承的重要力量。',
+    craftPhilosophy: '薪火相传，匠心永续。学好基本功，做好每窨茶，让古老技艺在年轻一代手中焕发新生。',
+    representativeBatches: [
+      { batchNo: 'GH202504', productName: '银桂花茶', year: 2025, remark: '标准化生产示范批次' }
+    ],
+    certifications: [
+      '技艺传承示范组'
+    ],
+    awards: [
+      { year: 2024, title: '青年文明号', level: '省级' }
+    ]
+  }
+};
+
+const TRACE_TO_TEAM_MAP = {
+  'G001': 'TM-001',
+  'G002': 'TM-003',
+  'G003': 'TM-002',
+  'G004': 'TM-001'
+};
+
+function getTeaMasterTeam(teamId) {
+  return TEA_MASTER_TEAMS[teamId] || null;
+}
+
+function getTeaMasterTeamByTraceId(traceId) {
+  const teamId = TRACE_TO_TEAM_MAP[traceId];
+  if (!teamId) return null;
+  return TEA_MASTER_TEAMS[teamId] || null;
+}
+
+function getAllTeaMasterTeams() {
+  return Object.values(TEA_MASTER_TEAMS);
+}
+
+// 将班组信息注入 scentingProcess
+(function injectTeamInfo() {
+  Object.keys(TRACE_TO_TEAM_MAP).forEach(function(traceId) {
+    var traceData = mockTraceData[traceId];
+    var teamId = TRACE_TO_TEAM_MAP[traceId];
+    var team = TEA_MASTER_TEAMS[teamId];
+    if (traceData && traceData.scentingProcess && team) {
+      traceData.scentingProcess.teaMasterTeam = {
+        teamId: team.teamId,
+        teamName: team.teamName,
+        leaderName: team.leaderName,
+        leaderNameMasked: team.leaderNameMasked,
+        leaderQualification: team.leaderQualification,
+        leaderExperienceYears: team.leaderExperienceYears
+      };
+    }
+  });
+})();
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -6598,5 +6768,8 @@ module.exports = {
   getTraceVersionHistory,
   getTraceVersion,
   getVersionDiff,
-  getAllVersions
+  getAllVersions,
+  getTeaMasterTeam,
+  getTeaMasterTeamByTraceId,
+  getAllTeaMasterTeams
 };
