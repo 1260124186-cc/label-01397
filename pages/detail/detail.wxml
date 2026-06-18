@@ -2765,6 +2765,14 @@
             <text class="action-title">复制链接</text>
             <text class="action-desc">一键复制溯源链接</text>
           </view>
+
+          <view class="share-action-card" bindtap="openExportModal">
+            <view class="action-icon-wrap" style="background: linear-gradient(135deg, #13C2C2 0%, #36CFC9 100%);">
+              <text class="action-icon">📤</text>
+            </view>
+            <text class="action-title">企业数据导出</text>
+            <text class="action-desc">PDF/JSON/ZIP含水印</text>
+          </view>
         </view>
 
         <view class="share-rules-box">
@@ -3557,6 +3565,103 @@
       <view class="version-history-footer" wx:else>
         <view class="version-history-back-btn" bindtap="restoreCurrentVersion">
           <text>返回当前版本</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 企业数据导出弹窗 ==================== -->
+  <view class="export-modal {{showExportModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeExportModal">
+    <view class="export-modal-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="export-modal-header">
+        <text class="export-modal-title">📤 企业数据导出</text>
+        <view class="export-modal-close" bindtap="closeExportModal">×</view>
+      </view>
+
+      <scroll-view scroll-y="true" class="export-modal-body">
+        <view class="export-watermark-info" wx:if="{{exportWatermarkInfo}}">
+          <view class="watermark-title">
+            <text class="watermark-icon">🔒</text>
+            <text>导出文件将包含以下水印信息</text>
+          </view>
+          <view class="watermark-row">
+            <text class="watermark-label">导出人员：</text>
+            <text class="watermark-value">{{exportWatermarkInfo.exporter}}</text>
+          </view>
+          <view class="watermark-row">
+            <text class="watermark-label">导出时间：</text>
+            <text class="watermark-value">{{exportWatermarkInfo.exportTime}}</text>
+          </view>
+          <view class="watermark-row">
+            <text class="watermark-label">系统来源：</text>
+            <text class="watermark-value">{{exportWatermarkInfo.system}}</text>
+          </view>
+          <view class="watermark-disclaimer">{{exportWatermarkInfo.disclaimer}}</view>
+        </view>
+
+        <view class="export-section">
+          <view class="export-section-title">
+            <text class="section-icon">📦</text>
+            <text>选择导出格式</text>
+          </view>
+          <view class="export-format-list">
+            <view
+              wx:for="{{exportFormats}}"
+              wx:key="key"
+              class="format-item {{exportFormat === item.key ? 'active' : ''}}"
+              data-format="{{item.key}}"
+              bindtap="selectExportFormat"
+            >
+              <view class="format-radio">
+                <view class="radio-inner" wx:if="{{exportFormat === item.key}}"></view>
+              </view>
+              <view class="format-info">
+                <text class="format-name">{{item.label}}</text>
+                <text class="format-desc" wx:if="{{item.key === 'json'}}">结构化数据，便于二次处理</text>
+                <text class="format-desc" wx:elif="{{item.key === 'pdf'}}">可读报告，便于存档打印</text>
+                <text class="format-desc" wx:elif="{{item.key === 'zip'}}">多文件打包，便于批量管理</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="export-section">
+          <view class="export-section-title">
+            <text class="section-icon">📋</text>
+            <text>选择导出范围</text>
+          </view>
+          <view class="export-scope-list">
+            <view
+              wx:for="{{exportScopes}}"
+              wx:key="key"
+              class="scope-item {{exportScope === item.key ? 'active' : ''}}"
+              data-scope="{{item.key}}"
+              bindtap="selectExportScope"
+            >
+              <view class="scope-radio">
+                <view class="radio-inner" wx:if="{{exportScope === item.key}}"></view>
+              </view>
+              <view class="scope-info">
+                <text class="scope-name">{{item.label}}</text>
+                <text class="scope-desc">{{item.desc}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="export-tip-box">
+          <text class="tip-icon">💡</text>
+          <text class="tip-text">批次、检测、渠道、区块链摘要信息将根据所选范围自动包含。导出文件受区块链存证保护，仅供企业内部使用。</text>
+        </view>
+      </scroll-view>
+
+      <view class="export-modal-footer">
+        <view class="export-btn secondary" bindtap="closeExportModal">
+          <text>取消</text>
+        </view>
+        <view class="export-btn primary {{exporting ? 'disabled' : ''}}" bindtap="doExport">
+          <text wx:if="{{!exporting}}">📤 确认导出</text>
+          <text wx:else>导出中...</text>
         </view>
       </view>
     </view>

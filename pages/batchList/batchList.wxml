@@ -29,17 +29,24 @@
         <view class="batch-no">批次号：{{batchNo}}</view>
         <view class="batch-count">共 {{skuList.length}} 个SKU</view>
       </view>
+      <view class="batch-select-toggle" bindtap="toggleSelectMode">
+        <text wx:if="{{!selectMode}}">☑️ 批量导出</text>
+        <text wx:else>✖️ 取消</text>
+      </view>
     </view>
 
     <!-- SKU列表 -->
     <view class="sku-list">
       <view 
-        class="sku-item" 
+        class="sku-item {{selectMode && selectedIds.indexOf(item.traceId) >= 0 ? 'sku-item-selected' : ''}}" 
         wx:for="{{skuList}}" 
         wx:key="traceId"
         data-traceid="{{item.traceId}}"
-        bindtap="viewSkuDetail"
+        bindtap="{{selectMode ? 'toggleSelectItem' : 'viewSkuDetail'}}"
       >
+        <view wx:if="{{selectMode}}" class="sku-checkbox {{selectedIds.indexOf(item.traceId) >= 0 ? 'sku-checkbox-checked' : ''}}">
+          <text wx:if="{{selectedIds.indexOf(item.traceId) >= 0}}">✓</text>
+        </view>
         <view class="sku-image-wrapper">
           <image 
             class="sku-image" 
@@ -55,20 +62,110 @@
           <view class="sku-date">出厂：{{item.productionTime}}</view>
         </view>
         
-        <view class="sku-arrow">›</view>
+        <view wx:if="{{!selectMode}}" class="sku-arrow">›</view>
       </view>
     </view>
 
     <!-- 同批次对比入口 -->
-    <view class="batch-compare-btn" wx:if="{{skuList.length >= 2}}" bindtap="goCompare">
+    <view class="batch-compare-btn" wx:if="{{skuList.length >= 2 && !selectMode}}" bindtap="goCompare">
       <text>⚖️ 同批次规格对比</text>
     </view>
 
     <!-- 底部提示 -->
-    <view class="footer-tip">
+    <view class="footer-tip" wx:if="{{!selectMode}}">
       <text>💡 点击任意SKU查看完整溯源信息</text>
     </view>
 
+    <!-- 批量导出底部栏 -->
+    <view wx:if="{{selectMode}}" class="batch-export-bar">
+      <view class="export-select-all" bindtap="selectAll">
+        <view class="sku-checkbox {{selectedIds.length === skuList.length && skuList.length > 0 ? 'sku-checkbox-checked' : ''}}">
+          <text wx:if="{{selectedIds.length === skuList.length && skuList.length > 0}}">✓</text>
+        </view>
+        <text class="export-select-all-text">全选</text>
+      </view>
+      <view class="export-selected-count">已选 {{selectedIds.length}} 项</view>
+      <view class="batch-export-btn {{selectedIds.length === 0 ? 'disabled' : ''}}" bindtap="openBatchExport">
+        📤 批量导出
+      </view>
+    </view>
+
+  </view>
+
+  <!-- 批量导出配置弹窗 -->
+  <view wx:if="{{showExportModal}}" class="export-modal-mask" catchtap="closeExportModal">
+    <view class="export-modal" catchtap="">
+      <view class="export-modal-title">企业数据批量导出</view>
+      <view class="export-modal-subtitle">已选 {{selectedIds.length}} 条溯源数据</view>
+
+      <view wx:if="{{exportWatermarkInfo}}" class="export-watermark-info">
+        <view class="export-watermark-item">
+          <text class="export-watermark-label">导出人：</text>
+          <text class="export-watermark-value">{{exportWatermarkInfo.exporter}}</text>
+        </view>
+        <view class="export-watermark-item">
+          <text class="export-watermark-label">导出时间：</text>
+          <text class="export-watermark-value">{{exportWatermarkInfo.exportTime}}</text>
+        </view>
+        <view class="export-watermark-item">
+          <text class="export-watermark-label">系统：</text>
+          <text class="export-watermark-value">{{exportWatermarkInfo.system}}</text>
+        </view>
+        <view class="export-watermark-item">
+          <text class="export-watermark-label">声明：</text>
+          <text class="export-watermark-value">{{exportWatermarkInfo.disclaimer}}</text>
+        </view>
+      </view>
+
+      <view class="export-section">
+        <view class="export-section-title"><text class="export-section-title-icon">📄</text>选择导出格式</view>
+        <view class="export-format-list">
+          <view 
+            class="export-format-item {{exportFormat === item.key ? 'selected' : ''}}"
+            wx:for="{{exportFormats}}"
+            wx:key="key"
+            data-key="{{item.key}}"
+            bindtap="selectExportFormat"
+          >
+            <view class="export-item-radio">
+              <view class="export-item-radio-inner"></view>
+            </view>
+            <view class="export-item-content">
+              <view class="export-item-title">{{item.title}}</view>
+              <view class="export-item-desc">{{item.desc}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="export-section">
+        <view class="export-section-title"><text class="export-section-title-icon">🎯</text>选择导出范围</view>
+        <view class="export-scope-list">
+          <view 
+            class="export-scope-item {{exportScope === item.key ? 'selected' : ''}}"
+            wx:for="{{exportScopes}}"
+            wx:key="key"
+            data-key="{{item.key}}"
+            bindtap="selectExportScope"
+          >
+            <view class="export-item-radio">
+              <view class="export-item-radio-inner"></view>
+            </view>
+            <view class="export-item-content">
+              <view class="export-item-title">{{item.title}}</view>
+              <view class="export-item-desc">{{item.desc}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="export-modal-footer">
+        <view class="export-cancel-btn" bindtap="closeExportModal">取消</view>
+        <view class="export-confirm-btn {{exporting ? 'disabled' : ''}}" bindtap="doBatchExport">
+          {{exporting ? '导出中...' : '确认导出'}}
+        </view>
+      </view>
+    </view>
   </view>
 
 </view>

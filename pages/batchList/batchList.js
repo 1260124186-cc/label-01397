@@ -5,13 +5,32 @@
  */
 
 const mockData = require('../../utils/mockData.js');
+const traceExport = require('../../utils/traceExport.js');
+const userStore = require('../../utils/userStore.js');
 
 Page({
   data: {
     batchNo: '',
     skuList: [],
     loading: true,
-    empty: false
+    empty: false,
+    selectMode: false,
+    selectedIds: [],
+    showExportModal: false,
+    exportFormat: traceExport.EXPORT_FORMAT.JSON,
+    exportScope: traceExport.EXPORT_SCOPE.FULL,
+    exportFormats: [
+      { key: traceExport.EXPORT_FORMAT.JSON, title: 'JSON 数据', desc: '结构化数据，便于系统对接' },
+      { key: traceExport.EXPORT_FORMAT.PDF, title: 'PDF 报告', desc: '小程序环境为文本报告，PC端可转换' },
+      { key: traceExport.EXPORT_FORMAT.ZIP, title: 'ZIP 数据包', desc: '含多份数据与清单' }
+    ],
+    exportScopes: [
+      { key: traceExport.EXPORT_SCOPE.TEST_ONLY, title: '仅检测报告', desc: '农药残留检测数据' },
+      { key: traceExport.EXPORT_SCOPE.GREEN_ONLY, title: '仅绿色溯源', desc: '种植/采摘/窨制溯源' },
+      { key: traceExport.EXPORT_SCOPE.FULL, title: '完整数据包', desc: '批次+检测+渠道+区块链全部' }
+    ],
+    exporting: false,
+    exportWatermarkInfo: null
   },
 
   onLoad: function(options) {
@@ -92,5 +111,97 @@ Page({
     wx.navigateTo({
       url: '/pages/compare/index?batchNo=' + this.data.batchNo
     });
+  },
+
+  toggleSelectMode: function() {
+    const selectMode = !this.data.selectMode;
+    this.setData({
+      selectMode: selectMode,
+      selectedIds: selectMode ? this.data.selectedIds : []
+    });
+  },
+
+  toggleSelectItem: function(e) {
+    const traceId = e.currentTarget.dataset.traceid;
+    const selectedIds = this.data.selectedIds.slice();
+    const idx = selectedIds.indexOf(traceId);
+    if (idx >= 0) {
+      selectedIds.splice(idx, 1);
+    } else {
+      selectedIds.push(traceId);
+    }
+    this.setData({ selectedIds: selectedIds });
+  },
+
+  selectAll: function() {
+    if (this.data.selectedIds.length === this.data.skuList.length) {
+      this.setData({ selectedIds: [] });
+    } else {
+      this.setData({ selectedIds: this.data.skuList.map(s => s.traceId) });
+    }
+  },
+
+  openBatchExport: function() {
+    if (this.data.selectedIds.length === 0) {
+      wx.showToast({ title: '请先勾选要导出的溯源', icon: 'none' });
+      return;
+    }
+    const userInfo = userStore.getUserInfo() || {};
+    const now = new Date();
+    const pad = n => (n < 10 ? '0' + n : '' + n);
+    const watermark = {
+      exporter: userInfo.nickname || userInfo.phone || '企业采购用户',
+      exportTime: `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`,
+      system: '桂花茶绿色溯源平台 · 企业采购端',
+      version: 'v1.0.0',
+      disclaimer: '本数据仅供企业采购内部使用，未经授权不得外传'
+    };
+    this.setData({
+      showExportModal: true,
+      exportWatermarkInfo: watermark
+    });
+  },
+
+  closeExportModal: function() {
+    this.setData({ showExportModal: false });
+  },
+
+  selectExportFormat: function(e) {
+    this.setData({ exportFormat: e.currentTarget.dataset.key });
+  },
+
+  selectExportScope: function(e) {
+    this.setData({ exportScope: e.currentTarget.dataset.key });
+  },
+
+  doBatchExport: function() {
+    if (this.data.exporting) return;
+    const traceIds = this.data.selectedIds;
+    if (traceIds.length === 0) {
+      wx.showToast({ title: '请先勾选', icon: 'none' });
+      return;
+    }
+    this.setData({ exporting: true });
+    const that = this;
+    traceExport.doExport(traceIds, this.data.exportFormat, this.data.exportScope)
+      .then(result => {
+        that.setData({ exporting: false, showExportModal: false, selectMode: false, selectedIds: [] });
+        wx.showModal({
+          title: '导出成功',
+          content: `已导出 ${traceIds.length} 条溯源数据\n文件：${result.fileName}\n${result.format === 'PDF' ? '小程序环境以文本报告导出，可在PC端转换为PDF' : ''}${result.format === 'ZIP' ? '小程序环境以JSON Bundle导出，含清单与多份数据' : ''}`,
+          confirmText: '打开文件',
+          cancelText: '知道了',
+          success(res) {
+            if (res.confirm) {
+              traceExport.openExportedFile(result.filePath, result.fileName);
+            }
+          }
+        });
+      })
+      .catch(err => {
+        that.setData({ exporting: false });
+        console.error('批量导出失败：', err);
+        wx.showToast({ title: err.message || '导出失败', icon: 'none' });
+      });
   }
 });

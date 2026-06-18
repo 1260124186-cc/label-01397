@@ -15,6 +15,7 @@ const subscription = require('../../utils/subscription.js');
 const reviewTrust = require('../../utils/reviewTrust.js');
 const tts = require('../../utils/tts.js');
 const marketingAnalytics = require('../../utils/marketingAnalytics.js');
+const traceExport = require('../../utils/traceExport.js');
 
 // 锚点 Tab 配置（将在运行时根据语言填充 label）
 const ANCHOR_TABS_BASE = [
@@ -328,7 +329,23 @@ Page({
     ttsProgress: 0,
     ttsShowControl: false,
     ttsSpeed: 1.0,
-    ttsVolume: 1.0
+    ttsVolume: 1.0,
+
+    showExportModal: false,
+    exportFormat: traceExport.EXPORT_FORMAT.JSON,
+    exportScope: traceExport.EXPORT_SCOPE.FULL,
+    exportFormats: [
+      { key: traceExport.EXPORT_FORMAT.JSON, label: traceExport.FORMAT_LABELS[traceExport.EXPORT_FORMAT.JSON] },
+      { key: traceExport.EXPORT_FORMAT.PDF, label: traceExport.FORMAT_LABELS[traceExport.EXPORT_FORMAT.PDF] },
+      { key: traceExport.EXPORT_FORMAT.ZIP, label: traceExport.FORMAT_LABELS[traceExport.EXPORT_FORMAT.ZIP] }
+    ],
+    exportScopes: [
+      { key: traceExport.EXPORT_SCOPE.TEST_ONLY, label: traceExport.SCOPE_LABELS[traceExport.EXPORT_SCOPE.TEST_ONLY], desc: '仅包含农残检测报告' },
+      { key: traceExport.EXPORT_SCOPE.GREEN_ONLY, label: traceExport.SCOPE_LABELS[traceExport.EXPORT_SCOPE.GREEN_ONLY], desc: '仅包含绿色溯源信息' },
+      { key: traceExport.EXPORT_SCOPE.FULL, label: traceExport.SCOPE_LABELS[traceExport.EXPORT_SCOPE.FULL], desc: '包含批次、检测、渠道、区块链等全部信息' }
+    ],
+    exporting: false,
+    exportWatermarkInfo: null
   },
 
   /**
@@ -3813,5 +3830,80 @@ Page({
 
   getTTSVolumeOptions: function() {
     return this._ttsManager ? this._ttsManager.getVolumeOptions() : [];
+  },
+
+  openExportModal: function() {
+    this.setData({
+      showExportModal: true,
+      exportWatermarkInfo: traceExport.generateWatermark()
+    });
+  },
+
+  closeExportModal: function() {
+    if (this.data.exporting) return;
+    this.setData({ showExportModal: false });
+  },
+
+  selectExportFormat: function(e) {
+    const format = e.currentTarget.dataset.format;
+    this.setData({ exportFormat: format });
+  },
+
+  selectExportScope: function(e) {
+    const scope = e.currentTarget.dataset.scope;
+    this.setData({ exportScope: scope });
+  },
+
+  doExport: function() {
+    var that = this;
+    var traceId = this.data.traceId;
+    var format = this.data.exportFormat;
+    var scope = this.data.exportScope;
+
+    if (!traceId) {
+      wx.showToast({ title: '溯源ID缺失', icon: 'none' });
+      return;
+    }
+
+    this.setData({ exporting: true });
+    wx.showLoading({ title: '正在导出...', mask: true });
+
+    traceExport.doExport([traceId], format, scope)
+      .then(function(result) {
+        wx.hideLoading();
+        that.setData({ exporting: false, showExportModal: false });
+
+        var formatLabel = traceExport.FORMAT_LABELS[format];
+        var scopeLabel = traceExport.SCOPE_LABELS[scope];
+
+        wx.showModal({
+          title: '导出成功',
+          content: formatLabel + '文件已生成\n范围：' + scopeLabel + '\n文件：' + result.fileName + (result.note ? '\n\n' + result.note : ''),
+          confirmText: '打开文件',
+          cancelText: '知道了',
+          success: function(res) {
+            if (res.confirm) {
+              traceExport.openExportedFile(result.filePath, result.fileName);
+            }
+          }
+        });
+
+        marketingAnalytics.trackEvent('trace_export', {
+          traceId: traceId,
+          format: format,
+          scope: scope,
+          count: 1
+        });
+      })
+      .catch(function(err) {
+        wx.hideLoading();
+        that.setData({ exporting: false });
+        console.error('[Detail] 导出失败:', err);
+        wx.showToast({
+          title: '导出失败：' + (err.message || '未知错误'),
+          icon: 'none',
+          duration: 3000
+        });
+      });
   }
 });
