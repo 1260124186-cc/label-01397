@@ -312,6 +312,87 @@ jest.mock('../utils/mockData.js', () => ({
       '古法窨制 · 匠心传承',
       '每一片茶叶都有故事'
     ]
+  })),
+  getProductReviews: jest.fn((traceId) => {
+    if (!traceId) return null;
+    return {
+      traceId: traceId,
+      summary: {
+        totalCount: 128,
+        averageRating: 4.8,
+        ratingDistribution: [
+          { rating: 5, count: 98, percent: 76.6 },
+          { rating: 4, count: 22, percent: 17.2 },
+          { rating: 3, count: 5, percent: 3.9 },
+          { rating: 2, count: 2, percent: 1.6 },
+          { rating: 1, count: 1, percent: 0.8 }
+        ],
+        dimensionAverages: {
+          aroma: 4.9,
+          taste: 4.8,
+          value: 4.7
+        },
+        tagStats: [
+          { tag: '清香', count: 86 },
+          { tag: '醇厚', count: 72 },
+          { tag: '回甘', count: 58 }
+        ],
+        hasImageCount: 45
+      },
+      reviews: [
+        {
+          id: 'REV-TEST-001',
+          userId: 'U001',
+          userName: '测试用户',
+          userAvatar: 'https://picsum.photos/id/1001/100/100',
+          userLevel: 1,
+          rating: 5,
+          dimensions: { aroma: 5, taste: 5, value: 5 },
+          tasteTags: ['清香', '醇厚'],
+          content: '测试评价内容',
+          images: [],
+          likeCount: 10,
+          isLiked: false,
+          commentCount: 0,
+          createTime: '2025-12-01 10:00:00',
+          auditStatus: 'approved',
+          isPinned: true,
+          isQuality: true
+        }
+      ]
+    };
+  }),
+  getTasteTags: jest.fn(() => [
+    { key: 'fresh', name: '清香', icon: '🌿', color: '#52C41A' },
+    { key: 'mellow', name: '醇厚', icon: '🍵', color: '#DAA520' },
+    { key: 'sweet', name: '回甘', icon: '🍯', color: '#FF6B6B' }
+  ]),
+  getRatingDimensions: jest.fn(() => [
+    { key: 'aroma', name: '香气', icon: '🌸', description: '花香浓郁程度' },
+    { key: 'taste', name: '滋味', icon: '👅', description: '口感醇厚层次' },
+    { key: 'value', name: '性价比', icon: '💰', description: '价格与品质匹配度' }
+  ]),
+  getReportReasons: jest.fn(() => [
+    { key: 'spam', name: '垃圾广告' },
+    { key: 'porn', name: '色情低俗' },
+    { key: 'violence', name: '暴力内容' },
+    { key: 'fake', name: '虚假信息' },
+    { key: 'insult', name: '人身攻击' },
+    { key: 'other', name: '其他原因' }
+  ]),
+  submitReview: jest.fn((traceId, reviewData) => ({
+    success: true,
+    message: '评价提交成功，等待审核',
+    review: { id: 'REV-NEW-' + Date.now(), ...reviewData }
+  })),
+  likeReview: jest.fn((traceId, reviewId) => ({
+    success: true,
+    message: '点赞成功',
+    likeCount: 11
+  })),
+  reportReview: jest.fn((traceId, reviewId, reason, content) => ({
+    success: true,
+    message: '举报已提交，我们会尽快处理'
   }))
 }));
 

@@ -6446,3 +6446,1015 @@
   color: #1890FF;
   font-family: 'DIN Alternate', sans-serif;
 }
+
+/* ==================== 社区评价体系样式 ==================== */
+
+.reviews-card {
+  margin-bottom: 24rpx;
+}
+
+.reviews-badge {
+  background: linear-gradient(135deg, #DAA520 0%, #FFB800 100%);
+  color: #FFFFFF;
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  margin-left: 12rpx;
+}
+
+.review-write-btn {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #FFFFFF;
+  font-size: 24rpx;
+  padding: 10rpx 24rpx;
+  border-radius: 40rpx;
+  margin-right: 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+/* 评价概览 */
+.review-overview {
+  display: flex;
+  gap: 32rpx;
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #EEEEEE;
+  margin-bottom: 24rpx;
+}
+
+.review-score-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 180rpx;
+  padding-right: 32rpx;
+  border-right: 1rpx solid #EEEEEE;
+}
+
+.score-number {
+  font-size: 72rpx;
+  font-weight: 700;
+  color: #DAA520;
+  font-family: 'DIN Alternate', sans-serif;
+  line-height: 1;
+}
+
+.score-stars {
+  display: flex;
+  gap: 4rpx;
+  margin: 12rpx 0;
+}
+
+.score-stars .star {
+  font-size: 28rpx;
+}
+
+.score-stars .star.filled {
+  color: #FFB800;
+}
+
+.score-stars .star.empty {
+  color: #DDDDDD;
+}
+
+.score-count {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.review-dimensions {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.dimension-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.dimension-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.dimension-icon {
+  font-size: 24rpx;
+}
+
+.dimension-name {
+  font-size: 24rpx;
+  color: #333333;
+  flex: 1;
+}
+
+.dimension-score {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #DAA520;
+}
+
+.dimension-bar {
+  height: 8rpx;
+  background: #F0F0F0;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.dimension-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #DAA520 0%, #FFB800 100%);
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}
+
+.review-tag-stats {
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx dashed #EEEEEE;
+}
+
+.tag-stats-title {
+  font-size: 24rpx;
+  color: #666666;
+  margin-right: 12rpx;
+}
+
+.tag-stats-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.tag-stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4rpx;
+  background: #F5F9F6;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+
+.tag-stat-name {
+  color: #2E8B57;
+}
+
+.tag-stat-count {
+  color: #999999;
+}
+
+/* 评分分布 */
+.review-rating-dist {
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #EEEEEE;
+  margin-bottom: 24rpx;
+}
+
+.dist-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 20rpx;
+  display: block;
+}
+
+.dist-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.dist-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.dist-rating {
+  font-size: 24rpx;
+  color: #666666;
+  width: 60rpx;
+}
+
+.dist-bar-container {
+  flex: 1;
+  height: 12rpx;
+  background: #F0F0F0;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+
+.dist-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #DAA520 0%, #FFB800 100%);
+  border-radius: 6rpx;
+}
+
+.dist-percent {
+  font-size: 22rpx;
+  color: #999999;
+  width: 80rpx;
+  text-align: right;
+}
+
+/* 筛选排序栏 */
+.review-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.filter-scroll {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.filter-tabs {
+  display: inline-flex;
+  gap: 24rpx;
+}
+
+.filter-tab {
+  display: inline-block;
+  padding: 10rpx 20rpx;
+  font-size: 26rpx;
+  color: #666666;
+  border-radius: 30rpx;
+  transition: all 0.2s ease;
+}
+
+.filter-tab.active {
+  background: #2E8B57;
+  color: #FFFFFF;
+}
+
+.sort-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding-left: 16rpx;
+  border-left: 1rpx solid #EEEEEE;
+}
+
+.sort-label {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.sort-value {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  font-size: 24rpx;
+  color: #2E8B57;
+}
+
+.sort-arrow {
+  font-size: 20rpx;
+}
+
+/* 评价列表 */
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.review-item {
+  padding: 24rpx;
+  background: #FAFAFA;
+  border-radius: 16rpx;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.review-item.pinned {
+  background: linear-gradient(135deg, #FFF9E6 0%, #FFFDF5 100%);
+  border: 1rpx solid #FFE066;
+}
+
+.review-item.quality {
+  border: 1rpx solid #2E8B57;
+}
+
+.review-badges {
+  display: flex;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.review-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+}
+
+.review-badge.pinned {
+  background: #FFF3CD;
+  color: #DAA520;
+}
+
+.review-badge.quality {
+  background: #E8F5E9;
+  color: #2E8B57;
+}
+
+.review-audit-status {
+  display: inline-block;
+  padding: 6rpx 14rpx;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+  margin-bottom: 16rpx;
+}
+
+.review-audit-status.pending {
+  background: #E3F2FD;
+  color: #1890FF;
+}
+
+.review-audit-status.rejected {
+  background: #FFEBEE;
+  color: #F44336;
+}
+
+/* 用户信息 */
+.review-user {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.user-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: #EEEEEE;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 6rpx;
+}
+
+.user-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.user-level {
+  background: linear-gradient(135deg, #DAA520 0%, #FFB800 100%);
+  color: #FFFFFF;
+  font-size: 20rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 12rpx;
+}
+
+.review-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.review-rating-small {
+  display: flex;
+  gap: 2rpx;
+}
+
+.star-small {
+  font-size: 20rpx;
+}
+
+.star-small.filled {
+  color: #FFB800;
+}
+
+.star-small.empty {
+  color: #DDDDDD;
+}
+
+.review-time {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.review-more {
+  font-size: 36rpx;
+  color: #CCCCCC;
+  padding: 8rpx;
+  line-height: 1;
+}
+
+/* 订单信息 */
+.review-order-info {
+  display: flex;
+  gap: 24rpx;
+  padding: 12rpx 16rpx;
+  background: #F5F5F5;
+  border-radius: 8rpx;
+  margin-bottom: 16rpx;
+  font-size: 22rpx;
+  color: #999999;
+}
+
+/* 维度评分 */
+.review-dimensions-small {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.dim-small-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  font-size: 22rpx;
+  color: #666666;
+}
+
+.dim-small-score {
+  color: #DAA520;
+  font-weight: 600;
+}
+
+/* 口感标签 */
+.review-taste-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.taste-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  border: 1rpx solid #2E8B57;
+  color: #2E8B57;
+  background: #F5F9F6;
+}
+
+/* 评价内容 */
+.review-content {
+  font-size: 26rpx;
+  color: #333333;
+  line-height: 1.7;
+  margin-bottom: 16rpx;
+  word-break: break-all;
+}
+
+/* 晒图 */
+.review-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.review-image {
+  width: 100%;
+  height: 200rpx;
+  border-radius: 12rpx;
+  background: #F0F0F0;
+}
+
+/* 商家回复 */
+.review-reply {
+  background: #F0F7F2;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.reply-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 10rpx;
+}
+
+.reply-icon {
+  font-size: 24rpx;
+}
+
+.reply-name {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #2E8B57;
+}
+
+.reply-time {
+  font-size: 20rpx;
+  color: #999999;
+  margin-left: auto;
+}
+
+.reply-content {
+  font-size: 24rpx;
+  color: #555555;
+  line-height: 1.6;
+}
+
+/* 操作栏 */
+.review-actions {
+  display: flex;
+  gap: 32rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #EEEEEE;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.action-btn.like.liked {
+  color: #FF6B6B;
+}
+
+.action-icon {
+  font-size: 28rpx;
+}
+
+.action-text {
+  font-size: 24rpx;
+}
+
+/* 无评价 */
+.review-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999999;
+  margin-bottom: 32rpx;
+}
+
+.empty-btn {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #FFFFFF;
+  font-size: 26rpx;
+  padding: 16rpx 48rpx;
+  border-radius: 40rpx;
+}
+
+/* 评价弹窗 */
+.review-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.review-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.review-modal-content {
+  width: 100%;
+  max-height: 85vh;
+  background: #FFFFFF;
+  border-radius: 32rpx 32rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.review-modal.show .review-modal-content {
+  transform: translateY(0);
+}
+
+.review-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #EEEEEE;
+}
+
+.review-modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.review-modal-close {
+  font-size: 48rpx;
+  color: #999999;
+  line-height: 1;
+  padding: 8rpx;
+}
+
+.review-modal-body {
+  flex: 1;
+  padding: 32rpx;
+  overflow-y: auto;
+}
+
+.form-section {
+  margin-bottom: 32rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 20rpx;
+}
+
+/* 星级评分 */
+.rating-stars-large {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.star-large {
+  font-size: 56rpx;
+  padding: 8rpx;
+  line-height: 1;
+}
+
+.star-large.filled text {
+  color: #FFB800;
+}
+
+.star-large.empty text {
+  color: #DDDDDD;
+}
+
+.rating-text {
+  font-size: 26rpx;
+  color: #DAA520;
+  margin-left: 16rpx;
+}
+
+.dimension-ratings {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.dimension-rating-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dimension-rating-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.dimension-rating-icon {
+  font-size: 28rpx;
+}
+
+.dimension-rating-name {
+  font-size: 26rpx;
+  color: #555555;
+}
+
+.dimension-rating-stars {
+  display: flex;
+  gap: 4rpx;
+}
+
+/* 口感标签选择 */
+.taste-tags-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.taste-tag-select {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 24rpx;
+  border: 2rpx solid #DDDDDD;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #666666;
+  transition: all 0.2s ease;
+}
+
+.taste-tag-select.selected {
+  color: #333333;
+  font-weight: 500;
+}
+
+.tag-icon {
+  font-size: 28rpx;
+}
+
+/* 文本域 */
+.review-textarea,
+.report-textarea {
+  width: 100%;
+  min-height: 200rpx;
+  padding: 20rpx;
+  border: 2rpx solid #EEEEEE;
+  border-radius: 16rpx;
+  font-size: 26rpx;
+  line-height: 1.6;
+  box-sizing: border-box;
+  background: #FAFAFA;
+}
+
+.textarea-count {
+  display: block;
+  text-align: right;
+  font-size: 22rpx;
+  color: #999999;
+  margin-top: 8rpx;
+}
+
+/* 图片上传 */
+.image-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+}
+
+.uploaded-image-item {
+  position: relative;
+  aspect-ratio: 1;
+}
+
+.uploaded-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 12rpx;
+  background: #F0F0F0;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  width: 40rpx;
+  height: 40rpx;
+  background: rgba(0, 0, 0, 0.6);
+  color: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  line-height: 1;
+}
+
+.add-image-btn {
+  aspect-ratio: 1;
+  border: 2rpx dashed #CCCCCC;
+  border-radius: 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  color: #999999;
+}
+
+.add-icon {
+  font-size: 48rpx;
+  line-height: 1;
+}
+
+.add-text {
+  font-size: 22rpx;
+}
+
+/* 审核提示 */
+.audit-tip,
+.report-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  padding: 20rpx;
+  background: #FFF9E6;
+  border-radius: 12rpx;
+  margin-top: 24rpx;
+}
+
+.audit-tip .tip-icon,
+.report-tip .tip-icon {
+  font-size: 28rpx;
+}
+
+.audit-tip .tip-text,
+.report-tip .tip-text {
+  font-size: 24rpx;
+  color: #DAA520;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.report-tip {
+  background: #F0F7FF;
+}
+
+.report-tip .tip-text {
+  color: #1890FF;
+}
+
+.review-modal-footer {
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #EEEEEE;
+}
+
+.review-submit-btn {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 600;
+  text-align: center;
+  padding: 24rpx;
+  border-radius: 50rpx;
+}
+
+/* 举报弹窗 */
+.report-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.report-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.report-modal-content {
+  width: 90%;
+  max-width: 600rpx;
+  max-height: 80vh;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.report-modal.show .report-modal-content {
+  transform: scale(1);
+}
+
+.report-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #EEEEEE;
+}
+
+.report-modal-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.report-modal-close {
+  font-size: 44rpx;
+  color: #999999;
+  line-height: 1;
+  padding: 8rpx;
+}
+
+.report-modal-body {
+  flex: 1;
+  padding: 32rpx;
+  overflow-y: auto;
+}
+
+.report-reason-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.report-reason-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx;
+  border: 2rpx solid #EEEEEE;
+  border-radius: 12rpx;
+  transition: all 0.2s ease;
+}
+
+.report-reason-item.selected {
+  border-color: #2E8B57;
+  background: #F5F9F6;
+}
+
+.reason-radio {
+  width: 36rpx;
+  height: 36rpx;
+  border: 2rpx solid #CCCCCC;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.report-reason-item.selected .reason-radio {
+  border-color: #2E8B57;
+}
+
+.radio-inner {
+  width: 20rpx;
+  height: 20rpx;
+  background: #2E8B57;
+  border-radius: 50%;
+}
+
+.reason-text {
+  font-size: 26rpx;
+  color: #333333;
+}
+
+.report-modal-footer {
+  display: flex;
+  gap: 24rpx;
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #EEEEEE;
+}
+
+.report-cancel-btn {
+  flex: 1;
+  background: #F5F5F5;
+  color: #666666;
+  font-size: 28rpx;
+  text-align: center;
+  padding: 20rpx;
+  border-radius: 40rpx;
+}
+
+.report-submit-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #F44336 0%, #FF6B6B 100%);
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+  padding: 20rpx;
+  border-radius: 40rpx;
+}

@@ -1865,7 +1865,232 @@
       </view>
     </view>
 
-    <!-- ========== 模块9：分享与社交传播 ========== -->
+    <!-- ========== 模块9：社区评价 ========== -->
+    <view class="card animate-card module-card reviews-card" id="anchor-reviews" style="animation-delay: 0.5s;" wx:if="{{reviewData}}">
+      <view class="card-title module-header">
+        <view class="title-left" bindtap="toggleModule" data-key="reviews">
+          <text class="title-icon">⭐</text>
+          <text>用户评价</text>
+          <view class="title-badge reviews-badge">{{reviewData.summary.totalCount}}条评价</view>
+        </view>
+        <view class="title-right-actions">
+          <view class="review-write-btn" bindtap="openReviewModal">
+            <text>✍️ 写评价</text>
+          </view>
+          <view class="module-toggle {{moduleCollapsed.reviews ? 'collapsed' : ''}}" bindtap="toggleModule" data-key="reviews">
+            <text class="toggle-icon">▾</text>
+          </view>
+        </view>
+      </view>
+      <view class="module-content {{moduleCollapsed.reviews ? 'hidden' : ''}}">
+
+        <!-- 评价概览 -->
+        <view class="review-overview">
+          <view class="review-score-main">
+            <text class="score-number">{{reviewData.summary.averageRating}}</text>
+            <view class="score-stars">
+              <text wx:for="{{5}}" wx:key="index" class="star {{index < reviewData.summary.averageRating ? 'filled' : 'empty'}}">★</text>
+            </view>
+            <text class="score-count">{{reviewData.summary.totalCount}}人评价</text>
+          </view>
+
+          <!-- 维度评分 -->
+          <view class="review-dimensions">
+            <view class="dimension-item" wx:for="{{ratingDimensions}}" wx:key="key">
+              <view class="dimension-header">
+                <text class="dimension-icon">{{item.icon}}</text>
+                <text class="dimension-name">{{item.name}}</text>
+                <text class="dimension-score">{{reviewData.summary.dimensionAverages[item.key]}}</text>
+              </view>
+              <view class="dimension-bar">
+                <view class="dimension-bar-fill" style="width: {{reviewData.summary.dimensionAverages[item.key] * 20}}%;"></view>
+              </view>
+            </view>
+          </view>
+
+          <!-- 口感标签统计 -->
+          <view class="review-tag-stats">
+            <text class="tag-stats-title">口感标签：</text>
+            <view class="tag-stats-list">
+              <view class="tag-stat-item" wx:for="{{reviewData.summary.tagStats}}" wx:key="tag">
+                <text class="tag-stat-name">{{item.tag}}</text>
+                <text class="tag-stat-count">({{item.count}})</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 评分分布 -->
+        <view class="review-rating-dist">
+          <text class="dist-title">评分分布</text>
+          <view class="dist-bars">
+            <view class="dist-bar-item" wx:for="{{reviewData.summary.ratingDistribution}}" wx:key="rating" wx:for-item="dist">
+              <text class="dist-rating">{{dist.rating}}星</text>
+              <view class="dist-bar-container">
+                <view class="dist-bar-fill" style="width: {{dist.percent}}%;"></view>
+              </view>
+              <text class="dist-percent">{{dist.percent}}%</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 筛选和排序 -->
+        <view class="review-filter-bar">
+          <scroll-view scroll-x="true" class="filter-scroll">
+            <view class="filter-tabs">
+              <view class="filter-tab {{reviewFilter === 'all' ? 'active' : ''}}" bindtap="onReviewFilterChange" data-filter="all">
+                <text>全部({{reviewData.summary.totalCount}})</text>
+              </view>
+              <view class="filter-tab {{reviewFilter === 'image' ? 'active' : ''}}" bindtap="onReviewFilterChange" data-filter="image">
+                <text>晒图({{reviewData.summary.hasImageCount}})</text>
+              </view>
+              <view class="filter-tab {{reviewFilter === 'good' ? 'active' : ''}}" bindtap="onReviewFilterChange" data-filter="good">
+                <text>好评</text>
+              </view>
+              <view class="filter-tab {{reviewFilter === 'mid' ? 'active' : ''}}" bindtap="onReviewFilterChange" data-filter="mid">
+                <text>中评</text>
+              </view>
+              <view class="filter-tab {{reviewFilter === 'bad' ? 'active' : ''}}" bindtap="onReviewFilterChange" data-filter="bad">
+                <text>差评</text>
+              </view>
+            </view>
+          </scroll-view>
+          <view class="sort-dropdown">
+            <text class="sort-label">排序：</text>
+            <picker mode="selector" range="{{['优质优先', '最新发布', '评分最高']}}" value="{{reviewSortBy === 'quality' ? 0 : (reviewSortBy === 'newest' ? 1 : 2)}}" bindchange="onReviewSortChange">
+              <view class="sort-value">
+                <text>{{reviewSortBy === 'quality' ? '优质优先' : (reviewSortBy === 'newest' ? '最新发布' : '评分最高')}}</text>
+                <text class="sort-arrow">▾</text>
+              </view>
+            </picker>
+          </view>
+        </view>
+
+        <!-- 评价列表 -->
+        <view class="review-list">
+          <block wx:for="{{processedReviews}}" wx:key="id" wx:for-item="review">
+            <view class="review-item {{review.isPinned ? 'pinned' : ''}} {{review.isQuality ? 'quality' : ''}}">
+              <!-- 置顶/优质标识 -->
+              <view class="review-badges" wx:if="{{review.isPinned || review.isQuality}}">
+                <view class="review-badge pinned" wx:if="{{review.isPinned}}">
+                  <text>📌 置顶</text>
+                </view>
+                <view class="review-badge quality" wx:if="{{review.isQuality}}">
+                  <text>🏆 优质评价</text>
+                </view>
+              </view>
+
+              <!-- 审核状态 -->
+              <view class="review-audit-status pending" wx:if="{{review.auditStatus === 'pending'}}">
+                <text>⏳ 审核中</text>
+              </view>
+              <view class="review-audit-status rejected" wx:if="{{review.auditStatus === 'rejected'}}">
+                <text>⚠️ 未通过审核</text>
+              </view>
+
+              <!-- 用户信息 -->
+              <view class="review-user">
+                <image class="user-avatar" src="{{review.userAvatar}}" mode="aspectFill" />
+                <view class="user-info">
+                  <view class="user-name-row">
+                    <text class="user-name">{{review.userName}}</text>
+                    <view class="user-level" wx:if="{{review.userLevel > 0}}">
+                      <text>Lv.{{review.userLevel}}</text>
+                    </view>
+                  </view>
+                  <view class="review-meta">
+                    <view class="review-rating-small">
+                      <text wx:for="{{5}}" wx:key="index" class="star-small {{index < review.rating ? 'filled' : 'empty'}}">★</text>
+                    </view>
+                    <text class="review-time">{{review.createTime}}</text>
+                  </view>
+                </view>
+                <view class="review-more" bindtap="openReportModal" data-review-id="{{review.id}}">
+                  <text>⋯</text>
+                </view>
+              </view>
+
+              <!-- 订单信息 -->
+              <view class="review-order-info" wx:if="{{review.orderInfo}}">
+                <text class="order-sku">规格：{{review.orderInfo.sku}}</text>
+                <text class="order-time">购买时间：{{review.orderInfo.buyTime}}</text>
+              </view>
+
+              <!-- 维度评分 -->
+              <view class="review-dimensions-small" wx:if="{{review.dimensions}}">
+                <view class="dim-small-item" wx:for="{{ratingDimensions}}" wx:key="key" wx:for-item="dim">
+                  <text class="dim-small-name">{{dim.name}}:</text>
+                  <text class="dim-small-score">{{review.dimensions[dim.key]}}</text>
+                </view>
+              </view>
+
+              <!-- 口感标签 -->
+              <view class="review-taste-tags" wx:if="{{review.tasteTags && review.tasteTags.length > 0}}">
+                <view class="taste-tag" wx:for="{{review.tasteTags}}" wx:key="*this" wx:for-item="tag">
+                  <text>{{tag}}</text>
+                </view>
+              </view>
+
+              <!-- 评价内容 -->
+              <view class="review-content">
+                <text>{{review.content}}</text>
+              </view>
+
+              <!-- 晒图 -->
+              <view class="review-images" wx:if="{{review.images && review.images.length > 0}}">
+                <image
+                  wx:for="{{review.images}}"
+                  wx:key="*this"
+                  wx:for-item="img"
+                  class="review-image"
+                  src="{{img}}"
+                  mode="aspectFill"
+                  bindtap="previewReviewDetailImage"
+                  data-src="{{img}}"
+                  data-urls="{{review.images}}"
+                />
+              </view>
+
+              <!-- 商家回复 -->
+              <view class="review-reply" wx:if="{{review.reply}}">
+                <view class="reply-header">
+                  <text class="reply-icon">💬</text>
+                  <text class="reply-name">{{review.reply.replier}}</text>
+                  <text class="reply-time">{{review.reply.replyTime}}</text>
+                </view>
+                <view class="reply-content">
+                  <text>{{review.reply.content}}</text>
+                </view>
+              </view>
+
+              <!-- 操作栏 -->
+              <view class="review-actions">
+                <view class="action-btn like {{review.isLiked ? 'liked' : ''}}" bindtap="onLikeReview" data-review-id="{{review.id}}">
+                  <text class="action-icon">{{review.isLiked ? '❤️' : '🤍'}}</text>
+                  <text class="action-text">{{review.likeCount}}</text>
+                </view>
+                <view class="action-btn comment">
+                  <text class="action-icon">💬</text>
+                  <text class="action-text">{{review.commentCount}}</text>
+                </view>
+              </view>
+            </view>
+          </block>
+
+          <!-- 无评价提示 -->
+          <view class="review-empty" wx:if="{{!reviewData.reviews || reviewData.reviews.length === 0}}">
+            <text class="empty-icon">📝</text>
+            <text class="empty-text">暂无评价，快来发表第一条评价吧！</text>
+            <view class="empty-btn" bindtap="openReviewModal">
+              <text>写评价</text>
+            </view>
+          </view>
+        </view>
+
+      </view>
+    </view>
+
+    <!-- ========== 模块10：分享与社交传播 ========== -->
     <view class="card animate-card module-card share-social-card" style="animation-delay: 0.5s;">
       <view class="card-title module-header">
         <view class="title-left">
@@ -2294,6 +2519,195 @@
         </view>
         <view class="reward-action-btn secondary" bindtap="shareAfterReward">
           <text>继续邀请好友</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 评价弹窗 ==================== -->
+  <view class="review-modal {{showReviewModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeReviewModal">
+    <view class="review-modal-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="review-modal-header">
+        <text class="review-modal-title">✍️ 发表评价</text>
+        <view class="review-modal-close" bindtap="closeReviewModal">×</view>
+      </view>
+
+      <scroll-view scroll-y="true" class="review-modal-body">
+        <!-- 总体评分 -->
+        <view class="form-section">
+          <text class="form-label">总体评分</text>
+          <view class="rating-stars-large">
+            <view
+              wx:for="{{5}}"
+              wx:key="index"
+              class="star-large {{index < reviewForm.overallRating ? 'filled' : 'empty'}}"
+              bindtap="onOverallRatingChange"
+              data-rating="{{index + 1}}"
+            >
+              <text>★</text>
+            </view>
+            <text class="rating-text">{{reviewForm.overallRating === 5 ? '非常满意' : (reviewForm.overallRating === 4 ? '满意' : (reviewForm.overallRating === 3 ? '一般' : (reviewForm.overallRating === 2 ? '不满意' : '非常不满意')))}}</text>
+          </view>
+        </view>
+
+        <!-- 维度评分 -->
+        <view class="form-section">
+          <text class="form-label">详细评分</text>
+          <view class="dimension-ratings">
+            <view class="dimension-rating-item" wx:for="{{ratingDimensions}}" wx:key="key">
+              <view class="dimension-rating-header">
+                <text class="dimension-rating-icon">{{item.icon}}</text>
+                <text class="dimension-rating-name">{{item.name}}</text>
+              </view>
+              <view class="dimension-rating-stars">
+                <view
+                  wx:for="{{5}}"
+                  wx:key="*this"
+                  wx:for-item="starIdx"
+                  class="star-small {{starIdx < reviewForm.dimensionRatings[item.key] ? 'filled' : 'empty'}}"
+                  bindtap="onDimensionRatingChange"
+                  data-dimension="{{item.key}}"
+                  data-rating="{{starIdx + 1}}"
+                >
+                  <text>★</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 口感标签 -->
+        <view class="form-section">
+          <text class="form-label">口感标签（可多选）</text>
+          <view class="taste-tags-select">
+            <view
+              wx:for="{{tasteTags}}"
+              wx:key="key"
+              class="taste-tag-select {{reviewForm.selectedTags.indexOf(item.name) > -1 ? 'selected' : ''}}"
+              bindtap="onTasteTagToggle"
+              data-tag="{{item.name}}"
+              style="border-color: {{item.color}}; {{reviewForm.selectedTags.indexOf(item.name) > -1 ? 'background: ' + item.color + '20;' : ''}}"
+            >
+              <text class="tag-icon">{{item.icon}}</text>
+              <text class="tag-name">{{item.name}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 评价内容 -->
+        <view class="form-section">
+          <text class="form-label">评价内容</text>
+          <textarea
+            class="review-textarea"
+            placeholder="分享您的真实感受，帮助其他茶友做出选择~"
+            maxlength="500"
+            value="{{reviewForm.content}}"
+            bindinput="onReviewContentInput"
+            auto-height
+          />
+          <text class="textarea-count">{{reviewForm.content.length}}/500</text>
+        </view>
+
+        <!-- 上传图片 -->
+        <view class="form-section">
+          <text class="form-label">晒图（最多9张）</text>
+          <view class="image-upload-grid">
+            <view
+              wx:for="{{reviewForm.images}}"
+              wx:key="*this"
+              wx:for-item="img"
+              wx:for-index="imgIndex"
+              class="uploaded-image-item"
+            >
+              <image
+                class="uploaded-image"
+                src="{{img}}"
+                mode="aspectFill"
+                bindtap="previewReviewImage"
+                data-index="{{imgIndex}}"
+              />
+              <view class="remove-image-btn" bindtap="removeReviewImage" data-index="{{imgIndex}}">×</view>
+            </view>
+            <view
+              class="add-image-btn"
+              bindtap="chooseReviewImages"
+              wx:if="{{reviewForm.images.length < 9}}"
+            >
+              <text class="add-icon">+</text>
+              <text class="add-text">添加图片</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 审核提示 -->
+        <view class="audit-tip">
+          <text class="tip-icon">💡</text>
+          <text class="tip-text">评价将经过审核后展示，请遵守社区规范，文明发言</text>
+        </view>
+      </scroll-view>
+
+      <view class="review-modal-footer">
+        <view class="review-submit-btn" bindtap="submitReview">
+          <text>提交评价</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 举报弹窗 ==================== -->
+  <view class="report-modal {{showReportModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeReportModal">
+    <view class="report-modal-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="report-modal-header">
+        <text class="report-modal-title">⚠️ 举报评价</text>
+        <view class="report-modal-close" bindtap="closeReportModal">×</view>
+      </view>
+
+      <view class="report-modal-body">
+        <!-- 举报原因 -->
+        <view class="form-section">
+          <text class="form-label">请选择举报原因</text>
+          <view class="report-reason-list">
+            <view
+              wx:for="{{reportReasons}}"
+              wx:key="key"
+              class="report-reason-item {{reportForm.reason === item.key ? 'selected' : ''}}"
+              bindtap="onReportReasonSelect"
+              data-reason="{{item.key}}"
+            >
+              <view class="reason-radio">
+                <view class="radio-inner" wx:if="{{reportForm.reason === item.key}}"></view>
+              </view>
+              <text class="reason-text">{{item.name}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 补充说明 -->
+        <view class="form-section">
+          <text class="form-label">补充说明（选填）</text>
+          <textarea
+            class="report-textarea"
+            placeholder="请详细描述举报原因..."
+            maxlength="200"
+            value="{{reportForm.content}}"
+            bindinput="onReportContentInput"
+          />
+          <text class="textarea-count">{{reportForm.content.length}}/200</text>
+        </view>
+
+        <!-- 提示 -->
+        <view class="report-tip">
+          <text class="tip-icon">🔒</text>
+          <text class="tip-text">您的举报信息将被严格保密，我们会在24小时内处理</text>
+        </view>
+      </view>
+
+      <view class="report-modal-footer">
+        <view class="report-cancel-btn" bindtap="closeReportModal">
+          <text>取消</text>
+        </view>
+        <view class="report-submit-btn" bindtap="submitReport">
+          <text>提交举报</text>
         </view>
       </view>
     </view>

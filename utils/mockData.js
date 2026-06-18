@@ -4510,6 +4510,453 @@ const SUPPLY_CHAIN_TIMELINE = {
   }
 };
 
+// ==================== 社区评价体系数据 ====================
+
+const TASTE_TAGS = [
+  { key: 'fresh', name: '清香', icon: '🌿', color: '#52C41A' },
+  { key: 'mellow', name: '醇厚', icon: '🍵', color: '#DAA520' },
+  { key: 'sweet', name: '回甘', icon: '🍯', color: '#FF6B6B' }
+];
+
+const RATING_DIMENSIONS = [
+  { key: 'aroma', name: '香气', icon: '🌸', description: '花香浓郁程度' },
+  { key: 'taste', name: '滋味', icon: '👅', description: '口感醇厚层次' },
+  { key: 'value', name: '性价比', icon: '💰', description: '价格与品质匹配度' }
+];
+
+const REPORT_REASONS = [
+  { key: 'spam', name: '垃圾广告' },
+  { key: 'porn', name: '色情低俗' },
+  { key: 'violence', name: '暴力内容' },
+  { key: 'fake', name: '虚假信息' },
+  { key: 'insult', name: '人身攻击' },
+  { key: 'other', name: '其他原因' }
+];
+
+const REVIEW_AUDIT_STATUS = {
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected'
+};
+
+const PRODUCT_REVIEWS = {
+  'G001': {
+    traceId: 'G001',
+    summary: {
+      totalCount: 128,
+      averageRating: 4.8,
+      ratingDistribution: [
+        { rating: 5, count: 98, percent: 76.6 },
+        { rating: 4, count: 22, percent: 17.2 },
+        { rating: 3, count: 5, percent: 3.9 },
+        { rating: 2, count: 2, percent: 1.6 },
+        { rating: 1, count: 1, percent: 0.8 }
+      ],
+      dimensionAverages: {
+        aroma: 4.9,
+        taste: 4.8,
+        value: 4.7
+      },
+      tagStats: [
+        { tag: '清香', count: 86 },
+        { tag: '醇厚', count: 72 },
+        { tag: '回甘', count: 58 }
+      ],
+      hasImageCount: 45
+    },
+    reviews: [
+      {
+        id: 'REV-G001-001',
+        userId: 'U001',
+        userName: '茶韵悠悠',
+        userAvatar: 'https://picsum.photos/id/1001/100/100',
+        userLevel: 3,
+        rating: 5,
+        dimensions: {
+          aroma: 5,
+          taste: 5,
+          value: 5
+        },
+        tasteTags: ['清香', '醇厚', '回甘'],
+        content: '这款金桂花茶真的是我喝过最好的！打开罐子就能闻到浓郁的桂花香，冲泡后茶汤金黄透亮，入口先是桂花的清香，然后是茶的醇厚，咽下后还有明显的回甘。五窨一提的工艺果然名不虚传，每一口都能感受到层次感。已经回购三次了，强烈推荐给喜欢花茶的朋友！',
+        images: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=golden%20osmanthus%20tea%20brewing%20glass%20cup%20closeup%20steam&image_size=square',
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20leaves%20closeup%20golden%20flowers&image_size=square',
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20osmanthus%20tea%20tin%20can%20unboxing&image_size=square'
+        ],
+        likeCount: 128,
+        isLiked: false,
+        commentCount: 15,
+        createTime: '2025-12-05 14:32:18',
+        auditStatus: 'approved',
+        isPinned: true,
+        isQuality: true,
+        orderInfo: {
+          orderId: 'ORD202511200015',
+          sku: '100g/罐',
+          buyTime: '2025-11-20'
+        },
+        reply: {
+          content: '感谢您的用心评价！您的认可是我们最大的动力。我们坚持选用咸宁50年以上树龄金桂，搭配武夷山200年古茶树茶底，传承非遗窨制工艺，只为给您带来最纯正的桂花茶香。期待您继续关注和支持！',
+          replyTime: '2025-12-05 16:00:00',
+          replier: '一茶一品官方客服'
+        }
+      },
+      {
+        id: 'REV-G001-002',
+        userId: 'U002',
+        userName: '山间品茶人',
+        userAvatar: 'https://picsum.photos/id/1002/100/100',
+        userLevel: 2,
+        rating: 5,
+        dimensions: {
+          aroma: 5,
+          taste: 4,
+          value: 5
+        },
+        tasteTags: ['清香', '回甘'],
+        content: '作为一个老茶客，这款茶确实让我惊喜。桂花香气很正，不是那种香精调出来的味道，而是天然的花香。茶汤入口顺滑，咽下后喉咙里有甜甜的回甘，很舒服。包装也很精美，送朋友很有面子。唯一小建议是如果能出个更大包装就好了。',
+        images: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20afternoon%20tea%20setting%20traditional&image_size=square'
+        ],
+        likeCount: 56,
+        isLiked: false,
+        commentCount: 8,
+        createTime: '2025-12-03 09:15:42',
+        auditStatus: 'approved',
+        isPinned: true,
+        isQuality: true,
+        orderInfo: {
+          orderId: 'ORD202511150008',
+          sku: '250g/礼盒装',
+          buyTime: '2025-11-15'
+        }
+      },
+      {
+        id: 'REV-G001-003',
+        userId: 'U003',
+        userName: '小叶子',
+        userAvatar: 'https://picsum.photos/id/1003/100/100',
+        userLevel: 1,
+        rating: 4,
+        dimensions: {
+          aroma: 4,
+          taste: 4,
+          value: 4
+        },
+        tasteTags: ['醇厚'],
+        content: '第一次买这个牌子的桂花茶，整体还不错。香气很浓，第一次泡的时候整个办公室都闻到了。口感比较醇厚，适合冬天喝。就是价格稍微有点贵，希望能多搞点活动。',
+        images: [],
+        likeCount: 23,
+        isLiked: false,
+        commentCount: 3,
+        createTime: '2025-12-01 16:45:33',
+        auditStatus: 'approved',
+        isPinned: false,
+        isQuality: false,
+        orderInfo: {
+          orderId: 'ORD202511250023',
+          sku: '100g/罐',
+          buyTime: '2025-11-25'
+        }
+      },
+      {
+        id: 'REV-G001-004',
+        userId: 'U004',
+        userName: '茶香袭人',
+        userAvatar: 'https://picsum.photos/id/1004/100/100',
+        userLevel: 2,
+        rating: 5,
+        dimensions: {
+          aroma: 5,
+          taste: 5,
+          value: 4
+        },
+        tasteTags: ['清香', '醇厚'],
+        content: '送给妈妈的生日礼物，她特别喜欢！说打开包装就闻到很香的桂花味，泡出来的茶颜色好看，味道也好。包装很高档，送人很有面子。溯源功能也很有意思，可以看到茶叶从采摘到出厂的全过程，喝着放心。',
+        images: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=gift%20box%20osmanthus%20tea%20premium%20packaging%20unboxing&image_size=square',
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=golden%20osmanthus%20tea%20glass%20teapot%20pouring&image_size=square'
+        ],
+        likeCount: 89,
+        isLiked: false,
+        commentCount: 12,
+        createTime: '2025-11-28 11:20:15',
+        auditStatus: 'approved',
+        isPinned: false,
+        isQuality: true,
+        orderInfo: {
+          orderId: 'ORD202511180005',
+          sku: '250g/礼盒装',
+          buyTime: '2025-11-18'
+        }
+      },
+      {
+        id: 'REV-G001-005',
+        userId: 'U005',
+        userName: '上班族小王',
+        userAvatar: 'https://picsum.photos/id/1005/100/100',
+        userLevel: 1,
+        rating: 4,
+        dimensions: {
+          aroma: 4,
+          taste: 4,
+          value: 5
+        },
+        tasteTags: ['清香'],
+        content: '买的便携装，上班喝很方便。独立小包装，一次一袋，不会受潮。味道还可以，桂花味挺香的，下午工作累了泡一杯，提神又解压。性价比不错，会回购。',
+        images: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=portable%20tea%20sachet%20office%20desk%20brewing&image_size=square'
+        ],
+        likeCount: 34,
+        isLiked: false,
+        commentCount: 5,
+        createTime: '2025-11-25 14:08:56',
+        auditStatus: 'approved',
+        isPinned: false,
+        isQuality: false,
+        orderInfo: {
+          orderId: 'ORD202511100012',
+          sku: '3g*12袋/盒',
+          buyTime: '2025-11-10'
+        }
+      },
+      {
+        id: 'REV-G001-006',
+        userId: 'U006',
+        userName: '茶艺爱好者',
+        userAvatar: 'https://picsum.photos/id/1006/100/100',
+        userLevel: 3,
+        rating: 5,
+        dimensions: {
+          aroma: 5,
+          taste: 5,
+          value: 5
+        },
+        tasteTags: ['清香', '醇厚', '回甘'],
+        content: '专业评茶师来评价一下：这款茶的窨制工艺确实到位。干茶条索紧结，色泽乌褐油润，带金黄桂花。香气清高持久，花香与茶香融合得很好，没有违和感。汤色橙黄明亮，滋味醇厚鲜爽，叶底匀齐。耐泡度也不错，我泡了6次还有余香。绝对是高品质的桂花茶！',
+        images: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20tasting%20professional%20evaluation%20osmanthus%20tea&image_size=square',
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=brewed%20osmanthus%20tea%20leaves%20in%20gaiwan%20closeup&image_size=square',
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20multiple%20infusions%20comparison&image_size=square'
+        ],
+        likeCount: 156,
+        isLiked: false,
+        commentCount: 28,
+        createTime: '2025-11-20 20:45:12',
+        auditStatus: 'approved',
+        isPinned: false,
+        isQuality: true,
+        orderInfo: {
+          orderId: 'ORD202511050002',
+          sku: '200g/罐',
+          buyTime: '2025-11-05'
+        },
+        reply: {
+          content: '感谢您的专业评价！您的认可对我们来说意义重大。我们会继续坚守品质，传承非遗窨制技艺，为茶友们带来更多好茶。',
+          replyTime: '2025-11-21 09:30:00',
+          replier: '一茶一品官方客服'
+        }
+      }
+    ]
+  },
+  'G002': {
+    traceId: 'G002',
+    summary: {
+      totalCount: 86,
+      averageRating: 4.6,
+      ratingDistribution: [
+        { rating: 5, count: 58, percent: 67.4 },
+        { rating: 4, count: 20, percent: 23.3 },
+        { rating: 3, count: 6, percent: 7.0 },
+        { rating: 2, count: 1, percent: 1.2 },
+        { rating: 1, count: 1, percent: 1.2 }
+      ],
+      dimensionAverages: {
+        aroma: 4.5,
+        taste: 4.6,
+        value: 4.8
+      },
+      tagStats: [
+        { tag: '清香', count: 52 },
+        { tag: '醇厚', count: 38 },
+        { tag: '回甘', count: 28 }
+      ],
+      hasImageCount: 28
+    },
+    reviews: [
+      {
+        id: 'REV-G002-001',
+        userId: 'U007',
+        userName: '清淡人生',
+        userAvatar: 'https://picsum.photos/id/1007/100/100',
+        userLevel: 2,
+        rating: 5,
+        dimensions: {
+          aroma: 4,
+          taste: 5,
+          value: 5
+        },
+        tasteTags: ['清香', '回甘'],
+        content: '银桂的香气比较清雅，不像金桂那么浓烈，正合我意。口感很柔和，不苦涩，喝完嘴里甜甜的。价格也很实惠，作为日常口粮茶非常合适。已经推荐给同事了。',
+        images: [
+          'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20glass%20cup%20gentle%20light&image_size=square'
+        ],
+        likeCount: 42,
+        isLiked: false,
+        commentCount: 6,
+        createTime: '2025-12-04 10:25:33',
+        auditStatus: 'approved',
+        isPinned: true,
+        isQuality: true,
+        orderInfo: {
+          orderId: 'ORD202511220018',
+          sku: '100g/罐',
+          buyTime: '2025-11-22'
+        }
+      },
+      {
+        id: 'REV-G002-002',
+        userId: 'U008',
+        userName: '养生达人',
+        userAvatar: 'https://picsum.photos/id/1008/100/100',
+        userLevel: 1,
+        rating: 4,
+        dimensions: {
+          aroma: 4,
+          taste: 4,
+          value: 5
+        },
+        tasteTags: ['清香'],
+        content: '每天早上泡一杯，清清淡淡的很好喝。银桂的香味比较淡雅，不会太冲，适合不喜欢太浓味道的人。性价比很高，这个价格能买到这样的茶很值了。',
+        images: [],
+        likeCount: 18,
+        isLiked: false,
+        commentCount: 2,
+        createTime: '2025-11-30 08:15:42',
+        auditStatus: 'approved',
+        isPinned: false,
+        isQuality: false,
+        orderInfo: {
+          orderId: 'ORD202511180012',
+          sku: '200g/罐',
+          buyTime: '2025-11-18'
+        }
+      }
+    ]
+  }
+};
+
+function getProductReviews(traceId) {
+  if (!traceId) return null;
+  var normalizedId = traceId.trim().toUpperCase();
+  var data = PRODUCT_REVIEWS[normalizedId];
+  if (!data) return null;
+  return JSON.parse(JSON.stringify(data));
+}
+
+function getTasteTags() {
+  return JSON.parse(JSON.stringify(TASTE_TAGS));
+}
+
+function getRatingDimensions() {
+  return JSON.parse(JSON.stringify(RATING_DIMENSIONS));
+}
+
+function getReportReasons() {
+  return JSON.parse(JSON.stringify(REPORT_REASONS));
+}
+
+function submitReview(traceId, reviewData) {
+  var normalizedId = traceId.trim().toUpperCase();
+  if (!PRODUCT_REVIEWS[normalizedId]) {
+    PRODUCT_REVIEWS[normalizedId] = {
+      traceId: normalizedId,
+      summary: {
+        totalCount: 0,
+        averageRating: 0,
+        ratingDistribution: [
+          { rating: 5, count: 0, percent: 0 },
+          { rating: 4, count: 0, percent: 0 },
+          { rating: 3, count: 0, percent: 0 },
+          { rating: 2, count: 0, percent: 0 },
+          { rating: 1, count: 0, percent: 0 }
+        ],
+        dimensionAverages: {
+          aroma: 0,
+          taste: 0,
+          value: 0
+        },
+        tagStats: [
+          { tag: '清香', count: 0 },
+          { tag: '醇厚', count: 0 },
+          { tag: '回甘', count: 0 }
+        ],
+        hasImageCount: 0
+      },
+      reviews: []
+    };
+  }
+
+  var newReview = {
+    id: 'REV-' + normalizedId + '-' + Date.now(),
+    userId: 'U000',
+    userName: '当前用户',
+    userAvatar: 'https://picsum.photos/id/1010/100/100',
+    userLevel: 1,
+    rating: reviewData.rating,
+    dimensions: reviewData.dimensions,
+    tasteTags: reviewData.tasteTags,
+    content: reviewData.content,
+    images: reviewData.images || [],
+    likeCount: 0,
+    isLiked: false,
+    commentCount: 0,
+    createTime: new Date().toLocaleString('zh-CN'),
+    auditStatus: 'pending',
+    isPinned: false,
+    isQuality: false,
+    orderInfo: reviewData.orderInfo || null
+  };
+
+  PRODUCT_REVIEWS[normalizedId].reviews.unshift(newReview);
+  PRODUCT_REVIEWS[normalizedId].summary.totalCount += 1;
+
+  return {
+    success: true,
+    message: '评价提交成功，等待审核',
+    review: newReview
+  };
+}
+
+function likeReview(traceId, reviewId) {
+  var normalizedId = traceId.trim().toUpperCase();
+  var data = PRODUCT_REVIEWS[normalizedId];
+  if (!data) return { success: false, message: '产品不存在' };
+
+  for (var i = 0; i < data.reviews.length; i++) {
+    if (data.reviews[i].id === reviewId) {
+      if (!data.reviews[i].isLiked) {
+        data.reviews[i].likeCount += 1;
+        data.reviews[i].isLiked = true;
+        return { success: true, message: '点赞成功', likeCount: data.reviews[i].likeCount };
+      } else {
+        data.reviews[i].likeCount -= 1;
+        data.reviews[i].isLiked = false;
+        return { success: true, message: '取消点赞', likeCount: data.reviews[i].likeCount };
+      }
+    }
+  }
+  return { success: false, message: '评价不存在' };
+}
+
+function reportReview(traceId, reviewId, reportReason, reportContent) {
+  return {
+    success: true,
+    message: '举报已提交，我们会尽快处理'
+  };
+}
+
 function getSupplyChainTimeline(traceId) {
   if (!traceId) return null;
   var normalizedId = traceId.trim().toUpperCase();
@@ -5066,5 +5513,12 @@ module.exports = {
   getTraceInfoByCode,
   getChannelFlow,
   updateCodeFlow,
-  getTraceCode
+  getTraceCode,
+  getProductReviews,
+  getTasteTags,
+  getRatingDimensions,
+  getReportReasons,
+  submitReview,
+  likeReview,
+  reportReview
 };
