@@ -8,6 +8,22 @@
   <view class="progress-bar" style="width: {{readingProgress}}%;"></view>
 </view>
 
+<!-- ==================== 版本更新 Toast ==================== -->
+<view class="version-update-toast" wx:if="{{showVersionUpdateToast && versionUpdateInfo}}" bindtap="viewVersionChangesFromToast">
+  <view class="toast-content">
+    <view class="toast-icon">🔄</view>
+    <view class="toast-text">
+      <view class="toast-title">检测报告已更新</view>
+      <view class="toast-desc">v{{versionUpdateInfo.oldVersion}} → v{{versionUpdateInfo.newVersion}} · {{versionUpdateInfo.lastUpdatedAt}}</view>
+    </view>
+    <view class="toast-action">
+      <text class="toast-action-text">查看变更</text>
+      <text class="toast-action-arrow">›</text>
+    </view>
+  </view>
+  <view class="toast-close" catchtap="closeVersionUpdateToast">✕</view>
+</view>
+
 <!-- ==================== 骨架屏 ==================== -->
 <view class="skeleton-container" wx:if="{{skeletonLoading}}">
   <view class="skeleton-header">
@@ -136,6 +152,26 @@
           <view class="info-item">
             <view class="info-label">出厂时间</view>
             <view class="info-value">{{traceData.basicInfo.productionTime}}</view>
+          </view>
+        </view>
+
+        <!-- 数据版本信息 -->
+        <view class="version-info-section">
+          <view class="version-info-row" bindtap="openVersionHistory">
+            <view class="version-info-left">
+              <text class="version-icon">📌</text>
+              <view class="version-info-text">
+                <view class="version-label">数据版本</view>
+                <view class="version-value">v{{traceData.dataVersion}} · {{traceData.lastUpdatedAt}}</view>
+              </view>
+            </view>
+            <view class="version-info-right">
+              <text class="version-history-link">历史版本 ›</text>
+            </view>
+          </view>
+          <view class="version-change-btn" bindtap="openChangeLogModal">
+            <text class="change-btn-icon">📝</text>
+            <text class="change-btn-text">查看变更记录</text>
           </view>
         </view>
 
@@ -1397,26 +1433,31 @@
             <view
               wx:for="{{traceData.pesticideTest.historyReports}}"
               wx:key="reportNo"
-              class="timeline-item {{index === 0 ? 'latest' : ''}} {{item.status === '不合格' ? 'abnormal' : ''}}"
+              wx:for-item="report"
+              class="timeline-item {{index === 0 ? 'latest' : ''}} {{report.status === '不合格' ? 'abnormal' : ''}} {{activeHistoryIndex === index ? 'active' : ''}}"
               bindtap="viewHistoryReport"
-              data-report="{{item}}"
+              data-report="{{report}}"
               role="listitem"
-              data-status="{{item.status === '不合格' ? 'fail' : 'pass'}}"
-              aria-label="{{item.testDate}}，报告编号{{item.reportNo}}，检测结果{{item.status}}"
+              data-status="{{report.status === '不合格' ? 'fail' : 'pass'}}"
+              aria-label="{{report.testDate}}，报告编号{{report.reportNo}}，检测结果{{report.status}}"
             >
-              <view class="timeline-dot {{item.status === '不合格' ? 'danger' : (item.statusLevel === '优秀' ? 'excellent' : 'good')}}"></view>
+              <view class="timeline-dot {{report.status === '不合格' ? 'danger' : (report.statusLevel === '优秀' ? 'excellent' : 'good')}}"></view>
               <view class="timeline-line" wx:if="{{index < traceData.pesticideTest.historyReports.length - 1}}"></view>
               <view class="timeline-content">
-                <view class="timeline-date">{{item.testDate}}</view>
+                <view class="timeline-date">{{report.testDate}}</view>
                 <view class="timeline-info">
-                  <text class="timeline-report-no">{{item.reportNo}}</text>
-                  <view class="timeline-status {{item.status === '不合格' ? 'danger' : (item.statusLevel === '优秀' ? 'excellent' : 'good')}} status-{{item.status === '不合格' ? 'fail' : 'pass'}}" data-status="{{item.status === '不合格' ? 'fail' : 'pass'}}">
-                    {{item.status}}
+                  <text class="timeline-report-no">{{report.reportNo}}</text>
+                  <view class="timeline-status {{report.status === '不合格' ? 'danger' : (report.statusLevel === '优秀' ? 'excellent' : 'good')}} status-{{report.status === '不合格' ? 'fail' : 'pass'}}" data-status="{{report.status === '不合格' ? 'fail' : 'pass'}}">
+                    {{report.status}}
                   </view>
                 </view>
                 <view class="timeline-meta">
-                  <text>{{item.institution}}</text>
-                  <text wx:if="{{item.batchNo}}">{{currentLang === 'en-US' ? 'Batch: ' : '批次：'}}{{item.batchNo}}</text>
+                  <text>{{report.institution}}</text>
+                  <text wx:if="{{report.batchNo}}">{{currentLang === 'en-US' ? 'Batch: ' : '批次：'}}{{report.batchNo}}</text>
+                </view>
+                <view class="timeline-version-link" catchtap="gotoHistoryReportFromChange" data-reportno="{{report.reportNo}}">
+                  <text class="version-link-icon">📌</text>
+                  <text class="version-link-text">查看对应数据版本变更 ›</text>
                 </view>
                 <view class="timeline-tag" wx:if="{{index === 0}}">{{currentLang === 'en-US' ? 'Latest' : '最新'}}</view>
               </view>
@@ -1725,29 +1766,84 @@
             <text class="bc-section-icon">🔍</text>
             <text class="bc-section-title">链上验真</text>
           </view>
+
+          <!-- 版本选择器 -->
+          <view class="bc-version-selector" wx:if="{{bcVersionTxHashList && bcVersionTxHashList.length > 1}}">
+            <scroll-view scroll-x="true" class="bc-version-scroll" enhanced show-scrollbar="{{false}}">
+              <view class="bc-version-tabs">
+                <view
+                  class="bc-version-tab {{activeBcVersion === 'current' ? 'active' : ''}}"
+                  bindtap="switchBcVersion"
+                  data-version="current"
+                >
+                  <text class="bc-version-tab-label">当前版本</text>
+                  <text class="bc-version-tab-ver">v{{traceData.dataVersion}}</text>
+                </view>
+                <block wx:for="{{bcVersionTxHashList}}" wx:key="version">
+                  <view
+                    wx:if="{{index > 0}}"
+                    class="bc-version-tab {{activeBcVersion === item.version ? 'active' : ''}}"
+                    bindtap="switchBcVersion"
+                    data-version="{{item.version}}"
+                  >
+                    <text class="bc-version-tab-label">历史版本</text>
+                    <text class="bc-version-tab-ver">v{{item.version}}</text>
+                  </view>
+                </block>
+              </view>
+            </scroll-view>
+          </view>
+
           <view class="bc-verify-content">
             <view class="bc-chain-info">
               <view class="bc-info-row">
                 <text class="bc-info-label">存证链</text>
                 <text class="bc-info-value">{{traceData.blockchainInfo.chainName}}</text>
               </view>
-              <view class="bc-info-row">
-                <text class="bc-info-label">区块高度</text>
-                <text class="bc-info-value">#{{traceData.blockchainInfo.blockHeight}}</text>
-              </view>
-              <view class="bc-info-row">
-                <text class="bc-info-label">存证时间</text>
-                <text class="bc-info-value">{{traceData.blockchainInfo.timestamp}}</text>
-              </view>
+              <block wx:if="{{activeBcVersion === 'current'}}">
+                <view class="bc-info-row">
+                  <text class="bc-info-label">区块高度</text>
+                  <text class="bc-info-value">#{{traceData.blockchainInfo.blockHeight}}</text>
+                </view>
+                <view class="bc-info-row">
+                  <text class="bc-info-label">存证时间</text>
+                  <text class="bc-info-value">{{traceData.blockchainInfo.timestamp}}</text>
+                </view>
+              </block>
+              <block wx:for="{{bcVersionTxHashList}}" wx:key="version">
+                <block wx:if="{{activeBcVersion === item.version}}">
+                  <view class="bc-info-row">
+                    <text class="bc-info-label">区块高度</text>
+                    <text class="bc-info-value">#{{item.blockHeight}}</text>
+                  </view>
+                  <view class="bc-info-row">
+                    <text class="bc-info-label">存证时间</text>
+                    <text class="bc-info-value">{{item.timestamp}}</text>
+                  </view>
+                  <view class="bc-info-row">
+                    <text class="bc-info-label">数据版本</text>
+                    <text class="bc-info-value bc-version-highlight">v{{item.version}}</text>
+                  </view>
+                </block>
+              </block>
             </view>
 
             <!-- 交易哈希（可展开/复制） -->
             <view class="bc-txhash-row">
               <text class="bc-info-label">交易哈希</text>
               <view class="bc-txhash-container">
-                <text class="bc-txhash-value" bindtap="toggleTxHashDisplay">
-                  {{bcShowTxHashFull ? traceData.blockchainInfo.txHash : traceData.blockchainInfo.txHashShort}}
-                </text>
+                <block wx:if="{{activeBcVersion === 'current'}}">
+                  <text class="bc-txhash-value" bindtap="toggleTxHashDisplay">
+                    {{bcShowTxHashFull ? traceData.blockchainInfo.txHash : traceData.blockchainInfo.txHashShort}}
+                  </text>
+                </block>
+                <block wx:for="{{bcVersionTxHashList}}" wx:key="version">
+                  <block wx:if="{{activeBcVersion === item.version}}">
+                    <text class="bc-txhash-value" bindtap="toggleTxHashDisplay">
+                      {{bcShowTxHashFull ? item.txHash : item.txHashShort}}
+                    </text>
+                  </block>
+                </block>
                 <text class="bc-txhash-toggle">{{bcShowTxHashFull ? '收起' : '展开'}}</text>
               </view>
             </view>
@@ -2815,6 +2911,157 @@
         </view>
         <view class="report-submit-btn" bindtap="submitReport">
           <text>提交举报</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 变更详情弹窗（字段级 diff） ==================== -->
+  <view class="changelog-modal {{showChangeLogModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeChangeLogModal">
+    <view class="changelog-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="changelog-header">
+        <view class="changelog-title-row">
+          <text class="changelog-title-icon">📝</text>
+          <text class="changelog-title">数据变更详情</text>
+        </view>
+        <view class="changelog-close" bindtap="closeChangeLogModal">×</view>
+      </view>
+
+      <scroll-view scroll-y="true" class="changelog-body" wx:if="{{currentChangeLogVersion}}">
+        <!-- 版本摘要 -->
+        <view class="changelog-version-summary">
+          <view class="changelog-version-badge">v{{currentChangeLogVersion.version}}</view>
+          <view class="changelog-version-meta">
+            <text class="changelog-version-time">{{currentChangeLogVersion.timestamp}}</text>
+            <text class="changelog-version-author" wx:if="{{currentChangeLogVersion.updatedBy}}">· {{currentChangeLogVersion.updatedBy}}</text>
+          </view>
+          <view class="changelog-version-desc" wx:if="{{currentChangeLogVersion.summary}}">
+            {{currentChangeLogVersion.summary}}
+          </view>
+          <view class="changelog-version-report" wx:if="{{currentChangeLogVersion.reportNo}}" bindtap="gotoHistoryReportFromChange" data-reportno="{{currentChangeLogVersion.reportNo}}">
+            <text class="report-link-icon">📄</text>
+            <text class="report-link-text">关联报告：{{currentChangeLogVersion.reportNo}} ›</text>
+          </view>
+          <view class="changelog-version-bc" wx:if="{{currentChangeLogVersion.txHash}}">
+            <text class="bc-link-icon">🔗</text>
+            <text class="bc-link-text">交易哈希：{{currentChangeLogVersion.txHashShort}}</text>
+          </view>
+        </view>
+
+        <!-- 字段级 diff 列表 -->
+        <view class="field-changes-section" wx:if="{{currentChangeLogVersion.fieldChanges && currentChangeLogVersion.fieldChanges.length > 0}}">
+          <view class="section-header">
+            <text class="section-icon">📊</text>
+            <text class="section-title">字段变更明细（{{currentChangeLogVersion.fieldChanges.length}}项）</text>
+          </view>
+          <view class="field-changes-list">
+            <block wx:for="{{currentChangeLogVersion.fieldChanges}}" wx:key="fieldPath">
+              <view class="field-change-item">
+                <view class="field-change-header">
+                  <text class="field-category-tag {{item.category === '农残检测' ? 'test' : (item.category === '基础信息' ? 'basic' : 'other')}}">
+                    {{item.category}}
+                  </text>
+                  <text class="field-change-type {{item.changeType === 'add' ? 'add' : (item.changeType === 'delete' ? 'delete' : 'update')}}">
+                    {{item.changeType === 'add' ? '新增' : (item.changeType === 'delete' ? '删除' : '更新')}}
+                  </text>
+                </view>
+                <view class="field-change-label">{{item.fieldLabel}}</view>
+                <view class="field-change-values">
+                  <block wx:if="{{item.changeType !== 'add'}}">
+                    <view class="value-box old">
+                      <text class="value-label">变更前</text>
+                      <text class="value-text">{{item.oldValue}}{{item.unit ? ' ' + item.unit : ''}}</text>
+                    </view>
+                  </block>
+                  <view class="value-arrow" wx:if="{{item.changeType === 'update'}}">→</view>
+                  <block wx:if="{{item.changeType !== 'delete'}}">
+                    <view class="value-box new">
+                      <text class="value-label">变更后</text>
+                      <text class="value-text">{{item.newValue}}{{item.unit ? ' ' + item.unit : ''}}</text>
+                    </view>
+                  </block>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+        <view class="no-changes-tip" wx:else>
+          <text class="no-changes-icon">ℹ️</text>
+          <text class="no-changes-text">该版本无字段级变更记录</text>
+        </view>
+      </scroll-view>
+
+      <view class="changelog-footer">
+        <view class="changelog-confirm-btn" bindtap="closeChangeLogModal">
+          <text>我知道了</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 历史版本列表弹窗（只读） ==================== -->
+  <view class="version-history-modal {{showVersionHistoryModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closeVersionHistory">
+    <view class="version-history-content" catchtap="preventBubble" catchtouchmove="preventBubble">
+      <view class="version-history-header">
+        <view class="version-history-title-row">
+          <text class="version-history-title-icon">📚</text>
+          <text class="version-history-title">历史版本</text>
+        </view>
+        <view class="version-history-close" bindtap="closeVersionHistory">×</view>
+      </view>
+
+      <view class="version-history-readonly-tip" wx:if="{{isViewingHistoryVersion}}">
+        <text class="readonly-icon">👁️</text>
+        <text class="readonly-text">您正在查看历史版本（只读模式）</text>
+        <view class="back-current-btn" bindtap="restoreCurrentVersion">返回当前版本</view>
+      </view>
+
+      <scroll-view scroll-y="true" class="version-history-body">
+        <view class="version-timeline">
+          <block wx:for="{{versionHistoryList}}" wx:key="version">
+            <view class="version-timeline-item {{selectedVersionIndex === index ? 'selected' : ''}}">
+              <view class="timeline-dot {{index === 0 ? 'latest' : ''}}"></view>
+              <view class="timeline-line" wx:if="{{index < versionHistoryList.length - 1}}"></view>
+              <view class="version-item-card {{selectedVersionIndex === index ? 'active' : ''}}" bindtap="selectHistoryVersion" data-index="{{index}}">
+                <view class="version-card-header">
+                  <view class="version-card-badge {{index === 0 ? 'current' : 'history'}}">
+                    {{index === 0 ? '当前版本' : '历史版本'}}
+                  </view>
+                  <view class="version-card-number">v{{item.version}}</view>
+                </view>
+                <view class="version-card-meta">
+                  <text class="version-card-time">🕒 {{item.timestamp}}</text>
+                  <text class="version-card-author" wx:if="{{item.updatedBy}}">· {{item.updatedBy}}</text>
+                </view>
+                <view class="version-card-summary" wx:if="{{item.summary}}">{{item.summary}}</view>
+                <view class="version-card-footer">
+                  <view class="version-card-changes-count" wx:if="{{item.fieldChanges}}">
+                    <text class="count-icon">📝</text>
+                    <text class="count-text">{{item.fieldChanges.length}}项变更</text>
+                  </view>
+                  <view class="version-card-action" catchtap="openVersionChangeLog" data-version="{{item}}">
+                    <text>查看变更</text>
+                    <text class="action-arrow">›</text>
+                  </view>
+                </view>
+                <view class="version-card-bc-info" wx:if="{{item.txHash}}">
+                  <text class="bc-info-icon">🔗</text>
+                  <text class="bc-info-text">{{item.txHashShort}}</text>
+                </view>
+              </view>
+            </view>
+          </block>
+        </view>
+      </scroll-view>
+
+      <view class="version-history-footer" wx:if="{{!isViewingHistoryVersion}}">
+        <view class="version-history-cancel-btn" bindtap="closeVersionHistory">
+          <text>关闭</text>
+        </view>
+      </view>
+      <view class="version-history-footer" wx:else>
+        <view class="version-history-back-btn" bindtap="restoreCurrentVersion">
+          <text>返回当前版本</text>
         </view>
       </view>
     </view>

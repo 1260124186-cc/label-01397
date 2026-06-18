@@ -1708,6 +1708,336 @@ const mockTraceData = {
   }
 })();
 
+// ==================== 数据版本与变更历史 ====================
+
+var traceVersionHistory = {
+  'G001': {
+    currentVersion: '2.0.0',
+    lastUpdatedAt: '2025年12月15日 10:30:00',
+    versions: [
+      {
+        version: '2.0.0',
+        updatedAt: '2025年12月15日 10:30:00',
+        updatedBy: '检测数据同步系统',
+        summary: '农残检测数据更新，联苯菊酯检测精度提升',
+        txHash: '0x8f9a3b7c4d5e6f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5',
+        txHashShort: '0x8f9a3b...c7d2e1',
+        blockHeight: 1956789,
+        timestamp: '2025-12-15 10:30:00',
+        reportNo: 'NTQC-2025-09876',
+        fieldChanges: [
+          {
+            fieldPath: 'pesticideTest.osmanthusTests[0].displayValue',
+            fieldLabel: '联苯菊酯检测值',
+            category: '农残检测',
+            oldValue: '<0.02',
+            newValue: '<0.01',
+            unit: 'mg/kg',
+            changeType: 'update'
+          },
+          {
+            fieldPath: 'pesticideTest.osmanthusTests[0].value',
+            fieldLabel: '联苯菊酯检测数值',
+            category: '农残检测',
+            oldValue: 0.01,
+            newValue: 0.008,
+            unit: 'mg/kg',
+            changeType: 'update'
+          },
+          {
+            fieldPath: 'pesticideTest.testDate',
+            fieldLabel: '检测日期',
+            category: '农残检测',
+            oldValue: '2025年9月20日',
+            newValue: '2025年12月10日',
+            unit: '',
+            changeType: 'update'
+          }
+        ]
+      },
+      {
+        version: '1.2.0',
+        updatedAt: '2025年11月5日 14:20:00',
+        updatedBy: '供应链管理系统',
+        summary: '窨制工艺记录补充，新增第5次窨制备注信息',
+        txHash: '0xa1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2',
+        txHashShort: '0xa1b2c3...f0a1b2',
+        blockHeight: 1923456,
+        timestamp: '2025-11-05 14:20:00',
+        reportNo: 'NTQC-2025-09876',
+        fieldChanges: [
+          {
+            fieldPath: 'scentingProcess.scentingRecords[4].note',
+            fieldLabel: '第5次窨制备注',
+            category: '窨制工艺',
+            oldValue: '五窨，提香收尾',
+            newValue: '五窨，提香收尾，香气绵密持久',
+            unit: '',
+            changeType: 'update'
+          }
+        ]
+      },
+      {
+        version: '1.1.0',
+        updatedAt: '2025年10月18日 09:15:00',
+        updatedBy: '绿色溯源系统',
+        summary: '新增绿色溯源碳足迹数据与回收指引',
+        txHash: '0xc3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4',
+        txHashShort: '0xc3d4e5...b2c3d4',
+        blockHeight: 1899012,
+        timestamp: '2025-10-18 09:15:00',
+        reportNo: 'NTQC-2025-09876',
+        fieldChanges: [
+          {
+            fieldPath: 'greenTrace',
+            fieldLabel: '绿色溯源模块',
+            category: '绿色溯源',
+            oldValue: '基础数据',
+            newValue: '完整数据（含碳足迹、回收指引）',
+            unit: '',
+            changeType: 'add'
+          }
+        ]
+      },
+      {
+        version: '1.0.0',
+        updatedAt: '2025年9月25日 14:32:18',
+        updatedBy: '溯源数据中心',
+        summary: '溯源数据首次上链发布',
+        txHash: '0xe5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6',
+        txHashShort: '0xe5f6a7...d4e5f6',
+        blockHeight: 1892347,
+        timestamp: '2025-09-25 14:32:18',
+        reportNo: 'NTQC-2025-07654',
+        fieldChanges: [
+          {
+            fieldPath: 'all',
+            fieldLabel: '全部溯源数据',
+            category: '基础信息',
+            oldValue: '无',
+            newValue: '首次发布',
+            unit: '',
+            changeType: 'add'
+          }
+        ]
+      }
+    ]
+  },
+  'G002': {
+    currentVersion: '1.1.0',
+    lastUpdatedAt: '2025年11月20日 16:45:00',
+    versions: [
+      {
+        version: '1.1.0',
+        updatedAt: '2025年11月20日 16:45:00',
+        updatedBy: '检测数据同步系统',
+        summary: '新增氯氰菊酯超标说明与风险提示',
+        txHash: '0x2e7c4a9b8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1',
+        txHashShort: '0x2e7c4a...f8b9d3',
+        blockHeight: 1934567,
+        timestamp: '2025-11-20 16:45:00',
+        reportNo: 'HBAQ-2025-12345',
+        fieldChanges: [
+          {
+            fieldPath: 'pesticideTest.teaTests[0].description',
+            fieldLabel: '氯氰菊酯超标说明',
+            category: '农残检测',
+            oldValue: '',
+            newValue: '超出国标限值27.5%，建议停止食用并联系供应商',
+            unit: '',
+            changeType: 'add'
+          },
+          {
+            fieldPath: 'pesticideTest.hasAbnormal',
+            fieldLabel: '异常检测标识',
+            category: '农残检测',
+            oldValue: false,
+            newValue: true,
+            unit: '',
+            changeType: 'update'
+          }
+        ]
+      },
+      {
+        version: '1.0.0',
+        updatedAt: '2025年9月30日 10:15:42',
+        updatedBy: '溯源数据中心',
+        summary: '溯源数据首次上链发布',
+        txHash: '0xf8b9d3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2',
+        txHashShort: '0xf8b9d3...e0f1a2',
+        blockHeight: 1895123,
+        timestamp: '2025-09-30 10:15:42',
+        reportNo: 'HBAQ-2025-09876',
+        fieldChanges: [
+          {
+            fieldPath: 'all',
+            fieldLabel: '全部溯源数据',
+            category: '基础信息',
+            oldValue: '无',
+            newValue: '首次发布',
+            unit: '',
+            changeType: 'add'
+          }
+        ]
+      }
+    ]
+  },
+  'G003': {
+    currentVersion: '1.0.0',
+    lastUpdatedAt: '2025年9月25日 14:35:22',
+    versions: [
+      {
+        version: '1.0.0',
+        updatedAt: '2025年9月25日 14:35:22',
+        updatedBy: '溯源数据中心',
+        summary: '礼盒装溯源数据首次上链发布',
+        txHash: '0x9a4b2c3d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3',
+        txHashShort: '0x9a4b2c...d8e3f2',
+        blockHeight: 1892348,
+        timestamp: '2025-09-25 14:35:22',
+        reportNo: 'NTQC-2025-09877',
+        fieldChanges: [
+          {
+            fieldPath: 'all',
+            fieldLabel: '全部溯源数据',
+            category: '基础信息',
+            oldValue: '无',
+            newValue: '首次发布',
+            unit: '',
+            changeType: 'add'
+          }
+        ]
+      }
+    ]
+  },
+  'G004': {
+    currentVersion: '1.0.0',
+    lastUpdatedAt: '2025年9月25日 14:38:45',
+    versions: [
+      {
+        version: '1.0.0',
+        updatedAt: '2025年9月25日 14:38:45',
+        updatedBy: '溯源数据中心',
+        summary: '便携装溯源数据首次上链发布',
+        txHash: '0x1b3d5f7a9c1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5',
+        txHashShort: '0x1b3d5f...a9c7e4',
+        blockHeight: 1892349,
+        timestamp: '2025-09-25 14:38:45',
+        reportNo: 'NTQC-2025-09878',
+        fieldChanges: [
+          {
+            fieldPath: 'all',
+            fieldLabel: '全部溯源数据',
+            category: '基础信息',
+            oldValue: '无',
+            newValue: '首次发布',
+            unit: '',
+            changeType: 'add'
+          }
+        ]
+      }
+    ]
+  },
+  'G005': {
+    currentVersion: '1.0.0',
+    lastUpdatedAt: '2025年10月5日 15:20:36',
+    versions: [
+      {
+        version: '1.0.0',
+        updatedAt: '2025年10月5日 15:20:36',
+        updatedBy: '溯源数据中心',
+        summary: '丹桂典藏版溯源数据首次上链发布',
+        txHash: '0x4d2c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7',
+        txHashShort: '0x4d2c7e...b1a8f9',
+        blockHeight: 1896001,
+        timestamp: '2025-10-05 15:20:36',
+        reportNo: 'NTQC-2025-09999',
+        fieldChanges: [
+          {
+            fieldPath: 'all',
+            fieldLabel: '全部溯源数据',
+            category: '基础信息',
+            oldValue: '无',
+            newValue: '首次发布',
+            unit: '',
+            changeType: 'add'
+          }
+        ]
+      }
+    ]
+  }
+};
+
+(function() {
+  for (var traceId in mockTraceData) {
+    if (mockTraceData.hasOwnProperty(traceId) && traceVersionHistory[traceId]) {
+      var verInfo = traceVersionHistory[traceId];
+      mockTraceData[traceId].dataVersion = verInfo.currentVersion;
+      mockTraceData[traceId].lastUpdatedAt = verInfo.lastUpdatedAt;
+      mockTraceData[traceId].changeLog = verInfo.versions.slice(0, 1);
+    }
+  }
+})();
+
+function getTraceVersionHistory(traceId) {
+  if (!traceId) return null;
+  var id = traceId.toUpperCase().trim();
+  return traceVersionHistory[id] || null;
+}
+
+function getTraceVersion(traceId, version) {
+  var history = getTraceVersionHistory(traceId);
+  if (!history) return null;
+  if (!version) return {
+    version: history.currentVersion,
+    lastUpdatedAt: history.lastUpdatedAt
+  };
+  var ver = history.versions.find(function(v) { return v.version === version; });
+  return ver || null;
+}
+
+function getVersionDiff(traceId, version1, version2) {
+  var history = getTraceVersionHistory(traceId);
+  if (!history) return null;
+
+  var v1 = version1 ? history.versions.find(function(v) { return v.version === version1; }) : history.versions[0];
+  var v2 = version2 ? history.versions.find(function(v) { return v.version === version2; }) : history.versions[history.versions.length - 1];
+
+  if (!v1 || !v2) return null;
+
+  var allChanges = [];
+  var v1Idx = history.versions.indexOf(v1);
+  var v2Idx = history.versions.indexOf(v2);
+  var startIdx = Math.min(v1Idx, v2Idx);
+  var endIdx = Math.max(v1Idx, v2Idx);
+
+  for (var i = startIdx; i <= endIdx; i++) {
+    var v = history.versions[i];
+    if (v && v.fieldChanges) {
+      allChanges = allChanges.concat(v.fieldChanges.map(function(fc) {
+        return {
+          ...fc,
+          version: v.version,
+          updatedAt: v.updatedAt
+        };
+      }));
+    }
+  }
+
+  return {
+    fromVersion: v2.version,
+    toVersion: v1.version,
+    changeCount: allChanges.length,
+    changes: allChanges
+  };
+}
+
+function getAllVersions(traceId) {
+  var history = getTraceVersionHistory(traceId);
+  if (!history) return [];
+  return history.versions.slice();
+}
+
 /**
  * 根据溯源ID获取溯源数据
  * @param {string} traceId - 溯源ID（如 G001、G002）
@@ -6264,5 +6594,9 @@ module.exports = {
   verifyDualCodeBinding,
   getOuterCodeSummary,
   parseDualCodeFromScanResult,
-  getAvailableOuterCodes
+  getAvailableOuterCodes,
+  getTraceVersionHistory,
+  getTraceVersion,
+  getVersionDiff,
+  getAllVersions
 };

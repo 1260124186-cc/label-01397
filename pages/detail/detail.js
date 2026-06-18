@@ -253,7 +253,20 @@ Page({
     isGiftBoxSubCode: false,
     subCodeContext: null,
     showShareModeModal: false,
-    moduleCollapsedGiftBox: false
+    moduleCollapsedGiftBox: false,
+
+    // ========== 数据版本与变更说明 ==========
+    showVersionUpdateToast: false,
+    versionUpdateInfo: null,
+    showChangeLogModal: false,
+    currentChangeLogVersion: null,
+    versionHistoryList: [],
+    showVersionHistoryModal: false,
+    selectedVersionIndex: 0,
+    isViewingHistoryVersion: false,
+    originalTraceData: null,
+    bcVersionTxHashList: [],
+    activeBcVersion: 'current'
   },
 
   /**
@@ -432,8 +445,12 @@ Page({
           processedReviews = reviews;
         }
 
+        var versionHistory = mockData.getAllVersions(traceId);
+        var versionUpdateInfo = that.checkVersionUpdate(traceId, data);
+
         that.setData({
           traceData: data,
+          originalTraceData: data,
           loading: false,
           skeletonLoading: false,
           moduleCollapsed: moduleCollapsed,
@@ -457,7 +474,11 @@ Page({
           isGiftBoxMainCode: isMain,
           isGiftBoxSubCode: isSub,
           subCodeContext: subContext,
-          moduleCollapsedGiftBox: !(giftBoxInfo ? false : true)
+          moduleCollapsedGiftBox: !(giftBoxInfo ? false : true),
+          versionHistoryList: versionHistory,
+          bcVersionTxHashList: versionHistory,
+          versionUpdateInfo: versionUpdateInfo,
+          showVersionUpdateToast: !!versionUpdateInfo
         });
 
         that.setData({ anchorTabs: buildAnchorTabs(!!giftBoxInfo) });
@@ -2663,6 +2684,246 @@ Page({
     wx.previewImage({
       current: current,
       urls: urls
+    });
+  },
+
+  /**
+   * ==================== 数据版本与变更说明功能 ====================
+   */
+
+  /**
+   * 检测版本是否更新（与本地缓存对比）
+   */
+  checkVersionUpdate: function(traceId, traceData) {
+    try {
+      var STORAGE_KEY = 'trace_version_cache';
+      var cache = wx.getStorageSync(STORAGE_KEY) || {};
+      var cachedVersion = cache[traceId];
+      var currentVersion = traceData.dataVersion;
+      var lastUpdatedAt = traceData.lastUpdatedAt;
+
+      if (!cachedVersion) {
+        cache[traceId] = {
+          version: currentVersion,
+          lastUpdatedAt: lastUpdatedAt
+        };
+        wx.setStorageSync(STORAGE_KEY, cache);
+        return null;
+      }
+
+      if (cachedVersion.version !== currentVersion) {
+        cache[traceId] = {
+          version: currentVersion,
+          lastUpdatedAt: lastUpdatedAt
+        };
+        wx.setStorageSync(STORAGE_KEY, cache);
+        return {
+          oldVersion: cachedVersion.version,
+          newVersion: currentVersion,
+          lastUpdatedAt: lastUpdatedAt,
+          traceId: traceId
+        };
+      }
+
+      return null;
+    } catch (e) {
+      console.error('[Detail] 版本检测失败:', e);
+      return null;
+    }
+  },
+
+  /**
+   * 关闭版本更新 Toast
+   */
+  closeVersionUpdateToast: function() {
+    this.setData({
+      showVersionUpdateToast: false
+    });
+  },
+
+  /**
+   * 点击 Toast 查看变更详情
+   */
+  viewVersionChangesFromToast: function() {
+    this.setData({
+      showVersionUpdateToast: false
+    });
+    this.openChangeLogModal();
+  },
+
+  /**
+   * 打开变更详情弹窗（显示当前最新版本的变更）
+   */
+  openChangeLogModal: function() {
+    var latest = this.data.versionHistoryList && this.data.versionHistoryList[0];
+    if (latest) {
+      this.setData({
+        showChangeLogModal: true,
+        currentChangeLogVersion: latest
+      });
+    }
+  },
+
+  /**
+   * 查看指定版本的变更详情
+   */
+  openVersionChangeLog: function(e) {
+    var version = e.currentTarget.dataset.version;
+    if (!version) return;
+    this.setData({
+      showChangeLogModal: true,
+      currentChangeLogVersion: version
+    });
+  },
+
+  /**
+   * 关闭变更详情弹窗
+   */
+  closeChangeLogModal: function() {
+    this.setData({
+      showChangeLogModal: false,
+      currentChangeLogVersion: null
+    });
+  },
+
+  /**
+   * 获取变更类型的中文标签
+   */
+  getChangeTypeLabel: function(type) {
+    var map = {
+      'add': '新增',
+      'update': '更新',
+      'delete': '删除'
+    };
+    return map[type] || '变更';
+  },
+
+  /**
+   * 打开历史版本列表
+   */
+  openVersionHistory: function() {
+    this.setData({
+      showVersionHistoryModal: true,
+      selectedVersionIndex: 0
+    });
+  },
+
+  /**
+   * 关闭历史版本列表
+   */
+  closeVersionHistory: function() {
+    if (this.data.isViewingHistoryVersion) {
+      this.restoreCurrentVersion();
+    }
+    this.setData({
+      showVersionHistoryModal: false
+    });
+  },
+
+  /**
+   * 选择查看历史版本（只读）
+   */
+  selectHistoryVersion: function(e) {
+    var index = e.currentTarget.dataset.index;
+    var version = this.data.versionHistoryList[index];
+    if (!version) return;
+
+    if (index === 0) {
+      this.restoreCurrentVersion();
+      return;
+    }
+
+    this.setData({
+      selectedVersionIndex: index,
+      isViewingHistoryVersion: true,
+      activeBcVersion: version.version
+    });
+
+    wx.showToast({
+      title: '正在查看 v' + version.version + '（只读）',
+      icon: 'none',
+      duration: 2000
+    });
+  },
+
+  /**
+   * 恢复查看当前版本
+   */
+  restoreCurrentVersion: function() {
+    this.setData({
+      selectedVersionIndex: 0,
+      isViewingHistoryVersion: false,
+      activeBcVersion: 'current'
+    });
+  },
+
+  /**
+   * 切换区块链模块中显示的版本 txHash
+   */
+  switchBcVersion: function(e) {
+    var version = e.currentTarget.dataset.version;
+    this.setData({
+      activeBcVersion: version || 'current'
+    });
+  },
+
+  /**
+   * 获取当前激活版本对应的区块链信息
+   */
+  getActiveBcInfo: function() {
+    var bc = this.data.traceData && this.data.traceData.blockchainInfo;
+    if (!bc) return null;
+
+    if (this.data.activeBcVersion === 'current') {
+      return bc;
+    }
+
+    var ver = this.data.versionHistoryList.find(function(v) {
+      return v.version === this.data.activeBcVersion;
+    }.bind(this));
+
+    if (ver) {
+      return {
+        ...bc,
+        txHash: ver.txHash,
+        txHashShort: ver.txHashShort,
+        blockHeight: ver.blockHeight,
+        timestamp: ver.timestamp,
+        dataVersion: ver.version
+      };
+    }
+    return bc;
+  },
+
+  /**
+   * 从变更详情跳转到对应的历史检测报告（与 historyReports 时间轴打通）
+   */
+  gotoHistoryReportFromChange: function(e) {
+    var reportNo = e.currentTarget.dataset.reportno;
+    if (!reportNo) return;
+
+    var historyReports = this.data.traceData && this.data.traceData.pesticideTest && this.data.traceData.pesticideTest.historyReports;
+    if (!historyReports) return;
+
+    var targetIndex = historyReports.findIndex(function(r) { return r.reportNo === reportNo; });
+
+    this.closeChangeLogModal();
+    this.closeVersionHistory();
+
+    this.setData({
+      showHistoryTimeline: true,
+      activeHistoryIndex: targetIndex >= 0 ? targetIndex : 0,
+      moduleCollapsed: {
+        ...this.data.moduleCollapsed,
+        test: false
+      }
+    }, function() {
+      setTimeout(function() {
+        wx.pageScrollTo({
+          selector: '#anchor-test',
+          duration: 400
+        });
+      }, 200);
     });
   },
 

@@ -7911,3 +7911,879 @@
 .giftbox-module-card {
   background: #FFFFFF;
 }
+
+/* ==================== 版本更新 Toast ==================== */
+.version-update-toast {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  padding: 24rpx 32rpx 20rpx;
+  padding-top: calc(env(safe-area-inset-top) + 24rpx);
+  box-shadow: 0 8rpx 32rpx rgba(46, 139, 87, 0.25);
+  color: #FFFFFF;
+  animation: toastSlideDown 0.4s ease;
+}
+
+@keyframes toastSlideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+}
+
+.toast-icon {
+  font-size: 40rpx;
+  flex-shrink: 0;
+}
+
+.toast-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  margin-bottom: 4rpx;
+}
+
+.toast-desc {
+  font-size: 22rpx;
+  opacity: 0.9;
+}
+
+.toast-action {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10rpx 20rpx;
+  border-radius: 32rpx;
+  flex-shrink: 0;
+}
+
+.toast-action-text {
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.toast-action-arrow {
+  font-size: 28rpx;
+}
+
+.toast-close {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 16rpx);
+  right: 24rpx;
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  opacity: 0.85;
+}
+
+/* ==================== 基础信息中的版本入口 ==================== */
+.version-info-section {
+  margin-top: 8rpx;
+  margin-bottom: 8rpx;
+  background: linear-gradient(135deg, #F0FAF3 0%, #E8F5EC 100%);
+  border: 2rpx solid #C8E6D4;
+  border-radius: 20rpx;
+  padding: 20rpx;
+}
+
+.version-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.version-info-left {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.version-icon {
+  font-size: 36rpx;
+}
+
+.version-info-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.version-label {
+  font-size: 22rpx;
+  color: #666666;
+}
+
+.version-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #2E8B57;
+  margin-top: 2rpx;
+}
+
+.version-info-right {
+  flex-shrink: 0;
+}
+
+.version-history-link {
+  font-size: 24rpx;
+  color: #2E8B57;
+  font-weight: 500;
+}
+
+.version-change-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  margin-top: 16rpx;
+  padding: 14rpx;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12rpx;
+}
+
+.change-btn-icon {
+  font-size: 24rpx;
+}
+
+.change-btn-text {
+  font-size: 24rpx;
+  color: #2E8B57;
+  font-weight: 500;
+}
+
+/* ==================== 区块链模块版本选择器 ==================== */
+.bc-version-selector {
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx dashed #E0E8E0;
+}
+
+.bc-version-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.bc-version-tabs {
+  display: inline-flex;
+  gap: 14rpx;
+  padding: 4rpx;
+}
+
+.bc-version-tab {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12rpx 22rpx;
+  background: #F5F9F6;
+  border: 2rpx solid #D8E8DC;
+  border-radius: 14rpx;
+  min-width: 120rpx;
+  transition: all 0.2s ease;
+}
+
+.bc-version-tab.active {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  border-color: #2E8B57;
+  box-shadow: 0 4rpx 12rpx rgba(46, 139, 87, 0.25);
+}
+
+.bc-version-tab-label {
+  font-size: 20rpx;
+  color: #666666;
+  margin-bottom: 2rpx;
+}
+
+.bc-version-tab.active .bc-version-tab-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.bc-version-tab-ver {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #2E8B57;
+}
+
+.bc-version-tab.active .bc-version-tab-ver {
+  color: #FFFFFF;
+}
+
+.bc-version-highlight {
+  color: #2E8B57;
+  font-weight: 700;
+}
+
+/* ==================== 变更详情弹窗 ==================== */
+.changelog-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.changelog-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.changelog-content {
+  width: 100%;
+  max-height: 82vh;
+  background: #FFFFFF;
+  border-radius: 32rpx 32rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.changelog-modal.show .changelog-content {
+  transform: translateY(0);
+}
+
+.changelog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 32rpx 20rpx;
+  border-bottom: 2rpx solid #F0F0F0;
+  flex-shrink: 0;
+}
+
+.changelog-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.changelog-title-icon {
+  font-size: 40rpx;
+}
+
+.changelog-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.changelog-close {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  color: #999999;
+}
+
+.changelog-body {
+  flex: 1;
+  padding: 24rpx 32rpx 16rpx;
+  overflow-y: auto;
+  min-height: 200rpx;
+}
+
+.changelog-version-summary {
+  background: linear-gradient(135deg, #F0FAF3 0%, #F5FBF7 100%);
+  border: 2rpx solid #C8E6D4;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 28rpx;
+}
+
+.changelog-version-badge {
+  display: inline-block;
+  padding: 6rpx 18rpx;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #FFFFFF;
+  font-size: 26rpx;
+  font-weight: 700;
+  border-radius: 20rpx;
+  margin-bottom: 12rpx;
+}
+
+.changelog-version-meta {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: #666666;
+  margin-bottom: 10rpx;
+}
+
+.changelog-version-desc {
+  font-size: 26rpx;
+  color: #333333;
+  line-height: 1.6;
+  margin-bottom: 14rpx;
+}
+
+.changelog-version-report,
+.changelog-version-bc {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 10rpx;
+  padding: 10rpx 14rpx;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 10rpx;
+}
+
+.changelog-version-report {
+  cursor: pointer;
+}
+
+.report-link-icon,
+.bc-link-icon {
+  font-size: 22rpx;
+}
+
+.report-link-text,
+.bc-link-text {
+  font-size: 22rpx;
+  color: #2E8B57;
+  font-weight: 500;
+}
+
+.field-changes-section .section-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 18rpx;
+}
+
+.section-icon {
+  font-size: 28rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.field-changes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.field-change-item {
+  background: #FAFBFA;
+  border: 2rpx solid #E8EEE8;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.field-change-header {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.field-category-tag {
+  display: inline-block;
+  padding: 4rpx 12rpx;
+  font-size: 20rpx;
+  border-radius: 8rpx;
+  font-weight: 500;
+}
+
+.field-category-tag.test {
+  background: #FFF3E0;
+  color: #E67E22;
+}
+
+.field-category-tag.basic {
+  background: #E8F4FD;
+  color: #2980B9;
+}
+
+.field-category-tag.other {
+  background: #F0F0F0;
+  color: #666666;
+}
+
+.field-change-type {
+  display: inline-block;
+  padding: 4rpx 12rpx;
+  font-size: 20rpx;
+  border-radius: 8rpx;
+  font-weight: 600;
+}
+
+.field-change-type.add {
+  background: #E8F5E9;
+  color: #27AE60;
+}
+
+.field-change-type.update {
+  background: #FFF8E1;
+  color: #F39C12;
+}
+
+.field-change-type.delete {
+  background: #FFEBEE;
+  color: #E74C3C;
+}
+
+.field-change-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin-bottom: 12rpx;
+}
+
+.field-change-values {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  flex-wrap: wrap;
+}
+
+.value-box {
+  flex: 1;
+  min-width: 160rpx;
+  padding: 14rpx 16rpx;
+  border-radius: 12rpx;
+}
+
+.value-box.old {
+  background: #FFF5F5;
+  border: 2rpx solid #FFD6D6;
+}
+
+.value-box.new {
+  background: #F0FAF3;
+  border: 2rpx solid #C8E6D4;
+}
+
+.value-label {
+  display: block;
+  font-size: 20rpx;
+  color: #888888;
+  margin-bottom: 4rpx;
+}
+
+.value-text {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.value-arrow {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #2E8B57;
+  flex-shrink: 0;
+}
+
+.no-changes-tip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 20rpx;
+}
+
+.no-changes-icon {
+  font-size: 60rpx;
+  margin-bottom: 16rpx;
+  opacity: 0.6;
+}
+
+.no-changes-text {
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.changelog-footer {
+  flex-shrink: 0;
+  padding: 20rpx 32rpx 28rpx;
+  border-top: 2rpx solid #F0F0F0;
+}
+
+.changelog-confirm-btn {
+  width: 100%;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 48rpx;
+  box-shadow: 0 8rpx 24rpx rgba(46, 139, 87, 0.28);
+}
+
+/* ==================== 历史版本列表弹窗 ==================== */
+.version-history-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.version-history-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.version-history-content {
+  width: 100%;
+  max-height: 85vh;
+  background: #FFFFFF;
+  border-radius: 32rpx 32rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.version-history-modal.show .version-history-content {
+  transform: translateY(0);
+}
+
+.version-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 32rpx 20rpx;
+  border-bottom: 2rpx solid #F0F0F0;
+  flex-shrink: 0;
+}
+
+.version-history-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.version-history-title-icon {
+  font-size: 40rpx;
+}
+
+.version-history-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.version-history-close {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  color: #999999;
+}
+
+.version-history-readonly-tip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin: 20rpx 32rpx 0;
+  padding: 18rpx 22rpx;
+  background: linear-gradient(135deg, #FFF8E7 0%, #FFF2D6 100%);
+  border: 2rpx solid #E8C872;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+}
+
+.readonly-icon {
+  font-size: 28rpx;
+  flex-shrink: 0;
+}
+
+.readonly-text {
+  flex: 1;
+  font-size: 24rpx;
+  color: #8B6914;
+  font-weight: 500;
+}
+
+.back-current-btn {
+  flex-shrink: 0;
+  padding: 8rpx 18rpx;
+  background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+  color: #FFFFFF;
+  font-size: 22rpx;
+  font-weight: 600;
+  border-radius: 24rpx;
+}
+
+.version-history-body {
+  flex: 1;
+  padding: 24rpx 32rpx 16rpx;
+  overflow-y: auto;
+}
+
+.version-timeline {
+  position: relative;
+  padding-left: 12rpx;
+}
+
+.version-timeline-item {
+  position: relative;
+  padding-left: 40rpx;
+  padding-bottom: 24rpx;
+}
+
+.version-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 0;
+  top: 20rpx;
+  width: 20rpx;
+  height: 20rpx;
+  background: #CCCCCC;
+  border: 4rpx solid #FFFFFF;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2rpx #CCCCCC;
+  z-index: 2;
+}
+
+.timeline-dot.latest {
+  background: #2E8B57;
+  box-shadow: 0 0 0 2rpx #2E8B57, 0 0 0 8rpx rgba(46, 139, 87, 0.15);
+}
+
+.version-timeline-item.selected .timeline-dot {
+  background: #2E8B57;
+  box-shadow: 0 0 0 2rpx #2E8B57, 0 0 0 10rpx rgba(46, 139, 87, 0.2);
+}
+
+.timeline-line {
+  position: absolute;
+  left: 9rpx;
+  top: 44rpx;
+  bottom: 0;
+  width: 2rpx;
+  background: #E0E0E0;
+  z-index: 1;
+}
+
+.version-timeline-item.selected .timeline-line {
+  background: #C8E6D4;
+}
+
+.version-item-card {
+  background: #FAFBFA;
+  border: 2rpx solid #E8EEE8;
+  border-radius: 18rpx;
+  padding: 20rpx;
+  transition: all 0.2s ease;
+}
+
+.version-item-card.active {
+  background: linear-gradient(135deg, #F0FAF3 0%, #F5FBF7 100%);
+  border-color: #2E8B57;
+  box-shadow: 0 4rpx 16rpx rgba(46, 139, 87, 0.18);
+}
+
+.version-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.version-card-badge {
+  display: inline-block;
+  padding: 4rpx 14rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  border-radius: 10rpx;
+}
+
+.version-card-badge.current {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #FFFFFF;
+}
+
+.version-card-badge.history {
+  background: #F0F0F0;
+  color: #666666;
+}
+
+.version-card-number {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.version-item-card.active .version-card-number {
+  color: #2E8B57;
+}
+
+.version-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: #888888;
+  margin-bottom: 10rpx;
+}
+
+.version-card-summary {
+  font-size: 24rpx;
+  color: #444444;
+  line-height: 1.5;
+  margin-bottom: 12rpx;
+}
+
+.version-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.version-card-changes-count {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.count-icon {
+  font-size: 22rpx;
+}
+
+.count-text {
+  font-size: 22rpx;
+  color: #666666;
+}
+
+.version-card-action {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 8rpx 16rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #D8E8DC;
+  border-radius: 20rpx;
+}
+
+.version-card-action text {
+  font-size: 22rpx;
+  color: #2E8B57;
+  font-weight: 500;
+}
+
+.action-arrow {
+  font-size: 26rpx;
+  line-height: 1;
+}
+
+.version-card-bc-info {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  margin-top: 12rpx;
+  padding-top: 12rpx;
+  border-top: 2rpx dashed #E8EEE8;
+}
+
+.bc-info-icon {
+  font-size: 20rpx;
+}
+
+.bc-info-text {
+  font-size: 20rpx;
+  color: #777777;
+  font-family: monospace;
+}
+
+.version-history-footer {
+  flex-shrink: 0;
+  padding: 20rpx 32rpx 28rpx;
+  border-top: 2rpx solid #F0F0F0;
+}
+
+.version-history-cancel-btn {
+  width: 100%;
+  padding: 22rpx;
+  background: #F5F5F5;
+  color: #666666;
+  font-size: 28rpx;
+  font-weight: 500;
+  text-align: center;
+  border-radius: 48rpx;
+}
+
+.version-history-back-btn {
+  width: 100%;
+  padding: 22rpx;
+  background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 48rpx;
+  box-shadow: 0 6rpx 20rpx rgba(218, 165, 32, 0.3);
+}
+
+/* ==================== 农残检测时间轴版本关联 ==================== */
+.timeline-version-link {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  margin-top: 12rpx;
+  padding: 8rpx 14rpx;
+  background: #F0FAF3;
+  border-radius: 10rpx;
+  width: fit-content;
+}
+
+.version-link-icon {
+  font-size: 20rpx;
+}
+
+.version-link-text {
+  font-size: 20rpx;
+  color: #2E8B57;
+  font-weight: 500;
+}
+
+.timeline-item.active .timeline-content {
+  background: linear-gradient(135deg, #F0FAF3 0%, #F5FBF7 100%);
+  border-color: #2E8B57;
+}
+
