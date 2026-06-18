@@ -2,6 +2,7 @@ const mockData = require('../../utils/mockData.js');
 const antiCounterfeit = require('../../utils/antiCounterfeit.js');
 const greenPoints = require('../../utils/greenPoints.js');
 const channelTrace = require('../../utils/channelTrace.js');
+const i18n = require('../../utils/i18n/index.js');
 
 Page({
   data: {
@@ -16,7 +17,9 @@ Page({
     channelFlow: [],
     channelSummary: '',
     divergenceAlert: null,
-    showDivergenceAlert: false
+    showDivergenceAlert: false,
+    recallInfo: null,
+    a11yClasses: ''
   },
 
   onLoad: function(options) {
@@ -24,11 +27,13 @@ Page({
 
     const traceId = options.traceId;
     const scanType = options.scanType || 'qrCode';
+    const a11yData = i18n.getA11yData();
 
     if (traceId) {
       this.setData({
         traceId: traceId,
-        scanType: scanType
+        scanType: scanType,
+        a11yClasses: a11yData.classes
       });
       this.verifyProduct(traceId);
     } else {
@@ -67,6 +72,10 @@ Page({
           currentScan.location
         );
 
+        const recallInfo = mockData.isRecalledProduct(traceId)
+          ? mockData.getRecallByTraceId(traceId)
+          : null;
+
         that.setData({
           verifyResult: result,
           productInfo: traceData ? traceData.basicInfo : null,
@@ -75,8 +84,24 @@ Page({
           channelFlow: channelFlow,
           channelSummary: channelSummary,
           divergenceAlert: divergenceResult.isDivergence ? divergenceResult : null,
-          showDivergenceAlert: divergenceResult.isDivergence
+          showDivergenceAlert: divergenceResult.isDivergence,
+          recallInfo: recallInfo
         });
+
+        if (recallInfo) {
+          wx.showModal({
+            title: '⚠️ 产品安全召回警示',
+            content: '您扫码的产品属于召回批次：' + recallInfo.issueCategory + '。为了您的健康，建议立即停止食用并登记召回。',
+            confirmText: '查看召回详情',
+            cancelText: '我已知晓',
+            confirmColor: '#D32F2F',
+            success: function(res) {
+              if (res.confirm) {
+                that.goToRecallDetail();
+              }
+            }
+          });
+        }
 
         var pointsResult = greenPoints.earnPoints('scan', '扫码溯源:' + traceId);
         if (pointsResult.earned > 0) {
@@ -105,6 +130,32 @@ Page({
         icon: 'none'
       });
     }
+  },
+
+  goToRecallDetail: function() {
+    const traceId = this.data.traceId;
+    const recallInfo = this.data.recallInfo;
+
+    let url = '/pages/recall/detail?';
+    if (traceId) {
+      url += 'traceId=' + traceId;
+    } else if (recallInfo && recallInfo.batchNo) {
+      url += 'batchNo=' + recallInfo.batchNo;
+    }
+
+    wx.navigateTo({
+      url: url,
+      success: function() {
+        console.log('[Scan] 跳转召回详情页成功');
+      },
+      fail: function(err) {
+        console.error('[Scan] 跳转召回详情页失败：', err);
+        wx.showToast({
+          title: '页面跳转失败',
+          icon: 'none'
+        });
+      }
+    });
   },
 
   confirmToDetail: function() {

@@ -1,12 +1,21 @@
-<view class="page-container">
-  
+<view class="page-container {{a11yClasses}}">
+
+  <view wx:if="{{!loading && recallInfo}}" class="recall-alert-banner" bindtap="goToRecallDetail">
+    <view class="recall-alert-icon">🚨</view>
+    <view class="recall-alert-content">
+      <view class="recall-alert-title">产品安全召回警示</view>
+      <view class="recall-alert-desc">{{recallInfo.recallLevelLabel}} · {{recallInfo.issueCategory}} · 批次 {{recallInfo.batchNo}}</view>
+    </view>
+    <view class="recall-alert-arrow">→</view>
+  </view>
+
   <view wx:if="{{loading}}" class="loading-container">
     <view class="loading-icon">🔍</view>
     <view class="loading-text">正在进行防伪验证...</view>
   </view>
 
   <view wx:else class="result-container">
-    
+
     <view class="verify-header {{verifyResult.scanType}}">
       <view class="verify-icon-wrapper">
         <view class="verify-icon {{verifyResult.authenticity}}">

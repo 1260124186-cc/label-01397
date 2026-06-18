@@ -5450,6 +5450,96 @@ function getTraceCode(code) {
   return TRACE_CODES[code] || null;
 }
 
+// ==================== 产品召回数据 ====================
+const RECALL_BATCHES = {
+  'GH202504': {
+    batchNo: 'GH202504',
+    recallId: 'RC202512001',
+    productName: '银桂花茶',
+    recallLevel: 'level2',
+    recallLevelLabel: '二级召回',
+    publishDate: '2025年12月15日',
+    effectiveDate: '2025年12月15日起',
+    scope: '全国范围',
+    affectedCount: 2856,
+    producer: '湖北桂花茶业有限公司',
+    issueDescription: '该批次产品在抽检中发现氯氰菊酯残留量超出国标 GB 2763-2021 限值，实测值 25.5mg/kg，国标限值 20mg/kg，超出 27.5%。长期大量摄入可能对人体健康造成潜在影响。',
+    issueCategory: '农残超标',
+    testItems: [
+      {
+        name: '氯氰菊酯',
+        standard: 'GB 2763-2021',
+        limit: '20 mg/kg',
+        measured: '25.5 mg/kg',
+        result: '不合格',
+        isAbnormal: true,
+        description: '超出国标限值 27.5%'
+      },
+      {
+        name: '六六六',
+        standard: 'GB 2763-2021',
+        limit: '0.1 mg/kg',
+        measured: '<0.01 mg/kg',
+        result: '合格',
+        isAbnormal: false,
+        description: ''
+      },
+      {
+        name: '氯氟氰菊酯',
+        standard: 'GB 2763-2021',
+        limit: '2.0 mg/kg',
+        measured: '<0.01 mg/kg',
+        result: '合格',
+        isAbnormal: false,
+        description: ''
+      }
+    ],
+    officialAdvice: [
+      '立即停止食用该批次产品',
+      '未开封产品可凭购买凭证到原购买渠道办理全额退款',
+      '已开封产品可拍照上传后联系客服申请补偿',
+      '如已食用并出现不适症状，请及时就医并保留就诊记录',
+      '客服热线：400-888-8888（工作日 9:00-18:00）'
+    ],
+    affectedTraceIds: ['G002', 'G005', 'G006', 'G007'],
+    compensationRule: '未开封全额退款 + 赠送同价位正品1份；已开封按剩余比例退款 + 50元优惠券',
+    handlingDeadline: '2026年3月15日',
+    relatedReports: [
+      { reportNo: 'HBAQ-2025-12345', institution: '湖北省农产品质量安全检测中心', testDate: '2025年9月25日' }
+    ],
+    regulator: '咸宁市市场监督管理局',
+    regulatorNotice: '关于对湖北桂花茶业有限公司不合格食品风险控制情况的通告（2025年第48号）'
+  }
+};
+
+const RECALL_TRACE_ID_MAP = {};
+Object.keys(RECALL_BATCHES).forEach(function(batchNo) {
+  const recall = RECALL_BATCHES[batchNo];
+  if (recall.affectedTraceIds) {
+    recall.affectedTraceIds.forEach(function(traceId) {
+      RECALL_TRACE_ID_MAP[traceId] = batchNo;
+    });
+  }
+});
+
+function getRecallByBatch(batchNo) {
+  return RECALL_BATCHES[batchNo] || null;
+}
+
+function getRecallByTraceId(traceId) {
+  const batchNo = RECALL_TRACE_ID_MAP[traceId];
+  if (!batchNo) return null;
+  return RECALL_BATCHES[batchNo] || null;
+}
+
+function isRecalledProduct(traceId) {
+  return !!RECALL_TRACE_ID_MAP[traceId];
+}
+
+function getAllRecalls() {
+  return Object.values(RECALL_BATCHES);
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -5520,5 +5610,9 @@ module.exports = {
   getReportReasons,
   submitReview,
   likeReview,
-  reportReview
+  reportReview,
+  getRecallByBatch,
+  getRecallByTraceId,
+  isRecalledProduct,
+  getAllRecalls
 };

@@ -11,7 +11,13 @@
     "pages/dealer/stockIn",
     "pages/dealer/stockOut",
     "pages/certificateWallet/certificateWallet",
-    "pages/certificateDetail/certificateDetail"
+    "pages/certificateDetail/certificateDetail",
+    "pages/recall/detail",
+    "pages/service/ticketList",
+    "pages/service/ticketCreate",
+    "pages/service/ticketDetail",
+    "pages/reportProduct/reportProduct",
+    "pages/arExperience/arExperience"
   ],
   "window": {
     "backgroundTextStyle": "dark",

@@ -1,0 +1,537 @@
+<view class="recall-detail-page {{a11yClasses}}">
+
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-icon">⚠️</view>
+    <view class="loading-text">正在加载召回信息...</view>
+  </view>
+
+  <view wx:elif="{{!recallData}}" class="empty-container">
+    <view class="empty-icon">📭</view>
+    <view class="empty-text">未找到相关召回信息</view>
+  </view>
+
+  <view wx:else class="content-container">
+
+    <view class="recall-alert-header">
+      <view class="alert-icon-wrap">
+        <text class="alert-icon">🚨</text>
+      </view>
+      <view class="alert-content">
+        <view class="alert-title">产品安全召回通知</view>
+        <view class="alert-level">{{recallData.recallLevelLabel}}</view>
+        <view class="alert-date">发布日期：{{recallData.publishDate}}</view>
+      </view>
+      <view class="alert-badge">召回中</view>
+    </view>
+
+    <view class="tab-bar">
+      <view
+        class="tab-item {{currentTab === 'info' ? 'active' : ''}}"
+        data-tab="info"
+        bindtap="switchTab"
+      >
+        <text class="tab-icon">📋</text>
+        <text>召回详情</text>
+      </view>
+      <view
+        class="tab-item {{currentTab === 'test' ? 'active' : ''}}"
+        data-tab="test"
+        bindtap="switchTab"
+      >
+        <text class="tab-icon">🔬</text>
+        <text>检测项</text>
+      </view>
+      <view
+        class="tab-item {{currentTab === 'advice' ? 'active' : ''}}"
+        data-tab="advice"
+        bindtap="switchTab"
+      >
+        <text class="tab-icon">💡</text>
+        <text>处置建议</text>
+      </view>
+      <view
+        class="tab-item {{currentTab === 'register' ? 'active' : ''}}"
+        data-tab="register"
+        bindtap="switchTab"
+      >
+        <text class="tab-icon">📝</text>
+        <text>我的登记</text>
+      </view>
+    </view>
+
+    <block wx:if="{{currentTab === 'info'}}">
+      <view class="card">
+        <view class="card-title">
+          <text class="title-icon">📦</text>
+          <text>受影响批次</text>
+        </view>
+        <view class="info-grid">
+          <view class="info-item">
+            <view class="info-label">产品名称</view>
+            <view class="info-value highlight">{{recallData.productName}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">批次号</view>
+            <view class="info-value danger">{{recallData.batchNo}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">召回编号</view>
+            <view class="info-value">{{recallData.recallId}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">涉及数量</view>
+            <view class="info-value">{{recallData.affectedCount}} 件</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">召回范围</view>
+            <view class="info-value">{{recallData.scope}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">生产企业</view>
+            <view class="info-value">{{recallData.producer}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="card issue-card">
+        <view class="card-title">
+          <text class="title-icon">⚠️</text>
+          <text>问题说明</text>
+        </view>
+        <view class="issue-category-tag">{{recallData.issueCategory}}</view>
+        <view class="issue-description">
+          <text>{{recallData.issueDescription}}</text>
+        </view>
+        <view class="issue-compensation" wx:if="{{recallData.compensationRule}}">
+          <view class="compensation-title">
+            <text class="compensation-icon">🎁</text>
+            <text>补偿方案</text>
+          </view>
+          <view class="compensation-text">{{recallData.compensationRule}}</view>
+        </view>
+        <view class="issue-deadline" wx:if="{{recallData.handlingDeadline}}">
+          <text class="deadline-icon">⏰</text>
+          <text>办理截止：{{recallData.handlingDeadline}}</text>
+        </view>
+      </view>
+
+      <view class="card" wx:if="{{recallData.relatedReports && recallData.relatedReports.length > 0}}">
+        <view class="card-title">
+          <text class="title-icon">📄</text>
+          <text>关联检测报告</text>
+        </view>
+        <view wx:for="{{recallData.relatedReports}}" wx:key="reportNo" class="report-item">
+          <view class="report-no">报告编号：{{item.reportNo}}</view>
+          <view class="report-meta">
+            <text>{{item.institution}}</text>
+            <text>·</text>
+            <text>{{item.testDate}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="card" wx:if="{{recallData.regulator}}">
+        <view class="card-title">
+          <text class="title-icon">🏛️</text>
+          <text>监管信息</text>
+        </view>
+        <view class="regulator-info">
+          <view class="regulator-name">监管部门：{{recallData.regulator}}</view>
+          <view class="regulator-notice" wx:if="{{recallData.regulatorNotice}}">{{recallData.regulatorNotice}}</view>
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{currentTab === 'test'}}">
+      <view class="card">
+        <view class="card-title">
+          <text class="title-icon">🔬</text>
+          <text>涉及检测项</text>
+        </view>
+        <view class="test-standard" wx:if="{{recallData.testItems && recallData.testItems.length > 0}}">
+          <text>执行标准：{{recallData.testItems[0].standard}}</text>
+        </view>
+        <view class="test-list">
+          <view
+            wx:for="{{recallData.testItems}}"
+            wx:key="name"
+            class="test-item {{item.isAbnormal ? 'abnormal' : 'normal'}}"
+          >
+            <view class="test-item-header">
+              <text class="test-name">{{item.name}}</text>
+              <view class="test-result {{item.isAbnormal ? 'result-fail' : 'result-pass'}}">
+                {{item.result}}
+              </view>
+            </view>
+            <view class="test-values">
+              <view class="test-value-col">
+                <view class="value-label">国标限值</view>
+                <view class="value-text">{{item.limit}}</view>
+              </view>
+              <view class="test-value-col">
+                <view class="value-label">实测值</view>
+                <view class="value-text {{item.isAbnormal ? 'danger' : ''}}">{{item.measured}}</view>
+              </view>
+            </view>
+            <view class="test-desc" wx:if="{{item.description}}">
+              <text>{{item.description}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{currentTab === 'advice'}}">
+      <view class="card advice-card">
+        <view class="card-title">
+          <text class="title-icon">💡</text>
+          <text>官方处置建议</text>
+        </view>
+        <view class="advice-list">
+          <view wx:for="{{recallData.officialAdvice}}" wx:key="*this" class="advice-item">
+            <view class="advice-number">{{index + 1}}</view>
+            <view class="advice-text">{{item}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="card contact-card">
+        <view class="card-title">
+          <text class="title-icon">📞</text>
+          <text>联系客服</text>
+        </view>
+        <view class="contact-tip">
+          如有疑问，请拨打客服热线咨询，或直接在下方登记召回信息
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{currentTab === 'register'}}">
+      <view class="card register-card">
+        <view class="card-title">
+          <text class="title-icon">📝</text>
+          <text>召回登记</text>
+          <view class="title-extra">您的登记记录</view>
+        </view>
+
+        <view wx:if="{{existingRegistrations.length > 0}}" class="registration-list">
+          <view
+            wx:for="{{existingRegistrations}}"
+            wx:key="id"
+            class="registration-item"
+            data-id="{{item.id}}"
+            bindtap="viewRegistrationDetail"
+          >
+            <view class="reg-header">
+              <view class="reg-id">登记号：{{item.id}}</view>
+              <view class="reg-status" style="background: {{item.statusColor}};">
+                {{item.statusLabel}}
+              </view>
+            </view>
+            <view class="reg-info-row">
+              <text>溯源ID：{{item.traceId || '-'}}</text>
+            </view>
+            <view class="reg-info-row">
+              <text>{{item.purchaseChannelLabel || '渠道未填写'}}</text>
+              <text>·</text>
+              <text>{{item.isOpened ? '已开封' : '未开封'}}</text>
+            </view>
+            <view class="reg-footer">
+              <text class="reg-time">{{item.createdAtStr}}</text>
+              <view class="reg-actions">
+                <text class="reg-action-link" wx:if="{{item.ticketId}}" data-ticket-id="{{item.ticketId}}" catchtap="goToTicketDetail">查看工单 →</text>
+                <text class="reg-action-link convert-link" wx:else data-id="{{item.id}}" catchtap="convertToTicket">转为工单 →</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view wx:else class="no-registration">
+          <view class="no-reg-icon">📋</view>
+          <view class="no-reg-text">暂无登记记录</view>
+        </view>
+
+        <button class="btn-primary register-btn" bindtap="openRegisterForm">
+          <text>+</text>
+          <text>新增召回登记</text>
+        </button>
+      </view>
+    </block>
+
+    <view class="bottom-action-bar">
+      <button class="btn-secondary bar-btn" bindtap="goToDetail" wx:if="{{traceId}}">
+        <text class="btn-icon">🔍</text>
+        <text>查看溯源</text>
+      </button>
+      <button class="btn-primary bar-btn" bindtap="openRegisterForm">
+        <text class="btn-icon">📝</text>
+        <text>立即登记</text>
+      </button>
+    </view>
+
+  </view>
+
+  <view class="modal-mask" wx:if="{{showRegisterForm}}" bindtap="closeRegisterForm">
+    <view class="modal-content register-modal" catchtap="preventBubble">
+      <view class="modal-header">
+        <view class="modal-title">产品召回登记</view>
+        <view class="modal-close" bindtap="closeRegisterForm">✕</view>
+      </view>
+      <scroll-view class="modal-body" scroll-y="true">
+
+        <view class="form-section">
+          <view class="section-title">溯源ID <text class="required">*</text></view>
+          <view class="input-wrap">
+            <input
+              class="form-input"
+              type="text"
+              placeholder="请输入产品溯源ID"
+              value="{{registerForm.traceId}}"
+              bindinput="onTraceIdInput"
+            />
+          </view>
+        </view>
+
+        <view class="form-section">
+          <view class="section-title">购买渠道 <text class="required">*</text></view>
+          <view class="channel-grid">
+            <view
+              wx:for="{{purchaseChannels}}"
+              wx:key="key"
+              class="channel-item {{registerForm.purchaseChannel === item.key ? 'active' : ''}}"
+              data-key="{{item.key}}"
+              data-label="{{item.label}}"
+              bindtap="selectPurchaseChannel"
+            >
+              <view class="channel-icon">{{item.icon}}</view>
+              <view class="channel-label">{{item.label}}</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="form-section">
+          <view class="section-title">联系方式 <text class="required">*</text></view>
+          <view class="input-wrap">
+            <input
+              class="form-input"
+              type="number"
+              placeholder="请输入手机号，方便客服联系"
+              value="{{registerForm.contact}}"
+              bindinput="onContactInput"
+              maxlength="11"
+            />
+          </view>
+        </view>
+
+        <view class="form-section">
+          <view class="section-title">是否已开封</view>
+          <view class="switch-wrap">
+            <text class="switch-label">产品是否已开封</text>
+            <switch
+              checked="{{registerForm.isOpened}}"
+              bindchange="toggleIsOpened"
+              color="#D32F2F"
+            />
+          </view>
+          <view class="field-tip">未开封产品可全额退款，已开封产品按剩余比例补偿</view>
+        </view>
+
+        <view class="form-section">
+          <view class="section-title">上传照片</view>
+          <view class="field-tip">建议上传产品外观、批次号标签、购买凭证等照片（最多3张）</view>
+          <view class="image-grid">
+            <view
+              wx:for="{{registerForm.images}}"
+              wx:key="*this"
+              class="image-item"
+            >
+              <image
+                class="uploaded-image"
+                src="{{item}}"
+                mode="aspectFill"
+                data-url="{{item}}"
+                bindtap="previewImage"
+              />
+              <view class="image-remove" data-index="{{index}}" catchtap="removeImage">✕</view>
+            </view>
+            <view class="image-upload" bindtap="chooseImage" wx:if="{{registerForm.images.length < 3}}">
+              <view class="upload-plus">+</view>
+              <view class="upload-text">上传</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="form-section">
+          <view class="section-title">备注说明</view>
+          <view class="textarea-wrap">
+            <textarea
+              class="form-textarea"
+              placeholder="如有其他情况请在此说明（选填）"
+              value="{{registerForm.remark}}"
+              bindinput="onRemarkInput"
+              maxlength="200"
+              auto-height
+            />
+          </view>
+        </view>
+
+      </scroll-view>
+      <view class="modal-footer">
+        <button class="btn-outline modal-btn" bindtap="closeRegisterForm">取消</button>
+        <button
+          class="btn-primary modal-btn {{submitting ? 'disabled' : ''}}"
+          bindtap="submitRegistration"
+          disabled="{{submitting}}"
+        >
+          <text wx:if="{{submitting}}">提交中...</text>
+          <text wx:else>提交登记</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{showRegistrationResult}}" bindtap="closeRegistrationResult">
+    <view class="modal-content result-modal" catchtap="preventBubble">
+      <view class="result-success-icon">✅</view>
+      <view class="result-title">登记提交成功</view>
+      <view class="result-desc">我们将尽快审核您的信息，请保持电话畅通</view>
+      <view class="result-info">
+        <view class="result-info-row">
+          <text class="info-label">登记号</text>
+          <text class="info-value">{{createdRegistration.id}}</text>
+        </view>
+        <view class="result-info-row">
+          <text class="info-label">当前状态</text>
+          <text class="info-value status-tag" style="background: {{createdRegistration.statusColor}};">
+            {{createdRegistration.statusLabel}}
+          </text>
+        </view>
+        <view class="result-info-row">
+          <text class="info-label">提交时间</text>
+          <text class="info-value">{{createdRegistration.createdAtStr}}</text>
+        </view>
+      </view>
+      <view class="result-actions">
+        <button class="btn-outline modal-btn" bindtap="closeRegistrationResult">知道了</button>
+        <button
+          class="btn-primary modal-btn"
+          data-id="{{createdRegistration.id}}"
+          bindtap="convertToTicket"
+        >
+          转为工单
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{registrationDetail}}" bindtap="closeRegistrationDetail">
+    <view class="modal-content detail-modal" catchtap="preventBubble">
+      <view class="modal-header">
+        <view class="modal-title">登记详情</view>
+        <view class="modal-close" bindtap="closeRegistrationDetail">✕</view>
+      </view>
+      <scroll-view class="modal-body" scroll-y="true">
+
+        <view class="detail-status-header">
+          <view class="detail-status-tag" style="background: {{registrationDetail.statusColor}};">
+            {{registrationDetail.statusLabel}}
+          </view>
+          <view class="detail-id">登记号：{{registrationDetail.id}}</view>
+        </view>
+
+        <view class="detail-info-section">
+          <view class="detail-info-row">
+            <text class="detail-label">产品名称</text>
+            <text class="detail-value">{{registrationDetail.productName || '-'}}</text>
+          </view>
+          <view class="detail-info-row">
+            <text class="detail-label">批次号</text>
+            <text class="detail-value">{{registrationDetail.batchNo || '-'}}</text>
+          </view>
+          <view class="detail-info-row">
+            <text class="detail-label">溯源ID</text>
+            <text class="detail-value">{{registrationDetail.traceId || '-'}}</text>
+          </view>
+          <view class="detail-info-row">
+            <text class="detail-label">购买渠道</text>
+            <text class="detail-value">{{registrationDetail.purchaseChannelLabel || '-'}}</text>
+          </view>
+          <view class="detail-info-row">
+            <text class="detail-label">是否开封</text>
+            <text class="detail-value">{{registrationDetail.isOpened ? '已开封' : '未开封'}}</text>
+          </view>
+          <view class="detail-info-row">
+            <text class="detail-label">联系方式</text>
+            <text class="detail-value">{{registrationDetail.contact || '-'}}</text>
+          </view>
+          <view class="detail-info-row" wx:if="{{registrationDetail.remark}}">
+            <text class="detail-label">备注说明</text>
+            <text class="detail-value">{{registrationDetail.remark}}</text>
+          </view>
+          <view class="detail-info-row" wx:if="{{registrationDetail.compensationAmount}}">
+            <text class="detail-label">补偿金额</text>
+            <text class="detail-value highlight">¥{{registrationDetail.compensationAmount}}</text>
+          </view>
+        </view>
+
+        <view class="detail-info-row" wx:if="{{registrationDetail.images && registrationDetail.images.length > 0}}">
+          <text class="detail-label">上传照片</text>
+          <view class="detail-images">
+            <image
+              wx:for="{{registrationDetail.images}}"
+              wx:key="*this"
+              class="detail-image"
+              src="{{item}}"
+              mode="aspectFill"
+            />
+          </view>
+        </view>
+
+        <view class="timeline-section">
+          <view class="section-sub-title">
+            <text class="sub-icon">📊</text>
+            <text>处理进度</text>
+          </view>
+          <view class="status-timeline">
+            <view
+              wx:for="{{registrationDetail.timeline}}"
+              wx:key="timestamp"
+              class="timeline-item"
+            >
+              <view class="timeline-dot"></view>
+              <view class="timeline-line" wx:if="{{index < registrationDetail.timeline.length - 1}}"></view>
+              <view class="timeline-content">
+                <view class="timeline-status">{{item.statusLabel}}</view>
+                <view class="timeline-time">{{item.timestampStr}}</view>
+                <view class="timeline-message" wx:if="{{item.message}}">{{item.message}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+      </scroll-view>
+      <view class="modal-footer">
+        <button
+          class="btn-outline modal-btn"
+          wx:if="{{registrationDetail.ticketId}}"
+          data-ticket-id="{{registrationDetail.ticketId}}"
+          bindtap="goToTicketDetail"
+        >
+          查看工单
+        </button>
+        <button
+          class="btn-outline modal-btn"
+          wx:else
+          data-id="{{registrationDetail.id}}"
+          bindtap="convertToTicket"
+        >
+          转为工单
+        </button>
+        <button class="btn-primary modal-btn" bindtap="closeRegistrationDetail">关闭</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-safe-space"></view>
+
+</view>

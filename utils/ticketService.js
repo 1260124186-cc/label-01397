@@ -21,6 +21,7 @@ const PROBLEM_TYPES = [
   { key: 'brewing_issue', label: '冲泡问题', icon: '☕' },
   { key: 'product_quality', label: '产品质量', icon: '🍃' },
   { key: 'logistics', label: '物流配送', icon: '📦' },
+  { key: 'product_recall', label: '产品召回', icon: '🚨' },
   { key: 'other', label: '其他问题', icon: '💬' }
 ];
 
