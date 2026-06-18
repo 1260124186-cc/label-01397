@@ -9,6 +9,8 @@ const mockData = require('../../utils/mockData.js');
 const shareUtil = require('../../utils/share.js');
 const i18n = require('../../utils/i18n/index.js');
 const certWallet = require('../../utils/certificateWallet.js');
+const weatherUtil = require('../../utils/weather.js');
+const userStore = require('../../utils/userStore.js');
 
 // 锚点 Tab 配置（将在运行时根据语言填充 label）
 const ANCHOR_TABS_BASE = [
@@ -188,6 +190,20 @@ Page({
     dosageTaste: 'medium',
     dosageResult: null,
 
+    // ========== 冲泡环境联动 ==========
+    currentWeather: null,
+    weatherLoading: false,
+    waterTempAdjusted: null,
+    waterHardness: 'medium',
+    hardnessAdjustment: null,
+    currentBrewRound: 1,
+    brewFeeling: '',
+    brewRating: 0,
+    brewTags: [],
+    showBrewSaveModal: false,
+    brewPresetTags: ['回甘', '花香', '醇厚', '清甜', '浓香', '柔和', '鲜爽', '余韵', '桂花香', '茶韵'],
+    brewInputTag: ''
+
     // ========== 区块链存证功能 ==========
     bcVerifying: false,
     bcVerifyResult: null,
@@ -286,6 +302,7 @@ Page({
     if (traceId) {
       this.setData({ traceId: traceId });
       this.loadTraceData(traceId);
+      this.initBrewEnvironment();
     } else {
       wx.showToast({
         title: '参数错误',
@@ -1634,6 +1651,7 @@ Page({
    * 计时完成提醒
    */
   onBrewTimerComplete: function() {
+    var that = this;
     wx.vibrateLong({
       success: function() {},
       fail: function() {}
@@ -1645,12 +1663,235 @@ Page({
       duration: 3000
     });
 
-    wx.showModal({
-      title: '☕ 冲泡完成',
-      content: '2分钟冲泡时间已到，现在可以品尝香浓的桂花茶了！',
-      showCancel: false,
-      confirmText: '好的'
+    setTimeout(function() {
+      that.openBrewSaveModal();
+    }, 500);
+  },
+
+  initBrewEnvironment: function() {
+    var that = this;
+    var waterSettings = userStore.getWaterQualitySettings();
+    var hardness = waterSettings.hardness || 'medium';
+    var hardnessAdj = userStore.adjustBrewParamsByWaterQuality(hardness, 3, 120);
+    this.setData({
+      waterHardness: hardness,
+      hardnessAdjustment: hardnessAdj
     });
+
+    this.setData({ weatherLoading: true });
+    weatherUtil.getCurrentLocationWeather().then(function(weather) {
+      that.setData({
+        currentWeather: weather,
+        weatherLoading: false
+      });
+      var adjusted = weatherUtil.adjustWaterTempByWeather(weather.temp, 85, 90);
+      that.setData({
+        waterTempAdjusted: adjusted,
+        selectedWaterTemp: String(adjusted.recommended)
+      });
+    }).catch(function() {
+      that.setData({ weatherLoading: false });
+      var adjusted = weatherUtil.adjustWaterTempByWeather(25, 85, 90);
+      that.setData({
+        waterTempAdjusted: adjusted,
+        selectedWaterTemp: String(adjusted.recommended)
+      });
+    });
+  },
+
+  goToBrewEnvironment: function() {
+    var traceId = this.data.traceId || '';
+    var baseParams = '?traceId=' + traceId
+      + '&baseTempMin=85&baseTempMax=90'
+      + '&baseTeaAmount=3&baseDuration=120';
+    wx.navigateTo({
+      url: '/pages/brewEnvironment/brewEnvironment' + baseParams
+    });
+  },
+
+  onEnvironmentUpdated: function(envData) {
+    var updates = {};
+    if (envData.weather) {
+      updates.currentWeather = envData.weather;
+    }
+    if (envData.waterTempAdjusted) {
+      updates.waterTempAdjusted = envData.waterTempAdjusted;
+      updates.selectedWaterTemp = String(envData.waterTempAdjusted.recommended);
+    }
+    if (envData.waterHardness) {
+      updates.waterHardness = envData.waterHardness;
+    }
+    if (envData.hardnessAdjustment) {
+      updates.hardnessAdjustment = envData.hardnessAdjustment;
+    }
+    if (Object.keys(updates).length > 0) {
+      this.setData(updates);
+    }
+  },
+
+  openBrewRecordPage: function() {
+    var traceId = this.data.traceId || '';
+    wx.navigateTo({
+      url: '/pages/brewRecord/brewRecord' + (traceId ? '?traceId=' + traceId : '')
+    });
+  },
+
+  openBrewSaveModal: function() {
+    this.setData({
+      showBrewSaveModal: true,
+      brewFeeling: '',
+      brewRating: 0,
+      brewTags: [],
+      brewInputTag: ''
+    });
+  },
+
+  closeBrewSaveModal: function() {
+    this.setData({ showBrewSaveModal: false });
+  },
+
+  onBrewFeelingInput: function(e) {
+    this.setData({ brewFeeling: e.detail.value });
+  },
+
+  onBrewRatingTap: function(e) {
+    this.setData({ brewRating: e.currentTarget.dataset.rating });
+  },
+
+  onBrewPresetTagTap: function(e) {
+    var tag = e.currentTarget.dataset.tag;
+    var tags = this.data.brewTags.slice();
+    var idx = tags.indexOf(tag);
+    if (idx !== -1) {
+      tags.splice(idx, 1);
+    } else {
+      if (tags.length >= 5) {
+        wx.showToast({ title: '最多选择5个标签', icon: 'none', duration: 1500 });
+        return;
+      }
+      tags.push(tag);
+    }
+    this.setData({ brewTags: tags });
+  },
+
+  onBrewInputTagInput: function(e) {
+    this.setData({ brewInputTag: e.detail.value });
+  },
+
+  onBrewAddInputTag: function() {
+    var tag = this.data.brewInputTag.trim();
+    if (!tag) return;
+    if (tag.length > 6) {
+      wx.showToast({ title: '标签最多6个字', icon: 'none', duration: 1500 });
+      return;
+    }
+    var tags = this.data.brewTags.slice();
+    if (tags.indexOf(tag) !== -1) {
+      wx.showToast({ title: '标签已存在', icon: 'none', duration: 1500 });
+      return;
+    }
+    if (tags.length >= 5) {
+      wx.showToast({ title: '最多选择5个标签', icon: 'none', duration: 1500 });
+      return;
+    }
+    tags.push(tag);
+    this.setData({ brewTags: tags, brewInputTag: '' });
+  },
+
+  onBrewRemoveTag: function(e) {
+    var tag = e.currentTarget.dataset.tag;
+    var tags = this.data.brewTags.slice();
+    var idx = tags.indexOf(tag);
+    if (idx !== -1) tags.splice(idx, 1);
+    this.setData({ brewTags: tags });
+  },
+
+  saveBrewRecord: function() {
+    var that = this;
+    var traceData = this.data.traceData;
+    var productName = traceData && traceData.basicInfo ? traceData.basicInfo.productName : '';
+    var actualDuration = this.data.timerTotalSeconds - this.data.timerSeconds;
+    if (actualDuration <= 0) actualDuration = this.data.timerTotalSeconds;
+
+    var record = {
+      traceId: this.data.traceId || '',
+      productName: productName,
+      brewRound: this.data.currentBrewRound || 1,
+      waterTemp: parseInt(this.data.selectedWaterTemp) || 85,
+      brewDuration: actualDuration,
+      teaAmount: this.data.hardnessAdjustment ? this.data.hardnessAdjustment.teaAmount : 3,
+      waterAmount: 150,
+      waterHardness: this.data.waterHardness || 'medium',
+      feeling: this.data.brewFeeling || '',
+      rating: this.data.brewRating || 0,
+      tags: this.data.brewTags || [],
+      weather: this.data.currentWeather || null
+    };
+
+    userStore.addBrewRecord(record);
+
+    wx.showToast({ title: '已保存到记录本', icon: 'success', duration: 1500 });
+
+    this.setData({
+      showBrewSaveModal: false,
+      currentBrewRound: (this.data.currentBrewRound || 1) + 1
+    });
+
+    this.resetBrewTimer();
+  },
+
+  generateTastingNoteFromBrew: function() {
+    var that = this;
+    var traceData = this.data.traceData;
+    var productName = traceData && traceData.basicInfo ? traceData.basicInfo.productName : '';
+    var actualDuration = this.data.timerTotalSeconds - this.data.timerSeconds;
+    if (actualDuration <= 0) actualDuration = this.data.timerTotalSeconds;
+
+    var record = {
+      brewRound: this.data.currentBrewRound || 1,
+      waterTemp: parseInt(this.data.selectedWaterTemp) || 85,
+      brewDuration: actualDuration,
+      teaAmount: this.data.hardnessAdjustment ? this.data.hardnessAdjustment.teaAmount : 3,
+      waterAmount: 150,
+      waterHardness: this.data.waterHardness || 'medium',
+      feeling: this.data.brewFeeling || '',
+      rating: this.data.brewRating || 0,
+      tags: this.data.brewTags || [],
+      weather: this.data.currentWeather || null
+    };
+
+    var draft = userStore.generateTastingNoteDraft(record, productName);
+
+    userStore.addBrewRecord(Object.assign({
+      traceId: this.data.traceId || '',
+      productName: productName
+    }, record));
+
+    this.setData({
+      showBrewSaveModal: false,
+      currentBrewRound: (this.data.currentBrewRound || 1) + 1
+    });
+
+    this.resetBrewTimer();
+
+    var url = '/pages/tastingNoteDetail/tastingNoteDetail'
+      + '?traceId=' + encodeURIComponent(this.data.traceId || '')
+      + '&productName=' + encodeURIComponent(productName || '')
+      + '&draft=' + encodeURIComponent(draft)
+      + '&tags=' + encodeURIComponent((this.data.brewTags || []).join(','))
+      + '&rating=' + (this.data.brewRating || 0);
+
+    wx.navigateTo({ url: url });
+  },
+
+  increaseBrewRound: function() {
+    this.setData({ currentBrewRound: (this.data.currentBrewRound || 1) + 1 });
+  },
+
+  decreaseBrewRound: function() {
+    if (this.data.currentBrewRound > 1) {
+      this.setData({ currentBrewRound: this.data.currentBrewRound - 1 });
+    }
   },
 
   /**

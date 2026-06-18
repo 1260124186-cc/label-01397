@@ -1536,6 +1536,58 @@
             </view>
           </view>
 
+          <!-- ============ 环境联动：天气水温 + 水质 ============ -->
+          <view class="interactive-section env-section">
+            <view class="section-sub-title">
+              <text class="sub-icon">🌤️</text>
+              <text>环境联动</text>
+              <view class="sub-actions">
+                <text class="sub-action-link" bindtap="goToBrewEnvironment">⚙️ 设置</text>
+                <text class="sub-action-link" bindtap="openBrewRecordPage">📒 记录本</text>
+              </view>
+            </view>
+
+            <view class="env-card">
+              <view class="env-weather" wx:if="{{currentWeather}}">
+                <view class="weather-left">
+                  <text class="weather-emoji">{{currentWeather.weather === '晴' ? '☀️' : currentWeather.weather === '多云' ? '⛅' : currentWeather.weather === '阴' ? '☁️' : '🌧️'}}</text>
+                  <view class="weather-texts">
+                    <text class="weather-city">{{currentWeather.city}}</text>
+                    <text class="weather-temp">{{currentWeather.temp}}℃ · {{currentWeather.weather}}</text>
+                  </view>
+                </view>
+                <view class="weather-tip {{waterTempAdjusted.tempLevel}}" wx:if="{{waterTempAdjusted}}">
+                  <text class="tip-value">推荐 {{waterTempAdjusted.recommended}}℃</text>
+                  <text class="tip-range">{{waterTempAdjusted.min}}~{{waterTempAdjusted.max}}℃</text>
+                </view>
+              </view>
+
+              <view class="env-loading" wx:elif="{{weatherLoading}}">
+                <text>获取天气中...</text>
+              </view>
+
+              <view class="env-hardness">
+                <view class="hardness-row">
+                  <text class="hardness-label">💧 水质</text>
+                  <text class="hardness-value">{{waterHardness === 'soft' ? '软水' : waterHardness === 'hard' ? '硬水' : '中等硬度'}}</text>
+                </view>
+                <view class="hardness-row" wx:if="{{hardnessAdjustment}}">
+                  <text class="hardness-detail">投茶 {{hardnessAdjustment.teaAmount}}g · 时长 {{hardnessAdjustment.duration}}秒</text>
+                </view>
+              </view>
+            </view>
+
+            <view class="brew-round-row">
+              <text class="round-label">第</text>
+              <view class="round-controls">
+                <view class="round-btn" bindtap="decreaseBrewRound">−</view>
+                <text class="round-number">{{currentBrewRound}}</text>
+                <view class="round-btn" bindtap="increaseBrewRound">+</view>
+              </view>
+              <text class="round-label">泡</text>
+            </view>
+          </view>
+
           <!-- ============ 互动功能 1：冲泡计时器 ============ -->
           <view class="interactive-section" wx:if="{{brewInteractiveConfig}}">
             <view class="section-sub-title">
@@ -1730,6 +1782,103 @@
             </view>
           </view>
 
+        </view>
+      </view>
+    </view>
+
+    <!-- ========== 冲泡记录保存弹窗 ========== -->
+    <view class="brew-save-mask" wx:if="{{showBrewSaveModal}}" bindtap="closeBrewSaveModal">
+      <view class="brew-save-modal" catchtap="preventBubble">
+        <view class="brew-save-header">
+          <text class="brew-save-title">☕ 第{{currentBrewRound}}泡完成</text>
+          <text class="brew-save-close" bindtap="closeBrewSaveModal">✕</text>
+        </view>
+
+        <view class="brew-save-body">
+          <view class="brew-save-info">
+            <view class="save-info-row">
+              <text class="info-label">水温</text>
+              <text class="info-value">{{selectedWaterTemp}}℃</text>
+            </view>
+            <view class="save-info-row">
+              <text class="info-label">水质</text>
+              <text class="info-value">{{waterHardness === 'soft' ? '软水' : waterHardness === 'hard' ? '硬水' : '中等硬度'}}</text>
+            </view>
+            <view class="save-info-row" wx:if="{{hardnessAdjustment}}">
+              <text class="info-label">投茶量</text>
+              <text class="info-value">{{hardnessAdjustment.teaAmount}}g</text>
+            </view>
+          </view>
+
+          <view class="brew-rating-row">
+            <text class="rating-label">评分</text>
+            <view class="rating-stars">
+              <text
+                wx:for="{{[1,2,3,4,5]}}"
+                wx:key="*this"
+                class="rating-star {{brewRating >= item ? 'active' : ''}}"
+                data-rating="{{item}}"
+                bindtap="onBrewRatingTap"
+              >{{brewRating >= item ? '★' : '☆'}}</text>
+            </view>
+          </view>
+
+          <view class="brew-tags-section">
+            <view class="tags-label">风味标签</view>
+            <view class="selected-tags" wx:if="{{brewTags.length > 0}}">
+              <text
+                wx:for="{{brewTags}}"
+                wx:key="*this"
+                class="selected-tag"
+                data-tag="{{item}}"
+                bindtap="onBrewRemoveTag"
+              >{{item}} ✕</text>
+            </view>
+            <view class="preset-tags">
+              <text
+                wx:for="{{brewPresetTags}}"
+                wx:key="*this"
+                class="preset-tag {{brewTags.indexOf(item) > -1 ? 'active' : ''}}"
+                data-tag="{{item}}"
+                bindtap="onBrewPresetTagTap"
+              >{{item}}</text>
+            </view>
+            <view class="custom-tag-row">
+              <input
+                class="custom-tag-input"
+                placeholder="自定义标签（最多6字）"
+                value="{{brewInputTag}}"
+                bindinput="onBrewInputTagInput"
+                confirm-type="done"
+                bindconfirm="onBrewAddInputTag"
+              />
+              <view class="add-tag-btn" bindtap="onBrewAddInputTag">添加</view>
+            </view>
+          </view>
+
+          <view class="brew-feeling-section">
+            <text class="feeling-label">个人感受</text>
+            <textarea
+              class="feeling-input"
+              placeholder="记录这一泡的口感、香气、回味..."
+              value="{{brewFeeling}}"
+              bindinput="onBrewFeelingInput"
+              maxlength="200"
+              auto-height
+            />
+          </view>
+        </view>
+
+        <view class="brew-save-footer">
+          <view class="save-btn secondary" bindtap="closeBrewSaveModal">
+            <text>稍后再说</text>
+          </view>
+          <view class="save-btn primary" bindtap="saveBrewRecord">
+            <text>📒 保存到记录本</text>
+          </view>
+          <view class="save-btn highlight" bindtap="generateTastingNoteFromBrew">
+            <text>📝 生成品鉴笔记</text>
+          </view>
         </view>
       </view>
     </view>

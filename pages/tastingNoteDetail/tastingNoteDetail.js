@@ -18,12 +18,35 @@ Page({
   onLoad: function(options) {
     if (options.id) {
       this.loadNote(options.id);
-    }
-    if (options.traceId) {
-      this.setData({ traceId: options.traceId });
-    }
-    if (options.productName) {
-      this.setData({ productName: decodeURIComponent(options.productName) });
+    } else {
+      var setData = {};
+      if (options.traceId) setData.traceId = options.traceId;
+      if (options.productName) setData.productName = decodeURIComponent(options.productName);
+      if (options.draft) {
+        try {
+          setData.content = decodeURIComponent(options.draft);
+        } catch (e) {
+          setData.content = options.draft;
+        }
+      }
+      if (options.tags) {
+        try {
+          var tagArr = decodeURIComponent(options.tags).split(',');
+          if (Array.isArray(tagArr) && tagArr.length > 0) {
+            setData.tags = tagArr.slice(0, 5);
+          }
+        } catch (e) {}
+      }
+      if (options.rating) {
+        var r = parseInt(options.rating, 10);
+        if (r >= 1 && r <= 5) setData.rating = r;
+      }
+      if (Object.keys(setData).length > 0) {
+        this.setData(setData);
+      }
+      if (options.draft || options.tags || options.rating) {
+        wx.showToast({ title: '已预填草稿', icon: 'success', duration: 1500 });
+      }
     }
   },
 

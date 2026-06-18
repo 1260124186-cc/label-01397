@@ -19,7 +19,9 @@
     "pages/service/ticketDetail",
     "pages/reportProduct/reportProduct",
     "pages/arExperience/arExperience",
-    "pages/compare/index"
+    "pages/compare/index",
+    "pages/brewEnvironment/brewEnvironment",
+    "pages/brewRecord/brewRecord"
   ],
   "window": {
     "backgroundTextStyle": "dark",

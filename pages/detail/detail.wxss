@@ -8787,3 +8787,425 @@
   border-color: #2E8B57;
 }
 
+/* ==================== 环境联动 UI ==================== */
+.env-section {
+  background: linear-gradient(135deg, #F5FBF7 0%, #E8F6EC 100%);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 32rpx;
+}
+
+.sub-actions {
+  display: flex;
+  gap: 24rpx;
+  margin-left: auto;
+}
+
+.sub-action-link {
+  font-size: 24rpx;
+  color: #2E8B57;
+}
+
+.env-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(46, 139, 87, 0.08);
+}
+
+.env-weather {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+  margin-bottom: 16rpx;
+}
+
+.weather-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.weather-emoji {
+  font-size: 48rpx;
+}
+
+.weather-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.weather-city {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2D3436;
+}
+
+.weather-temp {
+  font-size: 24rpx;
+  color: #636E72;
+}
+
+.weather-tip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+}
+
+.weather-tip.cool {
+  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+}
+
+.weather-tip.warm {
+  background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+}
+
+.weather-tip.hot {
+  background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+}
+
+.weather-tip.normal {
+  background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+}
+
+.weather-tip.cold {
+  background: linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%);
+}
+
+.tip-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2D3436;
+}
+
+.tip-range {
+  font-size: 20rpx;
+  color: #636E72;
+}
+
+.env-loading {
+  text-align: center;
+  padding: 16rpx;
+  color: #636E72;
+  font-size: 24rpx;
+}
+
+.env-hardness {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.hardness-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hardness-label {
+  font-size: 26rpx;
+  color: #636E72;
+}
+
+.hardness-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #2E8B57;
+}
+
+.hardness-detail {
+  font-size: 24rpx;
+  color: #636E72;
+}
+
+.brew-round-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx dashed #D0D0D0;
+}
+
+.round-label {
+  font-size: 28rpx;
+  color: #636E72;
+  font-weight: 500;
+}
+
+.round-controls {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  background: #ffffff;
+  border-radius: 12rpx;
+  padding: 8rpx 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
+}
+
+.round-btn {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #ffffff;
+  font-size: 32rpx;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.round-number {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #2E8B57;
+  min-width: 60rpx;
+  text-align: center;
+}
+
+/* ==================== 冲泡记录保存弹窗 ==================== */
+.brew-save-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.brew-save-modal {
+  width: 100%;
+  max-height: 85vh;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.brew-save-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx 32rpx 24rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.brew-save-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #2D3436;
+}
+
+.brew-save-close {
+  font-size: 36rpx;
+  color: #999999;
+  padding: 0 16rpx;
+}
+
+.brew-save-body {
+  flex: 1;
+  padding: 24rpx 32rpx;
+  overflow-y: auto;
+}
+
+.brew-save-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.save-info-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  background: #F5FBF7;
+  padding: 12rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #636E72;
+}
+
+.info-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #2E8B57;
+}
+
+.brew-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 28rpx;
+}
+
+.rating-label {
+  font-size: 28rpx;
+  color: #636E72;
+  font-weight: 500;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 8rpx;
+}
+
+.rating-star {
+  font-size: 44rpx;
+  color: #D0D0D0;
+}
+
+.rating-star.active {
+  color: #F4C730;
+}
+
+.brew-tags-section {
+  margin-bottom: 28rpx;
+}
+
+.tags-label {
+  font-size: 28rpx;
+  color: #636E72;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+}
+
+.selected-tag {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #ffffff;
+  padding: 8rpx 20rpx;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+}
+
+.preset-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.preset-tag {
+  background: #F5F5F0;
+  color: #636E72;
+  padding: 10rpx 24rpx;
+  border-radius: 24rpx;
+  font-size: 26rpx;
+  border: 1rpx solid transparent;
+}
+
+.preset-tag.active {
+  background: #E8F6EC;
+  color: #2E8B57;
+  border-color: #2E8B57;
+}
+
+.custom-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.custom-tag-input {
+  flex: 1;
+  height: 64rpx;
+  padding: 0 20rpx;
+  background: #F8F8F5;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+}
+
+.add-tag-btn {
+  padding: 12rpx 24rpx;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #ffffff;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+}
+
+.brew-feeling-section {
+  margin-bottom: 16rpx;
+}
+
+.feeling-label {
+  display: block;
+  font-size: 28rpx;
+  color: #636E72;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.feeling-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 140rpx;
+  padding: 16rpx 20rpx;
+  background: #F8F8F5;
+  border-radius: 16rpx;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+.brew-save-footer {
+  display: flex;
+  padding: 20rpx 24rpx calc(24rpx + env(safe-area-inset-bottom));
+  gap: 16rpx;
+  border-top: 1rpx solid #F0F0F0;
+  background: #ffffff;
+}
+
+.save-btn {
+  flex: 1;
+  height: 84rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 42rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.save-btn.secondary {
+  background: #F5F5F0;
+  color: #636E72;
+}
+
+.save-btn.primary {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #ffffff;
+}
+
+.save-btn.highlight {
+  background: linear-gradient(135deg, #DAA520 0%, #F4C730 100%);
+  color: #ffffff;
+}
+

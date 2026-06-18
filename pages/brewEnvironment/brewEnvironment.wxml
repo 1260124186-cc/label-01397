@@ -1,0 +1,85 @@
+<view class="env-page">
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">🌤️ 今日天气</text>
+      <text class="section-action" bindtap="loadCurrentWeather">刷新</text>
+    </view>
+
+    <view wx:if="{{weatherLoading}}" class="weather-loading">
+      <text>获取天气中...</text>
+    </view>
+
+    <view wx:else class="weather-card">
+      <view class="weather-main">
+        <view class="weather-city">
+          <text class="city-name">{{weather.city || '未知城市'}}</text>
+          <text class="weather-text">{{weather.weather}}</text>
+        </view>
+        <view class="weather-temp">
+          <text class="temp-value">{{weather.temp}}℃</text>
+        </view>
+      </view>
+      <view class="weather-detail">
+        <text>💧 湿度 {{weather.humidity}}%</text>
+      </view>
+
+      <view class="city-search">
+        <input
+          class="city-input"
+          placeholder="切换城市，如：北京、上海"
+          value="{{cityInput}}"
+          bindinput="onCityInput"
+          confirm-type="search"
+          bindconfirm="searchCityWeather"
+        />
+        <view class="search-btn" bindtap="searchCityWeather">搜索</view>
+      </view>
+    </view>
+
+    <view wx:if="{{waterTempAdjusted}}" class="temp-tip {{waterTempAdjusted.tempLevel}}">
+      <view class="temp-tip-title">水温建议</view>
+      <view class="temp-tip-range">推荐 {{waterTempAdjusted.recommended}}℃（{{waterTempAdjusted.min}}℃-{{waterTempAdjusted.max}}℃）</view>
+      <view class="temp-tip-reason">{{waterTempAdjusted.reason}}</view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">💧 水质硬度</text>
+    </view>
+
+    <view class="hardness-options">
+      <view
+        wx:for="{{hardnessOptions}}"
+        wx:key="key"
+        class="hardness-option {{waterHardness === item.key ? 'active' : ''}}"
+        data-hardness="{{item.key}}"
+        bindtap="selectHardness"
+      >
+        <view class="hardness-icon">{{item.icon}}</view>
+        <view class="hardness-label">{{item.label}}</view>
+        <view class="hardness-desc">{{item.desc}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{hardnessAdjustment}}" class="hardness-tip">
+      <view class="hardness-tip-title">冲泡参数调整</view>
+      <view class="hardness-tip-row">投茶量：{{hardnessAdjustment.teaAmount}}g（标准 {{baseTeaAmount}}g）</view>
+      <view class="hardness-tip-row">浸泡时长：{{hardnessAdjustment.duration}}秒（标准 {{baseDuration}}秒）</view>
+      <view class="hardness-tip-reason">{{hardnessAdjustment.reason}}</view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="nav-link" bindtap="goToBrewRecord">
+      <text>📒 查看我的冲泡记录本</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="confirm-btn" bindtap="confirmAndBack">
+      <text>确认设置并返回</text>
+    </view>
+  </view>
+</view>

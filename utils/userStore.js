@@ -9,6 +9,7 @@ var NOTES_KEY = 'user_tasting_notes';
 var NOTIFICATIONS_KEY = 'user_notifications';
 var PRIVACY_SETTINGS_KEY = 'user_privacy_settings';
 var KNOWLEDGE_FAVORITES_KEY = 'user_knowledge_favorites';
+var brewRecord = require('./brewRecord.js');
 var MAX_FAVORITES = 100;
 var MAX_NOTES = 200;
 var MAX_NOTIFICATIONS = 50;
@@ -373,6 +374,16 @@ function clearKnowledgeFavorites() {
   }
 }
 
+function getBrewRecords() { return brewRecord.getBrewRecords(); }
+function addBrewRecord(record) { return brewRecord.addBrewRecord(record); }
+function deleteBrewRecord(recordId) { return brewRecord.deleteBrewRecord(recordId); }
+function getBrewRecordsByTraceId(traceId) { return brewRecord.getRecordsByTraceId(traceId); }
+function getWaterQualitySettings() { return brewRecord.getWaterQualitySettings(); }
+function setWaterQualitySettings(settings) { return brewRecord.setWaterQualitySettings(settings); }
+function adjustBrewParamsByWaterQuality(hardness, teaAmount, duration) { return brewRecord.adjustBrewParamsByWaterQuality(hardness, teaAmount, duration); }
+function getBrewFlavorCurve(traceId) { return brewRecord.getFlavorCurve(traceId); }
+function generateTastingNoteDraft(record, productName) { return brewRecord.generateTastingNoteDraft(record, productName); }
+
 module.exports = {
   getFavorites: getFavorites,
   addFavorite: addFavorite,
@@ -398,6 +409,15 @@ module.exports = {
   removeKnowledgeFavorite: removeKnowledgeFavorite,
   isKnowledgeFavorite: isKnowledgeFavorite,
   clearKnowledgeFavorites: clearKnowledgeFavorites,
+  getBrewRecords: getBrewRecords,
+  addBrewRecord: addBrewRecord,
+  deleteBrewRecord: deleteBrewRecord,
+  getBrewRecordsByTraceId: getBrewRecordsByTraceId,
+  getWaterQualitySettings: getWaterQualitySettings,
+  setWaterQualitySettings: setWaterQualitySettings,
+  adjustBrewParamsByWaterQuality: adjustBrewParamsByWaterQuality,
+  getBrewFlavorCurve: getBrewFlavorCurve,
+  generateTastingNoteDraft: generateTastingNoteDraft,
   DEFAULT_PRIVACY_SETTINGS: DEFAULT_PRIVACY_SETTINGS,
   FAVORITES_KEY: FAVORITES_KEY,
   NOTES_KEY: NOTES_KEY,
