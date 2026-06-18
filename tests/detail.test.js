@@ -393,7 +393,94 @@ jest.mock('../utils/mockData.js', () => ({
   reportReview: jest.fn((traceId, reviewId, reason, content) => ({
     success: true,
     message: '举报已提交，我们会尽快处理'
-  }))
+  })),
+
+  // ========== 礼盒/组合装函数 mock ==========
+  getGiftBoxInfo: jest.fn((traceIdOrGiftBoxId) => {
+    if (!traceIdOrGiftBoxId) return null;
+    if (traceIdOrGiftBoxId === 'GBX001' || traceIdOrGiftBoxId === 'G003' || traceIdOrGiftBoxId === 'G001' || traceIdOrGiftBoxId === 'G002' || traceIdOrGiftBoxId === 'G004') {
+      return {
+        giftBoxId: 'GBX001',
+        name: '金秋雅韵·桂花茶礼盒',
+        theme: '金秋限定',
+        description: '甄选三种桂花茶，搭配精美礼盒，是中秋送礼、亲友相聚的上佳之选',
+        totalSpec: '300g（3件装）',
+        highlights: ['限定礼盒', '独立包装', '附赠贺卡'],
+        mainCode: { traceId: 'G003', role: 'main' },
+        items: [
+          { traceId: 'G001', role: 'sub', position: 1, name: '金桂花茶' },
+          { traceId: 'G002', role: 'sub', position: 2, name: '银桂花茶' },
+          { traceId: 'G004', role: 'sub', position: 3, name: '丹桂花茶' }
+        ]
+      };
+    }
+    return null;
+  }),
+  getGiftBoxSubCodeInfo: jest.fn((traceId) => {
+    const positions = { G001: 1, G002: 2, G004: 3 };
+    const names = { G001: '金桂花茶', G002: '银桂花茶', G004: '丹桂花茶' };
+    if (!positions[traceId]) return null;
+    return {
+      traceId: traceId,
+      giftBoxId: 'GBX001',
+      giftBoxName: '金秋雅韵·桂花茶礼盒',
+      mainTraceId: 'G003',
+      position: positions[traceId],
+      totalItems: 3,
+      subProductName: names[traceId],
+      positionText: '「金秋雅韵·桂花茶礼盒」的第 ' + positions[traceId] + ' 件（共 3 件）'
+    };
+  }),
+  isGiftBoxMainCode: jest.fn((traceId) => traceId === 'G003'),
+  isGiftBoxSubCode: jest.fn((traceId) => ['G001', 'G002', 'G004'].includes(traceId)),
+  isGiftBoxRelated: jest.fn((traceId) => ['G001', 'G002', 'G003', 'G004'].includes(traceId)),
+  getAllGiftBoxes: jest.fn(() => [{
+    giftBoxId: 'GBX001',
+    name: '金秋雅韵·桂花茶礼盒',
+    itemCount: 3,
+    mainTraceId: 'G003'
+  }]),
+  getGiftBoxItems: jest.fn((giftBoxId) => {
+    if (giftBoxId !== 'GBX001') return [];
+    return [
+      {
+        traceId: 'G001',
+        basicInfo: {
+          productName: '金桂花茶',
+          variety: '金桂',
+          spec: '100g/罐',
+          thumbnail: '',
+          highlights: ['香气浓郁', '窨制5次']
+        }
+      },
+      {
+        traceId: 'G002',
+        basicInfo: {
+          productName: '银桂花茶',
+          variety: '银桂',
+          spec: '100g/罐',
+          thumbnail: '',
+          highlights: ['清香幽雅', '窨制3次']
+        }
+      },
+      {
+        traceId: 'G004',
+        basicInfo: {
+          productName: '丹桂花茶',
+          variety: '丹桂',
+          spec: '100g/罐',
+          thumbnail: '',
+          highlights: ['滋味浓烈', '窨制4次']
+        }
+      }
+    ];
+  }),
+  getGiftBoxMainCodeBySubCode: jest.fn((traceId) => {
+    if (['G001', 'G002', 'G004'].includes(traceId)) {
+      return { traceId: 'G003', giftBoxId: 'GBX001', giftBoxName: '金秋雅韵·桂花茶礼盒' };
+    }
+    return null;
+  })
 }));
 
 const mockData = require('../utils/mockData.js');

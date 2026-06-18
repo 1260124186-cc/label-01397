@@ -737,5 +737,62 @@ module.exports = {
   getShareInviteData: getShareInviteData,
   getUserCoupons: getUserCoupons,
   saveUserCoupons: saveUserCoupons,
-  generateCoupon: generateCoupon
+  generateCoupon: generateCoupon,
+
+  // ========== 礼盒/组合装分享工具 ==========
+  /**
+   * 构建礼盒分享路径
+   * @param {string} mainTraceId - 礼盒主码 traceId
+   * @param {string} shareType - 'whole'(整盒) 或 'single'(单品)
+   * @param {string} [subTraceId] - 单品 traceId（shareType=single 时必填）
+   * @returns {string}
+   */
+  buildGiftBoxSharePath: function buildGiftBoxSharePath(mainTraceId, shareType, subTraceId) {
+    if (shareType === 'whole') {
+      return '/pages/scanResult/scanResult?traceId=' + mainTraceId;
+    }
+    if (shareType === 'single' && subTraceId) {
+      return '/pages/detail/detail?traceId=' + subTraceId;
+    }
+    return '/pages/detail/detail?traceId=' + (subTraceId || mainTraceId);
+  },
+
+  /**
+   * 构建礼盒分享标题
+   * @param {object} giftBoxInfo - 礼盒信息对象（含 name / items 等字段）
+   * @param {string} shareType - 'whole' 或 'single'
+   * @param {object} [singleTraceData] - 单品溯源数据（shareType=single 时使用）
+   * @returns {string}
+   */
+  buildGiftBoxShareTitle: function buildGiftBoxShareTitle(giftBoxInfo, shareType, singleTraceData) {
+    if (!giftBoxInfo) {
+      if (singleTraceData && singleTraceData.basicInfo) {
+        return singleTraceData.basicInfo.productName + ' - 全链路溯源信息';
+      }
+      return '产品溯源信息';
+    }
+    if (shareType === 'whole') {
+      var itemCount = (giftBoxInfo.items && giftBoxInfo.items.length) || 0;
+      return '🎁 ' + giftBoxInfo.name + '（含' + itemCount + '件）- 礼盒装全链路溯源';
+    }
+    if (singleTraceData && singleTraceData.basicInfo) {
+      return '[' + giftBoxInfo.name + '] ' + singleTraceData.basicInfo.productName + ' - 单品溯源';
+    }
+    return giftBoxInfo.name + ' - 单品溯源信息';
+  },
+
+  /**
+   * 构建礼盒分享描述文案（用于卡片副标题/朋友圈文案）
+   * @param {object} giftBoxInfo - 礼盒信息
+   * @returns {string}
+   */
+  buildGiftBoxShareDescription: function buildGiftBoxShareDescription(giftBoxInfo) {
+    if (!giftBoxInfo) return '';
+    var highlights = giftBoxInfo.highlights || [];
+    var theme = giftBoxInfo.theme || '';
+    var parts = [];
+    if (theme) parts.push(theme);
+    if (highlights.length > 0) parts.push(highlights.slice(0, 2).join('・'));
+    return parts.join(' | ');
+  }
 };

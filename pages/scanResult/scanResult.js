@@ -19,7 +19,13 @@ Page({
     divergenceAlert: null,
     showDivergenceAlert: false,
     recallInfo: null,
-    a11yClasses: ''
+    a11yClasses: '',
+    giftBoxInfo: null,
+    giftBoxVerify: null,
+    giftBoxItems: [],
+    isGiftBoxMainCode: false,
+    isGiftBoxSubCode: false,
+    subCodeContext: null
   },
 
   onLoad: function(options) {
@@ -56,7 +62,7 @@ Page({
     });
 
     try {
-      const result = await antiCounterfeit.verifyProduct(traceId);
+      const result = await antiCounterfeit.verifyProductEnhanced(traceId);
 
       wx.hideLoading();
 
@@ -76,7 +82,10 @@ Page({
           ? mockData.getRecallByTraceId(traceId)
           : null;
 
-        that.setData({
+        const isMain = mockData.isGiftBoxMainCode(traceId);
+        const isSub = mockData.isGiftBoxSubCode(traceId);
+
+        let setDataObj = {
           verifyResult: result,
           productInfo: traceData ? traceData.basicInfo : null,
           loading: false,
@@ -85,8 +94,33 @@ Page({
           channelSummary: channelSummary,
           divergenceAlert: divergenceResult.isDivergence ? divergenceResult : null,
           showDivergenceAlert: divergenceResult.isDivergence,
-          recallInfo: recallInfo
-        });
+          recallInfo: recallInfo,
+          isGiftBoxMainCode: isMain,
+          isGiftBoxSubCode: isSub,
+          giftBoxInfo: result.giftBoxInfo || null,
+          giftBoxItems: result.giftBoxItems || []
+        };
+
+        if (result.giftBox) {
+          if (result.giftBox.type === 'main_code') {
+            setDataObj.giftBoxVerify = {
+              giftBoxId: result.giftBox.giftBoxId,
+              giftBoxName: result.giftBox.giftBoxName,
+              totalItems: result.giftBox.totalItems,
+              firstScanCount: result.giftBox.firstScanCount,
+              allFirstVerified: result.giftBox.allFirstVerified,
+              authenticityStatus: result.giftBox.authenticityStatus,
+              statusTitle: result.giftBox.statusTitle,
+              statusMessage: result.giftBox.statusMessage,
+              subCodeResults: result.giftBox.subCodeResults,
+              progressPercent: result.giftBox.progressPercent
+            };
+          } else if (result.giftBox.type === 'sub_code' && result.giftBox.context) {
+            setDataObj.subCodeContext = result.giftBox.context;
+          }
+        }
+
+        that.setData(setDataObj);
 
         if (recallInfo) {
           wx.showModal({
@@ -273,6 +307,74 @@ Page({
       url: '/pages/dealer/index',
       fail: function(err) {
         console.error('跳转经销商页失败:', err);
+      }
+    });
+  },
+
+  goToSubItemDetail: function(e) {
+    const traceId = e.currentTarget.dataset.traceId;
+    if (!traceId) return;
+    wx.navigateTo({
+      url: `/pages/detail/detail?traceId=${traceId}`,
+      success: function() {
+        console.log('[Scan] 跳转子产品详情页成功:', traceId);
+      },
+      fail: function(err) {
+        console.error('[Scan] 跳转子产品详情页失败：', err);
+        wx.showToast({
+          title: '页面跳转失败',
+          icon: 'none'
+        });
+      }
+    });
+  },
+
+  goToGiftBoxMainPage: function() {
+    const context = this.data.subCodeContext;
+    if (!context || !context.mainTraceId) return;
+    wx.navigateTo({
+      url: `/pages/scanResult/scanResult?traceId=${context.mainTraceId}`,
+      success: function() {
+        console.log('[Scan] 跳转礼盒主码页成功');
+      },
+      fail: function(err) {
+        console.error('[Scan] 跳转礼盒主码页失败：', err);
+      }
+    });
+  },
+
+  goToGiftBoxDetailPage: function() {
+    const context = this.data.subCodeContext;
+    if (!context || !context.mainTraceId) return;
+    wx.navigateTo({
+      url: `/pages/detail/detail?traceId=${context.mainTraceId}`,
+      success: function() {
+        console.log('[Scan] 跳转礼盒详情页成功');
+      },
+      fail: function(err) {
+        console.error('[Scan] 跳转礼盒详情页失败：', err);
+      }
+    });
+  },
+
+  viewSubItemScanInfo: function(e) {
+    const idx = e.currentTarget.dataset.index;
+    const subResults = this.data.giftBoxVerify.subCodeResults;
+    if (!subResults || !subResults[idx]) return;
+    const item = subResults[idx];
+    const statusText = item.isFirstScan ? '首次验证' : `已查询 ${item.scanCount} 次`;
+    const firstScanText = item.firstScanTime ? `\n首次验证：${item.firstScanTime}` : '';
+    wx.showModal({
+      title: `第${item.index}件：${item.name}`,
+      content: `验证状态：${statusText}${firstScanText}`,
+      confirmText: '查看详情',
+      cancelText: '关闭',
+      success: (res) => {
+        if (res.confirm) {
+          wx.navigateTo({
+            url: `/pages/detail/detail?traceId=${item.traceId}`
+          });
+        }
       }
     });
   }

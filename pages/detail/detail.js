@@ -17,6 +17,7 @@ const ANCHOR_TABS_BASE = [
   { key: 'location', icon: '📍', i18nKey: 'detail.tabs.location' },
   { key: 'process', icon: '🫖', i18nKey: 'detail.tabs.process' },
   { key: 'green', icon: '♻️', i18nKey: 'detail.tabs.green' },
+  { key: 'giftbox', icon: '🎁', i18nKey: 'detail.tabs.giftbox', conditional: true },
   { key: 'test', icon: '🔬', i18nKey: 'detail.tabs.test' },
   { key: 'brew', icon: '☕', i18nKey: 'detail.tabs.brew' },
   { key: 'blockchain', icon: '🔗', i18nKey: 'detail.tabs.blockchain' },
@@ -27,12 +28,18 @@ const ANCHOR_TABS_BASE = [
 const CORE_MODULES = ['treeAge', 'process', 'green'];
 
 /** 根据当前语言生成带标签的 Tab 列表 */
-function buildAnchorTabs() {
-  return ANCHOR_TABS_BASE.map(item => ({
-    key: item.key,
-    icon: item.icon,
-    label: i18n.t(item.i18nKey)
-  }));
+function buildAnchorTabs(showGiftBox) {
+  return ANCHOR_TABS_BASE
+    .filter(item => {
+      if (!item.conditional) return true;
+      if (item.key === 'giftbox') return !!showGiftBox;
+      return true;
+    })
+    .map(item => ({
+      key: item.key,
+      icon: item.icon,
+      label: item.i18nKey === 'detail.tabs.giftbox' ? '礼盒组成' : i18n.t(item.i18nKey)
+    }));
 }
 
 Page({
@@ -237,7 +244,16 @@ Page({
       reason: '',
       content: ''
     },
-    currentReportReviewId: ''
+    currentReportReviewId: '',
+
+    // ========== 礼盒/组合装模块 ==========
+    giftBoxInfo: null,
+    giftBoxItems: [],
+    isGiftBoxMainCode: false,
+    isGiftBoxSubCode: false,
+    subCodeContext: null,
+    showShareModeModal: false,
+    moduleCollapsedGiftBox: false
   },
 
   /**
@@ -250,7 +266,7 @@ Page({
     // ===== 初始化多语言与无障碍 =====
     this.refreshA11yData();
     this.refreshI18nTexts();
-    this.setData({ anchorTabs: buildAnchorTabs() });
+    this.setData({ anchorTabs: buildAnchorTabs(false) });
 
     const traceId = options.traceId;
 
@@ -275,7 +291,7 @@ Page({
     // 用户可能从首页修改了设置，返回后立即刷新
     this.refreshA11yData();
     this.refreshI18nTexts();
-    this.setData({ anchorTabs: buildAnchorTabs() });
+    this.setData({ anchorTabs: buildAnchorTabs(!!this.data.giftBoxInfo) });
     if (this.data.traceData) {
       this.refreshCertWalletStatus();
     }
@@ -393,6 +409,18 @@ Page({
         var ratingDimensions = mockData.getRatingDimensions();
         var reportReasons = mockData.getReportReasons();
 
+        var giftBoxInfo = mockData.getGiftBoxInfo(traceId);
+        var giftBoxItems = [];
+        var isMain = mockData.isGiftBoxMainCode(traceId);
+        var isSub = mockData.isGiftBoxSubCode(traceId);
+        var subContext = null;
+        if (giftBoxInfo) {
+          giftBoxItems = mockData.getGiftBoxItems(giftBoxInfo.giftBoxId);
+        }
+        if (isSub) {
+          subContext = mockData.getGiftBoxSubCodeInfo(traceId);
+        }
+
         var processedReviews = [];
         if (reviewData && reviewData.reviews) {
           var reviews = reviewData.reviews.slice();
@@ -423,8 +451,16 @@ Page({
           processedReviews: processedReviews,
           tasteTags: tasteTags,
           ratingDimensions: ratingDimensions,
-          reportReasons: reportReasons
+          reportReasons: reportReasons,
+          giftBoxInfo: giftBoxInfo,
+          giftBoxItems: giftBoxItems,
+          isGiftBoxMainCode: isMain,
+          isGiftBoxSubCode: isSub,
+          subCodeContext: subContext,
+          moduleCollapsedGiftBox: !(giftBoxInfo ? false : true)
         });
+
+        that.setData({ anchorTabs: buildAnchorTabs(!!giftBoxInfo) });
 
         that.refreshCertWalletStatus();
 
@@ -820,9 +856,17 @@ Page({
    */
   onShareAppMessage: function() {
     const data = this.data.traceData;
+    const giftBoxInfo = this.data.giftBoxInfo;
+    const mode = this.data.currentShareMode || 'single';
+    let title = `${data.basicInfo.productName} - 全链路溯源信息`;
+    let path = `/pages/detail/detail?traceId=${this.data.traceId}`;
+    if (giftBoxInfo && mode === 'giftbox_whole') {
+      title = `🎁 ${giftBoxInfo.name}（含${giftBoxInfo.items.length}件）- 礼盒装全链路溯源`;
+      path = `/pages/scanResult/scanResult?traceId=${giftBoxInfo.mainCode.traceId}`;
+    }
     return {
-      title: `${data.basicInfo.productName} - 全链路溯源信息`,
-      path: `/pages/detail/detail?traceId=${this.data.traceId}`,
+      title: title,
+      path: path,
       imageUrl: data.basicInfo.thumbnail || ''
     };
   },
@@ -832,11 +876,72 @@ Page({
    */
   onShareTimeline: function() {
     const data = this.data.traceData;
+    const giftBoxInfo = this.data.giftBoxInfo;
+    const mode = this.data.currentShareMode || 'single';
+    let title = `${data.basicInfo.productName} - 全链路溯源信息`;
+    if (giftBoxInfo && mode === 'giftbox_whole') {
+      title = `${giftBoxInfo.name} - 礼盒装全链路溯源`;
+    }
     return {
-      title: `${data.basicInfo.productName} - 全链路溯源信息`,
+      title: title,
       query: `traceId=${this.data.traceId}`,
       imageUrl: data.basicInfo.thumbnail || ''
     };
+  },
+
+  // ========== 礼盒/组合装模块交互 ==========
+  goToSubItemDetail: function(e) {
+    var traceId = e.currentTarget.dataset.traceId;
+    if (!traceId) return;
+    if (traceId === this.data.traceId) {
+      wx.showToast({ title: '当前即为该产品', icon: 'none' });
+      return;
+    }
+    wx.navigateTo({
+      url: '/pages/detail/detail?traceId=' + traceId
+    });
+  },
+
+  goToGiftBoxMainPage: function() {
+    var ctx = this.data.subCodeContext;
+    if (!ctx || !ctx.mainTraceId) return;
+    wx.navigateTo({
+      url: '/pages/scanResult/scanResult?traceId=' + ctx.mainTraceId
+    });
+  },
+
+  goToGiftBoxDetailPage: function() {
+    var ctx = this.data.subCodeContext;
+    if (!ctx || !ctx.mainTraceId) return;
+    wx.navigateTo({
+      url: '/pages/detail/detail?traceId=' + ctx.mainTraceId
+    });
+  },
+
+  toggleGiftBoxModule: function() {
+    this.setData({ moduleCollapsedGiftBox: !this.data.moduleCollapsedGiftBox });
+  },
+
+  openShareModeModal: function() {
+    if (!this.data.isGiftBoxMainCode) {
+      wx.showShareMenu({ withShareTicket: true });
+      return;
+    }
+    this.setData({ showShareModeModal: true });
+  },
+
+  closeShareModeModal: function() {
+    this.setData({ showShareModeModal: false });
+  },
+
+  shareGiftBoxWhole: function() {
+    this.setData({ showShareModeModal: false, currentShareMode: 'giftbox_whole' });
+    wx.showToast({ title: '请点击右上角分享整盒', icon: 'none', duration: 1200 });
+  },
+
+  shareGiftBoxSingle: function() {
+    this.setData({ showShareModeModal: false, currentShareMode: 'giftbox_single' });
+    wx.showToast({ title: '请点击右上角分享单品', icon: 'none', duration: 1200 });
   },
 
   /**

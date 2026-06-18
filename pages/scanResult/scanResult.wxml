@@ -16,6 +16,69 @@
 
   <view wx:else class="result-container">
 
+    <!-- ===== 子码专属：礼盒归属提示卡片 ===== -->
+    <view wx:if="{{isGiftBoxSubCode && subCodeContext}}" class="card subcode-giftbox-card">
+      <view class="subcode-badge-wrap">
+        <view class="subcode-badge">🎁 礼盒子码</view>
+      </view>
+      <view class="subcode-position">
+        <text class="subcode-position-label">此产品属于</text>
+        <text class="subcode-giftbox-name">{{subCodeContext.positionText}}</text>
+      </view>
+      <view class="subcode-actions">
+        <view class="subcode-btn subcode-btn-outline" bindtap="goToGiftBoxMainPage">
+          <text class="btn-icon">📷</text>
+          <text>扫礼盒主码</text>
+        </view>
+        <view class="subcode-btn subcode-btn-primary" bindtap="goToGiftBoxDetailPage">
+          <text class="btn-icon">🎁</text>
+          <text>查看礼盒详情</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 主码专属：礼盒防伪验证概览 ===== -->
+    <view wx:if="{{isGiftBoxMainCode && giftBoxVerify}}" class="card giftbox-verify-card">
+      <view class="giftbox-verify-header">
+        <view class="giftbox-icon">🎁</view>
+        <view class="giftbox-verify-info">
+          <view class="giftbox-name">{{giftBoxVerify.giftBoxName}}</view>
+          <view class="giftbox-status-title status-{{giftBoxVerify.authenticityStatus}}">
+            <text wx:if="{{giftBoxVerify.allFirstVerified}}">✅ {{giftBoxVerify.statusTitle}}</text>
+            <text wx:elif="{{giftBoxVerify.authenticityStatus === 'all_opened'}}">⚠️ {{giftBoxVerify.statusTitle}}</text>
+            <text wx:else>🔍 {{giftBoxVerify.statusTitle}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="giftbox-progress-wrap">
+        <view class="giftbox-progress-header">
+          <text class="progress-label">礼盒正品验证进度</text>
+          <text class="progress-count">{{giftBoxVerify.firstScanCount}} / {{giftBoxVerify.totalItems}} 件首次验证</text>
+        </view>
+        <view class="giftbox-progress-bar">
+          <view class="giftbox-progress-fill status-{{giftBoxVerify.authenticityStatus}}" style="width: {{giftBoxVerify.progressPercent}}%;"></view>
+        </view>
+        <view class="giftbox-progress-desc">{{giftBoxVerify.statusMessage}}</view>
+      </view>
+
+      <view class="giftbox-sub-status-list">
+        <block wx:for="{{giftBoxVerify.subCodeResults}}" wx:key="traceId" wx:for-index="idx">
+          <view class="sub-status-item {{item.isFirstScan ? 'status-first' : 'status-repeat'}}" data-index="{{idx}}" bindtap="viewSubItemScanInfo">
+            <view class="sub-status-index">No.{{item.index}}</view>
+            <view class="sub-status-info">
+              <view class="sub-status-name">{{item.name}}</view>
+              <view class="sub-status-meta">
+                <text wx:if="{{item.isFirstScan}}" class="tag tag-first">首次验证</text>
+                <text wx:else class="tag tag-repeat">已查询 {{item.scanCount}} 次</text>
+              </view>
+            </view>
+            <view class="sub-status-arrow">→</view>
+          </view>
+        </block>
+      </view>
+    </view>
+
     <view class="verify-header {{verifyResult.scanType}}">
       <view class="verify-icon-wrapper">
         <view class="verify-icon {{verifyResult.authenticity}}">
@@ -241,6 +304,37 @@
             </view>
           </block>
         </view>
+      </view>
+    </view>
+
+    <!-- ===== 主码专属：礼盒子产品卡片列表 ===== -->
+    <view wx:if="{{isGiftBoxMainCode && giftBoxItems.length > 0}}" class="card giftbox-items-card">
+      <view class="card-header">
+        <view class="card-title-wrap">
+          <text class="card-icon">📦</text>
+          <text class="card-title">礼盒组成</text>
+          <text class="item-count-badge">共 {{giftBoxItems.length}} 件</text>
+        </view>
+      </view>
+      <view class="card-body">
+        <block wx:for="{{giftBoxItems}}" wx:key="traceId">
+          <view class="giftbox-item-card" data-trace-id="{{item.traceId}}" bindtap="goToSubItemDetail">
+            <view class="giftbox-item-index">
+              <view class="index-badge">No.{{item.index}}</view>
+            </view>
+            <view class="giftbox-item-thumb">
+              <image src="{{item.thumbnail}}" mode="aspectFill" />
+            </view>
+            <view class="giftbox-item-info">
+              <view class="giftbox-item-name">{{item.name}}</view>
+              <view class="giftbox-item-variety">{{item.variety}} · {{item.specification}}</view>
+              <view class="giftbox-item-highlight">{{item.highlight}}</view>
+            </view>
+            <view class="giftbox-item-arrow">
+              <text>查看详情 →</text>
+            </view>
+          </view>
+        </block>
       </view>
     </view>
 

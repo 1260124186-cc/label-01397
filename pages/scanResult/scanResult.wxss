@@ -835,3 +835,392 @@
   margin-left: 16rpx;
   font-weight: 300;
 }
+
+/* ==================== 礼盒相关样式 ==================== */
+
+.subcode-giftbox-card {
+  margin: 24rpx;
+  background: linear-gradient(135deg, #FFF8E7 0%, #FFEFD5 100%);
+  border: 2rpx solid #FFD700;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  box-shadow: 0 6rpx 20rpx rgba(255, 215, 0, 0.15);
+}
+
+.subcode-badge-wrap {
+  margin-bottom: 20rpx;
+}
+
+.subcode-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #DAA520, #F4C430);
+  color: #fff;
+  font-size: 24rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-weight: 500;
+}
+
+.subcode-position {
+  margin-bottom: 24rpx;
+}
+
+.subcode-position-label {
+  font-size: 26rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.subcode-giftbox-name {
+  font-size: 32rpx;
+  color: #8B4513;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.subcode-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.subcode-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.subcode-btn-outline {
+  background: #fff;
+  color: #DAA520;
+  border: 2rpx solid #DAA520;
+}
+
+.subcode-btn-primary {
+  background: linear-gradient(135deg, #DAA520, #F4C430);
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(218, 165, 32, 0.3);
+}
+
+.giftbox-verify-card {
+  margin: 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  box-shadow: 0 6rpx 24rpx rgba(0, 0, 0, 0.08);
+  border: 2rpx solid #F0F0E8;
+}
+
+.giftbox-verify-header {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding-bottom: 24rpx;
+  border-bottom: 1rpx solid #F0F0E8;
+  margin-bottom: 24rpx;
+}
+
+.giftbox-icon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+  flex-shrink: 0;
+}
+
+.giftbox-verify-info {
+  flex: 1;
+}
+
+.giftbox-name {
+  font-size: 34rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.giftbox-status-title {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.giftbox-status-title.status-complete_genuine {
+  color: #2E8B57;
+}
+
+.giftbox-status-title.status-partially_genuine {
+  color: #DAA520;
+}
+
+.giftbox-status-title.status-all_opened {
+  color: #FF4D4F;
+}
+
+.giftbox-progress-wrap {
+  margin-bottom: 24rpx;
+}
+
+.giftbox-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.progress-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.progress-count {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.giftbox-progress-bar {
+  height: 16rpx;
+  background: #F0F0F0;
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+
+.giftbox-progress-fill {
+  height: 100%;
+  border-radius: 8rpx;
+  transition: width 0.5s ease;
+}
+
+.giftbox-progress-fill.status-complete_genuine {
+  background: linear-gradient(90deg, #2E8B57, #3CB371);
+}
+
+.giftbox-progress-fill.status-partially_genuine {
+  background: linear-gradient(90deg, #DAA520, #F4C430);
+}
+
+.giftbox-progress-fill.status-all_opened {
+  background: linear-gradient(90deg, #FF4D4F, #FF7875);
+}
+
+.giftbox-progress-desc {
+  font-size: 24rpx;
+  color: #888;
+  line-height: 1.5;
+}
+
+.giftbox-sub-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.sub-status-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  gap: 16rpx;
+}
+
+.sub-status-item.status-first {
+  background: linear-gradient(135deg, #F6FFED 0%, #D9F7BE 100%);
+  border: 1rpx solid #B7EB8F;
+}
+
+.sub-status-item.status-repeat {
+  background: #FFF7E6;
+  border: 1rpx solid #FFE0A0;
+}
+
+.sub-status-index {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: 600;
+  background: #fff;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.status-first .sub-status-index {
+  color: #2E8B57;
+  background: #fff;
+}
+
+.status-repeat .sub-status-index {
+  color: #D48806;
+  background: #fff;
+}
+
+.sub-status-info {
+  flex: 1;
+}
+
+.sub-status-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.sub-status-meta {
+  display: flex;
+  gap: 12rpx;
+  align-items: center;
+}
+
+.tag-first {
+  background: #2E8B57;
+  color: #fff;
+  font-size: 22rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 10rpx;
+  font-weight: 500;
+}
+
+.tag-repeat {
+  background: #D48806;
+  color: #fff;
+  font-size: 22rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 10rpx;
+  font-weight: 500;
+}
+
+.sub-status-arrow {
+  font-size: 28rpx;
+  color: #999;
+  flex-shrink: 0;
+}
+
+.giftbox-items-card {
+  margin: 0 24rpx 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.giftbox-items-card .card-header {
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #F0F0E8;
+  margin-bottom: 20rpx;
+}
+
+.giftbox-items-card .card-header {
+  margin-bottom: 24rpx;
+}
+
+.item-count-badge {
+  font-size: 22rpx;
+  color: #2E8B57;
+  background: #F6FFED;
+  padding: 6rpx 16rpx;
+  border-radius: 14rpx;
+  margin-left: 16rpx;
+  font-weight: 500;
+}
+
+.giftbox-item-card {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  margin-bottom: 16rpx;
+  background: #FAFAF7;
+  border-radius: 20rpx;
+  gap: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.giftbox-item-card:last-child {
+  margin-bottom: 0;
+}
+
+.giftbox-item-card:active {
+  transform: scale(0.98);
+  background: #F5F5F0;
+}
+
+.giftbox-item-index {
+  flex-shrink: 0;
+}
+
+.index-badge {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 14rpx;
+  background: linear-gradient(135deg, #DAA520, #F4C430);
+  color: #fff;
+  font-size: 22rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.giftbox-item-thumb {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #F0F0F0;
+}
+
+.giftbox-item-thumb image {
+  width: 100%;
+  height: 100%;
+}
+
+.giftbox-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.giftbox-item-name {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.giftbox-item-variety {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.giftbox-item-highlight {
+  font-size: 22rpx;
+  color: #D48806;
+  background: #FFF7E6;
+  display: inline-block;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.giftbox-item-arrow {
+  flex-shrink: 0;
+  font-size: 24rpx;
+  color: #2E8B57;
+  font-weight: 500;
+}

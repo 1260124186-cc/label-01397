@@ -379,8 +379,126 @@ function clearAllScanRecords() {
   }
 }
 
+function isFirstScanForTraceId(traceId) {
+  const allRecords = getScanRecords();
+  const productRecords = allRecords.filter(r => r.traceId === traceId);
+  return productRecords.length === 0;
+}
+
+function verifyGiftBoxAntiCounterfeit(mainTraceId) {
+  const giftBoxInfo = mockData.getGiftBoxInfo(mainTraceId);
+  if (!giftBoxInfo) {
+    return null;
+  }
+
+  const items = giftBoxInfo.items || [];
+  const subCodeVerifyResults = items.map(function(item) {
+    const isFirst = isFirstScanForTraceId(item.traceId);
+    const scanStats = getProductScanStats(item.traceId);
+    return {
+      traceId: item.traceId,
+      index: item.index,
+      name: item.name,
+      isFirstScan: isFirst,
+      scanCount: scanStats ? scanStats.totalQueryCount : 0,
+      firstScanTime: scanStats ? scanStats.firstScanTime : null
+    };
+  });
+
+  const firstScanCount = subCodeVerifyResults.filter(r => r.isFirstScan).length;
+  const totalItems = subCodeVerifyResults.length;
+  const allFirstVerified = firstScanCount === totalItems;
+
+  let authenticityStatus;
+  let statusTitle;
+  let statusMessage;
+
+  if (allFirstVerified) {
+    authenticityStatus = 'complete_genuine';
+    statusTitle = '礼盒完整正品';
+    statusMessage = `恭喜！礼盒内 ${totalItems} 件产品全部为首次验证，确认为完整正品礼盒。`;
+  } else if (firstScanCount === 0) {
+    authenticityStatus = 'all_opened';
+    statusTitle = '礼盒已全部开封';
+    statusMessage = `礼盒内 ${totalItems} 件产品均已被验证过，请谨慎购买。建议逐一核对每件产品的扫码记录。`;
+  } else {
+    authenticityStatus = 'partially_genuine';
+    statusTitle = '礼盒部分正品';
+    statusMessage = `礼盒内 ${firstScanCount}/${totalItems} 件为首次验证，其余 ${totalItems - firstScanCount} 件已被查询过，请仔细核对每件产品信息。`;
+  }
+
+  return {
+    giftBoxId: giftBoxInfo.giftBoxId,
+    giftBoxName: giftBoxInfo.name,
+    mainTraceId: mainTraceId,
+    totalItems: totalItems,
+    firstScanCount: firstScanCount,
+    allFirstVerified: allFirstVerified,
+    authenticityStatus: authenticityStatus,
+    statusTitle: statusTitle,
+    statusMessage: statusMessage,
+    subCodeResults: subCodeVerifyResults,
+    progressPercent: Math.round((firstScanCount / totalItems) * 100)
+  };
+}
+
+function getSubCodeGiftBoxContext(subTraceId) {
+  const subCodeInfo = mockData.getGiftBoxSubCodeInfo(subTraceId);
+  if (!subCodeInfo || subCodeInfo.isMainCode) {
+    return null;
+  }
+
+  const giftBoxInfo = mockData.getGiftBoxInfo(subCodeInfo.giftBoxId);
+  const mainScanStats = getProductScanStats(subCodeInfo.giftBoxMainTraceId);
+
+  return {
+    giftBoxId: subCodeInfo.giftBoxId,
+    giftBoxName: subCodeInfo.giftBoxName,
+    mainTraceId: subCodeInfo.giftBoxMainTraceId,
+    itemIndex: subCodeInfo.itemIndex,
+    totalItems: subCodeInfo.totalItems,
+    itemName: subCodeInfo.itemInfo ? subCodeInfo.itemInfo.name : '',
+    positionText: `「${subCodeInfo.giftBoxName}」的第 ${subCodeInfo.itemIndex} 件（共 ${subCodeInfo.totalItems} 件）`,
+    mainCodeVerified: mainScanStats !== null,
+    mainCodeScanCount: mainScanStats ? mainScanStats.totalQueryCount : 0,
+    giftBoxItems: giftBoxInfo ? giftBoxInfo.items : []
+  };
+}
+
+async function verifyProductEnhanced(traceId) {
+  const baseResult = await verifyProduct(traceId);
+  if (!baseResult.success) {
+    return baseResult;
+  }
+
+  const enhanced = {
+    ...baseResult,
+    giftBox: null
+  };
+
+  if (mockData.isGiftBoxMainCode(traceId)) {
+    const giftBoxVerify = verifyGiftBoxAntiCounterfeit(traceId);
+    enhanced.giftBox = {
+      type: 'main_code',
+      ...giftBoxVerify
+    };
+    enhanced.giftBoxInfo = mockData.getGiftBoxInfo(traceId);
+    enhanced.giftBoxItems = mockData.getGiftBoxItems(mockData.getGiftBoxInfo(traceId).giftBoxId);
+  } else if (mockData.isGiftBoxSubCode(traceId)) {
+    const subContext = getSubCodeGiftBoxContext(traceId);
+    enhanced.giftBox = {
+      type: 'sub_code',
+      context: subContext
+    };
+    enhanced.giftBoxInfo = mockData.getGiftBoxInfo(traceId);
+  }
+
+  return enhanced;
+}
+
 module.exports = {
   verifyProduct,
+  verifyProductEnhanced,
   getProductScanStats,
   detectAbnormalBehavior,
   submitReport,
@@ -390,6 +508,9 @@ module.exports = {
   getCityFromLocation,
   maskIp,
   clearAllScanRecords,
+  isFirstScanForTraceId,
+  verifyGiftBoxAntiCounterfeit,
+  getSubCodeGiftBoxContext,
   ABNORMAL_TIME_WINDOW,
   ABNORMAL_SCAN_THRESHOLD,
   ABNORMAL_LOCATION_COUNT

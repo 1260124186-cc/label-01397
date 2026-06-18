@@ -7458,3 +7458,456 @@
   padding: 20rpx;
   border-radius: 40rpx;
 }
+
+/* ==================== 礼盒/组合装模块样式 ==================== */
+
+/* 子码归属提示卡片（金色主题） */
+.subcode-giftbox-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  padding: 28rpx;
+  margin: 24rpx 0 0;
+  background: linear-gradient(135deg, #FFF8E7 0%, #FFF2D6 100%);
+  border: 2rpx solid #E8C872;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(218, 165, 32, 0.15);
+}
+
+.subcode-gb-icon {
+  font-size: 56rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.subcode-gb-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.subcode-gb-badge {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+  color: #FFFFFF;
+  font-size: 22rpx;
+  font-weight: 600;
+  border-radius: 20rpx;
+  margin-bottom: 12rpx;
+}
+
+.subcode-gb-text {
+  font-size: 28rpx;
+  color: #5A4A1F;
+  line-height: 1.6;
+  margin-bottom: 18rpx;
+}
+
+.subcode-gb-actions {
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+
+.subcode-gb-btn {
+  padding: 14rpx 28rpx;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.subcode-gb-btn.primary {
+  background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4rpx 12rpx rgba(218, 165, 32, 0.3);
+}
+
+.subcode-gb-btn.primary:active {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
+
+.subcode-gb-btn.outline {
+  background: #FFFFFF;
+  color: #8B6914;
+  border: 2rpx solid #DAA520;
+}
+
+.subcode-gb-btn.outline:active {
+  background: #FFFAF0;
+}
+
+/* 礼盒概览卡片 */
+.giftbox-overview-card {
+  margin: 20rpx 0 0;
+  padding: 28rpx;
+  background: linear-gradient(135deg, #FFFBF2 0%, #FFF8E7 100%);
+  border-radius: 16rpx;
+  border: 1rpx solid #F0E0B0;
+}
+
+.giftbox-overview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14rpx;
+  gap: 16rpx;
+}
+
+.giftbox-overview-name {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #3D2E0A;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.giftbox-overview-tag {
+  padding: 6rpx 18rpx;
+  background: linear-gradient(135deg, #DAA520 0%, #CD853F 100%);
+  color: #FFFFFF;
+  font-size: 22rpx;
+  font-weight: 600;
+  border-radius: 20rpx;
+  flex-shrink: 0;
+}
+
+.giftbox-overview-desc {
+  font-size: 26rpx;
+  color: #6B5A30;
+  line-height: 1.7;
+  margin-bottom: 20rpx;
+}
+
+.giftbox-overview-specs {
+  display: flex;
+  gap: 32rpx;
+  margin-bottom: 18rpx;
+  flex-wrap: wrap;
+}
+
+.giftbox-spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.giftbox-spec-label {
+  font-size: 22rpx;
+  color: #9B8A60;
+}
+
+.giftbox-spec-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #5A4A1F;
+  font-family: 'Courier New', monospace;
+}
+
+.giftbox-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.giftbox-hl-tag {
+  padding: 8rpx 20rpx;
+  background: rgba(218, 165, 32, 0.12);
+  color: #8B6914;
+  font-size: 24rpx;
+  border-radius: 30rpx;
+  border: 1rpx solid rgba(218, 165, 32, 0.25);
+}
+
+/* 子产品列表 */
+.giftbox-items-list {
+  margin: 24rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.giftbox-item-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 20rpx;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  border: 2rpx solid #F0ECE4;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.giftbox-item-card.current {
+  border-color: #DAA520;
+  background: linear-gradient(135deg, #FFFBF2 0%, #FFFFFF 100%);
+  box-shadow: 0 4rpx 16rpx rgba(218, 165, 32, 0.12);
+}
+
+.giftbox-item-card:active {
+  transform: scale(0.99);
+  background: #FAFAF7;
+}
+
+.giftbox-item-index {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  flex-shrink: 0;
+  min-width: 72rpx;
+}
+
+.giftbox-item-no {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #DAA520;
+  background: rgba(218, 165, 32, 0.12);
+  padding: 8rpx 14rpx;
+  border-radius: 12rpx;
+  font-family: 'Courier New', monospace;
+}
+
+.giftbox-item-current-tag {
+  font-size: 18rpx;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+  padding: 3rpx 10rpx;
+  border-radius: 10rpx;
+  font-weight: 600;
+}
+
+.giftbox-item-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background: #F7F4EE;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.giftbox-item-image image {
+  width: 100%;
+  height: 100%;
+}
+
+.giftbox-item-placeholder {
+  font-size: 48rpx;
+}
+
+.giftbox-item-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.giftbox-item-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin-bottom: 10rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.giftbox-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 24rpx;
+  color: #666666;
+  margin-bottom: 12rpx;
+  flex-wrap: wrap;
+}
+
+.giftbox-item-dot {
+  color: #CCCCCC;
+}
+
+.giftbox-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.giftbox-item-tag {
+  padding: 4rpx 14rpx;
+  background: #F2EFE8;
+  color: #8B7355;
+  font-size: 20rpx;
+  border-radius: 8rpx;
+}
+
+.giftbox-item-arrow {
+  font-size: 32rpx;
+  color: #CCCCCC;
+  flex-shrink: 0;
+  margin-left: 8rpx;
+}
+
+.giftbox-item-card.current .giftbox-item-arrow {
+  color: #DAA520;
+}
+
+/* 礼盒分享按钮 */
+.giftbox-share-bar {
+  margin: 28rpx 0 0;
+  padding-top: 20rpx;
+  border-top: 1rpx dashed #E8E0CC;
+}
+
+.giftbox-share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 22rpx;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 600;
+  border-radius: 48rpx;
+  box-shadow: 0 8rpx 24rpx rgba(46, 139, 87, 0.25);
+  transition: all 0.2s ease;
+}
+
+.giftbox-share-btn:active {
+  opacity: 0.9;
+  transform: scale(0.99);
+  box-shadow: 0 4rpx 12rpx rgba(46, 139, 87, 0.2);
+}
+
+.giftbox-share-icon {
+  font-size: 32rpx;
+}
+
+/* 分享模式选择弹窗 */
+.share-mode-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.share-mode-panel {
+  width: 100%;
+  background: #FFFFFF;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.share-mode-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+  text-align: center;
+  margin-bottom: 12rpx;
+}
+
+.share-mode-desc {
+  font-size: 26rpx;
+  color: #888888;
+  text-align: center;
+  margin-bottom: 36rpx;
+}
+
+.share-mode-options {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 32rpx;
+}
+
+.share-mode-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  padding: 36rpx 20rpx;
+  border-radius: 24rpx;
+  border: 2rpx solid #EEEEEE;
+  background: #FAFAFA;
+  transition: all 0.2s ease;
+}
+
+.share-mode-option:active {
+  transform: scale(0.98);
+}
+
+.share-mode-option.whole {
+  background: linear-gradient(135deg, #FFFBF2 0%, #FFF8E7 100%);
+  border-color: #E8C872;
+}
+
+.share-mode-option.single {
+  background: linear-gradient(135deg, #F2FBF6 0%, #F0FAF3 100%);
+  border-color: #A8D8B8;
+}
+
+.share-mode-icon {
+  font-size: 64rpx;
+  line-height: 1;
+  margin-bottom: 8rpx;
+}
+
+.share-mode-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.share-mode-detail {
+  font-size: 22rpx;
+  color: #777777;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.share-mode-cancel {
+  display: block;
+  width: 100%;
+  padding: 26rpx;
+  background: #F5F5F5;
+  color: #666666;
+  font-size: 30rpx;
+  font-weight: 500;
+  text-align: center;
+  border-radius: 48rpx;
+}
+
+.share-mode-cancel:active {
+  background: #EAEAEA;
+}
+
+.giftbox-module-card {
+  background: #FFFFFF;
+}

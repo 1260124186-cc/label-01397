@@ -5540,6 +5540,148 @@ function getAllRecalls() {
   return Object.values(RECALL_BATCHES);
 }
 
+// ==================== 礼盒/组合装多码关联数据 ====================
+
+const GIFTBOX_DATA = {
+  'GBX001': {
+    giftBoxId: 'GBX001',
+    mainTraceId: 'G003',
+    name: '金秋雅韵·桂花茶礼盒',
+    type: 'giftbox',
+    specification: '3件套组合装',
+    description: '精选三种桂花茶臻品，礼赠佳品，一礼盒藏三味',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=elegant%20chinese%20tea%20gift%20box%20set%20premium%20packaging%20golden%20osmanthus%20luxury&image_size=square',
+    banner: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=autumn%20osmanthus%20tea%20gift%20box%20promotional%20banner%20elegant%20chinese%20style&image_size=landscape_16_9',
+    packaging: {
+      material: '高档竹制礼盒',
+      inner: '丝绸内衬',
+      accessories: '陶瓷茶具1套、品鉴手册1本'
+    },
+    items: [
+      {
+        index: 1,
+        traceId: 'G001',
+        name: '金桂花茶',
+        variety: '金桂',
+        specification: '100g/罐',
+        quantity: 1,
+        highlight: '200年古树茶底，五窨一提',
+        thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20golden%20osmanthus%20tea%20tin%20can%20product%20photo&image_size=square'
+      },
+      {
+        index: 2,
+        traceId: 'G002',
+        name: '银桂花茶',
+        variety: '银桂',
+        specification: '100g/罐',
+        quantity: 1,
+        highlight: '清雅淡香，日常自饮首选',
+        thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20packaging%20elegant%20product%20photo&image_size=square'
+      },
+      {
+        index: 3,
+        traceId: 'G004',
+        name: '金桂花茶便携装',
+        variety: '金桂',
+        specification: '3g*12袋/盒',
+        quantity: 1,
+        highlight: '便携出差，随享随饮',
+        thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20portable%20sachet%20packaging%20convenient&image_size=square'
+      }
+    ],
+    priceInfo: {
+      originalPrice: 688,
+      giftBoxPrice: 588,
+      savedAmount: 100
+    },
+    productionInfo: {
+      packTime: '2025年10月1日',
+      packBatch: 'GB20251001',
+      packWorkshop: '礼盒包装车间A',
+      qualityInspector: '张质检（高级检验员）'
+    }
+  }
+};
+
+const SUBCODE_MAP = {};
+Object.keys(GIFTBOX_DATA).forEach(function(giftBoxId) {
+  const giftBox = GIFTBOX_DATA[giftBoxId];
+  giftBox.items.forEach(function(item) {
+    SUBCODE_MAP[item.traceId] = {
+      giftBoxId: giftBoxId,
+      giftBoxName: giftBox.name,
+      giftBoxMainTraceId: giftBox.mainTraceId,
+      itemIndex: item.index,
+      totalItems: giftBox.items.length,
+      itemInfo: item
+    };
+  });
+  SUBCODE_MAP[giftBox.mainTraceId] = {
+    giftBoxId: giftBoxId,
+    giftBoxName: giftBox.name,
+    giftBoxMainTraceId: giftBox.mainTraceId,
+    isMainCode: true,
+    totalItems: giftBox.items.length
+  };
+});
+
+function getGiftBoxInfo(traceIdOrGiftBoxId) {
+  if (GIFTBOX_DATA[traceIdOrGiftBoxId]) {
+    return GIFTBOX_DATA[traceIdOrGiftBoxId];
+  }
+  const subInfo = SUBCODE_MAP[traceIdOrGiftBoxId];
+  if (subInfo) {
+    return GIFTBOX_DATA[subInfo.giftBoxId];
+  }
+  return null;
+}
+
+function getGiftBoxSubCodeInfo(traceId) {
+  return SUBCODE_MAP[traceId] || null;
+}
+
+function isGiftBoxMainCode(traceId) {
+  const info = SUBCODE_MAP[traceId];
+  return info && info.isMainCode === true;
+}
+
+function isGiftBoxSubCode(traceId) {
+  const info = SUBCODE_MAP[traceId];
+  return info && !info.isMainCode;
+}
+
+function isGiftBoxRelated(traceId) {
+  return !!SUBCODE_MAP[traceId];
+}
+
+function getAllGiftBoxes() {
+  return Object.values(GIFTBOX_DATA);
+}
+
+function getGiftBoxItems(giftBoxId) {
+  const giftBox = GIFTBOX_DATA[giftBoxId];
+  if (!giftBox) return [];
+  return giftBox.items.map(function(item) {
+    const traceData = mockTraceData[item.traceId];
+    return {
+      ...item,
+      basicInfo: traceData ? traceData.basicInfo : null,
+      treeAge: traceData ? traceData.treeAge : null,
+      osmanthusInfo: traceData ? traceData.osmanthusInfo : null
+    };
+  });
+}
+
+function getGiftBoxMainCodeBySubCode(traceId) {
+  const subInfo = SUBCODE_MAP[traceId];
+  if (!subInfo) return null;
+  return {
+    mainTraceId: subInfo.giftBoxMainTraceId,
+    giftBoxId: subInfo.giftBoxId,
+    giftBoxName: subInfo.giftBoxName
+  };
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -5614,5 +5756,13 @@ module.exports = {
   getRecallByBatch,
   getRecallByTraceId,
   isRecalledProduct,
-  getAllRecalls
+  getAllRecalls,
+  getGiftBoxInfo,
+  getGiftBoxSubCodeInfo,
+  isGiftBoxMainCode,
+  isGiftBoxSubCode,
+  isGiftBoxRelated,
+  getAllGiftBoxes,
+  getGiftBoxItems,
+  getGiftBoxMainCodeBySubCode
 };

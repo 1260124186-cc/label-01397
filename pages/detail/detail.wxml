@@ -1109,6 +1109,113 @@
       </view>
     </view>
 
+    <!-- ========== 模块5.5：礼盒/组合装组成 ========== -->
+    <view class="card animate-card module-card giftbox-module-card" wx:if="{{giftBoxInfo}}" id="anchor-giftbox" role="region" aria-label="礼盒组成" style="animation-delay: 0.32s;">
+      <!-- 子码归属提示卡片 -->
+      <view class="subcode-giftbox-card" wx:if="{{isGiftBoxSubCode && subCodeContext}}">
+        <view class="subcode-gb-icon">🎁</view>
+        <view class="subcode-gb-content">
+          <view class="subcode-gb-badge">礼盒子码</view>
+          <view class="subcode-gb-text">本品为 {{subCodeContext.positionText}}</view>
+          <view class="subcode-gb-actions">
+            <view class="subcode-gb-btn primary" bindtap="goToGiftBoxMainPage" catchtap="goToGiftBoxMainPage">扫礼盒主码</view>
+            <view class="subcode-gb-btn outline" bindtap="goToGiftBoxDetailPage" catchtap="goToGiftBoxDetailPage">查看礼盒详情</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 模块标题 -->
+      <view class="card-title module-header">
+        <view class="title-left" bindtap="toggleGiftBoxModule" role="button" aria-expanded="{{!moduleCollapsedGiftBox}}">
+          <text class="title-icon" aria-hidden="true">🎁</text>
+          <text role="heading" aria-level="2">{{isGiftBoxMainCode ? '礼盒组成' : '礼盒关联'}}</text>
+          <view class="title-badge">{{giftBoxInfo.items.length}}件装</view>
+        </view>
+        <view class="title-right-actions">
+          <view class="expand-icon {{moduleCollapsedGiftBox ? 'collapsed' : ''}}">▼</view>
+        </view>
+      </view>
+
+      <!-- 礼盒概览卡片 -->
+      <view class="giftbox-overview-card" wx:if="{{!moduleCollapsedGiftBox && isGiftBoxMainCode}}">
+        <view class="giftbox-overview-header">
+          <view class="giftbox-overview-name">{{giftBoxInfo.name}}</view>
+          <view class="giftbox-overview-tag">{{giftBoxInfo.theme}}</view>
+        </view>
+        <view class="giftbox-overview-desc">{{giftBoxInfo.description}}</view>
+        <view class="giftbox-overview-specs">
+          <view class="giftbox-spec-item">
+            <text class="giftbox-spec-label">礼盒编号</text>
+            <text class="giftbox-spec-value">{{giftBoxInfo.giftBoxId}}</text>
+          </view>
+          <view class="giftbox-spec-item">
+            <text class="giftbox-spec-label">总净含量</text>
+            <text class="giftbox-spec-value">{{giftBoxInfo.totalSpec}}</text>
+          </view>
+        </view>
+        <view class="giftbox-highlights">
+          <view class="giftbox-hl-tag" wx:for="{{giftBoxInfo.highlights}}" wx:for-item="hl" wx:key="*this">{{hl}}</view>
+        </view>
+      </view>
+
+      <!-- 子产品列表 -->
+      <view class="giftbox-items-list" wx:if="{{!moduleCollapsedGiftBox && giftBoxItems.length > 0}}">
+        <view class="giftbox-item-card {{item.traceId === traceId ? 'current' : ''}}"
+              wx:for="{{giftBoxItems}}" wx:for-item="item" wx:key="traceId"
+              data-trace-id="{{item.traceId}}" bindtap="goToSubItemDetail" catchtap="goToSubItemDetail">
+          <view class="giftbox-item-index">
+            <text class="giftbox-item-no">No.{{index + 1}}</text>
+            <view class="giftbox-item-current-tag" wx:if="{{item.traceId === traceId}}">当前</view>
+          </view>
+          <view class="giftbox-item-image lazy-image" data-src="{{item.basicInfo.thumbnail}}">
+            <image src="{{item.basicInfo.thumbnail}}" mode="aspectFill" wx:if="{{item.basicInfo.thumbnail}}"></image>
+            <view class="giftbox-item-placeholder" wx:else>📦</view>
+          </view>
+          <view class="giftbox-item-info">
+            <view class="giftbox-item-name">{{item.basicInfo.productName}}</view>
+            <view class="giftbox-item-meta">
+              <text class="giftbox-item-variety">{{item.basicInfo.variety}}</text>
+              <text class="giftbox-item-dot">·</text>
+              <text class="giftbox-item-spec">{{item.basicInfo.spec}}</text>
+            </view>
+            <view class="giftbox-item-tags">
+              <view class="giftbox-item-tag" wx:for="{{item.basicInfo.highlights}}" wx:for-item="tag" wx:key="*this">{{tag}}</view>
+            </view>
+          </view>
+          <view class="giftbox-item-arrow">→</view>
+        </view>
+      </view>
+
+      <!-- 分享按钮 -->
+      <view class="giftbox-share-bar" wx:if="{{!moduleCollapsedGiftBox && isGiftBoxMainCode}}">
+        <view class="giftbox-share-btn" bindtap="openShareModeModal" catchtap="openShareModeModal">
+          <text class="giftbox-share-icon">📤</text>
+          <text class="giftbox-share-text">分享礼盒</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分享模式选择弹窗 -->
+    <view class="share-mode-mask" wx:if="{{showShareModeModal}}" bindtap="closeShareModeModal" catchtap="closeShareModeModal">
+      <view class="share-mode-panel" catchtap="event.stopPropagation">
+        <view class="share-mode-title">选择分享方式</view>
+        <view class="share-mode-desc">礼盒支持整盒分享或单品分享</view>
+        <view class="share-mode-options">
+          <view class="share-mode-option whole" bindtap="shareGiftBoxWhole" catchtap="shareGiftBoxWhole">
+            <view class="share-mode-icon">🎁</view>
+            <view class="share-mode-name">分享整盒</view>
+            <view class="share-mode-detail">展示礼盒概览 + 全部子产品</view>
+          </view>
+          <view class="share-mode-option single" bindtap="shareGiftBoxSingle" catchtap="shareGiftBoxSingle">
+            <view class="share-mode-icon">🍵</view>
+            <view class="share-mode-name">分享单品</view>
+            <view class="share-mode-detail">仅分享当前单品溯源信息</view>
+          </view>
+        </view>
+        <view class="share-mode-cancel" bindtap="closeShareModeModal" catchtap="closeShareModeModal">取消</view>
+      </view>
+    </view>
+
     <!-- ========== 模块6：农残检测 ========== -->
     <view class="card animate-card module-card test-module-card {{testChartData.overallPass ? '' : 'test-abnormal-card'}}" id="anchor-test" role="region" aria-label="{{i18n.tabTitleTest}}" style="animation-delay: 0.35s;">
       <view class="card-title module-header">
