@@ -14,6 +14,7 @@ const shareUtil = require('./utils/share.js');
 const dealerSession = require('./utils/dealerSession.js');
 const dealerAuth = require('./utils/dealerAuth.js');
 const dealerAudit = require('./utils/dealerAudit.js');
+const marketingAnalytics = require('./utils/marketingAnalytics.js');
 
 App({
   onLaunch: function(options) {
@@ -33,6 +34,7 @@ App({
     this.checkPrivacyCompliance();
     this.initUserData();
     this.initDealerSession();
+    this.initMarketingAnalytics(options);
 
     if (options && options.query && options.query.invite) {
       this.globalData.pendingInviter = options.query.invite;
@@ -290,6 +292,28 @@ App({
     dealerAudit.addAuditLog(dealerAudit.ACTION_LOGIN, {});
   },
 
+  initMarketingAnalytics: function(options) {
+    try {
+      const attribution = marketingAnalytics.initAttribution(options);
+      if (attribution) {
+        this.globalData.marketingAttribution = attribution;
+        console.log('[Marketing] 营销归因初始化:', attribution);
+      }
+      marketingAnalytics.startBatchReportTimer();
+      console.log('[Marketing] 埋点批量上报定时器已启动');
+    } catch (e) {
+      console.error('[Marketing] 营销分析初始化失败:', e);
+    }
+  },
+
+  getMarketingAttribution: function() {
+    return marketingAnalytics.getCurrentAttribution();
+  },
+
+  trackAnalyticsEvent: function(eventName, eventData) {
+    return marketingAnalytics.trackEvent(eventName, eventData);
+  },
+
   dealerLogoutSuccess: function() {
     dealerAudit.addAuditLog(dealerAudit.ACTION_LOGOUT, { reason: 'manual' });
     dealerAuth.dealerLogout();
@@ -326,6 +350,7 @@ App({
     themeTokens: theme.getThemeTokens(),
     themeClass: 'theme-light',
     dealerLoggedIn: false,
-    dealerUser: null
+    dealerUser: null,
+    marketingAttribution: null
   }
 });

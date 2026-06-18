@@ -25,7 +25,8 @@
     "pages/compare/index",
     "pages/brewEnvironment/brewEnvironment",
     "pages/brewRecord/brewRecord",
-    "pages/teaMaster/teaMaster"
+    "pages/teaMaster/teaMaster",
+    "pages/marketingAnalysis/marketingAnalysis"
   ],
   "window": {
     "backgroundTextStyle": "dark",

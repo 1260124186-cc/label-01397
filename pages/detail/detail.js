@@ -14,6 +14,7 @@ const userStore = require('../../utils/userStore.js');
 const subscription = require('../../utils/subscription.js');
 const reviewTrust = require('../../utils/reviewTrust.js');
 const tts = require('../../utils/tts.js');
+const marketingAnalytics = require('../../utils/marketingAnalytics.js');
 
 // 锚点 Tab 配置（将在运行时根据语言填充 label）
 const ANCHOR_TABS_BASE = [
@@ -351,6 +352,11 @@ Page({
       this.setData({ traceId: traceId });
       this.loadTraceData(traceId);
       this.initBrewEnvironment();
+
+      marketingAnalytics.trackPageEnter('detail', {
+        traceId: traceId,
+        from: options.from || ''
+      });
     } else {
       wx.showToast({
         title: '参数错误',
@@ -2477,6 +2483,13 @@ Page({
     shareUtil.saveImageToAlbum(that.data.certImage, function(res) {
       wx.hideLoading();
       if (res.success) {
+        marketingAnalytics.trackCertSave({
+          traceId: that.data.traceId,
+          saveType: 'album',
+          certCount: 1,
+          productName: that.data.traceData ? that.data.traceData.basicInfo.productName : ''
+        });
+
         wx.showToast({ title: '证书已保存到相册', icon: 'success' });
       } else {
         wx.showToast({ title: '保存失败', icon: 'none' });
@@ -2488,6 +2501,13 @@ Page({
     var that = this;
     var data = that.data.traceData;
     if (!data) return;
+
+    marketingAnalytics.trackShareClick({
+      traceId: that.data.traceId,
+      shareType: 'invite',
+      productName: data.basicInfo.productName,
+      shareChannel: 'system'
+    });
 
     wx.showShareMenu({
       withShareTicket: true,
@@ -2628,6 +2648,13 @@ Page({
     that.refreshCertWalletStatus();
 
     if (addedCount > 0) {
+      marketingAnalytics.trackCertSave({
+        traceId: traceData.basicInfo.traceId,
+        saveType: 'wallet_all',
+        certCount: addedCount,
+        productName: traceData.basicInfo.productName
+      });
+
       wx.showToast({
         title: '已收藏 ' + addedCount + ' 张证书',
         icon: 'success',
@@ -2666,6 +2693,14 @@ Page({
     that.refreshCertWalletStatus();
 
     if (result.success) {
+      marketingAnalytics.trackCertSave({
+        traceId: traceData.basicInfo.traceId,
+        saveType: 'wallet_single',
+        certType: type,
+        certCount: 1,
+        productName: traceData.basicInfo.productName
+      });
+
       wx.showToast({
         title: '已加入证书钱包',
         icon: 'success',
@@ -3566,6 +3601,11 @@ Page({
       this._ttsManager.destroy();
       this._ttsManager = null;
     }
+
+    marketingAnalytics.trackPageLeave('detail', {
+      traceId: this.data.traceId,
+      productName: this.data.traceData ? this.data.traceData.basicInfo.productName : ''
+    });
   },
 
   // ============================================================

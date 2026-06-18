@@ -1,0 +1,296 @@
+<view class="marketing-analysis-page">
+  <view class="page-header">
+    <view class="header-title">营销数据分析</view>
+    <view class="header-subtitle">渠道效果与转化漏斗分析</view>
+  </view>
+
+  <view class="campaign-selector">
+    <picker mode="selector" range="{{campaigns}}" range-key="title" bindchange="onCampaignChange">
+      <view class="picker-display">
+        <view class="picker-label">营销活动</view>
+        <view class="picker-value">
+          {{currentCampaignName || '请选择活动'}}
+          <text class="picker-arrow">▼</text>
+        </view>
+      </view>
+    </picker>
+  </view>
+
+  <view class="tab-bar">
+    <view
+      class="tab-item {{activeTab === 'funnel' ? 'active' : ''}}"
+      data-tab="funnel"
+      bindtap="onTabChange"
+    >
+      <text class="tab-icon">📊</text>
+      <text class="tab-text">转化漏斗</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'channel' ? 'active' : ''}}"
+      data-tab="channel"
+      bindtap="onTabChange"
+    >
+      <text class="tab-icon">📢</text>
+      <text class="tab-text">渠道效果</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'region' ? 'active' : ''}}"
+      data-tab="region"
+      bindtap="onTabChange"
+    >
+      <text class="tab-icon">🗺️</text>
+      <text class="tab-text">地域分析</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'dealer' ? 'active' : ''}}"
+      data-tab="dealer"
+      bindtap="onTabChange"
+    >
+      <text class="tab-icon">🏪</text>
+      <text class="tab-text">经销商</text>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-tip">
+    <view class="loading-text">数据加载中...</view>
+  </view>
+
+  <view wx:elif="{{activeTab === 'funnel' && funnelData}}" class="content-section">
+    <view class="section-card">
+      <view class="card-title">用户转化漏斗</view>
+      <view class="card-subtitle">扫码 → 验真 → 详情 → 分享/购买</view>
+
+      <view class="funnel-container">
+        <view class="funnel-step" wx:for="{{funnelData.steps}}" wx:key="step" wx:for-index="idx">
+          <view class="funnel-step-header">
+            <view class="step-index">{{idx + 1}}</view>
+            <view class="step-info">
+              <view class="step-name">{{item.label}}</view>
+              <view class="step-count">{{item.count}} 人</view>
+            </view>
+            <view class="step-rate">
+              <view wx:if="{{idx > 0}}" class="step-conversion">
+                转化率 {{item.conversionRate}}
+              </view>
+              <view wx:if="{{idx === 0}}" class="step-total">
+                起点
+              </view>
+            </view>
+          </view>
+          <view class="funnel-bar-wrapper">
+            <view class="funnel-bar" style="width: {{item.percentageOfTop}}%">
+              <view class="bar-fill"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="funnel-summary">
+        <view class="summary-item">
+          <view class="summary-label">总转化率</view>
+          <view class="summary-value">{{funnelData.overallConversion}}</view>
+        </view>
+        <view class="summary-item">
+          <view class="summary-label">最大流失环节</view>
+          <view class="summary-value highlight">{{funnelData.biggestDropStep}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="card-title">关键指标</view>
+      <view class="metrics-grid">
+        <view class="metric-item">
+          <view class="metric-value">{{funnelData.totalScans}}</view>
+          <view class="metric-label">扫码次数</view>
+        </view>
+        <view class="metric-item">
+          <view class="metric-value">{{funnelData.totalVerifies}}</view>
+          <view class="metric-label">验真通过</view>
+        </view>
+        <view class="metric-item">
+          <view class="metric-value">{{funnelData.totalDetailViews}}</view>
+          <view class="metric-label">详情浏览</view>
+        </view>
+        <view class="metric-item">
+          <view class="metric-value">{{funnelData.totalShares}}</view>
+          <view class="metric-label">分享次数</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:elif="{{activeTab === 'channel' && channelData}}" class="content-section">
+    <view class="section-card">
+      <view class="card-title">渠道获客效果</view>
+      <view class="card-subtitle">各渠道扫码量与转化率对比</view>
+
+      <view class="channel-list">
+        <view class="channel-item" wx:for="{{channelData.channels}}" wx:key="channel">
+          <view class="channel-header">
+            <view class="channel-icon">{{item.icon}}</view>
+            <view class="channel-info">
+              <view class="channel-name">{{item.name}}</view>
+              <view class="channel-code">渠道编码：{{item.channel}}</view>
+            </view>
+            <view class="channel-rank">#{{index + 1}}</view>
+          </view>
+
+          <view class="channel-metrics">
+            <view class="channel-metric">
+              <view class="metric-num">{{item.scans}}</view>
+              <view class="metric-unit">扫码量</view>
+            </view>
+            <view class="channel-metric">
+              <view class="metric-num">{{item.conversionRate}}</view>
+              <view class="metric-unit">转化率</view>
+            </view>
+            <view class="channel-metric">
+              <view class="metric-num">{{item.shareCount}}</view>
+              <view class="metric-unit">分享数</view>
+            </view>
+          </view>
+
+          <view class="channel-bar-wrapper">
+            <view class="channel-bar-label">获客占比</view>
+            <view class="channel-bar-bg">
+              <view class="channel-bar-fill" style="width: {{item.percentage}}%"></view>
+            </view>
+            <view class="channel-bar-value">{{item.percentage}}%</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="card-title">渠道效果总结</view>
+      <view class="summary-list">
+        <view class="summary-row">
+          <view class="summary-label">最佳获客渠道</view>
+          <view class="summary-value highlight">{{channelData.bestChannel}}</view>
+        </view>
+        <view class="summary-row">
+          <view class="summary-label">最高转化渠道</view>
+          <view class="summary-value highlight">{{channelData.highestConversionChannel}}</view>
+        </view>
+        <view class="summary-row">
+          <view class="summary-label">总渠道数</view>
+          <view class="summary-value">{{channelData.totalChannels}} 个</view>
+        </view>
+        <view class="summary-row">
+          <view class="summary-label">总扫码量</view>
+          <view class="summary-value">{{channelData.totalScans}} 次</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:elif="{{activeTab === 'region' && regionData}}" class="content-section">
+    <view class="section-card">
+      <view class="card-title">地域转化分析</view>
+      <view class="card-subtitle">各经销商授权区域转化效果</view>
+
+      <view class="region-list">
+        <view class="region-item" wx:for="{{regionData.regions}}" wx:key="region">
+          <view class="region-header">
+            <view class="region-rank">{{index + 1}}</view>
+            <view class="region-info">
+              <view class="region-name">{{item.region}}</view>
+              <view class="region-dealer">经销商：{{item.dealerName}}</view>
+            </view>
+            <view class="region-rate">
+              转化率 {{item.conversionRate}}
+            </view>
+          </view>
+
+          <view class="region-metrics">
+            <view class="region-metric">
+              <view class="rm-value">{{item.scans}}</view>
+              <view class="rm-label">扫码</view>
+            </view>
+            <view class="region-metric">
+              <view class="rm-value">{{item.detailViews}}</view>
+              <view class="rm-label">详情</view>
+            </view>
+            <view class="region-metric">
+              <view class="rm-value">{{item.shares}}</view>
+              <view class="rm-label">分享</view>
+            </view>
+            <view class="region-metric">
+              <view class="rm-value">{{item.addCarts}}</view>
+              <view class="rm-label">加购</view>
+            </view>
+          </view>
+
+          <view class="region-bar-wrapper">
+            <view class="region-bar-bg">
+              <view class="region-bar-fill" style="width: {{item.percentage}}%"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="card-title">地域分析洞察</view>
+      <view class="insight-list">
+        <view class="insight-item">
+          <view class="insight-icon">🏆</view>
+          <view class="insight-content">
+            <view class="insight-title">转化最高区域</view>
+            <view class="insight-desc">{{regionData.topRegion}} - 转化率 {{regionData.topRegionRate}}</view>
+          </view>
+        </view>
+        <view class="insight-item">
+          <view class="insight-icon">📈</view>
+          <view class="insight-content">
+            <view class="insight-title">获客最多区域</view>
+            <view class="insight-desc">{{regionData.mostScansRegion}} - {{regionData.mostScansCount}} 次扫码</view>
+          </view>
+        </view>
+        <view class="insight-item">
+          <view class="insight-item">
+            <view class="insight-icon">🌍</view>
+            <view class="insight-content">
+              <view class="insight-title">覆盖区域数</view>
+              <view class="insight-desc">本次活动共覆盖 {{regionData.totalRegions}} 个经销商区域</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:elif="{{activeTab === 'dealer' && dealerData}}" class="content-section">
+    <view class="section-card">
+      <view class="card-title">经销商效果排行</view>
+      <view class="card-subtitle">按转化率排序</view>
+
+      <view class="dealer-list">
+        <view class="dealer-item" wx:for="{{dealerData.dealers}}" wx:key="dealerId">
+          <view class="dealer-rank {{index < 3 ? 'top' : ''}}">{{index + 1}}</view>
+          <view class="dealer-info">
+            <view class="dealer-name">{{item.dealerName}}</view>
+            <view class="dealer-region">{{item.region}}</view>
+          </view>
+          <view class="dealer-stats">
+            <view class="dealer-stat">
+              <view class="ds-value">{{item.scans}}</view>
+              <view class="ds-label">扫码</view>
+            </view>
+            <view class="dealer-stat main">
+              <view class="ds-value highlight">{{item.conversionRate}}</view>
+              <view class="ds-label">转化率</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!loading && !funnelData && !channelData}}" class="empty-tip">
+    <view class="empty-icon">📊</view>
+    <view class="empty-text">暂无数据</view>
+    <view class="empty-desc">选择营销活动查看分析数据</view>
+  </view>
+</view>

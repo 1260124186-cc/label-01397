@@ -49,6 +49,16 @@
         <view class="switch-dot"></view>
       </view>
     </view>
+
+    <view class="setting-row">
+      <view class="setting-info">
+        <view class="setting-name">使用数据分析</view>
+        <view class="setting-desc">收集匿名使用行为数据，用于改进产品和营销效果分析</view>
+      </view>
+      <view class="setting-switch {{settings.allowAnalyticsCollection ? 'on' : ''}}" bindtap="onToggleAnalyticsCollection">
+        <view class="switch-dot"></view>
+      </view>
+    </view>
   </view>
 
   <view class="section-card">

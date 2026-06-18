@@ -2988,6 +2988,11 @@ function getMarketingActivityById(id) {
   return null;
 }
 
+function getCampaignNameById(campaignId) {
+  const activity = getMarketingActivityById(campaignId);
+  return activity ? activity.title : '';
+}
+
 function getInviteRewardConfig() {
   return inviteRewardConfig;
 }
@@ -6512,6 +6517,11 @@ function getDealer(dealerId) {
   return DEALERS[dealerId] || null;
 }
 
+function getDealerNameById(dealerId) {
+  const dealer = DEALERS[dealerId];
+  return dealer ? dealer.name : '';
+}
+
 function getDealerList() {
   return Object.values(DEALERS);
 }
@@ -7575,8 +7585,10 @@ module.exports = {
   getPointsMallItemById,
   getMarketingActivities,
   getMarketingActivityById,
+  getCampaignNameById,
   getDefaultDealer,
   getDealer,
+  getDealerNameById,
   getDealerList,
   getDealerByLevel,
   getChildDealers,

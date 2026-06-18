@@ -268,6 +268,7 @@ var DEFAULT_PRIVACY_SETTINGS = {
   allowLocation: false,
   allowNotification: true,
   allowPhotoSave: true,
+  allowAnalyticsCollection: true,
   dataRetentionDays: 90,
   lastUpdated: Date.now()
 };

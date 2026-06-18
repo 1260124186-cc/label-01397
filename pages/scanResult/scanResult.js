@@ -4,6 +4,7 @@ const greenPoints = require('../../utils/greenPoints.js');
 const channelTrace = require('../../utils/channelTrace.js');
 const i18n = require('../../utils/i18n/index.js');
 const tts = require('../../utils/tts.js');
+const marketingAnalytics = require('../../utils/marketingAnalytics.js');
 
 Page({
   data: {
@@ -89,6 +90,16 @@ Page({
           currentScan.location,
           currentScan.location
         );
+
+        marketingAnalytics.trackScanSuccess({
+          traceId: traceId,
+          scanType: that.data.scanType,
+          productName: traceData ? traceData.basicInfo.productName : '',
+          verifySuccess: true,
+          location: currentScan.location,
+          scanCount: result.scanInfo.scanCount,
+          isFirstScan: result.scanInfo.isFirstScan
+        });
 
         const recallInfo = mockData.isRecalledProduct(traceId)
           ? mockData.getRecallByTraceId(traceId)

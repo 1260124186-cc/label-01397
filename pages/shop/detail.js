@@ -1,5 +1,6 @@
 var mockData = require('../../../utils/mockData.js');
 var shop = require('../../../utils/shop.js');
+var marketingAnalytics = require('../../../utils/marketingAnalytics.js');
 
 Page({
   data: {
@@ -124,6 +125,17 @@ Page({
     var result = shop.addToCart(detail);
     
     if (result.success) {
+      var product = this.data.product;
+      var sku = mockData.getSkuById(this.data.traceId, detail.skuId);
+      marketingAnalytics.trackShopAddCart({
+        traceId: this.data.traceId,
+        productName: product ? product.productName : '',
+        skuId: detail.skuId,
+        specValues: sku ? sku.specValues.join(',') : '',
+        quantity: detail.quantity,
+        price: sku ? sku.price : 0
+      });
+
       wx.showToast({ title: '已加入购物车', icon: 'success' });
       this.refreshCartCount();
     } else {

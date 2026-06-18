@@ -99,6 +99,27 @@ Page({
     this.loadSettings();
   },
 
+  onToggleAnalyticsCollection: function() {
+    var current = this.data.settings.allowAnalyticsCollection;
+    var next = !current;
+    if (next) {
+      wx.showModal({
+        title: '开启数据分析',
+        content: '开启后将收集您的使用行为数据（如扫码、浏览、分享等），用于改进产品体验和营销效果分析。所有数据均匿名化处理，不会关联您的个人身份信息。',
+        confirmColor: '#2E8B57',
+        success: function(res) {
+          if (res.confirm) {
+            userStore.updatePrivacySettings({ allowAnalyticsCollection: next });
+            this.loadSettings();
+          }
+        }.bind(this)
+      });
+    } else {
+      userStore.updatePrivacySettings({ allowAnalyticsCollection: next });
+      this.loadSettings();
+    }
+  },
+
   onRetentionChange: function(e) {
     var days = parseInt(e.currentTarget.dataset.days);
     userStore.updatePrivacySettings({ dataRetentionDays: days });
