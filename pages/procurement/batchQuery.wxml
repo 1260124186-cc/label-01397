@@ -1,0 +1,65 @@
+<view class="container">
+  <view class="card">
+    <view class="card-title">批量查询批次资质</view>
+    <view class="input-tip">请输入批次号，支持多个（换行/逗号/空格分隔）</view>
+    <textarea class="batch-input" placeholder="示例：GH202503&#10;GH202504" value="{{batchInput}}" bindinput="onInput" maxlength="500" />
+    <view class="preset-row">
+      <view class="preset-label">快速添加：</view>
+      <view class="preset-btns">
+        <view class="preset-btn" wx:for="{{presetBatches}}" wx:key="*this" bindtap="fillPreset" data-batch="{{item}}">{{item}}</view>
+      </view>
+    </view>
+    <view class="btn-row">
+      <button class="btn-outline" bindtap="clearInput">清空</button>
+      <button class="btn-primary" bindtap="doQuery" loading="{{loading}}" disabled="{{loading}}">查询资质</button>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{queried}}">
+    <view class="result-header">
+      <view class="card-title">查询结果（{{queryResults.length}}）</view>
+      <view class="download-btn" bindtap="downloadReport">📦 下载报告</view>
+    </view>
+    <view class="result-list">
+      <view class="result-item {{item.valid ? 'valid' : 'invalid'}}" wx:for="{{queryResults}}" wx:key="batchNo">
+        <view class="result-header-row">
+          <view class="batch-no">{{item.batchNo}}</view>
+          <view class="valid-tag {{item.valid ? 'ok' : 'fail'}}">
+            {{item.valid ? '✓ 有效' : '✗ 无效'}}
+          </view>
+        </view>
+        <block wx:if="{{item.valid}}">
+          <view class="result-info">
+            <view class="info-row">
+              <text class="info-label">SKU数量：</text>
+              <text class="info-value">{{item.skuCount}} 个</text>
+            </view>
+            <view class="info-row" wx:if="{{item.productionDate}}">
+              <text class="info-label">生产日期：</text>
+              <text class="info-value">{{item.productionDate}}</text>
+            </view>
+            <view class="info-row" wx:if="{{item.shelfLife}}">
+              <text class="info-label">保质期至：</text>
+              <text class="info-value">{{item.shelfLife}}</text>
+            </view>
+          </view>
+          <view class="cert-section" wx:if="{{item.certificates.length > 0}}">
+            <view class="cert-title">资质证书（{{item.certificates.length}}）</view>
+            <view class="cert-list">
+              <view class="cert-item" wx:for="{{item.certificates}}" wx:for-item="cert" wx:key="name" bindtap="viewCert" data-cert="{{cert}}">
+                <text class="cert-icon">📜</text>
+                <text class="cert-name">{{cert.name}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="trace-btn" bindtap="viewBatchTrace" data-batch="{{item.batchNo}}">
+            查看批次溯源详情 →
+          </view>
+        </block>
+        <view class="invalid-tip" wx:else>
+          {{item.error}}
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,68 @@
+<view class="container">
+  <view class="card">
+    <view class="card-title">采购合同</view>
+    <view class="search-bar">
+      <input class="search-input" placeholder="搜索合同编号/标题" value="{{keyword}}" bindinput="onKeywordInput" bindconfirm="doSearch" />
+    </view>
+    <view class="tabs">
+      <view class="tab {{activeTab === item.key ? 'active' : ''}}" wx:for="{{tabs}}" wx:key="key" bindtap="switchTab" data-tab="{{item.key}}">
+        {{item.label}}
+      </view>
+    </view>
+    <view class="contract-list">
+      <view class="empty-tip" wx:if="{{filteredList.length === 0}}">暂无合同</view>
+      <view class="contract-item" wx:for="{{filteredList}}" wx:key="id" bindtap="viewContractDetail" data-id="{{item.id}}">
+        <view class="contract-header">
+          <view class="contract-no">{{item.contractNo}}</view>
+          <view class="contract-status status-{{item.status}}">{{item.statusLabel}}</view>
+        </view>
+        <view class="contract-title">{{item.title}}</view>
+        <view class="contract-supplier">供应商：{{item.supplier}}</view>
+        <view class="contract-meta">
+          <view class="meta-amount">
+            <text class="meta-label">金额：</text>
+            <text class="amount">¥{{item.totalAmount}}</text>
+          </view>
+          <view class="meta-payment payment-{{item.paymentStatus}}">
+            {{item.paymentStatusLabel}}
+          </view>
+        </view>
+        <view class="contract-batches" wx:if="{{item.linkedBatches.length > 0}}">
+          <text class="batches-label">关联批次：</text>
+          <view class="batch-tags">
+            <view class="batch-tag" wx:for="{{item.linkedBatches}}" wx:for-item="bn" wx:key="*this" catchtap="viewLinkedBatch" data-batch="{{bn}}">
+              {{bn}}
+            </view>
+          </view>
+        </view>
+        <view class="contract-footer">
+          <text class="footer-date">签署：{{item.signDate}}</text>
+          <view class="link-btn" wx:if="{{canLinkBatch}}" catchtap="openLinkModal" data-id="{{item.id}}">+ 关联批次</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{showLinkModal}}" bindtap="closeLinkModal"></view>
+  <view class="modal-content small" wx:if="{{showLinkModal}}">
+    <view class="modal-header">
+      <text class="modal-title">关联批次号</text>
+      <text class="modal-close" bindtap="closeLinkModal">✕</text>
+    </view>
+    <view class="modal-body">
+      <view class="link-info">
+        <text class="link-label">合同：</text>
+        <text class="link-value">{{currentContract.contractNo}}</text>
+      </view>
+      <view class="form-item">
+        <text class="form-label">批次号</text>
+        <input class="form-input" placeholder="请输入批次号，如 GH202503" value="{{linkBatchInput}}" bindinput="onLinkInput" />
+      </view>
+      <view class="link-tip">提示：关联后可在合同下直接查看该批次的溯源和质检信息</view>
+    </view>
+    <view class="modal-footer">
+      <button class="btn-outline" bindtap="closeLinkModal">取消</button>
+      <button class="btn-primary" bindtap="doLinkBatch">确认关联</button>
+    </view>
+  </view>
+</view>

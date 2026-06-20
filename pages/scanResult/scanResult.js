@@ -5,6 +5,7 @@ const channelTrace = require('../../utils/channelTrace.js');
 const i18n = require('../../utils/i18n/index.js');
 const tts = require('../../utils/tts.js');
 const marketingAnalytics = require('../../utils/marketingAnalytics.js');
+const govTrace = require('../../utils/govTrace.js');
 
 Page({
   data: {
@@ -36,7 +37,14 @@ Page({
     ttsVolume: 1.0,
     ttsProgress: 0,
     ttsCurrentText: '',
-    autoSpeakDone: false
+    autoSpeakDone: false,
+    govTraceInfo: null,
+    govTraceLoading: false,
+    govFallback: false,
+    govFallbackMessage: '',
+    showGovPanel: true,
+    expandProvince: true,
+    expandNational: true
   },
 
   onLoad: function(options) {
@@ -145,6 +153,7 @@ Page({
 
         that.setData(setDataObj, function() {
           that.autoSpeakVerifyResult();
+          that.loadGovTraceInfo(traceId);
         });
 
         if (recallInfo) {
@@ -588,5 +597,114 @@ Page({
       this._ttsManager.destroy();
       this._ttsManager = null;
     }
+  },
+
+  loadGovTraceInfo: async function(traceId) {
+    const that = this;
+    this.setData({ govTraceLoading: true });
+
+    try {
+      const result = await govTrace.queryGovTraceByTraceId(traceId);
+
+      if (result.success && result.data) {
+        that.setData({
+          govTraceInfo: result.data,
+          govTraceLoading: false,
+          govFallback: false,
+          govFallbackMessage: ''
+        });
+      } else {
+        that.setData({
+          govTraceInfo: null,
+          govTraceLoading: false,
+          govFallback: true,
+          govFallbackMessage: result.message || '政府备案信息暂不可用'
+        });
+      }
+    } catch (err) {
+      console.error('[ScanResult] 加载政府溯源信息失败:', err);
+      that.setData({
+        govTraceInfo: null,
+        govTraceLoading: false,
+        govFallback: true,
+        govFallbackMessage: '政府平台接口暂不可用，已自动降级'
+      });
+    }
+  },
+
+  toggleGovPanel: function() {
+    this.setData({ showGovPanel: !this.data.showGovPanel });
+  },
+
+  toggleGovProvince: function() {
+    this.setData({ expandProvince: !this.data.expandProvince });
+  },
+
+  toggleGovNational: function() {
+    this.setData({ expandNational: !this.data.expandNational });
+  },
+
+  goToGovVerifyPage: function() {
+    const govInfo = this.data.govTraceInfo;
+    let code = '';
+    if (govInfo && govInfo.province) {
+      code = govInfo.province.govCode;
+    }
+    wx.navigateTo({
+      url: '/pages/govTrace/verify' + (code ? '?code=' + encodeURIComponent(code) : '')
+    });
+  },
+
+  copyGovCode: function(e) {
+    const code = e.currentTarget.dataset.code;
+    if (code) {
+      wx.setClipboardData({
+        data: code,
+        success: function() {
+          wx.showToast({ title: '追溯码已复制', icon: 'success' });
+        }
+      });
+    }
+  },
+
+  openGovOfficial: function(e) {
+    const level = e.currentTarget.dataset.level;
+    const govInfo = this.data.govTraceInfo;
+    if (!govInfo) return;
+
+    let url = '';
+    let title = '官方验证';
+    if (level === 'province' && govInfo.province) {
+      url = govInfo.province.verifyUrl;
+      title = '省级平台验证';
+    } else if (level === 'national' && govInfo.national) {
+      url = govInfo.national.verifyUrl;
+      title = '国家平台验证';
+    }
+
+    if (url) {
+      wx.navigateTo({
+        url: '/pages/webview/webview?url=' + encodeURIComponent(url) +
+             '&title=' + encodeURIComponent(title),
+        fail: function() {
+          wx.setClipboardData({
+            data: url,
+            success: function() {
+              wx.showToast({ title: '链接已复制，请在浏览器打开', icon: 'none' });
+            }
+          });
+        }
+      });
+    }
+  },
+
+  getGovStatusLabel: function(status) {
+    const labels = govTrace.GOV_PLATFORM_STATUS_LABEL || {};
+    return labels[status] || status;
+  },
+
+  getGovStatusColor: function(status) {
+    const colors = govTrace.GOV_PLATFORM_STATUS_COLOR || {};
+    return colors[status] || '#999999';
   }
 });

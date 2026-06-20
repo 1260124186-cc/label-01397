@@ -1,0 +1,60 @@
+<view class="container">
+  <view class="card">
+    <view class="card-title">选择要下载报告的批次</view>
+    <view class="preset-row">
+      <view class="preset-label">常用批次：</view>
+      <view class="preset-btns">
+        <view class="preset-btn" wx:for="{{presetOptions}}" wx:key="*this" bindtap="selectPreset" data-batch="{{item}}">{{item}}</view>
+      </view>
+    </view>
+    <view class="batch-select-list">
+      <view class="batch-select-item {{item.selected ? 'selected' : ''}}" wx:for="{{allBatches}}" wx:key="batchNo" bindtap="toggleBatch" data-batch="{{item.batchNo}}">
+        <view class="checkbox">{{item.selected ? '✓' : ''}}</view>
+        <view class="batch-info">
+          <view class="batch-no">{{item.batchNo}}</view>
+          <view class="batch-name">{{item.productName}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="select-info">已选择 {{selectedBatches.length}} 个批次</view>
+    <button class="btn-primary download-btn" bindtap="doDownload" loading="{{downloading}}" disabled="{{downloading}}">
+      {{downloading ? '正在打包...' : '📦 打包下载检测报告'}}
+    </button>
+  </view>
+
+  <view class="card result-card" wx:if="{{downloadResult}}">
+    <view class="result-header">
+      <text class="success-icon">✓</text>
+      <text class="result-title">打包完成</text>
+    </view>
+    <view class="result-info">
+      <view class="result-row">
+        <text class="result-label">文件名：</text>
+        <text class="result-value">{{downloadResult.fileName}}</text>
+      </view>
+      <view class="result-row">
+        <text class="result-label">文件大小：</text>
+        <text class="result-value">{{downloadResult.fileSize}}</text>
+      </view>
+      <view class="result-row">
+        <text class="result-label">包含批次：</text>
+        <text class="result-value">{{downloadResult.batchCount}} 个</text>
+      </view>
+      <view class="result-row">
+        <text class="result-label">文件数量：</text>
+        <text class="result-value">{{downloadResult.documentCount}} 份</text>
+      </view>
+    </view>
+    <view class="doc-list-title">文件清单：</view>
+    <view class="doc-list">
+      <view class="doc-item" wx:for="{{downloadResult.documents}}" wx:key="name" bindtap="viewDocument" data-doc="{{item}}">
+        <text class="doc-icon">📄</text>
+        <view class="doc-info">
+          <view class="doc-name">{{item.name}}</view>
+          <view class="doc-meta">{{item.batchNo}} · {{item.size}}</view>
+        </view>
+        <text class="doc-arrow">›</text>
+      </view>
+    </view>
+  </view>
+</view>

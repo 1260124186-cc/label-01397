@@ -6,6 +6,7 @@
     "pages/dualVerify/dualVerify",
     "pages/batchList/batchList",
     "pages/greenTrace/greenTrace",
+    "pages/govTrace/verify",
     "pages/brandStory/brandStory",
     "pages/webview/webview",
     "pages/dealer/index",
@@ -26,7 +27,14 @@
     "pages/brewEnvironment/brewEnvironment",
     "pages/brewRecord/brewRecord",
     "pages/teaMaster/teaMaster",
-    "pages/marketingAnalysis/marketingAnalysis"
+    "pages/marketingAnalysis/marketingAnalysis",
+    "pages/procurement/login",
+    "pages/procurement/dashboard",
+    "pages/procurement/batchQuery",
+    "pages/procurement/reportDownload",
+    "pages/procurement/rfq",
+    "pages/procurement/contract",
+    "pages/procurement/archive"
   ],
   "window": {
     "backgroundTextStyle": "dark",

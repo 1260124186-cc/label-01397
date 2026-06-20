@@ -1,0 +1,101 @@
+<view class="container">
+  <view class="header-card">
+    <view class="user-row">
+      <view class="avatar">{{userInfo.enterpriseTypeIcon}}</view>
+      <view class="user-info">
+        <view class="ent-name">{{userInfo.enterpriseName}}</view>
+        <view class="user-detail">
+          <text class="role-tag">{{userInfo.roleLabel}}</text>
+          <text class="user-name">{{userInfo.name}}</text>
+        </view>
+      </view>
+      <view class="logout-btn" bindtap="goLogout">退出</view>
+    </view>
+  </view>
+
+  <view class="stats-card">
+    <view class="stats-header">
+      <text class="stats-title">📊 采购概览</text>
+    </view>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <view class="stat-value">{{stats.totalBatches}}</view>
+        <view class="stat-label">采购批次</view>
+      </view>
+      <view class="stat-item highlight">
+        <view class="stat-value">¥{{stats.totalAmount}}</view>
+        <view class="stat-label">采购总额</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value pending">{{stats.pendingShipment}}</view>
+        <view class="stat-label">待发货</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value shipping">{{stats.shipping}}</view>
+        <view class="stat-label">运输中</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value delivered">{{stats.delivered}}</view>
+        <view class="stat-label">已送达</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value warning">{{stats.pendingInspection}}</view>
+        <view class="stat-label">待质检</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="menu-card">
+    <view class="card-title">快捷功能</view>
+    <view class="menu-grid">
+      <view class="menu-item" wx:for="{{functionMenus}}" wx:key="key" bindtap="tapMenu" data-key="{{item.key}}" data-url="{{item.url}}">
+        <view class="menu-icon">{{item.icon}}</view>
+        <view class="menu-label">{{item.label}}</view>
+        <view class="menu-desc">{{item.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="card-title">采购批次</view>
+    <view class="search-bar">
+      <input class="search-input" placeholder="搜索批次号/产品名称" value="{{keyword}}" bindinput="onKeywordInput" bindconfirm="doSearch" />
+    </view>
+    <view class="filter-tabs">
+      <view class="filter-tab {{activeStatus === item.key ? 'active' : ''}}" wx:for="{{statusFilters}}" wx:key="key" bindtap="switchStatus" data-status="{{item.key}}">
+        {{item.label}}
+      </view>
+    </view>
+    <view class="batch-list">
+      <view class="empty-tip" wx:if="{{filteredBatches.length === 0}}">
+        <text>暂无相关采购批次</text>
+      </view>
+      <view class="batch-item" wx:for="{{filteredBatches}}" wx:key="id" bindtap="viewBatchDetail" data-id="{{item.id}}">
+        <view class="batch-header">
+          <view class="batch-no">{{item.batchNo}}</view>
+          <view class="status-tag status-{{item.logisticsStatus}}">{{item.logisticsStatusLabel}}</view>
+        </view>
+        <view class="batch-product">{{item.productName}} · {{item.specification}}</view>
+        <view class="batch-meta">
+          <view class="meta-item">
+            <text class="meta-label">数量：</text>
+            <text class="meta-value">{{item.quantity}}{{item.unit}}</text>
+          </view>
+          <view class="meta-item">
+            <text class="meta-label">金额：</text>
+            <text class="meta-value price">¥{{item.totalAmount}}</text>
+          </view>
+        </view>
+        <view class="batch-footer">
+          <view class="footer-item">
+            <text class="footer-label">采购日期：</text>
+            <text class="footer-value">{{item.purchaseDate}}</text>
+          </view>
+          <view class="footer-item quality-{{item.qualityStatus}}">
+            <text>{{item.qualityStatusLabel}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

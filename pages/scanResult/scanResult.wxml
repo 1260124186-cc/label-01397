@@ -139,6 +139,158 @@
       </view>
     </view>
 
+    <!-- ===== 政府溯源合规Banner ===== -->
+    <view wx:if="{{govTraceInfo || govFallback}}" class="card compliance-card">
+      <view class="compliance-banner {{govFallback ? 'is-fallback' : ''}}">
+        <view class="compliance-icon-wrap">
+          <text class="compliance-icon">🏛️</text>
+          <text wx:if="{{!govFallback}}" class="compliance-check">✓</text>
+        </view>
+        <view class="compliance-content">
+          <block wx:if="{{govTraceInfo}}">
+            <view class="compliance-text">{{govTraceInfo.complianceText}}</view>
+            <view class="compliance-meta">
+              <text wx:if="{{govTraceInfo.province}}" class="meta-tag province">
+                省级备案：{{getGovStatusLabel(govTraceInfo.province.filingStatus)}}
+              </text>
+              <text wx:if="{{govTraceInfo.national}}" class="meta-tag national">
+                国家备案：{{getGovStatusLabel(govTraceInfo.national.filingStatus)}}
+              </text>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="compliance-text fallback">政府平台接口暂不可用，已启用品牌溯源降级模式</view>
+            <view class="compliance-meta">
+              <text class="meta-tag fallback">{{govFallbackMessage}}</text>
+            </view>
+          </block>
+        </view>
+        <view class="compliance-action" bindtap="toggleGovPanel" catch:tap="toggleGovPanel">
+          <text>{{showGovPanel ? '收起' : '详情'}}</text>
+          <text class="toggle-arrow">{{showGovPanel ? '▲' : '▼'}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{showGovPanel && govTraceInfo}}" class="gov-panel">
+
+        <view wx:if="{{govTraceInfo.province}}" class="gov-sub-card province">
+          <view class="gov-sub-header" bindtap="toggleGovProvince" catch:tap="toggleGovProvince">
+            <view class="gov-sub-title">
+              <text class="gov-sub-icon">🏛️</text>
+              <text>省级平台 · 湖北省茶叶追溯</text>
+            </view>
+            <view class="gov-status-badge" style="color: {{getGovStatusColor(govTraceInfo.province.filingStatus)}}; border-color: {{getGovStatusColor(govTraceInfo.province.filingStatus)}};">
+              {{getGovStatusLabel(govTraceInfo.province.filingStatus)}}
+            </view>
+            <text class="toggle-arrow">{{expandProvince ? '▲' : '▼'}}</text>
+          </view>
+
+          <view wx:if="{{expandProvince}}" class="gov-sub-body">
+            <view class="gov-row">
+              <text class="gov-label">备案编号</text>
+              <view class="gov-value code" data-code="{{govTraceInfo.province.filingNo}}" bindtap="copyGovCode">
+                <text>{{govTraceInfo.province.filingNo}}</text>
+                <text class="copy-icon">📋</text>
+              </view>
+            </view>
+            <view class="gov-row">
+              <text class="gov-label">政府追溯码</text>
+              <view class="gov-value code" data-code="{{govTraceInfo.province.govCode}}" bindtap="copyGovCode">
+                <text class="break">{{govTraceInfo.province.govCode}}</text>
+                <text class="copy-icon">📋</text>
+              </view>
+            </view>
+            <view class="gov-row">
+              <text class="gov-label">监管单位</text>
+              <text class="gov-value">{{govTraceInfo.province.regulatoryAuthority}}</text>
+            </view>
+            <view class="gov-row">
+              <text class="gov-label">监管等级</text>
+              <text class="gov-value">{{govTraceInfo.province.supervisionLevel}}</text>
+            </view>
+
+            <view wx:if="{{govTraceInfo.province.warningMessage}}" class="gov-warning-box">
+              <text class="warn-icon">⚠️</text>
+              <text class="warn-text">{{govTraceInfo.province.warningMessage}}</text>
+            </view>
+
+            <view class="gov-link-btn" data-level="province" bindtap="openGovOfficial">
+              <text>在省级平台官方验证 →</text>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{govTraceInfo.national}}" class="gov-sub-card national">
+          <view class="gov-sub-header" bindtap="toggleGovNational" catch:tap="toggleGovNational">
+            <view class="gov-sub-title">
+              <text class="gov-sub-icon">🇨🇳</text>
+              <text>国家级平台 · 农产品质量安全追溯</text>
+            </view>
+            <view class="gov-status-badge" style="color: {{getGovStatusColor(govTraceInfo.national.filingStatus)}}; border-color: {{getGovStatusColor(govTraceInfo.national.filingStatus)}};">
+              {{getGovStatusLabel(govTraceInfo.national.filingStatus)}}
+            </view>
+            <text class="toggle-arrow">{{expandNational ? '▲' : '▼'}}</text>
+          </view>
+
+          <view wx:if="{{expandNational}}" class="gov-sub-body">
+            <view class="gov-row">
+              <text class="gov-label">备案编号</text>
+              <view class="gov-value code" data-code="{{govTraceInfo.national.filingNo}}" bindtap="copyGovCode">
+                <text>{{govTraceInfo.national.filingNo}}</text>
+                <text class="copy-icon">📋</text>
+              </view>
+            </view>
+            <view class="gov-row">
+              <text class="gov-label">政府追溯码</text>
+              <view class="gov-value code" data-code="{{govTraceInfo.national.govCode}}" bindtap="copyGovCode">
+                <text class="break">{{govTraceInfo.national.govCode}}</text>
+                <text class="copy-icon">📋</text>
+              </view>
+            </view>
+            <view class="gov-row">
+              <text class="gov-label">监管单位</text>
+              <text class="gov-value">{{govTraceInfo.national.regulatoryAuthority}}</text>
+            </view>
+            <view class="gov-row">
+              <text class="gov-label">监管等级</text>
+              <text class="gov-value">{{govTraceInfo.national.supervisionLevel}}</text>
+            </view>
+
+            <view wx:if="{{govTraceInfo.national.warningMessage}}" class="gov-warning-box danger">
+              <text class="warn-icon">⚠️</text>
+              <text class="warn-text">{{govTraceInfo.national.warningMessage}}</text>
+            </view>
+
+            <view class="gov-link-btn" data-level="national" bindtap="openGovOfficial">
+              <text>在国家平台官方验证 →</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="gov-footer-action" bindtap="goToGovVerifyPage">
+          <text class="footer-icon">🔍</text>
+          <text>进入政府追溯码独立验证页</text>
+          <text class="footer-arrow">→</text>
+        </view>
+
+      </view>
+
+      <view wx:if="{{showGovPanel && govFallback && !govTraceInfo}}" class="gov-panel fallback-panel">
+        <view class="fallback-tips">
+          <view class="tips-icon">🔧</view>
+          <view class="tips-text">
+            <view class="tips-title">降级模式已启用</view>
+            <view class="tips-desc">政府追溯平台接口目前不可用。您仍可正常查看完整的品牌溯源信息，不影响主流程使用。待平台接口恢复后，将自动补充展示政府备案数据。</view>
+          </view>
+        </view>
+        <view class="gov-footer-action" bindtap="goToGovVerifyPage">
+          <text class="footer-icon">🔍</text>
+          <text>手动输入政府追溯码验证</text>
+          <text class="footer-arrow">→</text>
+        </view>
+      </view>
+    </view>
+
     <view class="card factory-info-card">
       <view class="card-header">
         <text class="card-icon">🏭</text>

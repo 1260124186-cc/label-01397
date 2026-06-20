@@ -1,0 +1,44 @@
+<view class="container">
+  <view class="login-header">
+    <view class="logo-box">
+      <text class="logo-icon">🌿</text>
+    </view>
+    <view class="title">B2B 企业采购协作门户</view>
+    <view class="subtitle">桂花茶溯源平台 · 企业采购端</view>
+  </view>
+
+  <view class="login-card">
+    <view class="form-group">
+      <view class="form-label">企业账号</view>
+      <input class="form-input" placeholder="请输入企业采购账号" value="{{account}}" bindinput="onAccountInput" />
+    </view>
+    <view class="form-group">
+      <view class="form-label">登录密码</view>
+      <input class="form-input" placeholder="请输入密码" password="{{true}}" value="{{password}}" bindinput="onPasswordInput" />
+    </view>
+    <button class="btn-login" bindtap="doLogin" loading="{{loading}}" disabled="{{loading}}">
+      {{loading ? '登录中...' : '登 录'}}
+    </button>
+  </view>
+
+  <view class="sample-section">
+    <view class="sample-title">示例账号（点击快速填充）</view>
+    <view class="sample-list">
+      <view class="sample-item" wx:for="{{sampleAccounts}}" wx:key="account" bindtap="fillSampleAccount" data-account="{{item.account}}">
+        <view class="sample-avatar">{{item.enterpriseType}}</view>
+        <view class="sample-info">
+          <view class="sample-name">{{item.enterpriseName}}</view>
+          <view class="sample-role">{{item.role}} · {{item.name}}</view>
+          <view class="sample-account">{{item.desc}}</view>
+        </view>
+        <view class="sample-arrow">›</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="enterprise-types">
+    <view class="ent-type" wx:for="{{['🏨 酒店集团','🧋 连锁茶饮','🎁 礼品公司']}}" wx:key="*this">
+      <text>{{item}}</text>
+    </view>
+  </view>
+</view>

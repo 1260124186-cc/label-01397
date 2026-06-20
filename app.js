@@ -322,6 +322,18 @@ App({
     dealerSession.clearTimers();
   },
 
+  procurementLoginSuccess: function(userInfo) {
+    this.globalData.procurementLoggedIn = true;
+    this.globalData.procurementUser = userInfo;
+  },
+
+  procurementLogoutSuccess: function() {
+    const procurement = require('./utils/procurement.js');
+    procurement.procurementLogout();
+    this.globalData.procurementLoggedIn = false;
+    this.globalData.procurementUser = null;
+  },
+
   /**
    * 全局数据
    * 存储应用级别的共享数据
@@ -351,6 +363,8 @@ App({
     themeClass: 'theme-light',
     dealerLoggedIn: false,
     dealerUser: null,
+    procurementLoggedIn: false,
+    procurementUser: null,
     marketingAttribution: null
   }
 });

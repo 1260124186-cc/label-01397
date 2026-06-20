@@ -1,0 +1,103 @@
+<view class="container">
+  <view class="card">
+    <view class="header-row">
+      <view class="card-title">询价需求 (RFQ)</view>
+      <button class="create-btn" wx:if="{{canCreate}}" bindtap="openCreate">+ 发布询价</button>
+    </view>
+    <view class="tabs">
+      <view class="tab {{activeTab === item.key ? 'active' : ''}}" wx:for="{{tabs}}" wx:key="key" bindtap="switchTab" data-tab="{{item.key}}">
+        {{item.label}}
+      </view>
+    </view>
+    <view class="rfq-list">
+      <view class="empty-tip" wx:if="{{rfqList.length === 0}}">暂无询价需求</view>
+      <view class="rfq-item" wx:for="{{rfqList}}" wx:key="id" bindtap="viewRFQDetail" data-id="{{item.id}}">
+        <view class="rfq-header">
+          <view class="rfq-title">{{item.title}}</view>
+          <view class="rfq-status status-{{item.status}}">{{item.status === 'open' ? '进行中' : '已结束'}}</view>
+        </view>
+        <view class="rfq-product">{{item.productName}} · {{item.specification}}</view>
+        <view class="rfq-meta">
+          <view class="meta-item">
+            <text class="meta-label">数量：</text>
+            <text class="meta-value">{{item.quantity}}{{item.unit}}</text>
+          </view>
+          <view class="meta-item">
+            <text class="meta-label">期望价：</text>
+            <text class="meta-value price">¥{{item.expectedPrice}}</text>
+          </view>
+        </view>
+        <view class="rfq-footer">
+          <view class="footer-info">
+            <text>{{item.creator}}</text>
+            <text class="dot">·</text>
+            <text>{{item.createTime}}</text>
+          </view>
+          <view class="quote-count">
+            {{item.quotes.length}} 家报价
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{showCreate}}" bindtap="closeCreate"></view>
+  <view class="modal-content" wx:if="{{showCreate}}">
+    <view class="modal-header">
+      <text class="modal-title">发布询价需求</text>
+      <text class="modal-close" bindtap="closeCreate">✕</text>
+    </view>
+    <scroll-view class="modal-body" scroll-y>
+      <view class="form-item">
+        <text class="form-label">询价标题 *</text>
+        <input class="form-input" placeholder="如：2025年Q4金桂花茶采购需求" value="{{form.title}}" bindinput="onFormInput" data-field="title" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">产品名称 *</text>
+        <input class="form-input" placeholder="如：金桂花茶" value="{{form.productName}}" bindinput="onFormInput" data-field="productName" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">规格</text>
+        <input class="form-input" placeholder="如：100g/罐" value="{{form.specification}}" bindinput="onFormInput" data-field="specification" />
+      </view>
+      <view class="form-row">
+        <view class="form-item flex-1">
+          <text class="form-label">数量 *</text>
+          <input class="form-input" type="digit" placeholder="采购数量" value="{{form.quantity}}" bindinput="onFormInput" data-field="quantity" />
+        </view>
+        <view class="form-item">
+          <text class="form-label">单位</text>
+          <view class="unit-picker">
+            <view class="unit-option {{form.unit === item ? 'active' : ''}}" wx:for="{{unitOptions}}" wx:key="*this" bindtap="selectUnit" data-unit="{{item}}">{{item}}</view>
+          </view>
+        </view>
+      </view>
+      <view class="form-item">
+        <text class="form-label">期望单价 (¥)</text>
+        <input class="form-input" type="digit" placeholder="期望采购价格" value="{{form.expectedPrice}}" bindinput="onFormInput" data-field="expectedPrice" />
+      </view>
+      <view class="form-row">
+        <view class="form-item flex-1">
+          <text class="form-label">报价截止日期</text>
+          <picker mode="date" value="{{form.deadline}}" bindchange="onDateChange" data-field="deadline">
+            <view class="form-input picker-input">{{form.deadline || '请选择日期'}}</view>
+          </picker>
+        </view>
+        <view class="form-item flex-1">
+          <text class="form-label">期望交付日期</text>
+          <picker mode="date" value="{{form.deliveryDate}}" bindchange="onDateChange" data-field="deliveryDate">
+            <view class="form-input picker-input">{{form.deliveryDate || '请选择日期'}}</view>
+          </picker>
+        </view>
+      </view>
+      <view class="form-item">
+        <text class="form-label">需求描述</text>
+        <textarea class="form-textarea" placeholder="详细描述采购需求、资质要求等" value="{{form.description}}" bindinput="onFormInput" data-field="description" />
+      </view>
+    </scroll-view>
+    <view class="modal-footer">
+      <button class="btn-outline" bindtap="closeCreate">取消</button>
+      <button class="btn-primary" bindtap="submitRFQ">发布询价</button>
+    </view>
+  </view>
+</view>

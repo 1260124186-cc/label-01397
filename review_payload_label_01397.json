@@ -1,0 +1,20 @@
+{
+  "repo_id": "label-01397",
+  "author": "",
+  "submitted_at": "2026-06-19 00:31",
+  "trae_session_id": ".538128058159683:d93caf90e6fcde45cd72703a95885820_6a3416b60da26a57c986f017.6a3417360da26a57c986f02e.6a34173640e9342661d0845e:Trae CN.T(2026/6/19 00:05:10)",
+  "user_prompt": "实现企业采购/trace 数据导出，详情页增加企业导出：生成含批次、检测、渠道、区块链摘要的 PDF/JSON/ZIP；支持批量导出：在 batchList 勾选多个 traceId 一次导出；导出文件含水印、导出时间、导出人（登录用户）；字段可选：仅检测 / 仅绿色溯源 / 完整包。",
+  "repo_url": "https://github.com/1260124186-cc/label-01397",
+  "commit_id": "7510be41f82c960bebf8261918b3649cbec4464f",
+  "task_type": "Feature迭代",
+  "business_domain": "Web前端",
+  "change_scope": "跨模块多文件",
+  "task_difficulty": "一般",
+  "task_completed": "未完成任务",
+  "satisfaction": "不满意",
+  "dissatisfaction_reason": "过程不满意：模型在任务拆解时漏掉了批量导出主链路的运行校验。提示词明确要求 batchList 支持勾选多个 traceId 一次导出并带上登录用户信息，但页面调用了并不存在的 userStore.getUserInfo，说明提交前没有把批量导出入口实际点通，导致企业导出在关键入口直接报错。产物不满意：导出能力没有按要求真正产出 PDF/ZIP，当前所谓 PDF 实际写成 .txt，ZIP 也只是 .zip.json 的 JSON bundle，而且 batchList 导出入口还调用了不存在的 userStore.getUserInfo，批量导出会在打开弹窗时直接报错。",
+  "single_choice": "",
+  "qa_status": "",
+  "qa_note": "",
+  "submitted_to_byte": ""
+}

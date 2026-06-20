@@ -7528,6 +7528,311 @@ function getReviewSortOptions() {
   ];
 }
 
+// ==================== 政府溯源平台数据 ====================
+
+const GOV_TRACE_DATA = {
+  'G001': {
+    traceId: 'G001',
+    batchNo: 'GH202503',
+    platformLevel: 'dual',
+    province: {
+      platformName: '湖北省茶叶质量追溯平台',
+      govCode: 'HB20250925GH202503857201',
+      filingNo: 'HUBEI-TEA-2025-00857',
+      filingStatus: 'approved',
+      filingStatusLabel: '备案通过',
+      filingDate: '2025-09-25',
+      verifyUrl: 'https://www.hbtea-trace.gov.cn/verify?code=HB20250925GH202503857201',
+      regulatoryAuthority: '湖北省农业农村厅',
+      inspectionRecords: [
+        { date: '2025-09-20', institution: '湖北省农产品质量安全检测中心', result: '合格', reportNo: 'HBAQ-2025-09876' },
+        { date: '2025-07-15', institution: '湖北省农产品质量安全检测中心', result: '合格', reportNo: 'HBAQ-2025-07654' }
+      ],
+      supervisionLevel: 'A级'
+    },
+    national: {
+      platformName: '国家农产品质量安全追溯管理信息平台',
+      govCode: 'NA20250925GH202503462189',
+      filingNo: 'NA-AGRI-2025-336872',
+      filingStatus: 'approved',
+      filingStatusLabel: '备案通过',
+      filingDate: '2025-09-26',
+      verifyUrl: 'https://www.ziyun.anluyun.com/verify?code=NA20250925GH202503462189',
+      regulatoryAuthority: '农业农村部农产品质量安全监管司',
+      inspectionRecords: [
+        { date: '2025-09-22', institution: '国家茶叶质量监督检验中心', result: '合格', reportNo: 'NTQC-2025-09876' }
+      ],
+      supervisionLevel: '国家级监测点'
+    },
+    complianceText: '本品已纳入 湖北省茶叶追溯体系 及 国家农产品质量安全追溯平台，接受政府全程质量监管',
+    lastSyncTime: '2025-12-10 18:30:00'
+  },
+  'G002': {
+    traceId: 'G002',
+    batchNo: 'GH202504',
+    platformLevel: 'dual',
+    province: {
+      platformName: '湖北省茶叶质量追溯平台',
+      govCode: 'HB20250930GH202504129567',
+      filingNo: 'HUBEI-TEA-2025-00862',
+      filingStatus: 'warning',
+      filingStatusLabel: '质量预警',
+      filingDate: '2025-09-30',
+      verifyUrl: 'https://www.hbtea-trace.gov.cn/verify?code=HB20250930GH202504129567',
+      regulatoryAuthority: '湖北省农业农村厅',
+      inspectionRecords: [
+        { date: '2025-09-25', institution: '湖北省农产品质量安全检测中心', result: '不合格', reportNo: 'HBAQ-2025-12345', abnormalItems: ['氯氰菊酯超标27.5%'] },
+        { date: '2025-07-20', institution: '湖北省农产品质量安全检测中心', result: '合格', reportNo: 'HBAQ-2025-09876' }
+      ],
+      supervisionLevel: 'B级',
+      warningMessage: '省级抽查发现1项指标超标，建议谨慎购买，已列入重点监测名单'
+    },
+    national: {
+      platformName: '国家农产品质量安全追溯管理信息平台',
+      govCode: 'NA20250930GH202504782305',
+      filingNo: 'NA-AGRI-2025-336915',
+      filingStatus: 'warning',
+      filingStatusLabel: '重点监测',
+      filingDate: '2025-09-30',
+      verifyUrl: 'https://www.ziyun.anluyun.com/verify?code=NA20250930GH202504782305',
+      regulatoryAuthority: '农业农村部农产品质量安全监管司',
+      inspectionRecords: [
+        { date: '2025-09-28', institution: '国家茶叶质量监督检验中心', result: '不合格', reportNo: 'NTQC-2025-12345', abnormalItems: ['氯氰菊酯超标27.5%'] }
+      ],
+      supervisionLevel: '国家级重点监测',
+      warningMessage: '国家例行抽查发现农残超标，已启动省级联动处置机制'
+    },
+    complianceText: '本品已纳入 湖北省茶叶追溯体系 及 国家农产品质量安全追溯平台，接受政府全程质量监管',
+    lastSyncTime: '2025-12-08 09:15:00'
+  },
+  'G003': {
+    traceId: 'G003',
+    batchNo: 'GH202503',
+    platformLevel: 'dual',
+    province: {
+      platformName: '湖北省茶叶质量追溯平台',
+      govCode: 'HB20250925GH202503857202',
+      filingNo: 'HUBEI-TEA-2025-00857',
+      filingStatus: 'approved',
+      filingStatusLabel: '备案通过',
+      filingDate: '2025-09-25',
+      verifyUrl: 'https://www.hbtea-trace.gov.cn/verify?code=HB20250925GH202503857202',
+      regulatoryAuthority: '湖北省农业农村厅',
+      inspectionRecords: [
+        { date: '2025-09-20', institution: '湖北省农产品质量安全检测中心', result: '合格', reportNo: 'HBAQ-2025-09877' }
+      ],
+      supervisionLevel: 'A级'
+    },
+    national: {
+      platformName: '国家农产品质量安全追溯管理信息平台',
+      govCode: 'NA20250925GH202503462190',
+      filingNo: 'NA-AGRI-2025-336873',
+      filingStatus: 'approved',
+      filingStatusLabel: '备案通过',
+      filingDate: '2025-09-26',
+      verifyUrl: 'https://www.ziyun.anluyun.com/verify?code=NA20250925GH202503462190',
+      regulatoryAuthority: '农业农村部农产品质量安全监管司',
+      inspectionRecords: [
+        { date: '2025-09-22', institution: '国家茶叶质量监督检验中心', result: '合格', reportNo: 'NTQC-2025-09877' }
+      ],
+      supervisionLevel: '国家级监测点'
+    },
+    complianceText: '本品已纳入 湖北省茶叶追溯体系 及 国家农产品质量安全追溯平台，接受政府全程质量监管',
+    lastSyncTime: '2025-12-12 14:38:00'
+  },
+  'G004': {
+    traceId: 'G004',
+    batchNo: 'GH202503',
+    platformLevel: 'province',
+    province: {
+      platformName: '湖北省茶叶质量追溯平台',
+      govCode: 'HB20250925GH202503857203',
+      filingNo: 'HUBEI-TEA-2025-00857',
+      filingStatus: 'approved',
+      filingStatusLabel: '备案通过',
+      filingDate: '2025-09-25',
+      verifyUrl: 'https://www.hbtea-trace.gov.cn/verify?code=HB20250925GH202503857203',
+      regulatoryAuthority: '湖北省农业农村厅',
+      inspectionRecords: [
+        { date: '2025-09-20', institution: '湖北省农产品质量安全检测中心', result: '合格', reportNo: 'HBAQ-2025-09878' }
+      ],
+      supervisionLevel: 'A级'
+    },
+    national: null,
+    complianceText: '本品已纳入 湖北省茶叶追溯体系，接受农业农村部门全程质量监管',
+    lastSyncTime: '2025-11-30 10:22:00'
+  }
+};
+
+const GOV_CODE_TO_TRACE_MAP = {};
+
+(function buildGovCodeMap() {
+  Object.values(GOV_TRACE_DATA).forEach(function(item) {
+    if (item.province && item.province.govCode) {
+      GOV_CODE_TO_TRACE_MAP[item.province.govCode] = item.traceId;
+    }
+    if (item.national && item.national.govCode) {
+      GOV_CODE_TO_TRACE_MAP[item.national.govCode] = item.traceId;
+    }
+  });
+})();
+
+const GOV_PLATFORM_STATUS_UPDATES = [
+  {
+    updateId: 'GOV-UPDATE-001',
+    batchNo: 'GH202504',
+    productName: '银桂花茶',
+    status: 'recall',
+    statusLabel: '责令召回',
+    reason: '省级监督抽查发现农残超标',
+    description: '2025年11月湖北省农业农村厅组织省级农产品质量安全监督抽查，该批次氯氰菊酯检出值为25.5mg/kg，超过GB 2763-2021限值20mg/kg，超标27.5%。依据《农产品质量安全法》，责令生产企业立即召回。',
+    platformLevel: 'province',
+    issuedAt: 1761955200000,
+    severity: 'high',
+    noticeUrl: 'https://www.hbtea-trace.gov.cn/notice/GOV-RECALL-2025-001',
+    affectedRange: '全国',
+    affectedQuantity: 5800,
+    affectedUnit: '罐',
+    inspectReportNo: 'HBAQ-2025-12345',
+    abnormalItems: [
+      { item: '氯氰菊酯', value: '25.5mg/kg', limit: '20mg/kg', exceedingRate: '27.5%' }
+    ],
+    disposalMeasures: [
+      '立即停止销售该批次产品',
+      '通知所有经销商下架封存',
+      '发布公开召回公告',
+      '消费者可凭购买凭证办理全额退款',
+      '企业限期6个月整改'
+    ]
+  },
+  {
+    updateId: 'GOV-UPDATE-002',
+    batchNo: 'GH202504',
+    productName: '银桂花茶',
+    status: 'revoked',
+    statusLabel: '备案撤销',
+    reason: '未按要求完成整改',
+    description: '该批次产品备案因企业未在规定期限内完成整改并提交复查申请，依据《湖北省茶叶产品追溯管理办法》，撤销该批次产品备案信息。',
+    platformLevel: 'national',
+    issuedAt: 1762560000000,
+    severity: 'critical',
+    noticeUrl: 'https://www.ziyun.anluyun.com/notice/NA-REVOKE-2025-012',
+    affectedRange: '全国',
+    inspectReportNo: 'NTQC-2025-12345'
+  }
+];
+
+function getGovTraceByTraceId(traceId) {
+  const normalizedId = traceId.trim().toUpperCase();
+  return GOV_TRACE_DATA[normalizedId] || null;
+}
+
+function getGovTraceByGovCode(govCode) {
+  const code = govCode.trim();
+  const traceId = GOV_CODE_TO_TRACE_MAP[code];
+  if (!traceId) return null;
+  const govInfo = GOV_TRACE_DATA[traceId];
+  if (!govInfo) return null;
+
+  const isProvinceCode = code.startsWith('HB');
+  return {
+    traceId: govInfo.traceId,
+    batchNo: govInfo.batchNo,
+    platformLevel: isProvinceCode ? 'province' : 'national',
+    matchedGovCode: code,
+    province: govInfo.province,
+    national: govInfo.national,
+    complianceText: govInfo.complianceText,
+    lastSyncTime: govInfo.lastSyncTime
+  };
+}
+
+function updateGovTraceReport(batchNo, reportRecord) {
+  Object.values(GOV_TRACE_DATA).forEach(function(item) {
+    if (item.batchNo === batchNo) {
+      if (reportRecord.provinceGovCode && item.province) {
+        item.province.govCode = reportRecord.provinceGovCode;
+      }
+      if (reportRecord.nationalGovCode && item.national) {
+        item.national.govCode = reportRecord.nationalGovCode;
+      }
+      if (reportRecord.provinceFilingNo && item.province) {
+        item.province.filingNo = reportRecord.provinceFilingNo;
+      }
+      if (reportRecord.nationalFilingNo && item.national) {
+        item.national.filingNo = reportRecord.nationalFilingNo;
+      }
+      item.lastSyncTime = new Date().toLocaleString('zh-CN');
+    }
+  });
+}
+
+function getGovPlatformStatusUpdates() {
+  return GOV_PLATFORM_STATUS_UPDATES.slice();
+}
+
+function updateProductGovStatus(batchNo, newStatus) {
+  Object.values(GOV_TRACE_DATA).forEach(function(item) {
+    if (item.batchNo === batchNo) {
+      const statusLabelMap = {
+        pending: '待审核',
+        approved: '备案通过',
+        warning: '质量预警',
+        revoked: '备案撤销',
+        recall: '责令召回'
+      };
+      if (item.province) {
+        item.province.filingStatus = newStatus;
+        item.province.filingStatusLabel = statusLabelMap[newStatus] || newStatus;
+      }
+      if (item.national) {
+        item.national.filingStatus = newStatus;
+        item.national.filingStatusLabel = statusLabelMap[newStatus] || newStatus;
+      }
+    }
+  });
+}
+
+function addRecallRecord(recallInfo) {
+  if (!RECALL_BATCHES) return;
+  var batchNo = recallInfo.batchNo;
+  if (!batchNo) return;
+
+  var existing = RECALL_BATCHES[batchNo];
+  if (!existing) {
+    RECALL_BATCHES[batchNo] = {
+      recallId: recallInfo.recallId || ('R' + Date.now()),
+      batchNo: batchNo,
+      productName: recallInfo.productName || '',
+      issueCategory: recallInfo.issueCategory || '',
+      issueDescription: recallInfo.issueDescription || '',
+      recallLevel: recallInfo.recallLevel || 'level2',
+      recallLevelLabel: recallInfo.recallLevelLabel || '二级召回',
+      publishDate: recallInfo.publishDate || new Date().toLocaleDateString(),
+      isRecalled: true,
+      affectedTraceIds: [],
+      officialNotice: recallInfo.officialNotice || false,
+      officialNoticeUrl: recallInfo.officialNoticeUrl || '',
+      affectedRange: recallInfo.affectedRange || '',
+      source: recallInfo.source || '',
+      sourceName: recallInfo.sourceName || '',
+      testItems: [],
+      officialAdvice: [
+        '立即停止食用该批次产品',
+        '联系原购买渠道或客服办理召回登记',
+        '如已食用并出现不适，请及时就医'
+      ]
+    };
+
+    if (recallInfo.affectedTraceIds && recallInfo.affectedTraceIds.length > 0) {
+      RECALL_BATCHES[batchNo].affectedTraceIds = recallInfo.affectedTraceIds;
+      recallInfo.affectedTraceIds.forEach(function(traceId) {
+        RECALL_TRACE_ID_MAP[traceId] = batchNo;
+      });
+    }
+  }
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -7637,5 +7942,11 @@ module.exports = {
   getAllTeaMasterTeams,
   verifyDealerAccount,
   verifyDealerAuthCode,
-  getDealerAccountList
+  getDealerAccountList,
+  getGovTraceByTraceId,
+  getGovTraceByGovCode,
+  updateGovTraceReport,
+  getGovPlatformStatusUpdates,
+  updateProductGovStatus,
+  addRecallRecord
 };

@@ -1,0 +1,284 @@
+<view class="page-container">
+
+  <view class="api-status-bar {{apiAvailable ? 'status-normal' : 'status-error'}}">
+    <text class="status-icon">{{apiAvailable ? '✓' : '!'}}</text>
+    <text class="status-text">{{apiStatusMessage}}</text>
+    <view class="sync-btn" bindtap="syncPlatformStatus" catch:tap="syncPlatformStatus">
+      <text>🔄</text>
+      <text>同步</text>
+    </view>
+  </view>
+
+  <view class="input-section card">
+    <view class="section-title">
+      <text class="title-icon">🔍</text>
+      <text>政府追溯码验证</text>
+    </view>
+    <view class="input-wrap">
+      <input
+        class="code-input"
+        type="text"
+        placeholder="请输入省级HB开头或国家NA开头的追溯码"
+        value="{{inputCode}}"
+        bindinput="onCodeInput"
+        confirm-type="search"
+        bindconfirm="queryByCode"
+        maxlength="60"
+      />
+      <view wx:if="{{inputCode}}" class="clear-btn" bindtap="clearInput">✕</view>
+    </view>
+    <view class="input-actions">
+      <view class="action-btn scan-btn" bindtap="scanGovCode">
+        <text class="btn-icon">📷</text>
+        <text class="btn-text">扫码识别</text>
+      </view>
+      <view class="action-btn query-btn {{!inputCode || loading ? 'disabled' : ''}}" bindtap="queryByCode">
+        <text wx:if="{{loading}}" class="loading-spin">⟳</text>
+        <text wx:else class="btn-icon">🔍</text>
+        <text class="btn-text">{{loading ? '验证中...' : '立即验证'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="sample-section card">
+    <view class="section-title small">
+      <text class="title-icon">💡</text>
+      <text>示例追溯码（点击体验）</text>
+    </view>
+    <view class="sample-grid">
+      <block wx:for="{{sampleCodes}}" wx:key="code">
+        <view class="sample-item status-{{item.status}}" data-code="{{item.code}}" bindtap="useSampleCode">
+          <view class="sample-label">{{item.label}}</view>
+          <view class="sample-code">{{item.code}}</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view wx:if="{{queryError}}" class="error-section card">
+    <view class="error-icon">⚠️</view>
+    <view class="error-text">{{queryError}}</view>
+    <view class="error-tips">
+      <view>• 请检查追溯码是否完整</view>
+      <view>• 省级追溯码格式：HB + 日期 + 批次 + 6位随机</view>
+      <view>• 国家追溯码格式：NA + 日期 + 批次 + 6位随机</view>
+    </view>
+  </view>
+
+  <view wx:if="{{queryResult}}" class="result-section">
+
+    <view class="result-header card">
+      <view class="result-title-row">
+        <text class="result-icon">🏛️</text>
+        <text class="result-title">政府平台溯源信息</text>
+      </view>
+
+      <view wx:if="{{queryResult.brandInfo}}" class="brand-summary">
+        <image class="brand-thumb" src="{{queryResult.brandInfo.thumbnail}}" mode="aspectFill" />
+        <view class="brand-meta">
+          <view class="brand-name">{{queryResult.brandInfo.productName}}</view>
+          <view class="brand-batch">批次：{{queryResult.batchNo}} · 溯源ID：{{queryResult.traceId}}</view>
+        </view>
+        <view class="goto-btn" bindtap="goToBrandTrace">
+          <text>查看品牌溯源</text>
+          <text class="arrow">→</text>
+        </view>
+      </view>
+
+      <view class="compliance-banner">
+        <text class="compliance-icon">✓</text>
+        <text class="compliance-text">{{queryResult.complianceText}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{queryResult.province}}" class="card gov-card province-card">
+      <view class="gov-card-header" bindtap="toggleProvince">
+        <view class="gov-title-wrap">
+          <text class="gov-icon">🏛️</text>
+          <text class="gov-title">省级平台备案</text>
+        </view>
+        <view class="gov-status" style="color: {{getStatusColor(queryResult.province.filingStatus)}}; border-color: {{getStatusColor(queryResult.province.filingStatus)}};">
+          {{queryResult.province.filingStatusLabel}}
+        </view>
+        <text class="toggle-arrow">{{expandProvince ? '▲' : '▼'}}</text>
+      </view>
+
+      <view wx:if="{{expandProvince}}" class="gov-card-body">
+        <view class="gov-info-row">
+          <text class="info-label">平台名称</text>
+          <text class="info-value">{{queryResult.province.platformName}}</text>
+        </view>
+        <view class="gov-info-row">
+          <text class="info-label">备案编号</text>
+          <view class="info-value code-value" bindtap="copyCode" data-code="{{queryResult.province.filingNo}}">
+            <text class="code-text">{{queryResult.province.filingNo}}</text>
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+        <view class="gov-info-row">
+          <text class="info-label">政府追溯码</text>
+          <view class="info-value code-value" bindtap="copyCode" data-code="{{queryResult.province.govCode}}">
+            <text class="code-text break">{{queryResult.province.govCode}}</text>
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+        <view class="gov-info-row">
+          <text class="info-label">监管单位</text>
+          <text class="info-value">{{queryResult.province.regulatoryAuthority}}</text>
+        </view>
+        <view class="gov-info-row">
+          <text class="info-label">备案日期</text>
+          <text class="info-value">{{queryResult.province.filingDate}}</text>
+        </view>
+        <view class="gov-info-row">
+          <text class="info-label">监管等级</text>
+          <text class="info-value">{{queryResult.province.supervisionLevel}}</text>
+        </view>
+
+        <view wx:if="{{queryResult.province.warningMessage}}" class="warning-box">
+          <text class="warn-icon">⚠️</text>
+          <text class="warn-text">{{queryResult.province.warningMessage}}</text>
+        </view>
+
+        <view class="verify-action" data-level="province" bindtap="openOfficialVerify">
+          <text>打开省级平台官方验证页面</text>
+          <text class="arrow">↗</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{queryResult.national}}" class="card gov-card national-card">
+      <view class="gov-card-header" bindtap="toggleNational">
+        <view class="gov-title-wrap">
+          <text class="gov-icon">🇨🇳</text>
+          <text class="gov-title">国家级平台备案</text>
+        </view>
+        <view class="gov-status" style="color: {{getStatusColor(queryResult.national.filingStatus)}}; border-color: {{getStatusColor(queryResult.national.filingStatus)}};">
+          {{queryResult.national.filingStatusLabel}}
+        </view>
+        <text class="toggle-arrow">{{expandNational ? '▲' : '▼'}}</text>
+      </view>
+
+      <view wx:if="{{expandNational}}" class="gov-card-body">
+        <view class="gov-info-row">
+          <text class="info-label">平台名称</text>
+          <text class="info-value">{{queryResult.national.platformName}}</text>
+        </view>
+        <view class="gov-info-row">
+          <text class="info-label">备案编号</text>
+          <view class="info-value code-value" bindtap="copyCode" data-code="{{queryResult.national.filingNo}}">
+            <text class="code-text">{{queryResult.national.filingNo}}</text>
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+        <view class="gov-info-row">
+          <text class="info-label">政府追溯码</text>
+          <view class="info-value code-value" bindtap="copyCode" data-code="{{queryResult.national.govCode}}">
+            <text class="code-text break">{{queryResult.national.govCode}}</text>
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+        <view class="gov-info-row">
+          <text class="info-label">监管单位</text>
+          <text class="info-value">{{queryResult.national.regulatoryAuthority}}</text>
+        </view>
+        <view class="gov-info-row">
+          <text class="info-label">备案日期</text>
+          <text class="info-value">{{queryResult.national.filingDate}}</text>
+        </view>
+        <view class="gov-info-row">
+          <text class="info-label">监管等级</text>
+          <text class="info-value">{{queryResult.national.supervisionLevel}}</text>
+        </view>
+
+        <view wx:if="{{queryResult.national.warningMessage}}" class="warning-box">
+          <text class="warn-icon">⚠️</text>
+          <text class="warn-text">{{queryResult.national.warningMessage}}</text>
+        </view>
+
+        <view class="verify-action" data-level="national" bindtap="openOfficialVerify">
+          <text>打开国家平台官方验证页面</text>
+          <text class="arrow">↗</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{queryResult.province && queryResult.province.inspectionRecords && queryResult.province.inspectionRecords.length > 0}}" class="card inspection-card">
+      <view class="inspection-header" bindtap="toggleInspections">
+        <view class="inspection-title-wrap">
+          <text class="inspection-icon">📋</text>
+          <text class="inspection-title">政府监督抽查记录</text>
+          <text class="record-count">共 {{queryResult.province.inspectionRecords.length}} 条</text>
+        </view>
+        <text class="toggle-arrow">{{expandInspections ? '▲' : '▼'}}</text>
+      </view>
+
+      <view wx:if="{{expandInspections}}" class="inspection-body">
+        <block wx:for="{{queryResult.province.inspectionRecords}}" wx:key="reportNo">
+          <view class="inspection-item result-{{item.result}}">
+            <view class="inspection-result">
+              <text class="result-badge {{item.result}}">{{item.result}}</text>
+            </view>
+            <view class="inspection-details">
+              <view class="inspection-date">抽查日期：{{item.date}}</view>
+              <view class="inspection-institution">检测机构：{{item.institution}}</view>
+              <view class="inspection-report">报告编号：{{item.reportNo}}</view>
+              <view wx:if="{{item.abnormalItems}}" class="inspection-abnormal">
+                <text class="abnormal-label">不合格项：</text>
+                <block wx:for="{{item.abnormalItems}}" wx:for-item="abn" wx:key="*this">
+                  <text class="abnormal-text">{{abn}}；</text>
+                </block>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="sync-info card">
+      <text class="sync-icon">🔄</text>
+      <text class="sync-text">数据最后同步时间：{{queryResult.lastSyncTime}}</text>
+    </view>
+
+    <view class="footer-tips">
+      <view class="tips-title">📖 使用说明</view>
+      <view class="tip-item">1. 政府追溯码由农业农村部门统一编码颁发</view>
+      <view class="tip-item">2. 点击上方备案编号或追溯码可一键复制</view>
+      <view class="tip-item">3. 可通过官方链接在政府平台进行二次验证</view>
+      <view class="tip-item">4. 如政府平台接口不可用，将自动降级为品牌溯源展示</view>
+    </view>
+
+  </view>
+
+  <view wx:if="{{historyList.length > 0}}" class="history-section card">
+    <view class="section-title small" bindtap="toggleHistory">
+      <text class="title-icon">📜</text>
+      <text>查询历史（{{historyList.length}}）</text>
+      <text class="toggle-arrow">{{showHistory ? '▲' : '▼'}}</text>
+    </view>
+
+    <view wx:if="{{showHistory}}" class="history-body">
+      <view class="clear-history" bindtap="clearHistory">清空历史</view>
+      <view class="history-list">
+        <block wx:for="{{historyList}}" wx:key="timestamp">
+          <view class="history-item" data-code="{{item.code}}" bindtap="useHistoryCode">
+            <view class="history-left">
+              <view class="history-code">{{item.code}}</view>
+              <view class="history-meta">
+                <text wx:if="{{item.productName}}" class="history-name">{{item.productName}}</text>
+                <text wx:if="{{item.batchNo}}" class="history-batch">· {{item.batchNo}}</text>
+              </view>
+            </view>
+            <view class="history-right">
+              <text class="history-status status-{{item.filingStatus}}">
+                {{getStatusLabel(item.filingStatus)}}
+              </text>
+              <text class="history-time">{{formatHistoryTime(item.timestamp)}}</text>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+</view>

@@ -132,6 +132,39 @@ function formatTime(timestamp) {
   }
 }
 
+function get(key, defaultValue) {
+  try {
+    const value = wx.getStorageSync(key);
+    if (value === '' || value === undefined || value === null) {
+      return defaultValue !== undefined ? defaultValue : null;
+    }
+    return value;
+  } catch (e) {
+    console.error('[storage] 获取数据失败:', key, e);
+    return defaultValue !== undefined ? defaultValue : null;
+  }
+}
+
+function set(key, value) {
+  try {
+    wx.setStorageSync(key, value);
+    return true;
+  } catch (e) {
+    console.error('[storage] 设置数据失败:', key, e);
+    return false;
+  }
+}
+
+function remove(key) {
+  try {
+    wx.removeStorageSync(key);
+    return true;
+  } catch (e) {
+    console.error('[storage] 删除数据失败:', key, e);
+    return false;
+  }
+}
+
 module.exports = {
   getScanHistory,
   addScanRecord,
@@ -139,5 +172,8 @@ module.exports = {
   clearScanHistory,
   formatTime,
   MAX_HISTORY_COUNT,
-  STORAGE_KEY
+  STORAGE_KEY,
+  get,
+  set,
+  remove
 };

@@ -215,7 +215,7 @@ Page({
     brewTags: [],
     showBrewSaveModal: false,
     brewPresetTags: ['回甘', '花香', '醇厚', '清甜', '浓香', '柔和', '鲜爽', '余韵', '桂花香', '茶韵'],
-    brewInputTag: ''
+    brewInputTag: '',
 
     // ========== 区块链存证功能 ==========
     bcVerifying: false,

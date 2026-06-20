@@ -1,0 +1,225 @@
+.container {
+  min-height: 100vh;
+  padding: 24rpx;
+  background: #F5F5F0;
+  box-sizing: border-box;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 16rpx;
+  border-left: 6rpx solid #2E8B57;
+}
+
+.preset-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  flex-wrap: wrap;
+}
+
+.preset-label {
+  font-size: 24rpx;
+  color: #666;
+  margin-right: 12rpx;
+}
+
+.preset-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.preset-btn {
+  padding: 8rpx 20rpx;
+  background: rgba(218, 165, 32, 0.1);
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #DAA520;
+}
+
+.batch-select-list {
+  max-height: 500rpx;
+  overflow-y: auto;
+  margin-bottom: 20rpx;
+}
+
+.batch-select-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 16rpx;
+  border-radius: 12rpx;
+  margin-bottom: 12rpx;
+  background: #FAFAF7;
+  border: 2rpx solid #F0F0F0;
+}
+
+.batch-select-item.selected {
+  background: rgba(46, 139, 87, 0.06);
+  border-color: #2E8B57;
+}
+
+.checkbox {
+  width: 40rpx;
+  height: 40rpx;
+  border: 2rpx solid #D0D0D0;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.batch-select-item.selected .checkbox {
+  background: #2E8B57;
+  border-color: #2E8B57;
+}
+
+.batch-info {
+  flex: 1;
+}
+
+.batch-no {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1B5E3A;
+  margin-bottom: 4rpx;
+}
+
+.batch-name {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.select-info {
+  text-align: center;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 20rpx;
+}
+
+.download-btn {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: linear-gradient(135deg, #DAA520, #F0C75E);
+  color: #fff;
+  border-radius: 16rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+}
+
+.result-card {
+  background: linear-gradient(135deg, #F6FFED, #FFFFFF);
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.success-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background: #52C41A;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  margin-right: 16rpx;
+}
+
+.result-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #52C41A;
+}
+
+.result-info {
+  padding: 16rpx;
+  background: rgba(82, 196, 26, 0.05);
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.result-row {
+  display: flex;
+  padding: 8rpx 0;
+}
+
+.result-label {
+  font-size: 24rpx;
+  color: #666;
+  width: 160rpx;
+}
+
+.result-value {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.doc-list-title {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.doc-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  background: #fff;
+  border: 1rpx solid #F0F0F0;
+  border-radius: 12rpx;
+}
+
+.doc-icon {
+  font-size: 36rpx;
+  margin-right: 16rpx;
+}
+
+.doc-info {
+  flex: 1;
+}
+
+.doc-name {
+  font-size: 26rpx;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.doc-meta {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.doc-arrow {
+  font-size: 36rpx;
+  color: #CCC;
+}

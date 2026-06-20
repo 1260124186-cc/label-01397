@@ -1,7 +1,16 @@
 const mockData = require('./mockData.js');
 const ticketService = require('./ticketService.js');
+const {
+  PROVINCE_CONFIG,
+  NATIONAL_CONFIG,
+  GOV_PLATFORM_STATUS,
+  getPlatformConfig
+} = require('./govTraceConstants.js');
 
 const RECALL_REGISTRATIONS_KEY = 'recall_registrations';
+const GOV_RECALL_NOTIFICATIONS_KEY = 'gov_recall_notifications';
+
+const memoryGovNotifications = [];
 
 const RECALL_STATUS = {
   SUBMITTED: 'submitted',
@@ -25,6 +34,20 @@ const RECALL_STATUS_COLOR = {
   pending_return: '#FF7A45',
   pending_compensation: '#722ED1',
   completed: '#52C41A'
+};
+
+const RECALL_SOURCES = {
+  BRAND_INITIATED: 'brand_initiated',
+  GOVERNMENT_PLATFORM: 'government_platform',
+  CONSUMER_REPORT: 'consumer_report',
+  MARKET_SUPERVISION: 'market_supervision'
+};
+
+const RECALL_SOURCE_LABELS = {
+  brand_initiated: '品牌主动召回',
+  government_platform: '政府平台责令召回',
+  consumer_report: '消费者举报触发',
+  market_supervision: '市场监督管理局'
 };
 
 const PURCHASE_CHANNELS = [
@@ -222,10 +245,219 @@ function formatTime(timestamp) {
   return `${year}-${month}-${day} ${hour}:${minute}`;
 }
 
+// ==================== 政府平台召回增强功能 ====================
+
+function getGovRecallNotifications() {
+  try {
+    let persistentNotifications = [];
+    if (typeof wx !== 'undefined' && wx.getStorageSync) {
+      const stored = wx.getStorageSync(GOV_RECALL_NOTIFICATIONS_KEY);
+      persistentNotifications = Array.isArray(stored) ? stored : [];
+    }
+
+    const combinedMap = new Map();
+    for (const item of persistentNotifications) {
+      if (item && item.updateId) combinedMap.set(item.updateId, item);
+    }
+    for (const item of memoryGovNotifications) {
+      if (item && item.updateId) combinedMap.set(item.updateId, item);
+    }
+    return Array.from(combinedMap.values());
+  } catch (e) {
+    console.error('[recallService] 获取政府召回通知失败:', e);
+    return memoryGovNotifications.slice();
+  }
+}
+
+function saveGovRecallNotifications(notifications) {
+  try {
+    memoryGovNotifications.length = 0;
+    for (const n of notifications) {
+      memoryGovNotifications.push(n);
+    }
+
+    if (typeof wx !== 'undefined' && wx.setStorageSync) {
+      wx.setStorageSync(GOV_RECALL_NOTIFICATIONS_KEY, notifications);
+      return true;
+    }
+    return true;
+  } catch (e) {
+    console.error('[recallService] 保存政府召回通知失败:', e);
+    return false;
+  }
+}
+
+function addGovRecallNotification(govUpdate) {
+  const notifications = getGovRecallNotifications();
+
+  const existing = notifications.find(function(n) {
+    return n.updateId === govUpdate.updateId;
+  });
+  if (existing) {
+    return { success: false, alreadyExists: true };
+  }
+
+  const notification = {
+    updateId: govUpdate.updateId,
+    batchNo: govUpdate.batchNo,
+    productName: govUpdate.productName || '',
+    status: govUpdate.status,
+    statusLabel: govUpdate.statusLabel || '',
+    reason: govUpdate.reason || '',
+    description: govUpdate.description || '',
+    platformLevel: govUpdate.platformLevel,
+    platformName: govUpdate.platformLevel === 'national'
+      ? NATIONAL_CONFIG.name
+      : PROVINCE_CONFIG.name,
+    regulatoryAuthority: govUpdate.platformLevel === 'national'
+      ? NATIONAL_CONFIG.regulatoryAuthority
+      : PROVINCE_CONFIG.regulatoryAuthority,
+    issuedAt: govUpdate.issuedAt || Date.now(),
+    severity: govUpdate.severity || 'high',
+    noticeUrl: govUpdate.noticeUrl || '',
+    affectedRange: govUpdate.affectedRange || '全国',
+    affectedQuantity: govUpdate.affectedQuantity || 0,
+    affectedUnit: govUpdate.affectedUnit || '件',
+    inspectReportNo: govUpdate.inspectReportNo || '',
+    abnormalItems: govUpdate.abnormalItems || [],
+    disposalMeasures: govUpdate.disposalMeasures || [],
+    acknowledged: false,
+    receivedAt: Date.now()
+  };
+
+  notifications.unshift(notification);
+  if (notifications.length > 100) {
+    notifications.splice(100);
+  }
+
+  saveGovRecallNotifications(notifications);
+
+  return {
+    success: true,
+    alreadyExists: false,
+    notification: notification,
+    needRegister: isRecallStatus(govUpdate.status)
+  };
+}
+
+function isRecallStatus(status) {
+  return status === GOV_PLATFORM_STATUS.RECALL ||
+         status === GOV_PLATFORM_STATUS.REVOKED;
+}
+
+function acknowledgeGovNotification(updateId) {
+  const notifications = getGovRecallNotifications();
+  const idx = notifications.findIndex(function(n) {
+    return n.updateId === updateId;
+  });
+  if (idx === -1) return false;
+
+  notifications[idx].acknowledged = true;
+  notifications[idx].acknowledgedAt = Date.now();
+  saveGovRecallNotifications(notifications);
+  return true;
+}
+
+function getUnacknowledgedGovNotifications() {
+  const notifications = getGovRecallNotifications();
+  return notifications.filter(function(n) {
+    return !n.acknowledged;
+  });
+}
+
+function getGovNotificationByBatch(batchNo) {
+  const notifications = getGovRecallNotifications();
+  return notifications
+    .filter(function(n) { return n.batchNo === batchNo; })
+    .sort(function(a, b) { return b.issuedAt - a.issuedAt; });
+}
+
+async function syncAndProcessGovStatusUpdates() {
+  console.log('[recallService] 开始同步并处理政府平台状态更新');
+
+  try {
+    const govTrace = require('./govTrace.js');
+    const result = await govTrace.syncPlatformStatusUpdates();
+    if (!result.success) {
+      return { success: false, message: result.message || '同步失败' };
+    }
+
+    if (!result.updates || result.updates.length === 0) {
+      return { success: true, processedCount: 0, message: '无新的状态变更' };
+    }
+
+    let processedCount = 0;
+    let recallCount = 0;
+
+    for (const update of result.updates) {
+      const addResult = addGovRecallNotification(update);
+      if (addResult.success) {
+        processedCount++;
+        if (addResult.needRegister) {
+          recallCount++;
+        }
+      }
+    }
+
+    console.log('[recallService] 政府状态变更处理完成:', {
+      processed: processedCount,
+      needRecall: recallCount
+    });
+
+    return {
+      success: true,
+      processedCount: processedCount,
+      recallCount: recallCount,
+      message: `同步完成，处理${processedCount}条更新，其中${recallCount}条需召回`
+    };
+  } catch (err) {
+    console.error('[recallService] 同步政府状态更新异常:', err);
+    return { success: false, message: err.message || '同步异常', error: err };
+  }
+}
+
+function processGovRecallRegistration(govNotification, userForm) {
+  if (!govNotification) {
+    return { success: false, error: '政府召回通知不存在' };
+  }
+
+  const formData = Object.assign({}, userForm, {
+    batchNo: govNotification.batchNo,
+    productName: govNotification.productName,
+    source: RECALL_SOURCES.GOVERNMENT_PLATFORM,
+    govUpdateId: govNotification.updateId,
+    govNoticeUrl: govNotification.noticeUrl,
+    govInspectReportNo: govNotification.inspectReportNo,
+    isGovernmentInitiated: true
+  });
+
+  const registration = createRegistration(formData);
+
+  return {
+    success: true,
+    registration: registration,
+    sourceLabel: RECALL_SOURCE_LABELS.government_platform,
+    officialNotice: true
+  };
+}
+
+function isGovernmentRecallBatch(batchNo) {
+  const notifications = getGovNotificationByBatch(batchNo);
+  return notifications.some(function(n) {
+    return isRecallStatus(n.status);
+  });
+}
+
+function getRecallSourceLabel(source) {
+  return RECALL_SOURCE_LABELS[source] || '品牌召回';
+}
+
 module.exports = {
   RECALL_STATUS,
   RECALL_STATUS_LABEL,
   RECALL_STATUS_COLOR,
+  RECALL_SOURCES,
+  RECALL_SOURCE_LABELS,
   PURCHASE_CHANNELS,
   generateRegistrationId,
   getRegistrations,
@@ -235,5 +467,14 @@ module.exports = {
   getRegistrationsByBatch,
   updateRegistrationStatus,
   convertToTicket,
-  formatTime
+  formatTime,
+  getGovRecallNotifications,
+  addGovRecallNotification,
+  acknowledgeGovNotification,
+  getUnacknowledgedGovNotifications,
+  getGovNotificationByBatch,
+  syncAndProcessGovStatusUpdates,
+  processGovRecallRegistration,
+  isGovernmentRecallBatch,
+  getRecallSourceLabel
 };

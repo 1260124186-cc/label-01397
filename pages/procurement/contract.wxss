@@ -1,0 +1,343 @@
+.container {
+  min-height: 100vh;
+  padding: 24rpx;
+  background: #F5F5F0;
+  box-sizing: border-box;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 16rpx;
+  border-left: 6rpx solid #2E8B57;
+}
+
+.search-bar {
+  margin-bottom: 20rpx;
+}
+
+.search-input {
+  width: 100%;
+  height: 72rpx;
+  padding: 0 24rpx;
+  background: #F5F5F0;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  box-sizing: border-box;
+}
+
+.tabs {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.tab {
+  padding: 12rpx 28rpx;
+  background: #F5F5F0;
+  border-radius: 32rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.tab.active {
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  color: #fff;
+}
+
+.contract-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.empty-tip {
+  padding: 60rpx 0;
+  text-align: center;
+  color: #999;
+  font-size: 26rpx;
+}
+
+.contract-item {
+  padding: 24rpx;
+  background: #FAFAF7;
+  border: 1rpx solid #F0F0F0;
+  border-radius: 16rpx;
+}
+
+.contract-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.contract-no {
+  font-size: 26rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.contract-status {
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+}
+
+.contract-status.status-active {
+  background: #E6FFFB;
+  color: #13C2C2;
+}
+
+.contract-status.status-expired {
+  background: #F5F5F5;
+  color: #999;
+}
+
+.contract-status.status-pending {
+  background: #FFF7E6;
+  color: #FAAD14;
+}
+
+.contract-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.contract-supplier {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.contract-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.meta-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.amount {
+  font-size: 30rpx;
+  color: #DAA520;
+  font-weight: 700;
+}
+
+.meta-payment {
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+}
+
+.meta-payment.payment-paid {
+  background: #F6FFED;
+  color: #52C41A;
+}
+
+.meta-payment.payment-partial {
+  background: #FFF7E6;
+  color: #FAAD14;
+}
+
+.meta-payment.payment-pending {
+  background: #FFF0F0;
+  color: #FF4D4F;
+}
+
+.meta-payment.payment-overdue {
+  background: #FFF0F0;
+  color: #FF4D4F;
+}
+
+.contract-batches {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+  padding: 12rpx 16rpx;
+  background: rgba(46, 139, 87, 0.04);
+  border-radius: 10rpx;
+}
+
+.batches-label {
+  font-size: 24rpx;
+  color: #666;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+  padding-top: 4rpx;
+}
+
+.batch-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.batch-tag {
+  padding: 4rpx 14rpx;
+  background: #fff;
+  border: 1rpx solid #2E8B57;
+  border-radius: 6rpx;
+  font-size: 22rpx;
+  color: #2E8B57;
+}
+
+.contract-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12rpx;
+  border-top: 1rpx dashed #E8E8E8;
+}
+
+.footer-date {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.link-btn {
+  padding: 8rpx 20rpx;
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  color: #fff;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+
+.modal-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+.modal-content {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  z-index: 101;
+}
+
+.modal-content.small {
+  bottom: 50%;
+  transform: translateY(50%);
+  margin: 0 40rpx;
+  border-radius: 20rpx;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-close {
+  font-size: 36rpx;
+  color: #999;
+  padding: 8rpx;
+}
+
+.modal-body {
+  padding: 24rpx 32rpx;
+}
+
+.link-info {
+  display: flex;
+  padding: 12rpx 16rpx;
+  background: #F8F9FA;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+}
+
+.link-label {
+  font-size: 24rpx;
+  color: #666;
+  margin-right: 8rpx;
+}
+
+.link-value {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.form-item {
+  margin-bottom: 20rpx;
+}
+
+.form-label {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+  display: block;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 20rpx;
+  background: #F8F9FA;
+  border: 2rpx solid #E8E8E8;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.link-tip {
+  font-size: 22rpx;
+  color: #999;
+  padding: 8rpx 4rpx;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 20rpx;
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #F0F0F0;
+}
+
+.modal-footer .btn-outline,
+.modal-footer .btn-primary {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+}
+
+.modal-footer .btn-outline {
+  background: #F5F5F0;
+  color: #666;
+  border: none;
+}
+
+.modal-footer .btn-primary {
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  color: #fff;
+  border: none;
+}
