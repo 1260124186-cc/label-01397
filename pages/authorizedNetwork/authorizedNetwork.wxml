@@ -107,7 +107,9 @@
           </view>
           <view class="store-info-row">
             <text class="info-icon">📦</text>
-            <text class="info-text">供应批次：{{item.supplyBatchRange.join('、')}}</text>
+            <text class="info-text">供应批次：
+              <text wx:for="{{item.supplyBatchRange}}" wx:key="*this" wx:for-item="batchItem">{{batchItem}}{{index < item.supplyBatchRange.length - 1 ? '、' : ''}}</text>
+            </text>
           </view>
         </view>
         <view class="store-card-footer">
@@ -165,7 +167,9 @@
         </view>
         <view class="popup-info-row">
           <text class="popup-info-icon">📦</text>
-          <text class="popup-info-text">供应批次：{{selectedStore.supplyBatchRange.join('、')}}</text>
+          <text class="popup-info-text">供应批次：
+            <text wx:for="{{selectedStore.supplyBatchRange}}" wx:key="*this" wx:for-item="batchItem">{{batchItem}}{{index < selectedStore.supplyBatchRange.length - 1 ? '、' : ''}}</text>
+          </text>
         </view>
         <view class="popup-info-row">
           <text class="popup-info-icon">⭐</text>
