@@ -357,6 +357,15 @@ function getTodayDateStr() {
 function validateReservationData(data) {
   if (!data.activityTypeKey) return { valid: false, reason: '请选择活动类型' };
   if (!data.peopleCount || data.peopleCount < 1) return { valid: false, reason: '请输入正确的人数' };
+  
+  var activityType = getExperienceTypeByKey(data.activityTypeKey);
+  if (activityType && activityType.capacity && data.peopleCount > activityType.capacity) {
+    return {
+      valid: false,
+      reason: activityType.name + '最多可预约 ' + activityType.capacity + ' 人'
+    };
+  }
+  
   if (!data.date) return { valid: false, reason: '请选择预约日期' };
   if (!data.contactName || !data.contactName.trim()) return { valid: false, reason: '请输入联系人姓名' };
   if (!data.contactPhone || !data.contactPhone.trim()) return { valid: false, reason: '请输入联系电话' };

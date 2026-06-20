@@ -6,6 +6,7 @@ Page({
     activityTypes: [],
     selectedTypeKey: '',
     peopleCount: 1,
+    maxPeopleCount: 50,
     date: '',
     minDate: '',
     contactName: '',
@@ -23,15 +24,20 @@ Page({
 
     var selectedTypeKey = '';
     var activityType = null;
+    var maxPeopleCount = 50;
     if (options && options.activityType) {
       selectedTypeKey = options.activityType;
       activityType = experience.getExperienceTypeByKey(selectedTypeKey);
+      if (activityType && activityType.capacity) {
+        maxPeopleCount = activityType.capacity;
+      }
     }
 
     this.setData({
       activityTypes: types,
       activityType: activityType,
       selectedTypeKey: selectedTypeKey,
+      maxPeopleCount: maxPeopleCount,
       minDate: today,
       date: today
     });
@@ -42,22 +48,38 @@ Page({
   selectActivityType: function(e) {
     var key = e.currentTarget.dataset.key;
     var activityType = experience.getExperienceTypeByKey(key);
+    var maxPeopleCount = 50;
+    if (activityType && activityType.capacity) {
+      maxPeopleCount = activityType.capacity;
+    }
+
+    var newPeopleCount = this.data.peopleCount;
+    if (newPeopleCount > maxPeopleCount) {
+      newPeopleCount = maxPeopleCount;
+    }
+
     this.setData({
       selectedTypeKey: key,
-      activityType: activityType
+      activityType: activityType,
+      maxPeopleCount: maxPeopleCount,
+      peopleCount: newPeopleCount
     });
   },
 
   onPeopleCountInput: function(e) {
     var val = parseInt(e.detail.value) || 1;
     if (val < 1) val = 1;
-    if (val > 50) val = 50;
+    if (val > this.data.maxPeopleCount) val = this.data.maxPeopleCount;
     this.setData({ peopleCount: val });
   },
 
   increasePeople: function() {
     var val = this.data.peopleCount + 1;
-    if (val > 50) val = 50;
+    if (val > this.data.maxPeopleCount) {
+      val = this.data.maxPeopleCount;
+      wx.showToast({ title: '最多 ' + this.data.maxPeopleCount + ' 人', icon: 'none' });
+      return;
+    }
     this.setData({ peopleCount: val });
   },
 

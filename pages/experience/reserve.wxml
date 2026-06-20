@@ -52,6 +52,9 @@
       <view class="counter-btn" bindtap="increasePeople">+</view>
       <view class="counter-tip">人</view>
     </view>
+    <view class="people-limit-tip" wx:if="{{activityType && activityType.capacity}}">
+      💡 该活动最多可预约 {{activityType.capacity}} 人
+    </view>
   </view>
 
   <view class="form-section">
