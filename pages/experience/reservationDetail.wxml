@@ -12,14 +12,13 @@
     <view class="qr-title">预约核销码</view>
     <view class="qr-subtitle">请在活动现场出示此码进行签到</view>
     <view class="qr-wrapper">
-      <view class="qr-mock">
-        <view class="qr-pattern">
-          <view wx:for="{{[0,1,2,3,4,5,6,7,8,9]}}" wx:for-item="row" wx:key="*this" class="qr-row">
-            <view wx:for="{{[0,1,2,3,4,5,6,7,8,9]}}" wx:for-item="col" wx:key="*this" class="qr-cell {{(row + col) % 3 === 0 ? 'filled' : ''}} {{(row === 0 && col < 3) || (row < 3 && col === 0) ? 'corner' : ''}} {{(row === 0 && col > 6) || (row < 3 && col === 9) ? 'corner' : ''}} {{(row > 6 && col < 3) ? 'corner' : ''}}"></view>
-          </view>
-        </view>
-        <view class="qr-center-icon">{{reservation.activityIcon}}</view>
-      </view>
+      <canvas
+        type="2d"
+        id="reservationQrCanvas"
+        class="qr-canvas"
+        style="width: {{qrSize}}px; height: {{qrSize}}px;"
+      ></canvas>
+      <view class="qr-loading" wx:if="{{qrLoading}}">二维码生成中...</view>
     </view>
     <view class="reservation-id-row" bindtap="copyReservationId">
       <text class="id-label">预约号</text>

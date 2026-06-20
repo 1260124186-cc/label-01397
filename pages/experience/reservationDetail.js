@@ -1,4 +1,5 @@
 var experience = require('../../utils/experience.js');
+var qrcode = require('../../utils/qrcode.js');
 
 Page({
   data: {
@@ -8,13 +9,18 @@ Page({
     checkInTimeLabel: '',
     activityType: null,
     showQrCode: false,
-    canvasWidth: 400,
-    canvasHeight: 400
+    qrSize: 400,
+    qrLoading: false
   },
 
   onLoad: function(options) {
     this.reservationId = options.id;
-    this.loadReservation();
+    var that = this;
+    var sysInfo = wx.getSystemInfoSync();
+    var qrSize = Math.min(Math.floor(sysInfo.windowWidth * 0.7), 400);
+    this.setData({ qrSize: qrSize }, function() {
+      that.loadReservation();
+    });
     wx.setNavigationBarTitle({ title: '预约详情' });
   },
 
@@ -32,17 +38,54 @@ Page({
 
     var activityType = experience.getExperienceTypeByKey(reservation.activityTypeKey);
 
+    var shouldShowQr = (reservation.status === 'confirmed');
+
+    var that = this;
     this.setData({
       reservation: reservation,
       statusLabel: experience.RESERVATION_STATUS_LABEL[reservation.status] || reservation.status,
       createTimeLabel: experience.formatFullTime(reservation.createdAt),
       checkInTimeLabel: reservation.checkedInAt ? experience.formatFullTime(reservation.checkedInAt) : '',
-      activityType: activityType
+      activityType: activityType,
+      showQrCode: shouldShowQr,
+      qrLoading: shouldShowQr
+    }, function() {
+      if (shouldShowQr) {
+        setTimeout(function() {
+          that.drawQRCode();
+        }, 100);
+      }
     });
+  },
 
-    if (reservation.status === 'confirmed') {
-      this.setData({ showQrCode: true });
+  drawQRCode: function() {
+    var that = this;
+    if (!this.data.reservation) return;
+
+    var qrContent = this.data.reservation.qrCodeData;
+    if (!qrContent) {
+      qrContent = JSON.stringify({
+        type: 'experience_checkin',
+        reservationId: this.data.reservation.id,
+        activityType: this.data.reservation.activityTypeKey,
+        timestamp: this.data.reservation.createdAt
+      });
     }
+
+    qrcode.drawQRCanvas('#reservationQrCanvas', qrContent, this.data.qrSize, {
+      errorCorrectLevel: qrcode.QRErrorCorrectLevel.M,
+      margin: 2,
+      darkColor: '#1a3a2e',
+      lightColor: '#ffffff',
+      centerIcon: this.data.reservation.activityIcon,
+      centerIconSize: 0.18
+    }).then(function() {
+      that.setData({ qrLoading: false });
+    }).catch(function(err) {
+      console.error('[QRCode] 绘制失败:', err);
+      that.setData({ qrLoading: false });
+      wx.showToast({ title: '二维码生成失败', icon: 'none' });
+    });
   },
 
   cancelReservation: function() {

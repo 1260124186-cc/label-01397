@@ -62,60 +62,29 @@
 .qr-wrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 24rpx;
-}
-
-.qr-mock {
-  width: 360rpx;
-  height: 360rpx;
-  background: #FFFFFF;
-  border: 2rpx solid #E0E0E0;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  position: relative;
-  display: flex;
   align-items: center;
-  justify-content: center;
+  margin-bottom: 24rpx;
+  position: relative;
 }
 
-.qr-pattern {
-  width: 100%;
-  height: 100%;
+.qr-canvas {
+  display: block;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  background: #FFFFFF;
+  padding: 16rpx;
 }
 
-.qr-row {
-  display: flex;
-}
-
-.qr-cell {
-  width: 10%;
-  height: 31.2rpx;
-}
-
-.qr-cell.filled {
-  background: #1a1a1a;
-  border-radius: 2rpx;
-}
-
-.qr-cell.corner {
-  background: #2E8B57;
-}
-
-.qr-center-icon {
+.qr-loading {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80rpx;
-  height: 80rpx;
-  background: #FFFFFF;
-  border: 4rpx solid #FFFFFF;
-  border-radius: 16rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 44rpx;
-  box-shadow: 0 0 0 2rpx #E0E0E0;
+  font-size: 26rpx;
+  color: #999999;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 16rpx 24rpx;
+  border-radius: 12rpx;
 }
 
 .reservation-id-row {

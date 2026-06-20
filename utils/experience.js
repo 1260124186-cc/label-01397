@@ -214,8 +214,14 @@ function cancelReservation(reservationId) {
 function parseQrCodeData(qrCodeContent) {
   try {
     var data = JSON.parse(qrCodeContent);
-    if (data && data.type === 'experience_checkin' && data.reservationId) {
-      return data;
+    if (!data) return null;
+    if ((data.type === 'experience_checkin' || data.type === 'experience_reservation')
+      && (data.reservationId || data.id)) {
+      return {
+        type: data.type,
+        reservationId: data.reservationId || data.id,
+        activityType: data.activityType || data.activityTypeKey
+      };
     }
     return null;
   } catch (e) {
