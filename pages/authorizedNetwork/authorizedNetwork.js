@@ -215,8 +215,31 @@ Page({
   },
 
   goToVerify: function() {
-    wx.navigateTo({
-      url: '/pages/authorizedNetworkDetail/authorizedNetworkDetail?verify=true'
+    var that = this;
+    wx.scanCode({
+      scanType: ['qrCode'],
+      success: function(res) {
+        var storeCode = res.result;
+        var store = authorizedNetwork.getStoreByStoreCode(storeCode);
+        if (store) {
+          var url = '/pages/authorizedNetworkDetail/authorizedNetworkDetail?id=' + store.id + '&verify=true';
+          if (that.data.traceId) {
+            url += '&traceId=' + that.data.traceId;
+          }
+          wx.navigateTo({ url: url });
+        } else {
+          wx.showModal({
+            title: '未找到门店',
+            content: '门店码 ' + storeCode + ' 未找到对应授权网点',
+            showCancel: false
+          });
+        }
+      },
+      fail: function(err) {
+        if (err.errMsg && err.errMsg.indexOf('cancel') === -1) {
+          wx.showToast({ title: '扫码失败', icon: 'none' });
+        }
+      }
     });
   },
 

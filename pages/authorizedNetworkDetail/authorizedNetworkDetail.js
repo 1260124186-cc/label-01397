@@ -32,11 +32,6 @@ Page({
   },
 
   onLoad: function(options) {
-    if (options.verify === 'true') {
-      this.setData({ showVerifyModal: true });
-      return;
-    }
-
     var storeId = options.id;
     if (!storeId) {
       wx.showToast({ title: '参数错误', icon: 'none' });
@@ -46,7 +41,8 @@ Page({
 
     this.setData({
       storeId: storeId,
-      traceId: options.traceId || ''
+      traceId: options.traceId || '',
+      autoVerify: options.verify === 'true'
     });
 
     this.loadStoreData(storeId);
@@ -80,6 +76,17 @@ Page({
     });
 
     wx.setNavigationBarTitle({ title: store.name });
+
+    if (this.data.autoVerify) {
+      var that = this;
+      setTimeout(function() {
+        that.setData({
+          showVerifyModal: true,
+          verifyInput: store.storeCode
+        });
+        that.doVerify();
+      }, 300);
+    }
   },
 
   switchTab: function(e) {
