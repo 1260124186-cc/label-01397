@@ -42,7 +42,8 @@ module.exports = {
     batchList: '批次列表',
     scanResult: '扫码结果',
     greenTrace: '绿色溯源',
-    brandStory: '品牌故事'
+    brandStory: '品牌故事',
+    authorizedNetwork: '授权合作网点'
   },
 
   home: {

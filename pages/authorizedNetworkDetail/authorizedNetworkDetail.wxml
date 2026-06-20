@@ -1,0 +1,309 @@
+<view class="page-container" wx:if="{{!loading && store}}">
+  <view class="store-hero">
+    <image class="store-image" wx:if="{{store.images && store.images.length > 0}}" src="{{store.images[0]}}" mode="aspectFill" data-url="{{store.images[0]}}" bindtap="previewStoreImage"></image>
+    <view class="store-hero-overlay">
+      <view class="store-type-tag" style="background-color: {{store.type === 'hotel' ? '#1890FF' : store.type === 'tea_house' ? '#DAA520' : '#722ED1'}};">
+        <text>{{store.type === 'hotel' ? '🏨 酒店' : store.type === 'tea_house' ? '🍵 茶馆' : '✈️ 贵宾厅'}}</text>
+      </view>
+      <text class="store-hero-name">{{store.name}}</text>
+      <view class="store-hero-badges">
+        <view class="badge authorized">
+          <text class="badge-icon">✓</text>
+          <text class="badge-text">官方授权</text>
+        </view>
+        <view class="badge rating-badge">
+          <text class="badge-icon">⭐</text>
+          <text class="badge-text">{{store.rating}}分</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="action-bar">
+    <view class="action-item" bindtap="openNavigation">
+      <text class="action-icon">🧭</text>
+      <text class="action-label">导航</text>
+    </view>
+    <view class="action-item" bindtap="callStore">
+      <text class="action-icon">📞</text>
+      <text class="action-label">电话</text>
+    </view>
+    <view class="action-item" bindtap="openVerifyModal">
+      <text class="action-icon">🔎</text>
+      <text class="action-label">验证</text>
+    </view>
+    <view class="action-item" bindtap="copyStoreCode">
+      <text class="action-icon">📋</text>
+      <text class="action-label">门店码</text>
+    </view>
+  </view>
+
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === item.key ? 'active' : ''}}" wx:for="{{tabs}}" wx:key="key" data-key="{{item.key}}" bindtap="switchTab">
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-label">{{item.label}}</text>
+    </view>
+  </view>
+
+  <view class="tab-content" wx:if="{{activeTab === 'info'}}">
+    <view class="info-section">
+      <view class="section-title">基本信息</view>
+      <view class="info-item">
+        <text class="info-label">📍 地址</text>
+        <text class="info-value">{{store.address}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">🕐 营业时间</text>
+        <text class="info-value">{{store.businessHours}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">📞 联系电话</text>
+        <text class="info-value">{{store.phone}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">🏷️ 门店码</text>
+        <text class="info-value store-code">{{store.storeCode}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">📦 供应批次</text>
+        <view class="batch-tags">
+          <text class="batch-tag" wx:for="{{store.supplyBatchRange}}" wx:key="*this" wx:for-item="batch">{{batch}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="info-section" wx:if="{{store.description}}">
+      <view class="section-title">网点介绍</view>
+      <text class="description-text">{{store.description}}</text>
+    </view>
+
+    <view class="info-section" wx:if="{{store.features && store.features.length > 0}}">
+      <view class="section-title">特色服务</view>
+      <view class="feature-list">
+        <view class="feature-item" wx:for="{{store.features}}" wx:key="*this">
+          <text class="feature-dot">●</text>
+          <text class="feature-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="info-section" wx:if="{{store.tags && store.tags.length > 0}}">
+      <view class="section-title">标签</view>
+      <view class="tag-list">
+        <text class="tag-item" wx:for="{{store.tags}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="tab-content" wx:if="{{activeTab === 'auth'}}">
+    <view class="auth-card" wx:if="{{authorizationDisplay}}">
+      <view class="auth-status {{authorizationDisplay.isAuthorized ? 'authorized' : 'unauthorized'}}">
+        <view class="auth-status-icon">
+          <text>{{authorizationDisplay.isAuthorized ? '🛡️' : '⚠️'}}</text>
+        </view>
+        <view class="auth-status-info">
+          <text class="auth-status-label">{{authorizationDisplay.authorizationLabel}}</text>
+          <text class="auth-status-desc">{{authorizationDisplay.complementaryTip}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="info-section">
+      <view class="section-title">授权信息</view>
+      <view class="info-item">
+        <text class="info-label">授权状态</text>
+        <text class="info-value" style="color: {{authorizationDisplay.isAuthorized ? '#52C41A' : '#FF4D4F'}};">{{authorizationDisplay.status.label}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">授权开始</text>
+        <text class="info-value">{{store.authorizationStart}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">授权到期</text>
+        <text class="info-value">{{store.authorizationExpiry}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">门店码关联</text>
+        <text class="info-value store-code">{{store.storeCode}}</text>
+      </view>
+    </view>
+
+    <view class="info-section">
+      <view class="section-title">渠道溯源路径</view>
+      <view class="channel-flow" wx:if="{{authorizationDisplay.channelFlow && authorizationDisplay.channelFlow.length > 0}}">
+        <view class="flow-step" wx:for="{{authorizationDisplay.channelFlow}}" wx:key="step">
+          <view class="flow-connector" wx:if="{{index > 0}}"></view>
+          <view class="flow-step-content">
+            <view class="flow-step-icon" style="background-color: {{item.color}}20; color: {{item.color}};">{{item.icon}}</view>
+            <view class="flow-step-info">
+              <text class="flow-step-role">{{item.role}}</text>
+              <text class="flow-step-name">{{item.name}}</text>
+              <text class="flow-step-location" wx:if="{{item.location}}">{{item.location}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="no-flow" wx:else>
+        <text class="no-flow-text">该门店码暂未关联溯源路径</text>
+      </view>
+    </view>
+
+    <view class="info-section">
+      <view class="section-title">供应批次范围</view>
+      <view class="batch-detail">
+        <text class="batch-detail-desc">该授权网点可供应以下批次产品：</text>
+        <view class="batch-tags-large">
+          <view class="batch-tag-large" wx:for="{{store.supplyBatchRange}}" wx:key="*this" wx:for-item="batch">
+            <text class="batch-tag-icon">📦</text>
+            <text class="batch-tag-text">{{batch}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="auth-action-area">
+      <view class="verify-action-btn" bindtap="openVerifyModal">
+        <text class="verify-action-icon">🔎</text>
+        <text class="verify-action-text">到店扫码验证官方供应</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="tab-content" wx:if="{{activeTab === 'reviews'}}">
+    <view class="rating-overview" wx:if="{{ratingSummary}}">
+      <view class="rating-big">
+        <text class="rating-big-num">{{ratingSummary.averageRating}}</text>
+        <text class="rating-big-label">综合评分</text>
+        <text class="rating-big-count">{{ratingSummary.totalReviews}}条评价</text>
+      </view>
+      <view class="rating-bars">
+        <view class="rating-bar-row" wx:for="{{[5,4,3,2,1]}}" wx:key="*this" wx:for-item="star">
+          <text class="bar-star">{{star}}星</text>
+          <view class="bar-track">
+            <view class="bar-fill" style="width: {{ratingSummary.totalReviews > 0 ? (ratingSummary.ratingDistribution[star] / ratingSummary.totalReviews * 100) : 0}}%;"></view>
+          </view>
+          <text class="bar-count">{{ratingSummary.ratingDistribution[star] || 0}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="review-action">
+      <view class="write-review-btn" bindtap="openReviewModal">
+        <text>✍️ 写评价</text>
+      </view>
+    </view>
+
+    <view class="review-list">
+      <view class="review-item" wx:for="{{reviews}}" wx:key="id">
+        <view class="review-header">
+          <text class="review-user">{{item.userName}}</text>
+          <text class="review-stars">{{'⭐'.repeat(item.rating)}}</text>
+        </view>
+        <text class="review-content">{{item.content}}</text>
+        <view class="review-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+          <text class="review-tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+        </view>
+        <view class="review-footer">
+          <text class="review-time">{{item.createTime}}</text>
+          <view class="review-like" data-id="{{item.id}}" bindtap="onLikeReview">
+            <text class="like-icon">👍</text>
+            <text class="like-count">{{item.likeCount || 0}}</text>
+          </view>
+        </view>
+        <view class="review-reply" wx:if="{{item.reply}}">
+          <text class="reply-badge">官方回复</text>
+          <text class="reply-content">{{item.reply.replyContent}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="no-reviews" wx:if="{{reviews.length === 0}}">
+      <text class="no-reviews-icon">💬</text>
+      <text class="no-reviews-text">暂无评价，快来第一个评价吧</text>
+    </view>
+  </view>
+
+  <view class="verify-modal {{showVerifyModal ? 'show' : ''}}" wx:if="{{showVerifyModal}}">
+    <view class="modal-mask" bindtap="closeVerifyModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">门店码验证</text>
+        <text class="modal-close" bindtap="closeVerifyModal">✕</text>
+      </view>
+      <view class="modal-body">
+        <text class="modal-desc">到店后扫描门店码或手动输入，验证该网点是否为官方授权供应点</text>
+        <view class="verify-input-wrap">
+          <input class="verify-input" placeholder="请输入门店码（如 S-HBWH-001）" value="{{verifyInput}}" bindinput="onVerifyInputChange" />
+          <view class="scan-btn" bindtap="startScanVerify">
+            <text>📷 扫码</text>
+          </view>
+        </view>
+        <view class="verify-result" wx:if="{{verifyResult}}">
+          <view class="verify-result-status {{verifyResult.success ? 'success' : 'fail'}}">
+            <text class="result-icon">{{verifyResult.success ? '✓' : '✗'}}</text>
+            <text class="result-message">{{verifyResult.message}}</text>
+          </view>
+          <view class="verify-result-detail" wx:if="{{verifyResult.success && verifyResult.store}}">
+            <view class="detail-row">
+              <text class="detail-label">网点名称</text>
+              <text class="detail-value">{{verifyResult.store.name}}</text>
+            </view>
+            <view class="detail-row" wx:if="{{verifyResult.batchRange}}">
+              <text class="detail-label">供应批次</text>
+              <text class="detail-value">{{verifyResult.batchRange.join('、')}}</text>
+            </view>
+            <view class="detail-row" wx:if="{{verifyResult.isBatchAuthorized !== undefined}}">
+              <text class="detail-label">批次验证</text>
+              <text class="detail-value" style="color: {{verifyResult.isBatchAuthorized ? '#52C41A' : '#FF4D4F'}};">{{verifyResult.isBatchAuthorized ? '该批次已授权' : '该批次未授权'}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <view class="modal-btn primary" bindtap="doVerify" disabled="{{verifying}}">
+          <text>{{verifying ? '验证中...' : '验证'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="review-modal {{showReviewModal ? 'show' : ''}}" wx:if="{{showReviewModal}}">
+    <view class="modal-mask" bindtap="closeReviewModal"></view>
+    <view class="modal-content review-modal-content">
+      <view class="modal-header">
+        <text class="modal-title">评价网点</text>
+        <text class="modal-close" bindtap="closeReviewModal">✕</text>
+      </view>
+      <view class="modal-body">
+        <view class="rating-selector">
+          <text class="rating-label">评分</text>
+          <view class="rating-stars-selector">
+            <text class="star-btn {{reviewForm.rating >= item ? 'active' : ''}}" wx:for="{{[1,2,3,4,5]}}" wx:key="*this" wx:for-item="item" data-rating="{{item}}" bindtap="onReviewRatingTap">⭐</text>
+          </view>
+        </view>
+        <view class="tag-selector">
+          <text class="tag-selector-label">标签</text>
+          <view class="tag-options">
+            <text class="tag-option {{tagItem.selected ? 'selected' : ''}}" wx:for="{{reviewPresetTagsWithState}}" wx:key="name" wx:for-item="tagItem" data-name="{{tagItem.name}}" bindtap="onReviewTagTap">{{tagItem.name}}</text>
+          </view>
+        </view>
+        <textarea class="review-textarea" placeholder="分享您的体验（至少5个字）" value="{{reviewForm.content}}" bindinput="onReviewContentInput" maxlength="500"></textarea>
+      </view>
+      <view class="modal-footer">
+        <view class="modal-btn cancel" bindtap="closeReviewModal">取消</view>
+        <view class="modal-btn primary" bindtap="submitReview">提交评价</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="bottom-nav-btn" bindtap="openNavigation">
+      <text class="bottom-btn-icon">🧭</text>
+      <text class="bottom-btn-text">导航前往</text>
+    </view>
+    <view class="bottom-verify-btn" bindtap="openVerifyModal">
+      <text class="bottom-btn-icon">🔎</text>
+      <text class="bottom-btn-text">扫码验证</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,189 @@
+<view class="page-container">
+  <view class="stats-bar" wx:if="{{statsSummary}}">
+    <view class="stat-item">
+      <text class="stat-num">{{statsSummary.authorizedCount}}</text>
+      <text class="stat-label">授权网点</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{statsSummary.cities.length}}</text>
+      <text class="stat-label">覆盖城市</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{statsSummary.typeCount.hotel || 0}}</text>
+      <text class="stat-label">酒店</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{statsSummary.typeCount.tea_house || 0}}</text>
+      <text class="stat-label">茶馆</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{statsSummary.typeCount.airport_vip || 0}}</text>
+      <text class="stat-label">贵宾厅</text>
+    </view>
+  </view>
+
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" placeholder="搜索网点名称、地址" value="{{searchText}}" bindinput="onSearchInput" bindconfirm="onSearch" confirm-type="search" />
+      <text class="search-clear" wx:if="{{searchText}}" bindtap="onClearSearch">✕</text>
+    </view>
+    <view class="verify-btn" bindtap="goToVerify">
+      <text class="verify-icon">🔎</text>
+      <text class="verify-text">扫门店码</text>
+    </view>
+  </view>
+
+  <view class="filter-bar">
+    <scroll-view class="type-filters" scroll-x="true">
+      <view class="type-filter {{activeTypeFilter === item.key ? 'active' : ''}}" wx:for="{{typeFilters}}" wx:key="key" data-type="{{item.key}}" bindtap="onTypeFilterTap">
+        <text class="filter-icon">{{item.icon}}</text>
+        <text class="filter-label">{{item.label}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="city-filter" wx:if="{{cities.length > 1}}">
+    <scroll-view class="city-scroll" scroll-x="true">
+      <view class="city-item {{activeCity === item.name || (!activeCity && item.name === '全部城市') ? 'active' : ''}}" wx:for="{{cities}}" wx:key="name" data-city="{{item.name}}" bindtap="onCityFilterTap">
+        <text>{{item.name}}</text>
+        <text class="city-count">{{item.count}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="view-mode-switch">
+    <view class="mode-btn {{viewMode === 'map' ? 'active' : ''}}" data-mode="map" bindtap="switchViewMode">
+      <text>🗺️ 地图</text>
+    </view>
+    <view class="mode-btn {{viewMode === 'list' ? 'active' : ''}}" data-mode="list" bindtap="switchViewMode">
+      <text>📋 列表</text>
+    </view>
+  </view>
+
+  <view class="map-container" wx:if="{{viewMode === 'map'}}">
+    <map
+      id="storeMap"
+      class="store-map"
+      latitude="{{mapCenterLat}}"
+      longitude="{{mapCenterLng}}"
+      scale="{{mapScale}}"
+      markers="{{mapMarkers}}"
+      show-location
+      bindmarkertap="onMapMarkerTap"
+      bindregionchange="onMapRegionChange"
+    ></map>
+    <view class="map-actions">
+      <view class="map-action-btn" bindtap="locateUser">📍</view>
+    </view>
+  </view>
+
+  <view class="list-container" wx:if="{{viewMode === 'list'}}">
+    <view class="store-list">
+      <view class="store-card" wx:for="{{filteredStores}}" wx:key="id" data-id="{{item.id}}" bindtap="goToStoreDetail">
+        <view class="store-card-header">
+          <view class="store-type-badge" style="background-color: {{item.type === 'hotel' ? '#E6F7FF' : item.type === 'tea_house' ? '#FFF8E1' : '#F3EAFF'}};">
+            <text class="store-type-icon">{{item.type === 'hotel' ? '🏨' : item.type === 'tea_house' ? '🍵' : '✈️'}}</text>
+            <text class="store-type-text" style="color: {{item.type === 'hotel' ? '#1890FF' : item.type === 'tea_house' ? '#DAA520' : '#722ED1'}};">{{item.type === 'hotel' ? '酒店' : item.type === 'tea_house' ? '茶馆' : '贵宾厅'}}</text>
+          </view>
+          <view class="store-auth-badge">
+            <text class="auth-icon">✓</text>
+            <text class="auth-text">官方授权</text>
+          </view>
+        </view>
+        <view class="store-card-body">
+          <text class="store-name">{{item.name}}</text>
+          <view class="store-info-row">
+            <text class="info-icon">📍</text>
+            <text class="info-text">{{item.address}}</text>
+          </view>
+          <view class="store-info-row">
+            <text class="info-icon">🕐</text>
+            <text class="info-text">{{item.businessHours}}</text>
+          </view>
+          <view class="store-info-row">
+            <text class="info-icon">📦</text>
+            <text class="info-text">供应批次：{{item.supplyBatchRange.join('、')}}</text>
+          </view>
+        </view>
+        <view class="store-card-footer">
+          <view class="store-rating">
+            <text class="rating-star">⭐</text>
+            <text class="rating-num">{{item.rating}}</text>
+            <text class="review-count">（{{item.reviewCount}}条评价）</text>
+          </view>
+          <view class="store-actions">
+            <view class="action-btn nav-btn" data-store="{{item}}" catchtap="navigateToStore">
+              <text>🧭 导航</text>
+            </view>
+            <view class="action-btn detail-btn" data-id="{{item.id}}" catchtap="goToStoreDetail">
+              <text>详情 ›</text>
+            </view>
+          </view>
+        </view>
+        <view class="store-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+          <text class="store-tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{filteredStores.length === 0 && !loading}}">
+      <text class="empty-icon">🏪</text>
+      <text class="empty-text">暂无匹配的授权网点</text>
+      <text class="empty-hint">请尝试调整筛选条件</text>
+    </view>
+  </view>
+
+  <view class="store-card-popup {{showStoreCard ? 'show' : ''}}" wx:if="{{selectedStore}}">
+    <view class="popup-mask" bindtap="closeStoreCard"></view>
+    <view class="popup-content">
+      <view class="popup-header">
+        <view class="popup-type-badge" style="background-color: {{selectedStore.type === 'hotel' ? '#E6F7FF' : selectedStore.type === 'tea_house' ? '#FFF8E1' : '#F3EAFF'}};">
+          <text>{{selectedStore.type === 'hotel' ? '🏨' : selectedStore.type === 'tea_house' ? '🍵' : '✈️'}}</text>
+        </view>
+        <view class="popup-title-wrap">
+          <text class="popup-title">{{selectedStore.name}}</text>
+          <view class="popup-auth">
+            <text class="auth-icon">✓</text>
+            <text class="auth-text">官方授权</text>
+          </view>
+        </view>
+        <view class="popup-close" bindtap="closeStoreCard">✕</view>
+      </view>
+      <view class="popup-body">
+        <view class="popup-info-row">
+          <text class="popup-info-icon">📍</text>
+          <text class="popup-info-text">{{selectedStore.address}}</text>
+        </view>
+        <view class="popup-info-row">
+          <text class="popup-info-icon">🕐</text>
+          <text class="popup-info-text">{{selectedStore.businessHours}}</text>
+        </view>
+        <view class="popup-info-row">
+          <text class="popup-info-icon">📦</text>
+          <text class="popup-info-text">供应批次：{{selectedStore.supplyBatchRange.join('、')}}</text>
+        </view>
+        <view class="popup-info-row">
+          <text class="popup-info-icon">⭐</text>
+          <text class="popup-info-text">{{selectedStore.rating}}分（{{selectedStore.reviewCount}}条评价）</text>
+        </view>
+        <view class="popup-info-row">
+          <text class="popup-info-icon">🏷️</text>
+          <text class="popup-info-text">门店码：{{selectedStore.storeCode}}</text>
+        </view>
+      </view>
+      <view class="popup-actions">
+        <view class="popup-action-btn nav-btn" bindtap="navigateToStore">
+          <text>🧭 导航前往</text>
+        </view>
+        <view class="popup-action-btn detail-btn" bindtap="goToStoreDetailFromCard">
+          <text>查看详情</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

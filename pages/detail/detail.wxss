@@ -1094,6 +1094,61 @@
   flex-shrink: 0;
 }
 
+.authorized-network-entry {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #FFF8E1, #FFFDF5);
+  border: 2rpx solid rgba(218, 165, 32, 0.25);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  gap: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.authorized-network-entry:active {
+  transform: scale(0.98);
+  background: #FFF3CC;
+}
+
+.entry-icon-wrap {
+  width: 72rpx;
+  height: 72rpx;
+  background: linear-gradient(135deg, #FFF8E1, #FFECB3);
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.entry-icon {
+  font-size: 36rpx;
+}
+
+.entry-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.entry-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #DAA520;
+}
+
+.entry-desc {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.entry-arrow {
+  font-size: 40rpx;
+  color: #DAA520;
+  flex-shrink: 0;
+}
+
 /* 隐私提示 */
 .privacy-notice {
   display: flex;

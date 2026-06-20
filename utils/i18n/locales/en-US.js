@@ -42,7 +42,8 @@ module.exports = {
     batchList: 'Batch List',
     scanResult: 'Scan Result',
     greenTrace: 'Green Trace',
-    brandStory: 'Brand Story'
+    brandStory: 'Brand Story',
+    authorizedNetwork: 'Authorized Network'
   },
 
   home: {

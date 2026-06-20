@@ -1004,6 +1004,12 @@ Page({
     });
   },
 
+  goAuthorizedNetwork: function() {
+    wx.navigateTo({
+      url: '/pages/authorizedNetwork/authorizedNetwork?traceId=' + this.data.traceId
+    });
+  },
+
   goToTeaMaster: function(e) {
     var teamId = e.currentTarget.dataset.teamid;
     if (!teamId) return;

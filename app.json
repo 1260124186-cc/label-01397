@@ -57,7 +57,9 @@
     "pages/experience/reserve",
     "pages/experience/myReservations",
     "pages/experience/reservationDetail",
-    "pages/experience/verify"
+    "pages/experience/verify",
+    "pages/authorizedNetwork/authorizedNetwork",
+    "pages/authorizedNetworkDetail/authorizedNetworkDetail"
   ],
   "window": {
     "backgroundTextStyle": "dark",

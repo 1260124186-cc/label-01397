@@ -7834,6 +7834,212 @@ function addRecallRecord(recallInfo) {
   }
 }
 
+var AUTHORIZED_NETWORK_STORES = [
+  {
+    id: 'AN-HOTEL-001',
+    name: '武汉光谷希尔顿酒店',
+    type: 'hotel',
+    storeCode: 'S-HBWH-001',
+    address: '湖北省武汉市洪山区光谷大道77号',
+    city: '武汉',
+    lat: 30.5058,
+    lng: 114.4028,
+    phone: '027-87889988',
+    businessHours: '07:00-22:00',
+    supplyBatchRange: ['GH202503', 'GH202504'],
+    authorizationStart: '2025-01-01',
+    authorizationExpiry: '2026-12-31',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20lobby%20tea%20ceremony%20osmanthus%20tea%20service&image_size=square'
+    ],
+    tags: ['高端酒店', '大堂茶叙', '商务接待'],
+    description: '酒店大堂吧提供官方授权金桂花茶冲泡服务，选用武夷山金桂原叶，专业茶艺师现场冲泡',
+    features: ['专业茶艺师', '独立茶室', '商务洽谈'],
+    rating: 4.8,
+    reviewCount: 126
+  },
+  {
+    id: 'AN-HOTEL-002',
+    name: '杭州西溪悦榕庄',
+    type: 'hotel',
+    storeCode: 'S-ZJHZ-001',
+    address: '浙江省杭州市西湖区紫金港路21号',
+    city: '杭州',
+    lat: 30.2741,
+    lng: 120.0875,
+    phone: '0571-85858888',
+    businessHours: '08:00-23:00',
+    supplyBatchRange: ['GH202503'],
+    authorizationStart: '2025-03-01',
+    authorizationExpiry: '2026-06-30',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=banyan%20tree%20hotel%20chinese%20tea%20ceremony%20elegant%20setting&image_size=square'
+    ],
+    tags: ['度假酒店', '养生茶道', '湖景茶叙'],
+    description: '西溪湿地旁度假酒店，提供桂花茶品鉴体验，环境优美，适合慢享茶时光',
+    features: ['湖景茶室', '私享空间', '养生茶饮'],
+    rating: 4.9,
+    reviewCount: 89
+  },
+  {
+    id: 'AN-TEA-001',
+    name: '和静园茶馆·武汉天地店',
+    type: 'tea_house',
+    storeCode: 'S-HBWH-002',
+    address: '湖北省武汉市江岸区中山大道1505号武汉天地A区3栋',
+    city: '武汉',
+    lat: 30.5952,
+    lng: 114.2895,
+    phone: '027-82736688',
+    businessHours: '10:00-22:00',
+    supplyBatchRange: ['GH202503', 'GH202504'],
+    authorizationStart: '2025-02-01',
+    authorizationExpiry: '2026-12-31',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20chinese%20tea%20house%20elegant%20interior%20osmanthus%20tea%20brewing&image_size=square'
+    ],
+    tags: ['茶馆', '古法冲泡', '茶艺体验'],
+    description: '武汉知名茶文化品牌，专注古法桂花茶冲泡，配备专业茶艺师，提供品鉴级冲泡服务',
+    features: ['专业茶艺师', '古法冲泡', '茶器展示'],
+    rating: 4.7,
+    reviewCount: 203
+  },
+  {
+    id: 'AN-TEA-002',
+    name: '茗香阁·咸宁桂花镇店',
+    type: 'tea_house',
+    storeCode: 'S-HBXN-001',
+    address: '湖北省咸宁市咸安区桂花镇桂花大道88号',
+    city: '咸宁',
+    lat: 29.8416,
+    lng: 114.3178,
+    phone: '0715-8322888',
+    businessHours: '09:00-21:00',
+    supplyBatchRange: ['GH202503', 'GH202504'],
+    authorizationStart: '2025-01-15',
+    authorizationExpiry: '2026-12-31',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=rustic%20chinese%20tea%20house%20osmanthus%20village%20countryside%20tea%20culture&image_size=square'
+    ],
+    tags: ['产地茶馆', '桂花之乡', '现摘现窨'],
+    description: '坐落于桂花之乡核心产区，可参观金桂种植基地，体验从采摘到窨制的完整过程',
+    features: ['产地体验', '现摘现窨', '桂花文化'],
+    rating: 4.6,
+    reviewCount: 157
+  },
+  {
+    id: 'AN-TEA-003',
+    name: '悟茶堂·上海外滩店',
+    type: 'tea_house',
+    storeCode: 'S-SHHP-001',
+    address: '上海市黄浦区中山东一路18号3楼',
+    city: '上海',
+    lat: 31.2397,
+    lng: 121.4918,
+    phone: '021-63218888',
+    businessHours: '10:00-23:00',
+    supplyBatchRange: ['GH202503'],
+    authorizationStart: '2025-04-01',
+    authorizationExpiry: '2026-03-31',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20tea%20house%20shanghai%20bund%20view%20premium%20osmanthus%20tea&image_size=square'
+    ],
+    tags: ['外滩茶室', '江景品茶', '高端体验'],
+    description: '外滩江景茶室，可远眺浦东天际线品鉴桂花茶，中西合璧的品茶体验',
+    features: ['江景品茶', '中西融合', '私人包间'],
+    rating: 4.8,
+    reviewCount: 95
+  },
+  {
+    id: 'AN-VIP-001',
+    name: '武汉天河机场贵宾厅·东方航空',
+    type: 'airport_vip',
+    storeCode: 'S-HBWH-003',
+    address: '湖北省武汉市黄陂区天河机场T3航站楼VIP区',
+    city: '武汉',
+    lat: 30.7838,
+    lng: 114.2078,
+    phone: '027-85818888',
+    businessHours: '06:00-航班结束',
+    supplyBatchRange: ['GH202503'],
+    authorizationStart: '2025-05-01',
+    authorizationExpiry: '2026-04-30',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=airport%20vip%20lounge%20premium%20tea%20service%20chinese%20osmanthus%20tea&image_size=square'
+    ],
+    tags: ['机场贵宾厅', '候机品茶', '商务出行'],
+    description: '东方航空贵宾厅专属提供金桂花茶冲泡服务，候机时光亦可品味正宗桂花茶',
+    features: ['候机服务', '快速冲泡', '商务休闲'],
+    rating: 4.5,
+    reviewCount: 67
+  },
+  {
+    id: 'AN-VIP-002',
+    name: '北京首都机场贵宾厅·国航',
+    type: 'airport_vip',
+    storeCode: 'S-BJCY-001',
+    address: '北京市朝阳区首都机场T3航站楼VIP区',
+    city: '北京',
+    lat: 40.0799,
+    lng: 116.6031,
+    phone: '010-64563388',
+    businessHours: '05:30-航班结束',
+    supplyBatchRange: ['GH202503', 'GH202504'],
+    authorizationStart: '2025-06-01',
+    authorizationExpiry: '2026-05-31',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beijing%20airport%20vip%20lounge%20chinese%20tea%20ceremony%20elegant&image_size=square'
+    ],
+    tags: ['机场贵宾厅', '国航专属', '首都出发'],
+    description: '国航贵宾厅官方授权提供桂花茶品鉴，在候机间隙体验地道桂花茶文化',
+    features: ['候机服务', '国航会员', '茶文化展示'],
+    rating: 4.4,
+    reviewCount: 52
+  },
+  {
+    id: 'AN-HOTEL-003',
+    name: '深圳瑞吉酒店',
+    type: 'hotel',
+    storeCode: 'S-GDSZ-001',
+    address: '广东省深圳市罗湖区深南东路5016号',
+    city: '深圳',
+    lat: 22.5431,
+    lng: 114.0579,
+    phone: '0755-22238888',
+    businessHours: '07:30-23:00',
+    supplyBatchRange: ['GH202503'],
+    authorizationStart: '2025-03-15',
+    authorizationExpiry: '2026-03-14',
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=st%20regis%20hotel%20afternoon%20tea%20osmanthus%20tea%20premium%20service&image_size=square'
+    ],
+    tags: ['奢华酒店', '下午茶', '城市度假'],
+    description: '瑞吉酒店下午茶服务提供官方授权金桂花茶，搭配精致茶点，尽享都市优雅时光',
+    features: ['下午茶', '精致茶点', '城市天际线'],
+    rating: 4.7,
+    reviewCount: 73
+  }
+];
+
+var STORE_MOCK_REVIEWS = {
+  'AN-HOTEL-001': [
+    { id: 'SMR-001', storeId: 'AN-HOTEL-001', userId: 'U001', userName: '茶旅达人', rating: 5, content: '希尔顿的大堂吧环境一流，茶艺师手法专业，金桂花茶香气四溢，商务接待首选', images: [], tags: ['环境优雅', '茶艺专业'], isVerifiedPurchase: true, createTime: '2025-11-15T10:30:00Z', likeCount: 23, reply: null },
+    { id: 'SMR-002', storeId: 'AN-HOTEL-001', userId: 'U002', userName: '茶友小王', rating: 4, content: '冲泡服务不错，就是价格略高，建议推出组合套餐', images: [], tags: ['服务好'], isVerifiedPurchase: true, createTime: '2025-12-01T14:20:00Z', likeCount: 8, reply: null }
+  ],
+  'AN-TEA-001': [
+    { id: 'SMR-003', storeId: 'AN-TEA-001', userId: 'U003', userName: '品茶客', rating: 5, content: '和静园是武汉最好的桂花茶体验店，古法冲泡别具一格，每次来都有新体验', images: [], tags: ['古法冲泡', '茶艺精湛'], isVerifiedPurchase: true, createTime: '2025-10-20T09:15:00Z', likeCount: 45, reply: { replyContent: '感谢您的认可！我们将持续提升服务品质', replyTime: '2025-10-21T10:00:00Z' } },
+    { id: 'SMR-004', storeId: 'AN-TEA-001', userId: 'U004', userName: '桂花控', rating: 5, content: '终于找到正宗的桂花茶冲泡点了！门店扫码验证了官方授权，喝着特别安心', images: [], tags: ['官方授权', '正宗口感'], isVerifiedPurchase: true, createTime: '2025-11-08T16:40:00Z', likeCount: 32, reply: null }
+  ]
+};
+
+function getAuthorizedNetworkStores() {
+  return AUTHORIZED_NETWORK_STORES;
+}
+
+function getStoreReviews(storeId) {
+  return STORE_MOCK_REVIEWS[storeId] || [];
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -7949,5 +8155,7 @@ module.exports = {
   updateGovTraceReport,
   getGovPlatformStatusUpdates,
   updateProductGovStatus,
-  addRecallRecord
+  addRecallRecord,
+  getAuthorizedNetworkStores,
+  getStoreReviews
 };

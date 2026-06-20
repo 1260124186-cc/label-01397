@@ -1989,6 +1989,20 @@
       </view>
     </view>
 
+    <!-- ========== 授权合作网点入口 ========== -->
+    <view class="card animate-card module-card" style="animation-delay: 0.45s;">
+      <view class="authorized-network-entry" bindtap="goAuthorizedNetwork">
+        <view class="entry-icon-wrap">
+          <text class="entry-icon">🏪</text>
+        </view>
+        <view class="entry-info">
+          <text class="entry-title">授权餐饮/茶空间合作网点</text>
+          <text class="entry-desc">查看官方推荐冲泡点：酒店、茶馆、机场贵宾厅</text>
+        </view>
+        <text class="entry-arrow">›</text>
+      </view>
+    </view>
+
     <!-- ========== 冲泡记录保存弹窗 ========== -->
     <view class="brew-save-mask" wx:if="{{showBrewSaveModal}}" bindtap="closeBrewSaveModal">
       <view class="brew-save-modal" catchtap="preventBubble">
