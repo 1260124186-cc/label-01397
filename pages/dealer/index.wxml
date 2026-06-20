@@ -46,10 +46,32 @@
       <view class="action-icon">📋</view>
       <view class="action-text">审计日志</view>
     </view>
+    <view wx:if="{{canViewTraining}}" class="action-btn action-training" bindtap="goToTraining">
+      <view class="action-icon">📚</view>
+      <view class="action-text">培训学院</view>
+      <view wx:if="{{stockOutBlockedByTraining}}" class="action-badge warning">!</view>
+    </view>
     <view class="action-btn action-home" bindtap="goHome">
       <view class="action-icon">🏠</view>
       <view class="action-text">返回首页</view>
     </view>
+  </view>
+
+  <view wx:if="{{canViewTraining && trainingStats}}" class="training-banner {{stockOutBlockedByTraining ? 'warning' : ''}}">
+    <view class="training-icon">{{stockOutBlockedByTraining ? '⚠️' : '📚'}}</view>
+    <view class="training-info">
+      <view class="training-title">培训进度</view>
+      <view class="training-progress">
+        <text>必修课：{{trainingStats.completedRequired}}/{{trainingStats.totalRequired}}</text>
+        <text wx:if="{{stockOutBlockedByTraining}}" class="training-warning">出库受限</text>
+        <text wx:else class="training-normal">权限正常</text>
+      </view>
+      <view class="training-stats">
+        <text>学习时长：{{trainingStats.totalStudyMinutes}}分钟</text>
+        <text>证书：{{trainingStats.certificates}}张</text>
+      </view>
+    </view>
+    <view class="training-arrow" bindtap="goToTraining">去学习 ›</view>
   </view>
 
   <view class="tabs">

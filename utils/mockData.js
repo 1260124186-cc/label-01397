@@ -8040,6 +8040,848 @@ function getStoreReviews(storeId) {
   return STORE_MOCK_REVIEWS[storeId] || [];
 }
 
+// ==================== 经销商培训课程数据 ====================
+const TRAINING_COURSES = [
+  {
+    id: 'COURSE-PRODUCT-001',
+    name: '桂花茶产品知识',
+    category: 'product',
+    isRequired: true,
+    description: '系统学习桂花茶的产品特点、品种分类、品质鉴别等核心知识，为销售工作打下坚实基础。',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20product%20knowledge%20training%20cover%20elegant%20tea%20products&image_size=landscape_16_9',
+    instructor: '王讲师',
+    instructorTitle: '产品培训经理',
+    estimatedMinutes: 45,
+    difficulty: 'beginner',
+    publishTime: Date.now() - 86400000 * 30,
+    chapters: [
+      {
+        id: 'CH-PRODUCT-001',
+        title: '桂花茶产品概述',
+        duration: 600,
+        minStudySeconds: 60,
+        content: `
+## 一、桂花茶简介
+桂花茶是中国传统名茶，由茶叶与桂花窨制而成，兼具茶的韵味与桂花的芳香。
+
+## 二、我们的产品系列
+1. **金桂花茶**：采用200年树龄古茶树鲜叶与咸宁金桂窨制，花香浓郁持久
+2. **银桂花茶**：选用120年树龄茶叶与银桂窨制，口感清雅柔和
+3. **丹桂花茶**：特色产品，橙红丹桂与武夷岩茶的完美结合
+4. **四季桂花茶**：日常饮品，四季桂与烘青绿茶的清新组合
+
+## 三、产品核心卖点
+- **双古树认证**：茶树龄+桂花树龄双追溯
+- **非遗窨制工艺**：5次窨制，层层入味
+- **全程溯源**：从茶园到茶杯，全程可追溯
+- **品质保证**：每批次都有第三方检测报告
+        `,
+        media: [
+          { type: 'image', url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20product%20lineup%20four%20varieties%20display&image_size=landscape_16_9', title: '产品系列展示' }
+        ]
+      },
+      {
+        id: 'CH-PRODUCT-002',
+        title: '品种分类与鉴别',
+        duration: 900,
+        minStudySeconds: 90,
+        content: `
+## 一、桂花品种分类
+### 1. 金桂（Osmanthus fragrans var. thunbergii）
+- 花色：金黄色
+- 花期：9-10月
+- 香气：浓郁持久
+- 适用：高端产品窨制
+
+### 2. 银桂（Osmanthus fragrans var. latifolius）
+- 花色：乳白色
+- 花期：9-10月
+- 香气：清雅淡远
+- 适用：中端产品窨制
+
+### 3. 丹桂（Osmanthus fragrans var. aurantiacus）
+- 花色：橙红色
+- 花期：9-10月
+- 香气：馥郁浓烈
+- 适用：特色产品窨制
+
+### 4. 四季桂（Osmanthus fragrans var. semperflorens）
+- 花色：淡白色
+- 花期：四季开花
+- 香气：清淡悠长
+- 适用：日常饮品
+
+## 二、品质鉴别方法
+### 1. 看外观
+- 干茶：条索紧结，色泽乌润
+- 桂花：花朵完整，色泽金黄/银白
+
+### 2. 闻香气
+- 窨制好的桂花茶：花香浓郁，无异味
+- 劣质产品：香气短促，有青草气
+
+### 3. 品滋味
+- 优质茶：茶汤清澈，花香与茶香协调
+- 劣质茶：茶汤浑浊，滋味苦涩
+        `,
+        media: [
+          { type: 'image', url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=four%20types%20osmanthus%20flowers%20comparison%20gold%20silver%20orange%20white&image_size=landscape_16_9', title: '四大品种对比' }
+        ]
+      },
+      {
+        id: 'CH-PRODUCT-003',
+        title: '核心工艺讲解',
+        duration: 1200,
+        minStudySeconds: 120,
+        content: `
+## 一、窨制工艺概述
+窨制是桂花茶的核心工艺，通过让茶叶吸收桂花的香气，达到茶引花香、花益茶味的效果。
+
+## 二、工艺流程
+### 1. 备料
+- 茶叶：选用武夷岩茶或烘青绿茶
+- 桂花：选用当日清晨采摘的新鲜桂花
+
+### 2. 拌花
+按1:5的比例均匀拌合茶叶与桂花，确保每片茶叶都能接触到桂花。
+
+### 3. 窨制
+在恒温恒湿环境下（温度30℃，湿度72%）静置5小时，让茶叶充分吸收花香。
+
+### 4. 通花
+窨制过程中适时通风散热，保持茶叶活性。
+
+### 5. 起花
+用筛网分离茶叶与桂花残渣。
+
+### 6. 干燥
+低温烘干（80℃），锁住花香。
+
+## 三、窨制次数与品质
+- **1窨**：基础款，香气清新
+- **3窨**：中端款，香气饱满
+- **5窨**：高端款，香气层次丰富，入骨三分
+
+我们的金桂花茶采用5次窨制，为行业最高标准。
+        `,
+        media: [
+          { type: 'image', url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20osmanthus%20tea%20scenting%20process%20workshop%20tea%20master%20working&image_size=landscape_16_9', title: '传统窨制工艺' }
+        ]
+      }
+    ],
+    hasQuiz: true,
+    quiz: {
+      title: '产品知识测验',
+      passingScore: 60,
+      questions: [
+        {
+          id: 'Q1',
+          type: 'single',
+          question: '金桂花茶采用的窨制次数是？',
+          options: ['A. 1次', 'B. 3次', 'C. 5次', 'D. 7次'],
+          correctAnswer: 'C',
+          explanation: '金桂花茶采用5次窨制，为行业最高标准，确保香气层次丰富。'
+        },
+        {
+          id: 'Q2',
+          type: 'single',
+          question: '以下哪个品种的桂花花色为橙红色？',
+          options: ['A. 金桂', 'B. 银桂', 'C. 丹桂', 'D. 四季桂'],
+          correctAnswer: 'C',
+          explanation: '丹桂的花色为橙红色，香气馥郁浓烈，适用于特色产品窨制。'
+        },
+        {
+          id: 'Q3',
+          type: 'single',
+          question: '窨制过程中的理想温度是？',
+          options: ['A. 20℃', 'B. 25℃', 'C. 30℃', 'D. 35℃'],
+          correctAnswer: 'C',
+          explanation: '窨制的理想温度是30℃，湿度72%，在此环境下茶叶能最佳地吸收桂花香气。'
+        },
+        {
+          id: 'Q4',
+          type: 'single',
+          question: '金桂花茶的核心卖点不包括以下哪项？',
+          options: ['A. 双古树认证', 'B. 非遗窨制工艺', 'C. 全程溯源', 'D. 价格最低'],
+          correctAnswer: 'D',
+          explanation: '核心卖点包括双古树认证、非遗窨制工艺、全程溯源、品质保证，不包括价格最低。'
+        },
+        {
+          id: 'Q5',
+          type: 'single',
+          question: '窨制工艺中茶叶与桂花的配比是？',
+          options: ['A. 1:3', 'B. 1:5', 'C. 1:7', 'D. 1:10'],
+          correctAnswer: 'B',
+          explanation: '按1:5的比例均匀拌合茶叶与桂花，确保每片茶叶都能接触到桂花。'
+        }
+      ]
+    }
+  },
+  {
+    id: 'COURSE-TRACE-001',
+    name: '溯源话术培训',
+    category: 'trace',
+    isRequired: true,
+    description: '掌握溯源系统的使用方法，学习如何向客户讲解溯源价值，提升客户信任度。',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traceability%20system%20training%20qrcode%20scanning%20smartphone&image_size=landscape_16_9',
+    instructor: '李讲师',
+    instructorTitle: '溯源技术专家',
+    estimatedMinutes: 35,
+    difficulty: 'beginner',
+    publishTime: Date.now() - 86400000 * 25,
+    chapters: [
+      {
+        id: 'CH-TRACE-001',
+        title: '溯源系统介绍',
+        duration: 600,
+        minStudySeconds: 60,
+        content: `
+## 一、什么是溯源系统
+溯源系统是通过物联网、区块链等技术，对产品从生产到消费的全过程进行追踪和记录的系统。
+
+## 二、我们的溯源体系
+### 1. 一物一码
+每个产品罐底都有唯一的溯源二维码，消费者扫码即可查看完整溯源信息。
+
+### 2. 全程上链
+所有溯源数据都已上传至区块链，不可篡改，真实可信。
+
+### 3. 多维数据
+涵盖：产地信息、采摘时间、窨制过程、检测报告、流通轨迹等。
+
+## 三、溯源价值
+### 对消费者
+- **透明可信**：知道产品从哪里来，经过哪些环节
+- **品质保证**：每批次都有检测报告，品质有保障
+- **防伪鉴别**：通过溯源信息鉴别产品真伪
+
+### 对经销商
+- **销售工具**：溯源是最好的销售话术
+- **信任建立**：通过溯源数据快速建立客户信任
+- **品牌价值**：传递品牌对品质的追求和责任
+        `,
+        media: [
+          { type: 'image', url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=blockchain%20traceability%20system%20diagram%20supply%20chain%20infographic&image_size=landscape_16_9', title: '溯源系统架构' }
+        ]
+      },
+      {
+        id: 'CH-TRACE-002',
+        title: '客户沟通话术',
+        duration: 900,
+        minStudySeconds: 90,
+        content: `
+## 一、开场话术
+### 场景1：客户询问产品品质
+"这款桂花茶最大的特点是全程可溯源。您扫码就能看到：茶叶来自200年古茶树，桂花采自咸宁百年桂花园，经过5次窨制，每一步都有记录。"
+
+### 场景2：客户担心买到假货
+"您完全不用担心，每个产品都有唯一的溯源二维码。扫码可以查看区块链存证信息，这些数据是不可篡改的，真正做到了来源可查、去向可追。"
+
+## 二、核心卖点话术
+### 1. 双古树认证
+"我们的每罐茶都可以追溯到具体的茶树和桂花树。金桂花茶用的是武夷山200年古茶树的鲜叶，和咸宁50年金桂树的花朵，这在行业里是非常少见的。"
+
+### 2. 非遗工艺
+"窨制工艺是我们的核心竞争力。您看这里有每次窨制的记录，包括时间、温度、湿度、操作人员，五次窨制，层层入味。"
+
+### 3. 品质检测
+"每批次产品出厂前都会经过第三方检测，包括农残、重金属等多项指标。检测报告也在溯源信息里，您随时可以查看。"
+
+## 三、应对异议的话术
+### 客户说："溯源不就是个噱头吗？"
+"您这个问题问得很好。确实很多商家都在说溯源，但我们的溯源是实实在在的：
+1. 数据都在区块链上，不是我们想改就能改的
+2. 每个环节都有图片、视频为证，不是干巴巴的文字
+3. 您甚至可以通过溯源信息看到具体的采茶工人和窨制师傅
+
+您可以现场扫码感受一下，看看我们的溯源和别家有什么不一样。"
+
+## 四、促成话术
+"您看，这么透明的溯源体系，买回去不管是自己喝还是送礼，都特别放心。而且现在大家都注重健康，能看到完整溯源的产品，送人也更有面子。"
+        `,
+        media: [
+          { type: 'image', url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=customer%20communication%20sales%20training%20business%20meeting&image_size=landscape_16_9', title: '客户沟通场景' }
+        ]
+      }
+    ],
+    hasQuiz: true,
+    quiz: {
+      title: '溯源话术测验',
+      passingScore: 60,
+      questions: [
+        {
+          id: 'Q1',
+          type: 'single',
+          question: '溯源数据存储在哪里，保证不可篡改？',
+          options: ['A. 本地数据库', 'B. 区块链', 'C. 云服务器', 'D. U盘'],
+          correctAnswer: 'B',
+          explanation: '所有溯源数据都已上传至区块链，不可篡改，真实可信。'
+        },
+        {
+          id: 'Q2',
+          type: 'single',
+          question: '客户询问产品品质时，最佳开场话术是？',
+          options: [
+            'A. 我们的产品价格便宜',
+            'B. 这款桂花茶最大的特点是全程可溯源...',
+            'C. 买得多可以打折',
+            'D. 您先尝尝再说'
+          ],
+          correctAnswer: 'B',
+          explanation: '从溯源切入，能够快速建立客户信任，体现产品价值。'
+        },
+        {
+          id: 'Q3',
+          type: 'single',
+          question: '应对客户说"溯源不就是噱头"时，应该？',
+          options: [
+            'A. 同意客户说法，转移话题',
+            'B. 与客户争论',
+            'C. 从数据真实性、多媒体证据等方面解释',
+            'D. 感到生气'
+          ],
+          correctAnswer: 'C',
+          explanation: '应该从区块链不可篡改、多媒体证据、可现场验证等方面，让客户直观感受到溯源的价值。'
+        },
+        {
+          id: 'Q4',
+          type: 'single',
+          question: '溯源信息中不包括以下哪项？',
+          options: ['A. 产地信息', 'B. 采摘时间', 'C. 客户购买记录', 'D. 检测报告'],
+          correctAnswer: 'C',
+          explanation: '溯源信息涵盖产地信息、采摘时间、窨制过程、检测报告、流通轨迹等，不包括客户购买记录。'
+        },
+        {
+          id: 'Q5',
+          type: 'single',
+          question: '溯源二维码位于产品的哪个位置？',
+          options: ['A. 罐底', 'B. 罐盖', 'C. 罐身', 'D. 包装盒'],
+          correctAnswer: 'A',
+          explanation: '每个产品罐底都有唯一的溯源二维码，消费者扫码即可查看完整溯源信息。'
+        }
+      ]
+    }
+  },
+  {
+    id: 'COURSE-DIVERGENCE-001',
+    name: '窜货政策与合规',
+    category: 'divergence',
+    isRequired: true,
+    description: '深入了解窜货的定义、危害、识别方法和应对措施，确保渠道合规经营。',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=channel%20compliance%20anti-divergence%20policy%20business%20regulation&image_size=landscape_16_9',
+    instructor: '张讲师',
+    instructorTitle: '渠道管理总监',
+    estimatedMinutes: 40,
+    difficulty: 'intermediate',
+    publishTime: Date.now() - 86400000 * 20,
+    chapters: [
+      {
+        id: 'CH-DIVERGENCE-001',
+        title: '窜货的定义与危害',
+        duration: 600,
+        minStudySeconds: 60,
+        content: `
+## 一、什么是窜货
+窜货是指经销商将产品销售到非授权区域的行为，也称为"倒货"或"冲货"。
+
+## 二、窜货的类型
+### 1. 良性窜货
+- 经销商在自己的销售区域内销售给流动客户
+- 产品最终流向相邻区域，但数量不大
+- 一般不采取处罚措施
+
+### 2. 恶性窜货
+- 经销商为获取非正常利润，蓄意向非授权区域销售产品
+- 通常以低于指导价的价格销售
+- 严重破坏市场秩序，必须严厉打击
+
+### 3. 自然性窜货
+- 产品在流通中自然流向非授权区域
+- 数量少，影响小
+- 关注但不主动干预
+
+## 三、窜货的危害
+### 1. 对市场的危害
+- **价格混乱**：窜货导致区域间价格不一致
+- **渠道冲突**：经销商之间产生矛盾，影响渠道稳定
+- **品牌损伤**：消费者对品牌产生不信任
+
+### 2. 对经销商的危害
+- **利润下降**：价格战导致整体利润降低
+- **关系恶化**：与其他经销商、与厂家关系紧张
+- **处罚风险**：面临厂家的处罚，甚至取消代理权
+
+### 3. 对消费者的危害
+- **服务缺失**：跨区域购买可能无法享受正常售后服务
+- **真伪难辨**：窜货产品可能存在假冒伪劣
+
+## 四、窜货的根本原因
+1. 价格体系不合理
+2. 销售目标过高
+3. 渠道激励政策不当
+4. 经销商恶意行为
+5. 区域市场需求差异
+        `,
+        media: [
+          { type: 'image', url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=market%20channel%20divergence%20diagram%20product%20flow%20illegal&image_size=landscape_16_9', title: '窜货路径示意' }
+        ]
+      },
+      {
+        id: 'CH-DIVERGENCE-002',
+        title: '窜货的识别与预警',
+        duration: 900,
+        minStudySeconds: 90,
+        content: `
+## 一、窜货识别方法
+### 1. 扫码地点预警
+- 我们的溯源系统会记录每次扫码的地理位置
+- 如果某批次产品在非授权区域扫码次数异常，系统会自动预警
+
+### 2. 价格监测
+- 关注各区域市场的终端售价
+- 如果发现某区域售价明显低于指导价，可能存在窜货
+
+### 3. 客户反馈
+- 其他经销商的投诉
+- 终端客户反映购买渠道异常
+
+## 二、窜货预警等级
+### 一级预警（轻微）
+- 单批次产品在非授权区域扫码≤5次
+- 可能是客户异地携带
+- 处理：记录观察
+
+### 二级预警（中等）
+- 单批次产品在非授权区域扫码6-20次
+- 可能存在小规模窜货
+- 处理：警告涉事经销商，要求说明情况
+
+### 三级预警（严重）
+- 单批次产品在非授权区域扫码＞20次
+- 或存在明显低于指导价销售的行为
+- 处理：立案调查，按合同处罚
+
+## 三、窜货调查流程
+1. **预警触发**：系统自动预警或接收到投诉
+2. **初步核实**：核查扫码数据、销售记录
+3. **证据收集**：购买样品、固定价格证据、拍照录像
+4. **事实确认**：与涉事经销商沟通，听取陈述
+5. **处罚决定**：根据政策和合同作出处罚
+6. **执行反馈**：执行处罚并公示结果
+
+## 四、如何避免被认定为窜货
+1. **严格按区域销售**：不主动向非授权区域客户销售
+2. **了解下游去向**：关注批发客户的最终销售区域
+3. **保留销售记录**：每笔销售都要有完整记录
+4. **异常及时报备**：如果发现流动大客户，及时向厂家报备
+5. **学习政策法规**：定期参加培训，了解最新政策
+        `,
+        media: [
+          { type: 'image', url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=alert%20system%20monitoring%20dashboard%20data%20visualization&image_size=landscape_16_9', title: '窜货预警系统' }
+        ]
+      },
+      {
+        id: 'CH-DIVERGENCE-003',
+        title: '合规经营要求',
+        duration: 900,
+        minStudySeconds: 90,
+        content: `
+## 一、经销合同核心条款
+### 1. 授权区域
+- 每个经销商都有明确的授权销售区域
+- 不得跨区域销售，包括线上和线下
+
+### 2. 价格维护
+- 严格执行厂家指导价
+- 不得低价倾销，不得变相降价（如搭赠、返点过多）
+
+### 3. 产品来源
+- 只能从厂家或上级授权经销商进货
+- 不得从非正规渠道进货，不得销售假货
+
+## 二、窜货处罚措施
+### 一级窜货（轻微）
+- 口头警告
+- 扣减10%当月返利
+- 责令整改
+
+### 二级窜货（中等）
+- 书面警告
+- 扣减30%当月返利
+- 暂停新产品配额1个月
+- 全渠道通报批评
+
+### 三级窜货（严重）
+- 扣减全部当月返利
+- 取消年度评优资格
+- 暂停供货3个月
+- 情节特别严重的，解除经销合同
+
+### 屡教不改
+- 累计3次窜货记录，直接解除经销合同
+- 纳入品牌黑名单，永不合作
+
+## 三、举报奖励政策
+- **举报有奖**：如实举报窜货行为，经查实后奖励500-5000元
+- **保密承诺**：对举报人的信息严格保密
+- **实名举报**：鼓励实名举报，奖励翻倍
+
+## 四、合规经营建议
+1. **建立内部管理制度**：明确销售人员的销售范围
+2. **加强客户管理**：了解每个客户的销售区域
+3. **定期自查**：检查自己的销售数据，及时发现异常
+4. **参加培训**：定期参加厂家组织的合规培训
+5. **主动沟通**：有问题及时与厂家渠道经理沟通
+
+合规经营是长久合作的基础，让我们共同维护良好的市场秩序！
+        `,
+        media: [
+          { type: 'image', url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20compliance%20handshake%20trust%20partnership&image_size=landscape_16_9', title: '合规经营，合作共赢' }
+        ]
+      }
+    ],
+    hasQuiz: true,
+    quiz: {
+      title: '窜货政策测验',
+      passingScore: 60,
+      questions: [
+        {
+          id: 'Q1',
+          type: 'single',
+          question: '单批次产品在非授权区域扫码多少次构成三级（严重）预警？',
+          options: ['A. ≤5次', 'B. 6-20次', 'C. ＞20次', 'D. ＞50次'],
+          correctAnswer: 'C',
+          explanation: '单批次产品在非授权区域扫码＞20次构成三级预警，需立案调查。'
+        },
+        {
+          id: 'Q2',
+          type: 'single',
+          question: '以下哪种不属于恶性窜货的特征？',
+          options: [
+            'A. 蓄意向非授权区域销售',
+            'B. 以低于指导价销售',
+            'C. 客户异地携带少量产品',
+            'D. 破坏市场秩序'
+          ],
+          correctAnswer: 'C',
+          explanation: '客户异地携带少量产品属于良性窜货或自然性窜货，不属于恶性窜货。'
+        },
+        {
+          id: 'Q3',
+          type: 'single',
+          question: '三级窜货的处罚不包括以下哪项？',
+          options: [
+            'A. 扣减全部当月返利',
+            'B. 取消年度评优资格',
+            'C. 暂停供货3个月',
+            'D. 口头警告'
+          ],
+          correctAnswer: 'D',
+          explanation: '口头警告是一级窜货的处罚措施，三级窜货处罚更严厉。'
+        },
+        {
+          id: 'Q4',
+          type: 'single',
+          question: '累计几次窜货记录会被直接解除经销合同？',
+          options: ['A. 1次', 'B. 2次', 'C. 3次', 'D. 5次'],
+          correctAnswer: 'C',
+          explanation: '累计3次窜货记录，将被直接解除经销合同，并纳入品牌黑名单。'
+        },
+        {
+          id: 'Q5',
+          type: 'single',
+          question: '以下哪种行为是正确的？',
+          options: [
+            'A. 为了完成任务，向邻区域低价销售',
+            'B. 从其他经销商处进货，因为价格更低',
+            'C. 发现流动大客户及时向厂家报备',
+            'D. 给客户大量返点变相降价'
+          ],
+          correctAnswer: 'C',
+          explanation: '发现流动大客户及时向厂家报备是正确的做法，可以避免被误判为窜货。'
+        }
+      ]
+    }
+  },
+  {
+    id: 'COURSE-BREW-001',
+    name: '桂花茶冲泡演示',
+    category: 'brew',
+    isRequired: true,
+    description: '学习专业的桂花茶冲泡技巧，掌握不同场景的冲泡方法，提升客户体验。',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20brewing%20masterclass%20elegant%20tea%20ceremony&image_size=landscape_16_9',
+    instructor: '陈讲师',
+    instructorTitle: '国家级评茶师',
+    estimatedMinutes: 50,
+    difficulty: 'beginner',
+    publishTime: Date.now() - 86400000 * 15,
+    chapters: [
+      {
+        id: 'CH-BREW-001',
+        title: '冲泡基础',
+        duration: 600,
+        minStudySeconds: 60,
+        content: `
+## 一、冲泡用水
+### 1. 水质要求
+- **山泉水**：最佳，含有丰富矿物质，能激发茶香
+- **纯净水**：次之，干净无异味
+- **矿泉水**：可接受，但注意矿物质含量不宜过高
+- **自来水**：不推荐，含氯，会影响茶味
+
+### 2. 水温控制
+- **金桂花茶**：95-100℃，水温高才能激发浓郁的花香
+- **银桂花茶**：90-95℃，水温稍低，避免苦涩
+- **丹桂花茶**：95℃，水温要足，释放丹桂的馥郁
+- **四季桂花茶**：85-90℃，水温不宜过高，保持清新
+
+## 二、茶具选择
+### 1. 推荐茶具
+- **白瓷盖碗**：最佳，便于观察汤色，聚香好
+- **玻璃茶具**：适合观赏茶汤和桂花形态
+- **紫砂茶具**：保温好，适合醇厚型茶品
+
+### 2. 避免使用
+- **塑料杯**：容易有异味，影响口感
+- **保温杯**：长时间高温焖泡，茶汤易苦涩
+
+## 三、投茶量
+- **标准量**：3g茶叶（约一茶匙）配150ml水
+- **可根据口味调整**：
+  - 喜欢淡茶：2g/150ml
+  - 喜欢浓茶：4g/150ml
+
+## 四、冲泡时间
+- **第一泡**：15秒，快速出汤，唤醒茶香
+- **第二泡**：20秒，最佳口感
+- **第三泡**：30秒，香气依然
+- **第四泡**：45秒，余韵悠长
+
+优质桂花茶可连续冲泡5-7次，花香持久。
+        `,
+        media: [
+          { type: 'image', url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20brewing%20essentials%20water%20temperature%20teaware&image_size=landscape_16_9', title: '冲泡要素' }
+        ]
+      },
+      {
+        id: 'CH-BREW-002',
+        title: '标准冲泡流程',
+        duration: 1200,
+        minStudySeconds: 120,
+        content: `
+## 一、准备工作
+1. 温杯：用热水将茶具温热
+2. 备茶：取出3g桂花茶
+3. 烧水：烧至合适温度
+
+## 二、冲泡步骤
+### 第1步：温杯洁具
+将沸水倒入盖碗中，旋转后倒出。目的：
+- 清洁茶具
+- 提升茶具温度，利于茶香散发
+
+### 第2步：投茶
+将3g桂花茶投入盖碗中。
+
+### 第3步：润茶（洗茶）
+注入少量温水（约盖碗容量的1/3），快速摇晃后倒出。
+- 目的：唤醒茶叶，洗去浮尘
+- 注意：动作要快，不要让茶汤焖出
+
+### 第4步：冲泡
+高冲注水，让茶叶在水中翻滚。
+- 高冲可以激发茶香
+- 注水至盖碗八分满
+
+### 第5步：出汤
+15秒后，将茶汤倒入公道杯中。
+- 出汤要快，沥干
+- 盖碗盖子留缝，不要完全盖住，避免焖熟茶叶
+
+### 第6步：分茶
+将公道杯中的茶汤均匀分入品茗杯中。
+- 七分满为宜，留有三分情意
+- 可以先闻香，再品饮
+
+### 第7步：续泡
+继续注水，每泡延长5-10秒出汤。
+
+## 三、品鉴要点
+### 1. 观色
+- 优质桂花茶汤色：清澈透亮，浅金黄
+- 有桂花花瓣漂浮，赏心悦目
+
+### 2. 闻香
+- 先闻杯盖香：桂花香气扑鼻
+- 再闻茶汤香：茶香与花香融合
+- 冷香：茶汤冷却后仍有余香
+
+### 3. 品味
+- 小口啜饮，让茶汤在口腔中停留
+- 感受：花香、茶香、回甘
+- 金桂花茶：浓郁饱满
+- 银桂花茶：清雅柔和
+
+## 四、冲泡演示要点（面向客户）
+1. **动作优雅**：每个动作都要从容不迫
+2. **边泡边讲**：讲解每个步骤的要点和讲究
+3. **互动提问**："您平时喜欢喝什么茶？"
+4. **引导品鉴**："您先闻闻这个香气..."
+5. **卖点植入**："我们的茶泡5次还有花香，这就是5次窨制的效果"
+        `,
+        media: [
+          { type: 'image', url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20chinese%20tea%20ceremony%20step%20by%20step%20brewing&image_size=landscape_16_9', title: '标准冲泡流程' }
+        ]
+      },
+      {
+        id: 'CH-BREW-003',
+        title: '不同场景冲泡技巧',
+        duration: 900,
+        minStudySeconds: 90,
+        content: `
+## 一、门店待客冲泡
+### 目标
+快速泡出好茶，给客户良好的第一印象。
+
+### 要点
+1. **提前准备**：茶具预热，水烧开
+2. **简化流程**：润茶后直接冲泡出汤
+3. **时间控制**：每泡30秒内完成，不让客户久等
+4. **重点展示**：汤色、香气、耐泡度
+
+## 二、家庭冲泡（给客户的建议）
+### 简单泡法（马克杯）
+1. 3g茶叶放入马克杯
+2. 倒入90℃热水
+3. 浸泡3分钟即可饮用
+4. 可连续冲泡3次
+
+### 讲究泡法（工夫茶）
+按标准流程冲泡，适合周末闲暇时光。
+
+## 三、办公室冲泡
+### 便捷泡法
+1. 使用飘逸杯或带茶隔的杯子
+2. 投茶3g，注水后浸泡2分钟
+3. 按下出水键，茶汤与茶叶分离
+4. 可以反复冲泡
+
+## 四、冷泡法（夏季推荐）
+### 步骤
+1. 3g茶叶放入冷泡瓶
+2. 加入500ml矿泉水
+3. 放入冰箱冷藏4-6小时
+4. 取出即可饮用，冰爽甘甜
+
+### 优点
+- 茶汤苦涩度低
+- 口感清甜
+- 适合夏季消暑
+
+## 五、调味冲泡
+### 桂花茶+蜂蜜
+- 泡好茶后，加入适量蜂蜜
+- 适合喜欢甜味的客户
+- 注意：蜂蜜要在茶汤温度低于60℃时加入，避免破坏营养
+
+### 桂花茶+枸杞
+- 冲泡时加入5-8粒枸杞
+- 养生效果更佳
+- 适合中老年客户
+
+### 桂花茶+红枣
+- 冲泡时加入2-3片红枣
+- 补血养颜
+- 适合女性客户
+
+## 六、常见问题处理
+### 问题1：茶汤太苦涩
+**原因**：水温太高、浸泡时间太长、投茶量太多
+**解决**：降低水温、缩短浸泡时间、减少投茶量
+
+### 问题2：香气不明显
+**原因**：水温不够、茶叶品质不好
+**解决**：提高水温、更换茶叶
+
+### 问题3：不耐泡
+**原因**：窨制次数不够、茶叶品质一般
+**解决**：选择高品质的桂花茶（如我们的5窨金桂）
+
+## 七、冲泡演示注意事项
+1. **保持微笑**：让客户感受到你的专业和热情
+2. **保持干净**：茶具、桌面要整洁
+3. **语言通俗易懂**：不要用太专业的术语
+4. **因人而异**：根据客户的接受程度调整讲解深度
+5. **多鼓励尝试**："您也来试试，很简单的"
+        `,
+        media: [
+          { type: 'image', url: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tea%20different%20brewing%20methods%20cold%20brew%20hot%20brew&image_size=landscape_16_9', title: '多种冲泡方式' }
+        ]
+      }
+    ],
+    hasQuiz: true,
+    quiz: {
+      title: '冲泡技巧测验',
+      passingScore: 60,
+      questions: [
+        {
+          id: 'Q1',
+          type: 'single',
+          question: '金桂花茶的最佳冲泡水温是？',
+          options: ['A. 80-85℃', 'B. 85-90℃', 'C. 90-95℃', 'D. 95-100℃'],
+          correctAnswer: 'D',
+          explanation: '金桂花茶需要95-100℃的水温，才能激发其浓郁的花香。'
+        },
+        {
+          id: 'Q2',
+          type: 'single',
+          question: '标准冲泡的投茶量是？',
+          options: ['A. 2g/150ml', 'B. 3g/150ml', 'C. 4g/150ml', 'D. 5g/150ml'],
+          correctAnswer: 'B',
+          explanation: '标准量是3g茶叶配150ml水，可根据个人口味调整。'
+        },
+        {
+          id: 'Q3',
+          type: 'single',
+          question: '冷泡法需要冷藏多长时间？',
+          options: ['A. 1-2小时', 'B. 2-3小时', 'C. 4-6小时', 'D. 8小时以上'],
+          correctAnswer: 'C',
+          explanation: '冷泡法需要冷藏4-6小时，让茶叶慢慢释放味道，口感冰爽甘甜。'
+        },
+        {
+          id: 'Q4',
+          type: 'single',
+          question: '冲泡时第一泡的出汤时间是？',
+          options: ['A. 5秒', 'B. 15秒', 'C. 30秒', 'D. 60秒'],
+          correctAnswer: 'B',
+          explanation: '第一泡15秒快速出汤，唤醒茶香，后续每泡延长5-10秒。'
+        },
+        {
+          id: 'Q5',
+          type: 'single',
+          question: '加蜂蜜时茶汤温度应该低于多少度？',
+          options: ['A. 40℃', 'B. 50℃', 'C. 60℃', 'D. 70℃'],
+          correctAnswer: 'C',
+          explanation: '蜂蜜要在茶汤温度低于60℃时加入，避免破坏其中的营养成分。'
+        }
+      ]
+    }
+  }
+];
+
+function getTrainingCourses() {
+  return JSON.parse(JSON.stringify(TRAINING_COURSES));
+}
+
+function getTrainingCourse(courseId) {
+  for (var i = 0; i < TRAINING_COURSES.length; i++) {
+    if (TRAINING_COURSES[i].id === courseId) {
+      return JSON.parse(JSON.stringify(TRAINING_COURSES[i]));
+    }
+  }
+  return null;
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -8157,5 +8999,7 @@ module.exports = {
   updateProductGovStatus,
   addRecallRecord,
   getAuthorizedNetworkStores,
-  getStoreReviews
+  getStoreReviews,
+  getTrainingCourses,
+  getTrainingCourse
 };

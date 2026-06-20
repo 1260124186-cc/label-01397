@@ -196,6 +196,11 @@
   position: relative;
 }
 
+.action-training {
+  background: linear-gradient(135deg, #FFFDE7 0%, #FFF9C4 100%);
+  position: relative;
+}
+
 .action-badge {
   position: absolute;
   top: 12rpx;
@@ -209,6 +214,10 @@
   background: #ff4d4f;
   border-radius: 18rpx;
   padding: 0 8rpx;
+}
+
+.action-badge.warning {
+  background: #FA8C16;
 }
 
 .tabs {
@@ -655,4 +664,81 @@
 .ds-location {
   font-size: 24rpx;
   color: #999;
+}
+
+.training-banner {
+  display: flex;
+  align-items: center;
+  margin: 0 24rpx 24rpx;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+  border-radius: 16rpx;
+  border-left: 8rpx solid #2E7D32;
+}
+
+.training-banner.warning {
+  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+  border-left-color: #FA8C16;
+}
+
+.training-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+}
+
+.training-info {
+  flex: 1;
+}
+
+.training-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.training-progress {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 6rpx;
+}
+
+.training-progress text:first-child {
+  font-size: 26rpx;
+  color: #2E7D32;
+  font-weight: 500;
+}
+
+.training-warning {
+  padding: 4rpx 12rpx;
+  background: #FF4D4F;
+  color: #fff;
+  font-size: 20rpx;
+  border-radius: 12rpx;
+}
+
+.training-normal {
+  padding: 4rpx 12rpx;
+  background: #52C41A;
+  color: #fff;
+  font-size: 20rpx;
+  border-radius: 12rpx;
+}
+
+.training-stats {
+  display: flex;
+  gap: 20rpx;
+  font-size: 22rpx;
+  color: #666;
+}
+
+.training-arrow {
+  font-size: 26rpx;
+  color: #2E7D32;
+  font-weight: 500;
+}
+
+.training-banner.warning .training-arrow {
+  color: #FA8C16;
 }

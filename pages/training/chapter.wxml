@@ -1,0 +1,61 @@
+<view class="page-container" wx:if="{{chapter}}">
+
+  <view class="chapter-header">
+    <view class="chapter-nav">
+      <text class="nav-text">第 {{chapterIndex + 1}}/{{totalChapters}} 章</text>
+      <view class="nav-status {{isCompleted ? 'completed' : ''}}">
+        <text wx:if="{{isCompleted}}">✓ 已完成</text>
+        <text wx:else>学习中</text>
+      </view>
+    </view>
+    <view class="chapter-title">{{chapter.title}}</view>
+    <view class="chapter-meta">
+      <text class="meta-item">⏱️ 建议学习 {{chapter.duration / 60}} 分钟</text>
+      <text class="meta-item">📖 已学 {{studyTimeLabel}}</text>
+    </view>
+    
+    <view class="study-progress">
+      <view class="progress-info">
+        <text>学习进度</text>
+        <text>{{isCompleted ? '已完成' : Math.min(100, Math.floor(studySeconds / minStudySeconds * 100)) + '%'}}</text>
+      </view>
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{Math.min(100, studySeconds / minStudySeconds * 100)}}%;"></view>
+      </view>
+      <view class="progress-tip" wx:if="{{!isCompleted}}">
+        <text>还需学习 {{Math.max(0, Math.ceil((minStudySeconds - studySeconds) / 60))}} 分钟即可完成本章</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="chapter-content">
+    <view class="content-card">
+      <rich-text nodes="{{contentHtml}}"></rich-text>
+    </view>
+    
+    <view wx:if="{{chapter.media && chapter.media.length > 0}}" class="media-section">
+      <view class="section-title">📷 附图</view>
+      <view class="media-list">
+        <block wx:for="{{chapter.media}}" wx:key="url">
+          <view class="media-item" data-url="{{item.url}}" bindtap="onMediaTap">
+            <image src="{{item.url}}" mode="aspectFill" class="media-image"></image>
+            <view class="media-caption" wx:if="{{item.title}}">{{item.title}}</view>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-nav">
+    <button class="nav-btn prev {{canGoPrev ? '' : 'disabled'}}" bindtap="onPrevChapter">
+      <text>‹ 上一章</text>
+    </button>
+    <button class="nav-btn back" bindtap="onBackToCourse">
+      <text>返回课程</text>
+    </button>
+    <button class="nav-btn next {{canGoNext ? '' : 'disabled'}}" bindtap="onNextChapter">
+      <text>下一章 ›</text>
+    </button>
+  </view>
+
+</view>

@@ -1,0 +1,113 @@
+<view class="page-container">
+
+  <view class="stats-banner">
+    <view class="stats-bg"></view>
+    <view class="stats-content">
+      <view class="stats-header">
+        <view class="user-info">
+          <view class="user-avatar">👤</view>
+          <view class="user-detail">
+            <view class="user-name">{{dealerUser.name}}</view>
+            <view class="user-dealer">{{dealerUser.dealerName}}</view>
+          </view>
+        </view>
+        <view class="cert-entry" bindtap="goToCertificates">
+          <view class="cert-icon">📜</view>
+          <view class="cert-count">{{stats.certificates}}</view>
+          <view class="cert-label">我的证书</view>
+        </view>
+      </view>
+
+      <view class="stats-row">
+        <view class="stat-item">
+          <view class="stat-value">{{stats.completedRequired}}/{{stats.totalRequired}}</view>
+          <view class="stat-label">必修课程</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{stats.completedCourses}}/{{stats.totalCourses}}</view>
+          <view class="stat-label">完成课程</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{stats.totalStudyMinutes}}</view>
+          <view class="stat-label">学习时长(分钟)</view>
+        </view>
+      </view>
+
+      <view class="stockout-status">
+        <view wx:if="{{stats.canStockOut}}" class="status-success">
+          <text class="status-icon">✅</text>
+          <text class="status-text">培训已完成，可正常出库</text>
+        </view>
+        <view wx:else class="status-warning">
+          <text class="status-icon">⚠️</text>
+          <text class="status-text">请完成所有必修课程后再进行出库操作</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="category-tabs">
+    <scroll-view scroll-x="true" class="tabs-scroll">
+      <view class="tabs-container">
+        <block wx:for="{{categories}}" wx:key="key">
+          <view class="tab-item {{activeCategory === item.key ? 'active' : ''}}" 
+                data-key="{{item.key}}" 
+                bindtap="onCategoryTap">
+            <text class="tab-icon">{{item.icon}}</text>
+            <text class="tab-label">{{item.label}}</text>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="course-list">
+    <view wx:if="{{filteredCourses.length === 0}}" class="empty-state">
+      <text class="empty-icon">📚</text>
+      <text class="empty-text">暂无课程</text>
+    </view>
+    
+    <block wx:for="{{filteredCourses}}" wx:key="id">
+      <view class="course-card" data-courseid="{{item.id}}" bindtap="onCourseTap">
+        <view class="course-cover">
+          <image src="{{item.coverImage}}" mode="aspectFill" class="cover-image"></image>
+          <view class="course-category" style="background-color: {{item.categoryColor}}">
+            <text>{{item.categoryIcon}} {{item.categoryLabel}}</text>
+          </view>
+          <view wx:if="{{item.isRequired}}" class="course-badge required">必修</view>
+          <view wx:if="{{item.hasCertificate}}" class="course-badge cert">📜 已获证</view>
+        </view>
+        
+        <view class="course-info">
+          <view class="course-title">{{item.name}}</view>
+          <view class="course-desc">{{item.description}}</view>
+          
+          <view class="course-meta">
+            <view class="meta-item">
+              <text class="meta-icon">👨‍🏫</text>
+              <text>{{item.instructor}}</text>
+            </view>
+            <view class="meta-item">
+              <text class="meta-icon">⏱️</text>
+              <text>{{item.estimatedMinutes}}分钟</text>
+            </view>
+            <view class="meta-item difficulty">
+              <text>{{item.difficultyLabel}}</text>
+            </view>
+          </view>
+          
+          <view class="course-progress">
+            <view class="progress-header">
+              <text class="progress-status {{item.statusClass}}">{{item.statusText}}</text>
+              <text class="progress-text">{{item.completedChapters}}/{{item.totalChapters}}章节 · {{item.studyTimeLabel}}</text>
+            </view>
+            <view class="progress-bar">
+              <view class="progress-fill" style="width: {{item.progressPercent}}%;"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+</view>

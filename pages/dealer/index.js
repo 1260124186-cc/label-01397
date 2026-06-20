@@ -3,6 +3,7 @@ const mockData = require('../../utils/mockData.js');
 const dealerAuth = require('../../utils/dealerAuth.js');
 const dealerAudit = require('../../utils/dealerAudit.js');
 const dealerSession = require('../../utils/dealerSession.js');
+const dealerTraining = require('../../utils/dealerTraining.js');
 
 Page({
   data: {
@@ -26,7 +27,10 @@ Page({
     canResolveAlert: false,
     pendingApprovalCount: 0,
     pendingAlertCount: 0,
-    sessionRemaining: 0
+    sessionRemaining: 0,
+    trainingStats: null,
+    canViewTraining: false,
+    stockOutBlockedByTraining: false
   },
 
   onLoad: function() {
@@ -49,6 +53,7 @@ Page({
     this.loadInOutRecords();
     this.loadDivergenceAlerts();
     this.loadApprovalCount();
+    this.loadTrainingStatus();
     this.updateSessionRemaining();
     this.startSessionTimer();
   },
@@ -96,7 +101,23 @@ Page({
       canViewInventory: dealerAuth.hasPermission('viewInventory'),
       canApprove: dealerAuth.hasPermission('approveStockOut'),
       canViewAudit: dealerAuth.hasPermission('viewAudit'),
-      canResolveAlert: dealerAuth.hasPermission('resolveAlert')
+      canResolveAlert: dealerAuth.hasPermission('resolveAlert'),
+      canViewTraining: dealerAuth.hasPermission('viewTraining')
+    });
+  },
+
+  loadTrainingStatus: function() {
+    if (!this.data.canViewTraining) {
+      this.setData({ trainingStats: null, stockOutBlockedByTraining: false });
+      return;
+    }
+    
+    const stats = dealerTraining.getTrainingStats();
+    const stockOutBlocked = this.data.canStockOut && !stats.canStockOut;
+    
+    this.setData({
+      trainingStats: stats,
+      stockOutBlockedByTraining: stockOutBlocked
     });
   },
 
@@ -177,8 +198,38 @@ Page({
       wx.showToast({ title: '无出库操作权限', icon: 'none' });
       return;
     }
+    
+    if (this.data.stockOutBlockedByTraining) {
+      const stats = this.data.trainingStats;
+      wx.showModal({
+        title: '出库权限限制',
+        content: '您还有 ' + (stats.totalRequired - stats.completedRequired) + ' 门必修课程未完成，请先完成培训后再进行出库操作。',
+        confirmText: '去学习',
+        cancelText: '我知道了',
+        success: function(res) {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: '/pages/training/index'
+            });
+          }
+        }
+      });
+      return;
+    }
+    
     wx.navigateTo({
       url: '/pages/dealer/stockOut'
+    });
+  },
+
+  goToTraining: function() {
+    getApp().touchDealerSession();
+    if (!this.data.canViewTraining) {
+      wx.showToast({ title: '无培训学习权限', icon: 'none' });
+      return;
+    }
+    wx.navigateTo({
+      url: '/pages/training/index'
     });
   },
 

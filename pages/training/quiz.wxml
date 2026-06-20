@@ -1,0 +1,97 @@
+<view class="quiz-container">
+  <view class="quiz-header" wx:if="{{!showResult}}">
+    <view class="quiz-info">
+      <text class="course-name">{{course.name}}</text>
+      <text class="quiz-title">{{quiz.title}}</text>
+    </view>
+    <view class="progress-info">
+      <text class="progress-text">{{currentIndex + 1}} / {{totalQuestions}}</text>
+    </view>
+  </view>
+
+  <view class="result-header" wx:if="{{showResult}}">
+    <view class="result-icon {{result.passed ? 'passed' : 'failed'}}">
+      <text wx:if="{{result.passed}}">🎉</text>
+      <text wx:else>📝</text>
+    </view>
+    <view class="result-title">{{result.passed ? '测验通过' : '测验未通过'}}</view>
+    <view class="result-score">
+      <text class="score-number">{{result.score}}</text>
+      <text class="score-total">/ 100分</text>
+    </view>
+    <view class="result-detail">
+      <text>答对 {{result.correctCount}} 题 / 共 {{result.totalQuestions}} 题</text>
+      <text>及格分数：{{passingScore}}分</text>
+    </view>
+    <view class="cert-btn" wx:if="{{result.passed}}" bindtap="onViewCertificate">
+      <text>📜 查看结业证书</text>
+    </view>
+  </view>
+
+  <view class="question-nav" wx:if="{{!showResult}}">
+    <block wx:for="{{questions}}" wx:key="id">
+      <view 
+        class="nav-item {{currentIndex === index ? 'active' : ''}} {{item.selectedAnswer ? 'answered' : ''}}"
+        bindtap="onQuestionTap"
+        data-index="{{index}}"
+      >
+        {{index + 1}}
+      </view>
+    </block>
+  </view>
+
+  <view class="question-card" wx:if="{{questions.length > 0}}">
+    <view class="question-item" wx:for="{{questions}}" wx:key="id" wx:if="{{currentIndex === index || showResult}}">
+      <view class="question-number {{showResult && !item.isCorrect ? 'wrong' : ''}} {{showResult && item.isCorrect ? 'correct' : ''}}">
+        第 {{index + 1}} 题
+      </view>
+      <view class="question-text">{{item.question}}</view>
+      
+      <view class="options-list">
+        <block wx:for="{{item.options}}" wx:for-item="opt" wx:key="*this">
+          <view 
+            class="option-item {{item.selectedAnswer === opt ? 'selected' : ''}} {{showResult && opt === item.correctAnswer ? 'correct-answer' : ''}} {{showResult && item.selectedAnswer === opt && !item.isCorrect ? 'wrong-answer' : ''}}"
+            bindtap="onOptionSelect"
+            data-questionid="{{item.id}}"
+            data-option="{{opt}}"
+            data-index="{{index}}"
+          >
+            <view class="option-label">{{opt.charAt(0)}}</view>
+            <view class="option-text">{{opt.substring(3)}}</view>
+            <view class="option-icon" wx:if="{{showResult && opt === item.correctAnswer}}">✓</view>
+            <view class="option-icon wrong" wx:if="{{showResult && item.selectedAnswer === opt && !item.isCorrect}}">✗</view>
+          </view>
+        </block>
+      </view>
+      
+      <view class="explanation" wx:if="{{showResult && item.explanation}}">
+        <view class="explanation-title">💡 解析</view>
+        <view class="explanation-text">{{item.explanation}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-bar" wx:if="{{!showResult}}">
+    <view class="nav-btn {{currentIndex === 0 ? 'disabled' : ''}}" bindtap="goToPrev">
+      上一题
+    </view>
+    <view class="nav-btn submit" bindtap="onSubmit">
+      提交测验
+    </view>
+    <view class="nav-btn {{currentIndex === totalQuestions - 1 ? 'disabled' : ''}}" bindtap="goToNext">
+      下一题
+    </view>
+  </view>
+
+  <view class="bottom-bar" wx:if="{{showResult}}">
+    <view class="nav-btn" bindtap="goBack">
+      返回课程
+    </view>
+    <view class="nav-btn retry" wx:if="{{!result.passed}}" bindtap="onRetry">
+      重新测验
+    </view>
+    <view class="nav-btn" bindtap="goHome">
+      返回首页
+    </view>
+  </view>
+</view>

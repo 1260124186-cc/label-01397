@@ -3,6 +3,7 @@ const mockData = require('../../utils/mockData.js');
 const dealerAuth = require('../../utils/dealerAuth.js');
 const dealerAudit = require('../../utils/dealerAudit.js');
 const dealerSession = require('../../utils/dealerSession.js');
+const dealerTraining = require('../../utils/dealerTraining.js');
 
 Page({
   data: {
@@ -27,6 +28,26 @@ Page({
     if (!dealerAuth.hasPermission('stockOut')) {
       wx.showToast({ title: '无出库操作权限', icon: 'none' });
       setTimeout(function() { wx.navigateBack(); }, 1000);
+      return;
+    }
+    
+    if (!dealerTraining.canPerformStockOut()) {
+      const stats = dealerTraining.getTrainingStats();
+      wx.showModal({
+        title: '出库权限限制',
+        content: '您还有 ' + (stats.totalRequired - stats.completedRequired) + ' 门必修课程未完成，请先完成培训后再进行出库操作。',
+        confirmText: '去学习',
+        cancelText: '返回',
+        success: function(res) {
+          if (res.confirm) {
+            wx.redirectTo({
+              url: '/pages/training/index'
+            });
+          } else {
+            wx.navigateBack();
+          }
+        }
+      });
       return;
     }
 

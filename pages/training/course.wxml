@@ -1,0 +1,155 @@
+<view class="page-container" wx:if="{{course}}">
+
+  <view class="course-header">
+    <image src="{{course.coverImage}}" mode="aspectFill" class="header-bg"></image>
+    <view class="header-overlay"></view>
+    <view class="header-content">
+      <view class="course-category" style="background-color: {{course.categoryColor}}">
+        <text>{{course.categoryIcon}} {{course.categoryLabel}}</text>
+      </view>
+      <view class="course-title">{{course.name}}</view>
+      <view class="course-desc">{{course.description}}</view>
+      
+      <view class="course-meta">
+        <view class="meta-item">
+          <text class="meta-icon">👨‍🏫</text>
+          <text>{{course.instructor}}</text>
+        </view>
+        <view class="meta-item">
+          <text class="meta-icon">⏱️</text>
+          <text>{{course.estimatedMinutes}}分钟</text>
+        </view>
+        <view class="meta-item difficulty">
+          <text>{{course.difficultyLabel}}</text>
+        </view>
+        <view wx:if="{{course.isRequired}}" class="meta-item required">
+          <text>必修</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="progress-card">
+    <view class="progress-header">
+      <view class="progress-title">
+        <text class="progress-icon">📊</text>
+        <text>学习进度</text>
+      </view>
+      <view class="progress-status {{isCompleted ? 'completed' : ''}}">
+        {{isCompleted ? '已完成' : (progressPercent > 0 ? '学习中' : '未开始')}}
+      </view>
+    </view>
+    
+    <view class="progress-bar-container">
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{progressPercent}}%;"></view>
+      </view>
+      <text class="progress-percent">{{progressPercent}}%</text>
+    </view>
+    
+    <view class="progress-stats">
+      <view class="stat">
+        <text class="stat-value">{{completedChapters}}/{{totalChapters}}</text>
+        <text class="stat-label">已完成章节</text>
+      </view>
+      <view class="stat">
+        <text class="stat-value">{{studyTimeLabel}}</text>
+        <text class="stat-label">学习时长</text>
+      </view>
+      <view class="stat">
+        <text class="stat-value">{{hasCertificate ? '✅' : '❌'}}</text>
+        <text class="stat-label">结业证书</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-header">
+      <text class="section-icon">📚</text>
+      <text class="section-title">课程章节</text>
+      <text class="section-count">共{{totalChapters}}章</text>
+    </view>
+    
+    <view class="chapter-list">
+      <block wx:for="{{chapters}}" wx:key="id">
+        <view class="chapter-item {{item.completed ? 'completed' : ''}}" 
+              data-chapterid="{{item.id}}" 
+              bindtap="onChapterTap">
+          <view class="chapter-index">
+            <text wx:if="{{item.completed}}" class="check-icon">✓</text>
+            <text wx:else class="index-text">{{index + 1}}</text>
+          </view>
+          <view class="chapter-info">
+            <view class="chapter-title">{{item.title}}</view>
+            <view class="chapter-meta">
+              <text class="meta-text">时长：{{item.durationLabel}}</text>
+              <text class="meta-text" wx:if="{{item.studyTimeLabel !== '0分钟'}}">已学：{{item.studyTimeLabel}}</text>
+            </view>
+          </view>
+          <view class="chapter-arrow">›</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view wx:if="{{course.hasQuiz}}" class="section-card">
+    <view class="section-header">
+      <text class="section-icon">📝</text>
+      <text class="section-title">章节测验</text>
+      <text wx:if="{{quizPassed}}" class="quiz-status passed">已通过</text>
+      <text wx:elif="{{latestQuiz}}" class="quiz-status failed">未通过</text>
+      <text wx:else class="quiz-status pending">待完成</text>
+    </view>
+    
+    <view wx:if="{{latestQuiz}}" class="quiz-result">
+      <view class="result-row">
+        <text class="result-label">最近成绩</text>
+        <text class="result-score" style="color: {{latestQuiz.passed ? '#52C41A' : '#FF4D4F'}}">
+          {{latestQuiz.score}}分
+        </text>
+      </view>
+      <view class="result-row">
+        <text class="result-label">提交时间</text>
+        <text class="result-text">{{latestQuiz.submitTimeStr}}</text>
+      </view>
+    </view>
+    
+    <view class="quiz-info">
+      <text class="quiz-desc">
+        {{course.quiz.title}} · 共{{course.quiz.questions.length}}题 · 及格线{{course.quiz.passingScore}}分
+      </text>
+    </view>
+    
+    <button class="quiz-btn {{canTakeQuiz ? 'active' : 'disabled'}}" 
+            bindtap="onTakeQuiz">
+      <text wx:if="{{quizPassed}}">✅ 已通过测验</text>
+      <text wx:elif="{{!allChaptersCompleted}}">请先完成所有章节</text>
+      <text wx:elif="{{latestQuiz}}">重新测验</text>
+      <text wx:else>开始测验</text>
+    </button>
+  </view>
+
+  <view wx:if="{{hasCertificate}}" class="section-card">
+    <view class="section-header">
+      <text class="section-icon">📜</text>
+      <text class="section-title">结业证书</text>
+    </view>
+    
+    <view class="cert-preview">
+      <view class="cert-icon">🎓</view>
+      <view class="cert-text">
+        <view class="cert-title">您已获得此课程结业证书</view>
+        <view class="cert-desc">点击查看证书详情</view>
+      </view>
+      <view class="cert-arrow">›</view>
+    </view>
+    
+    <button class="cert-btn" bindtap="onViewCertificate">查看证书</button>
+  </view>
+
+  <view class="bottom-tip" wx:if="{{!isCompleted && course.isRequired}}">
+    <text class="tip-icon">💡</text>
+    <text class="tip-text">本课程为必修课程，完成所有章节学习并通过测验后方可进行出库操作</text>
+  </view>
+
+</view>
