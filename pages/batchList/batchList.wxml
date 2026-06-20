@@ -38,14 +38,14 @@
     <!-- SKU列表 -->
     <view class="sku-list">
       <view 
-        class="sku-item {{selectMode && selectedIds.indexOf(item.traceId) >= 0 ? 'sku-item-selected' : ''}}" 
-        wx:for="{{skuList}}" 
+        class="sku-item {{selectMode && item._selected ? 'sku-item-selected' : ''}}" 
+        wx:for="{{skuListWithState}}" 
         wx:key="traceId"
         data-traceid="{{item.traceId}}"
         bindtap="{{selectMode ? 'toggleSelectItem' : 'viewSkuDetail'}}"
       >
-        <view wx:if="{{selectMode}}" class="sku-checkbox {{selectedIds.indexOf(item.traceId) >= 0 ? 'sku-checkbox-checked' : ''}}">
-          <text wx:if="{{selectedIds.indexOf(item.traceId) >= 0}}">✓</text>
+        <view wx:if="{{selectMode}}" class="sku-checkbox {{item._selected ? 'sku-checkbox-checked' : ''}}">
+          <text wx:if="{{item._selected}}">✓</text>
         </view>
         <view class="sku-image-wrapper">
           <image 

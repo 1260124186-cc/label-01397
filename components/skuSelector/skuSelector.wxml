@@ -10,7 +10,7 @@
           <text wx:if="{{isMember && currentPrice > currentMemberPrice}}" class="original-price">¥{{currentPrice}}</text>
         </view>
         <view class="sku-stock">库存 {{currentStock}} 件</view>
-        <view class="sku-selected">已选：{{selectedSpecs.join(' / ')}}</view>
+        <view class="sku-selected">已选：{{selectedSpecsText}}</view>
       </view>
       <view class="sku-close" catchtap="onClose">✕</view>
     </view>

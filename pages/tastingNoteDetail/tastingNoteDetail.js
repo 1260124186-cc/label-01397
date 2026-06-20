@@ -14,6 +14,7 @@ Page({
     tags: [],
     inputTag: '',
     presetTags: ['回甘', '花香', '醇厚', '清甜', '浓香', '柔和', '鲜爽', '余韵', '桂花香', '茶韵'],
+    presetTagsWithState: [],
     saving: false,
     hasSubmittedReview: false,
     isScanVerified: false,
@@ -23,10 +24,12 @@ Page({
   },
 
   onLoad: function(options) {
+    var that = this;
     if (options.id) {
       this.loadNote(options.id);
     } else {
       var setData = {};
+      var currentTags = [];
       if (options.traceId) setData.traceId = options.traceId;
       if (options.productName) setData.productName = decodeURIComponent(options.productName);
       if (options.draft) {
@@ -40,7 +43,8 @@ Page({
         try {
           var tagArr = decodeURIComponent(options.tags).split(',');
           if (Array.isArray(tagArr) && tagArr.length > 0) {
-            setData.tags = tagArr.slice(0, 5);
+            currentTags = tagArr.slice(0, 5);
+            setData.tags = currentTags;
           }
         } catch (e) {}
       }
@@ -48,6 +52,9 @@ Page({
         var r = parseInt(options.rating, 10);
         if (r >= 1 && r <= 5) setData.rating = r;
       }
+      setData.presetTagsWithState = this.data.presetTags.map(function(t) {
+        return { name: t, selected: currentTags.indexOf(t) !== -1 };
+      });
       if (Object.keys(setData).length > 0) {
         this.setData(setData);
       }
@@ -76,6 +83,12 @@ Page({
       publishPreview = reviewTrust.convertNoteToReviewPreview(note, note.traceId);
     }
 
+    var noteTags = note.tags || [];
+    var presetTags = this.data.presetTags;
+    var presetTagsWithState = presetTags.map(function(t) {
+      return { name: t, selected: noteTags.indexOf(t) !== -1 };
+    });
+
     this.setData({
       isEdit: true,
       noteId: note.id,
@@ -83,7 +96,8 @@ Page({
       productName: note.productName,
       content: note.content,
       rating: note.rating,
-      tags: note.tags || [],
+      tags: noteTags,
+      presetTagsWithState: presetTagsWithState,
       hasSubmittedReview: hasSubmittedReview,
       isScanVerified: isScanVerified,
       publishPreview: publishPreview
@@ -113,7 +127,10 @@ Page({
       }
       tags.push(tag);
     }
-    this.setData({ tags: tags });
+    var presetTagsWithState = this.data.presetTags.map(function(t) {
+      return { name: t, selected: tags.indexOf(t) !== -1 };
+    });
+    this.setData({ tags: tags, presetTagsWithState: presetTagsWithState });
   },
 
   onInputTagInput: function(e) {
@@ -137,7 +154,10 @@ Page({
       return;
     }
     tags.push(tag);
-    this.setData({ tags: tags, inputTag: '' });
+    var presetTagsWithState = this.data.presetTags.map(function(t) {
+      return { name: t, selected: tags.indexOf(t) !== -1 };
+    });
+    this.setData({ tags: tags, inputTag: '', presetTagsWithState: presetTagsWithState });
   },
 
   onRemoveTag: function(e) {
@@ -145,7 +165,10 @@ Page({
     var tags = this.data.tags.slice();
     var idx = tags.indexOf(tag);
     if (idx !== -1) tags.splice(idx, 1);
-    this.setData({ tags: tags });
+    var presetTagsWithState = this.data.presetTags.map(function(t) {
+      return { name: t, selected: tags.indexOf(t) !== -1 };
+    });
+    this.setData({ tags: tags, presetTagsWithState: presetTagsWithState });
   },
 
   onSave: function() {

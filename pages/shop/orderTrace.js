@@ -11,7 +11,8 @@ Page({
     verified: false,
     order: null,
     product: null,
-    batchInfo: null
+    batchInfo: null,
+    itemSpecText: ''
   },
 
   onLoad: function(options) {
@@ -70,15 +71,21 @@ Page({
         var order = mockData.getOrderByNo(that.data.orderNo);
         var firstItem = order && order.items.length > 0 ? order.items[0] : null;
         var product = firstItem ? mockData.getShopProduct(firstItem.traceId) : null;
-        
+
+        var itemSpecText = '';
+        if (firstItem && firstItem.specValues && Array.isArray(firstItem.specValues)) {
+          itemSpecText = firstItem.specValues.join(' / ');
+        }
+
         var batchInfo = that.generateBatchInfo(firstItem ? firstItem.traceId : '');
-        
+
         that.setData({
           verified: true,
           traceResult: result,
           order: order,
           product: product,
           batchInfo: batchInfo,
+          itemSpecText: itemSpecText,
           loading: false,
           verifying: false
         });

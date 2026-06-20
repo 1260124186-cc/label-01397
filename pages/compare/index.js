@@ -13,7 +13,9 @@ Page({
   data: {
     step: 'select',
     availableProducts: [],
+    availableProductsWithState: [],
     favorites: [],
+    favoritesWithState: [],
     selectedIds: [],
     batchMode: false,
     batchNo: '',
@@ -73,13 +75,26 @@ Page({
 
     var favList = userStore.getFavorites();
     var favIds = favList.map(function(f) { return f.traceId; });
+    var currentSelectedIds = this.data.selectedIds || [];
+
+    var productsWithState = products.map(function(p) {
+      p._selected = currentSelectedIds.indexOf(p.traceId) !== -1;
+      return p;
+    });
+    var filteredFavs = favList.filter(function(f) {
+      return products.some(function(p) { return p.traceId === f.traceId; });
+    });
+    var favsWithState = filteredFavs.map(function(f) {
+      f._selected = currentSelectedIds.indexOf(f.traceId) !== -1;
+      return f;
+    });
 
     this.setData({
       step: 'select',
       availableProducts: products,
-      favorites: favList.filter(function(f) {
-        return products.some(function(p) { return p.traceId === f.traceId; });
-      })
+      availableProductsWithState: productsWithState,
+      favorites: filteredFavs,
+      favoritesWithState: favsWithState
     });
   },
 
@@ -91,12 +106,12 @@ Page({
       selected.splice(idx, 1);
     } else {
       if (selected.length >= 3) {
-        wx.showToast({ title: '\u6700\u591a\u9009\u62e93\u4e2a\u4ea7\u54c1', icon: 'none' });
+        wx.showToast({ title: '最多选择3个产品', icon: 'none' });
         return;
       }
       selected.push(id);
     }
-    this.setData({ selectedIds: selected });
+    this._syncSelectionState(selected);
   },
 
   onAddFavorite: function(e) {
@@ -104,11 +119,11 @@ Page({
     var selected = this.data.selectedIds.slice();
     if (selected.indexOf(id) !== -1) return;
     if (selected.length >= 3) {
-      wx.showToast({ title: '\u6700\u591a\u9009\u62e93\u4e2a\u4ea7\u54c1', icon: 'none' });
+      wx.showToast({ title: '最多选择3个产品', icon: 'none' });
       return;
     }
     selected.push(id);
-    this.setData({ selectedIds: selected });
+    this._syncSelectionState(selected);
   },
 
   onRemoveSelected: function(e) {
@@ -116,7 +131,23 @@ Page({
     var selected = this.data.selectedIds.slice();
     var idx = selected.indexOf(id);
     if (idx !== -1) selected.splice(idx, 1);
-    this.setData({ selectedIds: selected });
+    this._syncSelectionState(selected);
+  },
+
+  _syncSelectionState: function(selectedIds) {
+    var productsWithState = this.data.availableProducts.map(function(p) {
+      p._selected = selectedIds.indexOf(p.traceId) !== -1;
+      return p;
+    });
+    var favsWithState = this.data.favorites.map(function(f) {
+      f._selected = selectedIds.indexOf(f.traceId) !== -1;
+      return f;
+    });
+    this.setData({
+      selectedIds: selectedIds,
+      availableProductsWithState: productsWithState,
+      favoritesWithState: favsWithState
+    });
   },
 
   onStartCompare: function() {

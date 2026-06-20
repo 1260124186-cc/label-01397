@@ -147,6 +147,19 @@ Page({
         var traceData = mockData.getTraceData(result.data.traceId);
         result.data.brandInfo = traceData ? traceData.basicInfo : null;
 
+        if (result.data.province && result.data.province.inspectionRecords) {
+          result.data.province.inspectionRecords = result.data.province.inspectionRecords.map(function(record) {
+            record.resultClass = record.result === '合格' ? 'pass' : 'fail';
+            return record;
+          });
+        }
+        if (result.data.national && result.data.national.inspectionRecords) {
+          result.data.national.inspectionRecords = result.data.national.inspectionRecords.map(function(record) {
+            record.resultClass = record.result === '合格' ? 'pass' : 'fail';
+            return record;
+          });
+        }
+
         this.setData({
           queryResult: result.data,
           loading: false

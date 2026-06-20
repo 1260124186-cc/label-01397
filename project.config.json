@@ -47,8 +47,8 @@
     "disableSWC": true
   },
   "compileType": "miniprogram",
-  "libVersion": "2.29.0",
-  "appid": "wxc1cd42891ad2723a",
+  "libVersion": "3.14.1",
+  "appid": "touristappid",
   "projectname": "osmanthus-tea-trace",
   "condition": {},
   "editorSetting": {

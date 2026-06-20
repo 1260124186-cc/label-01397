@@ -1418,7 +1418,7 @@
           <text class="title-icon" aria-hidden="true">🔬</text>
           <text role="heading" aria-level="2">{{i18n.tabTitleTest}}</text>
           <view class="title-badge {{testChartData.overallPass ? 'status-badge-pass' : 'status-badge-fail'}} status-badge {{testChartData.overallPass ? '' : 'danger'}}" wx:if="{{traceData.pesticideTest}}" data-status="{{testChartData.overallPass ? 'pass' : 'fail'}}">
-            {{testChartData.overallPass ? (currentLang === 'en-US' ? 'All Passed' : '全部合格' : (currentLang === 'en-US' ? 'Abnormal' : '存在异常'}}
+            {{testChartData.overallPass ? (currentLang === 'en-US' ? 'All Passed' : '全部合格') : (currentLang === 'en-US' ? 'Abnormal' : '存在异常')}}
           </view>
         </view>
         <view class="title-right-actions">
@@ -1484,7 +1484,7 @@
             <text>{{currentLang === 'en-US' ? 'GB 2763-2021 Comparison' : '国标 GB 2763-2021 对比'}}</text>
           </view>
           <view class="overview-badge status-badge-{{testChartData.overallPass ? 'pass' : 'fail'}} {{testChartData.overallPass ? 'pass' : 'fail'}}" data-status="{{testChartData.overallPass ? 'pass' : 'fail'}}">
-            {{testChartData.overallPass ? (currentLang === 'en-US' ? 'All Within Limit' : '全部达标' : (currentLang === 'en-US' ? 'Some Over Limit' : '部分超标'}}
+            {{testChartData.overallPass ? (currentLang === 'en-US' ? 'All Within Limit' : '全部达标') : (currentLang === 'en-US' ? 'Some Over Limit' : '部分超标')}}
           </view>
         </view>
 
@@ -2039,12 +2039,12 @@
             </view>
             <view class="preset-tags">
               <text
-                wx:for="{{brewPresetTags}}"
-                wx:key="*this"
-                class="preset-tag {{brewTags.indexOf(item) > -1 ? 'active' : ''}}"
-                data-tag="{{item}}"
+                wx:for="{{brewPresetTagsWithState}}"
+                wx:key="name"
+                class="preset-tag {{item.selected ? 'active' : ''}}"
+                data-tag="{{item.name}}"
                 bindtap="onBrewPresetTagTap"
-              >{{item}}</text>
+              >{{item.name}}</text>
             </view>
             <view class="custom-tag-row">
               <input
@@ -3208,12 +3208,12 @@
           <text class="form-label">口感标签（可多选）</text>
           <view class="taste-tags-select">
             <view
-              wx:for="{{tasteTags}}"
+              wx:for="{{tasteTagsWithState}}"
               wx:key="key"
-              class="taste-tag-select {{reviewForm.selectedTags.indexOf(item.name) > -1 ? 'selected' : ''}}"
+              class="taste-tag-select {{item.selected ? 'selected' : ''}}"
               bindtap="onTasteTagToggle"
               data-tag="{{item.name}}"
-              style="border-color: {{item.color}}; {{reviewForm.selectedTags.indexOf(item.name) > -1 ? 'background: ' + item.color + '20;' : ''}}"
+              style="border-color: {{item.color}}; {{item.selected ? 'background: ' + item.color + '20;' : ''}}"
             >
               <text class="tag-icon">{{item.icon}}</text>
               <text class="tag-name">{{item.name}}</text>

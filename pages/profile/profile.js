@@ -12,6 +12,7 @@ Page({
     isLoggedIn: false,
     userInfo: null,
     showPrivacyPopup: false,
+    openidShort: '',
 
     favoriteCount: 0,
     noteCount: 0,
@@ -113,9 +114,15 @@ Page({
 
     this.refreshSettings();
 
+    var openidShort = '';
+    if (userInfo && userInfo.openid) {
+      openidShort = userInfo.openid.slice(-8);
+    }
+
     this.setData({
       isLoggedIn: loggedIn,
       userInfo: userInfo,
+      openidShort: openidShort,
       favoriteCount: favorites.length,
       noteCount: notes.length,
       scanCount: scanHistory.length,

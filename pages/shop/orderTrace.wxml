@@ -72,7 +72,7 @@
       </view>
       <view class="info-row">
         <text class="info-label">商品规格</text>
-        <text class="info-value">{{order.items[0].specValues.join(' / ')}}</text>
+        <text class="info-value">{{itemSpecText}}</text>
       </view>
       <view class="info-row">
         <text class="info-label">购买数量</text>

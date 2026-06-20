@@ -29,8 +29,8 @@
       </view>
       <view class="fav-list">
         <view
-          class="fav-chip {{selectedIds.indexOf(item.traceId) !== -1 ? 'fav-chip-active' : ''}}"
-          wx:for="{{favorites}}"
+          class="fav-chip {{item._selected ? 'fav-chip-active' : ''}}"
+          wx:for="{{favoritesWithState}}"
           wx:key="traceId"
           data-traceid="{{item.traceId}}"
           bindtap="onAddFavorite"
@@ -48,15 +48,15 @@
       </view>
       <view class="product-grid">
         <view
-          class="product-card {{selectedIds.indexOf(item.traceId) !== -1 ? 'product-card-selected' : ''}}"
-          wx:for="{{availableProducts}}"
+          class="product-card {{item._selected ? 'product-card-selected' : ''}}"
+          wx:for="{{availableProductsWithState}}"
           wx:key="traceId"
           data-traceid="{{item.traceId}}"
           bindtap="onToggleSelect"
         >
           <view class="product-check">
-            <view class="check-circle {{selectedIds.indexOf(item.traceId) !== -1 ? 'check-circle-active' : ''}}">
-              <text wx:if="{{selectedIds.indexOf(item.traceId) !== -1}}">✓</text>
+            <view class="check-circle {{item._selected ? 'check-circle-active' : ''}}">
+              <text wx:if="{{item._selected}}">✓</text>
             </view>
           </view>
           <image class="product-thumb" src="{{item.thumbnail}}" mode="aspectFill" />

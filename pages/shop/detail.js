@@ -9,6 +9,7 @@ Page({
     loading: true,
     currentImageIndex: 0,
     selectedSpecs: [],
+    selectedSpecsText: '',
     selectedSku: null,
     quantity: 1,
     cartCount: 0,
@@ -68,6 +69,7 @@ Page({
         that.setData({
           product: product,
           selectedSpecs: selectedSpecs,
+          selectedSpecsText: selectedSpecs.join(' / '),
           selectedSku: defaultSku,
           loading: false
         });

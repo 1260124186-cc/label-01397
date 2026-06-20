@@ -548,12 +548,12 @@
   margin-bottom: 0;
 }
 
-.inspection-item.result-合格 {
+.inspection-item.result-pass {
   background: #f6ffed;
   border-left-color: #52C41A;
 }
 
-.inspection-item.result-不合格 {
+.inspection-item.result-fail {
   background: #fff1f0;
   border-left-color: #ff4d4f;
 }
@@ -571,12 +571,12 @@
   display: inline-block;
 }
 
-.result-badge.合格 {
+.result-badge.pass {
   background: #52C41A;
   color: #fff;
 }
 
-.result-badge.不合格 {
+.result-badge.fail {
   background: #ff4d4f;
   color: #fff;
 }

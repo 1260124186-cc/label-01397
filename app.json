@@ -34,7 +34,25 @@
     "pages/procurement/reportDownload",
     "pages/procurement/rfq",
     "pages/procurement/contract",
-    "pages/procurement/archive"
+    "pages/procurement/archive",
+    "pages/favorites/favorites",
+    "pages/knowledge/list",
+    "pages/knowledge/detail",
+    "pages/member/index",
+    "pages/member/level",
+    "pages/member/pointsDetail",
+    "pages/notifications/notifications",
+    "pages/privacy/privacy",
+    "pages/profile/profile",
+    "pages/service/index",
+    "pages/shop/list",
+    "pages/shop/detail",
+    "pages/shop/cart",
+    "pages/shop/orderTrace",
+    "pages/subscription/subscription",
+    "pages/supplyChainTimeline/supplyChainTimeline",
+    "pages/tastingNotes/tastingNotes",
+    "pages/tastingNoteDetail/tastingNoteDetail"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -57,9 +75,7 @@
   },
   "requiredPrivateInfos": [
     "getLocation",
-    "chooseLocation",
-    "openLocation",
-    "getFuzzyLocation"
+    "chooseLocation"
   ],
   "style": "v2",
   "sitemapLocation": "sitemap.json",

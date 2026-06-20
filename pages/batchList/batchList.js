@@ -12,6 +12,7 @@ Page({
   data: {
     batchNo: '',
     skuList: [],
+    skuListWithState: [],
     loading: true,
     empty: false,
     selectMode: false,
@@ -66,8 +67,13 @@ Page({
       const skus = mockData.getBatchSkus(batchNo);
       
       if (skus && skus.length > 0) {
+        var skuListWithState = skus.map(function(s) {
+          s._selected = false;
+          return s;
+        });
         that.setData({
           skuList: skus,
+          skuListWithState: skuListWithState,
           loading: false,
           empty: false
         });
@@ -115,9 +121,19 @@ Page({
 
   toggleSelectMode: function() {
     const selectMode = !this.data.selectMode;
+    var skuListWithState;
+    if (selectMode) {
+      skuListWithState = this.data.skuList.map(function(s) {
+        s._selected = false;
+        return s;
+      });
+    } else {
+      skuListWithState = this.data.skuListWithState;
+    }
     this.setData({
       selectMode: selectMode,
-      selectedIds: selectMode ? this.data.selectedIds : []
+      selectedIds: selectMode ? [] : [],
+      skuListWithState: skuListWithState
     });
   },
 
@@ -130,15 +146,25 @@ Page({
     } else {
       selectedIds.push(traceId);
     }
-    this.setData({ selectedIds: selectedIds });
+    var skuListWithState = this.data.skuList.map(function(s) {
+      s._selected = selectedIds.indexOf(s.traceId) >= 0;
+      return s;
+    });
+    this.setData({ selectedIds: selectedIds, skuListWithState: skuListWithState });
   },
 
   selectAll: function() {
+    var newSelectedIds;
     if (this.data.selectedIds.length === this.data.skuList.length) {
-      this.setData({ selectedIds: [] });
+      newSelectedIds = [];
     } else {
-      this.setData({ selectedIds: this.data.skuList.map(s => s.traceId) });
+      newSelectedIds = this.data.skuList.map(s => s.traceId);
     }
+    var skuListWithState = this.data.skuList.map(function(s) {
+      s._selected = newSelectedIds.indexOf(s.traceId) >= 0;
+      return s;
+    });
+    this.setData({ selectedIds: newSelectedIds, skuListWithState: skuListWithState });
   },
 
   openBatchExport: function() {
@@ -185,7 +211,11 @@ Page({
     const that = this;
     traceExport.doExport(traceIds, this.data.exportFormat, this.data.exportScope)
       .then(result => {
-        that.setData({ exporting: false, showExportModal: false, selectMode: false, selectedIds: [] });
+        var resetSkuList = that.data.skuList.map(function(s) {
+          s._selected = false;
+          return s;
+        });
+        that.setData({ exporting: false, showExportModal: false, selectMode: false, selectedIds: [], skuListWithState: resetSkuList });
         wx.showModal({
           title: '导出成功',
           content: `已导出 ${traceIds.length} 条溯源数据\n文件：${result.fileName}\n${result.format === 'PDF' ? '小程序环境以文本报告导出，可在PC端转换为PDF' : ''}${result.format === 'ZIP' ? '小程序环境以JSON Bundle导出，含清单与多份数据' : ''}`,

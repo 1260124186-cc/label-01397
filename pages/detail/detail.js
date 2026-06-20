@@ -215,6 +215,7 @@ Page({
     brewTags: [],
     showBrewSaveModal: false,
     brewPresetTags: ['回甘', '花香', '醇厚', '清甜', '浓香', '柔和', '鲜爽', '余韵', '桂花香', '茶韵'],
+    brewPresetTagsWithState: [],
     brewInputTag: '',
 
     // ========== 区块链存证功能 ==========
@@ -251,6 +252,7 @@ Page({
     reviewData: null,
     processedReviews: [],
     tasteTags: [],
+    tasteTagsWithState: [],
     ratingDimensions: [],
     reportReasons: [],
     reviewFilter: 'all',
@@ -584,6 +586,7 @@ Page({
           reviewData: reviewData,
           processedReviews: processedReviews,
           tasteTags: tasteTags,
+          tasteTagsWithState: tasteTags.map(function(t) { return { key: t.key, name: t.name, icon: t.icon, color: t.color, selected: false }; }),
           ratingDimensions: ratingDimensions,
           reportReasons: reportReasons,
           reviewSortOptions: reviewSortOptions,
@@ -1867,11 +1870,16 @@ Page({
   },
 
   openBrewSaveModal: function() {
+    var brewPresetTags = this.data.brewPresetTags;
+    var brewPresetTagsWithState = brewPresetTags.map(function(t) {
+      return { name: t, selected: false };
+    });
     this.setData({
       showBrewSaveModal: true,
       brewFeeling: '',
       brewRating: 0,
       brewTags: [],
+      brewPresetTagsWithState: brewPresetTagsWithState,
       brewInputTag: ''
     });
   },
@@ -1901,7 +1909,10 @@ Page({
       }
       tags.push(tag);
     }
-    this.setData({ brewTags: tags });
+    var brewPresetTagsWithState = this.data.brewPresetTags.map(function(t) {
+      return { name: t, selected: tags.indexOf(t) !== -1 };
+    });
+    this.setData({ brewTags: tags, brewPresetTagsWithState: brewPresetTagsWithState });
   },
 
   onBrewInputTagInput: function(e) {
@@ -1925,7 +1936,10 @@ Page({
       return;
     }
     tags.push(tag);
-    this.setData({ brewTags: tags, brewInputTag: '' });
+    var brewPresetTagsWithState = this.data.brewPresetTags.map(function(t) {
+      return { name: t, selected: tags.indexOf(t) !== -1 };
+    });
+    this.setData({ brewTags: tags, brewInputTag: '', brewPresetTagsWithState: brewPresetTagsWithState });
   },
 
   onBrewRemoveTag: function(e) {
@@ -1933,7 +1947,10 @@ Page({
     var tags = this.data.brewTags.slice();
     var idx = tags.indexOf(tag);
     if (idx !== -1) tags.splice(idx, 1);
-    this.setData({ brewTags: tags });
+    var brewPresetTagsWithState = this.data.brewPresetTags.map(function(t) {
+      return { name: t, selected: tags.indexOf(t) !== -1 };
+    });
+    this.setData({ brewTags: tags, brewPresetTagsWithState: brewPresetTagsWithState });
   },
 
   saveBrewRecord: function() {
@@ -2824,9 +2841,13 @@ Page({
       content: '',
       images: []
     };
+    var tasteTagsWithState = this.data.tasteTags.map(function(t) {
+      return { key: t.key, name: t.name, icon: t.icon, color: t.color, selected: false };
+    });
     this.setData({
       showReviewModal: true,
-      reviewForm: reviewForm
+      reviewForm: reviewForm,
+      tasteTagsWithState: tasteTagsWithState
     });
   },
 
@@ -2861,8 +2882,19 @@ Page({
       selectedTags.push(tag);
     }
 
+    var tasteTagsWithState = this.data.tasteTags.map(function(t) {
+      return {
+        key: t.key,
+        name: t.name,
+        icon: t.icon,
+        color: t.color,
+        selected: selectedTags.indexOf(t.name) > -1
+      };
+    });
+
     this.setData({
-      'reviewForm.selectedTags': selectedTags
+      'reviewForm.selectedTags': selectedTags,
+      tasteTagsWithState: tasteTagsWithState
     });
   },
 

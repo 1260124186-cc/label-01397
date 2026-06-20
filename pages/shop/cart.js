@@ -33,12 +33,17 @@ Page({
   loadCartData: function() {
     var cartItems = shop.getCart();
     var summary = shop.getCartSummary(this.data.isMember);
-    
+
     var allSelected = cartItems.length > 0;
     for (var i = 0; i < cartItems.length; i++) {
       if (!cartItems[i].selected) {
         allSelected = false;
         break;
+      }
+      if (cartItems[i].specValues && Array.isArray(cartItems[i].specValues)) {
+        cartItems[i].specText = cartItems[i].specValues.join(' / ');
+      } else {
+        cartItems[i].specText = '';
       }
     }
 
@@ -111,6 +116,14 @@ Page({
 
   goToCoupons: function() {
     var coupons = shop.getAvailableCoupons(this.data.cartSummary ? this.data.cartSummary.goodsAmount : 0);
+    coupons = coupons.map(function(c) {
+      if (c.type === 'cash') {
+        c.displayValue = c.value;
+      } else {
+        c.displayValue = Math.round(c.value * 10) + '折';
+      }
+      return c;
+    });
     this.setData({
       availableCoupons: coupons,
       showCouponList: true

@@ -24,7 +24,7 @@
       
       <view class="item-info">
         <view class="item-name">{{item.productName}}</view>
-        <view class="item-spec">{{item.specValues.join(' / ')}}</view>
+        <view class="item-spec">{{item.specText}}</view>
         <view class="item-bottom">
           <view class="item-price">
             <text class="price-symbol">¥</text>
@@ -116,7 +116,7 @@
           <view class="coupon-left">
             <view class="coupon-amount">
               <text class="amount-symbol" wx:if="{{item.type === 'cash'}}">¥</text>
-              <text class="amount-value">{{item.type === 'cash' ? item.value : (item.value * 10).toFixed(0) + '折'}}</text>
+              <text class="amount-value">{{item.displayValue}}</text>
             </view>
             <view class="coupon-condition">满{{item.minAmount}}可用</view>
           </view>

@@ -215,9 +215,9 @@
 
       <view wx:if="{{expandInspections}}" class="inspection-body">
         <block wx:for="{{queryResult.province.inspectionRecords}}" wx:key="reportNo">
-          <view class="inspection-item result-{{item.result}}">
+          <view class="inspection-item result-{{item.resultClass}}">
             <view class="inspection-result">
-              <text class="result-badge {{item.result}}">{{item.result}}</text>
+              <text class="result-badge {{item.resultClass}}">{{item.result}}</text>
             </view>
             <view class="inspection-details">
               <view class="inspection-date">抽查日期：{{item.date}}</view>

@@ -31,12 +31,12 @@
     <view class="section-label">风味标签（最多5个）</view>
     <view class="preset-tags">
       <view
-        wx:for="{{presetTags}}"
-        wx:key="*this"
-        class="preset-tag {{tags.indexOf(item) !== -1 ? 'selected' : ''}}"
-        data-tag="{{item}}"
+        wx:for="{{presetTagsWithState}}"
+        wx:key="name"
+        class="preset-tag {{item.selected ? 'selected' : ''}}"
+        data-tag="{{item.name}}"
         bindtap="onPresetTagTap"
-      >{{item}}</view>
+      >{{item.name}}</view>
     </view>
     <view class="custom-tag-input">
       <input

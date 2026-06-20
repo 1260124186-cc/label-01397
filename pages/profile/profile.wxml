@@ -18,7 +18,7 @@
         </view>
         <view class="user-info">
           <view class="user-name">{{userInfo.nickname || '茶友'}}</view>
-          <view class="user-id">ID: {{userInfo.openid ? userInfo.openid.substr(-8) : ''}}</view>
+          <view class="user-id">ID: {{openidShort}}</view>
         </view>
         <view class="logout-btn" bindtap="handleLogout">退出</view>
       </block>

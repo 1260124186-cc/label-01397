@@ -23,6 +23,7 @@ Component({
   data: {
     product: null,
     selectedSpecs: [],
+    selectedSpecsText: '',
     selectedSku: null,
     quantity: 1,
     currentPrice: 0,
@@ -53,6 +54,7 @@ Component({
       this.setData({
         product: product,
         selectedSpecs: selectedSpecs,
+        selectedSpecsText: selectedSpecs.join(' / '),
         selectedSku: defaultSku,
         quantity: 1,
         currentPrice: defaultSku.price,
@@ -73,6 +75,7 @@ Component({
       if (sku) {
         this.setData({
           selectedSpecs: selectedSpecs,
+          selectedSpecsText: selectedSpecs.join(' / '),
           selectedSku: sku,
           currentPrice: sku.price,
           currentMemberPrice: sku.memberPrice,
