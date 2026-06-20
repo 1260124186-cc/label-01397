@@ -2770,7 +2770,8 @@ var greenPointsConfig = {
     { action: 'tastingNote', points: 20, desc: '完成品鉴笔记', dailyLimit: 40 },
     { action: 'invite', points: 50, desc: '邀请好友奖励', dailyLimit: 5000 },
     { action: 'invited', points: 30, desc: '好友邀请奖励', dailyLimit: 30 },
-    { action: 'invite_friend', points: 50, desc: '邀请好友扫码奖励', dailyLimit: 5000 }
+    { action: 'invite_friend', points: 50, desc: '邀请好友扫码奖励', dailyLimit: 5000 },
+    { action: 'experienceCheckIn', points: 20, desc: '线下体验签到', dailyLimit: 200 }
   ],
   levelConfig: [
     { level: 1, name: '普通会员', minPoints: 0, icon: '🍵', color: '#999999', benefits: ['基础溯源服务', '每日签到积分'] },

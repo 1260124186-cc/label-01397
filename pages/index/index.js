@@ -114,6 +114,7 @@ Page({
       { key: 'report', icon: '📋', name: '检测报告', desc: '农残检测安全保障', anchor: 'anchor-process', color: '#1890FF', type: 'detail' },
       { key: 'treeAge', icon: '🌳', name: '百年茶树', desc: '古茶树的故事', anchor: 'anchor-treeAge', color: '#8B4513', type: 'detail' },
       { key: 'dealer', icon: '🏬', name: '经销商渠道', desc: '入库出库·渠道溯源', color: '#722ED1', type: 'dealer' },
+      { key: 'experience', icon: '🎋', name: '线下体验', desc: '茶园参观·制茶·品鉴预约', color: '#2E8B57', type: 'experience' },
       { key: 'brand', icon: '🏯', name: '品牌故事', desc: '一茶一品的前世今生', color: '#B8860B', type: 'brand' }
     ],
 
@@ -771,6 +772,10 @@ Page({
     } else if (card.type === 'dualVerify') {
       wx.navigateTo({
         url: '/pages/dualVerify/dualVerify'
+      });
+    } else if (card.type === 'experience') {
+      wx.navigateTo({
+        url: '/pages/experience/list'
       });
     }
   },

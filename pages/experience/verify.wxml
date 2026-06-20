@@ -1,0 +1,140 @@
+<view class="verify-page">
+
+  <view class="result-modal" wx:if="{{showResult}}">
+    <view class="modal-mask" bindtap="closeResult"></view>
+    <view class="modal-content">
+      <view wx:if="{{verifyResult.success}}">
+        <view class="result-icon success">✅</view>
+        <view class="result-title">{{verifyResult.alreadyCheckedIn ? '已签到' : '签到成功'}}</view>
+
+        <view class="reservation-info" style="border-top: 4rpx solid {{verifyResult.activityColor}}20;">
+          <view class="info-header">
+            <view class="info-icon" style="background: {{verifyResult.activityColor}};">{{verifyResult.activityIcon}}</view>
+            <view class="info-name">{{verifyResult.activityTypeName}}</view>
+          </view>
+          <view class="info-row">
+            <text class="info-label">联系人</text>
+            <text class="info-value">{{verifyResult.contactName}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">人数</text>
+            <text class="info-value">{{verifyResult.peopleCount}} 人</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">预约日期</text>
+            <text class="info-value">{{verifyResult.date}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">签到时间</text>
+            <text class="info-value highlight">{{verifyResult.checkInTime}}</text>
+          </view>
+        </view>
+
+        <view class="points-reward" wx:if="{{verifyResult.pointsEarned > 0}}">
+          <view class="points-icon">💚</view>
+          <view class="points-text">
+            <view class="points-title">获得绿色积分</view>
+            <view class="points-value">+{{verifyResult.pointsEarned}}</view>
+          </view>
+        </view>
+
+        <view class="already-tip" wx:if="{{verifyResult.alreadyCheckedIn}}">
+          <text class="tip-icon">ℹ️</text>
+          <text class="tip-text">{{verifyResult.reason}}</text>
+        </view>
+
+        <view class="result-actions">
+          <view class="btn-secondary" bindtap="closeResult">继续签到</view>
+          <view class="btn-primary" bindtap="viewReservation">查看详情</view>
+        </view>
+      </view>
+
+      <view wx:else>
+        <view class="result-icon fail">❌</view>
+        <view class="result-title fail">签到失败</view>
+        <view class="fail-reason">{{verifyResult.reason}}</view>
+        <view class="result-actions">
+          <view class="btn-primary full" bindtap="closeResult">我知道了</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="page-header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <view class="header-icon">📱</view>
+      <view class="header-title">扫码核销签到</view>
+      <view class="header-subtitle">扫描预约二维码完成签到，送绿色积分</view>
+    </view>
+  </view>
+
+  <view class="scan-card">
+    <view class="scan-area" bindtap="startScan">
+      <view class="scan-frame">
+        <view class="scan-corner tl"></view>
+        <view class="scan-corner tr"></view>
+        <view class="scan-corner bl"></view>
+        <view class="scan-corner br"></view>
+        <view class="scan-line"></view>
+      </view>
+      <view class="scan-text">点击扫描预约二维码</view>
+    </view>
+  </view>
+
+  <view class="divider-row">
+    <view class="divider-line"></view>
+    <view class="divider-text">或手动输入预约号</view>
+    <view class="divider-line"></view>
+  </view>
+
+  <view class="manual-section">
+    <view class="input-row">
+      <input
+        class="manual-input"
+        type="text"
+        placeholder="请输入预约号（如 EXP2025...）"
+        value="{{manualInput}}"
+        bindinput="onManualInput"
+        maxlength="20"
+      />
+      <view class="check-btn" bindtap="manualCheckIn">签到</view>
+    </view>
+  </view>
+
+  <view class="tips-section">
+    <view class="tips-title">💡 签到说明</view>
+    <view class="tips-item">· 请在活动现场扫描用户出示的预约二维码</view>
+    <view class="tips-item">· 扫码成功后自动完成签到并发放积分</view>
+    <view class="tips-item">· 每个预约仅可签到一次</view>
+    <view class="tips-item">· 如有问题可手动输入预约号进行签到</view>
+  </view>
+
+  <view class="recent-section" wx:if="{{recentCheckIns.length > 0}}">
+    <view class="section-header">
+      <view class="section-title">最近签到</view>
+      <view class="view-all" bindtap="goMyReservations">全部记录 ›</view>
+    </view>
+    <view class="recent-list">
+      <view
+        wx:for="{{recentCheckIns}}"
+        wx:key="id"
+        class="recent-item"
+      >
+        <view class="recent-icon">✅</view>
+        <view class="recent-info">
+          <view class="recent-name">{{item.activityTypeName}}</view>
+          <view class="recent-meta">{{item.peopleCount}}人 · {{item.timeLabel}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-recent" wx:else>
+    <view class="empty-icon">📋</view>
+    <view class="empty-text">暂无签到记录</view>
+    <view class="empty-btn" bindtap="goExperienceList">去预约</view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

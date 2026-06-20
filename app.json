@@ -52,7 +52,12 @@
     "pages/subscription/subscription",
     "pages/supplyChainTimeline/supplyChainTimeline",
     "pages/tastingNotes/tastingNotes",
-    "pages/tastingNoteDetail/tastingNoteDetail"
+    "pages/tastingNoteDetail/tastingNoteDetail",
+    "pages/experience/list",
+    "pages/experience/reserve",
+    "pages/experience/myReservations",
+    "pages/experience/reservationDetail",
+    "pages/experience/verify"
   ],
   "window": {
     "backgroundTextStyle": "dark",

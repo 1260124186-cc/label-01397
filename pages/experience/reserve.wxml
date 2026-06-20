@@ -1,0 +1,145 @@
+<view class="reserve-page">
+
+  <view class="success-modal" wx:if="{{showSuccess}}">
+    <view class="modal-mask"></view>
+    <view class="modal-content">
+      <view class="success-icon">✅</view>
+      <view class="success-title">预约成功</view>
+      <view class="success-desc">我们已收到您的预约申请，请在活动当天出示预约码进行签到</view>
+      <view class="success-reservation-id">预约号：{{createdReservationId}}</view>
+      <view class="success-points">签到后可获得绿色积分奖励</view>
+      <view class="success-actions">
+        <view class="btn-secondary" bindtap="continueSubmit">继续预约</view>
+        <view class="btn-primary" bindtap="viewReservation">查看预约码</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!activityType}}" class="form-section">
+    <view class="section-title">活动类型 <text class="required">*</text></view>
+    <view class="type-grid">
+      <view
+        wx:for="{{activityTypes}}"
+        wx:key="key"
+        class="type-item {{selectedTypeKey === item.key ? 'active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="selectActivityType"
+      >
+        <view class="type-icon" style="background: {{selectedTypeKey === item.key ? item.color : '#F0F0F0'}};">{{item.icon}}</view>
+        <view class="type-label">{{item.name}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{activityType}}" class="activity-banner" style="background: linear-gradient(135deg, {{activityType.color}}, {{activityType.color}}88);">
+    <view class="banner-icon">{{activityType.icon}}</view>
+    <view class="banner-info">
+      <view class="banner-name">{{activityType.name}}</view>
+      <view class="banner-meta">⏱ {{activityType.duration}} · 👥 限{{activityType.capacity}}人 · +{{activityType.rewardPoints}}积分</view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">预约人数 <text class="required">*</text></view>
+    <view class="people-counter">
+      <view class="counter-btn" bindtap="decreasePeople">-</view>
+      <input
+        class="counter-input"
+        type="number"
+        value="{{peopleCount}}"
+        bindinput="onPeopleCountInput"
+      />
+      <view class="counter-btn" bindtap="increasePeople">+</view>
+      <view class="counter-tip">人</view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">预约日期 <text class="required">*</text></view>
+    <picker mode="date" value="{{date}}" start="{{minDate}}" bindchange="onDateChange">
+      <view class="picker-row">
+        <view class="picker-value">{{date}}</view>
+        <view class="picker-arrow">›</view>
+      </view>
+    </picker>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">联系人姓名 <text class="required">*</text></view>
+    <view class="input-wrap">
+      <input
+        class="form-input"
+        type="text"
+        placeholder="请输入姓名"
+        value="{{contactName}}"
+        bindinput="onContactNameInput"
+        maxlength="20"
+      />
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">联系电话 <text class="required">*</text></view>
+    <view class="input-wrap">
+      <input
+        class="form-input"
+        type="number"
+        placeholder="请输入手机号码"
+        value="{{contactPhone}}"
+        bindinput="onContactPhoneInput"
+        maxlength="11"
+      />
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">是否已购买产品</view>
+    <view class="switch-row">
+      <view class="switch-label">
+        <view class="switch-title">我已购买过桂花茶产品</view>
+        <view class="switch-desc">老顾客可享受优先安排</view>
+      </view>
+      <switch
+        checked="{{hasPurchased}}"
+        bindchange="onHasPurchasedChange"
+        color="#2E8B57"
+      />
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">备注信息</view>
+    <view class="textarea-wrap">
+      <textarea
+        class="form-textarea"
+        placeholder="有特殊需求请备注（选填）"
+        value="{{remark}}"
+        bindinput="onRemarkInput"
+        maxlength="200"
+        auto-height
+      />
+      <view class="input-count">{{remark.length}}/200</view>
+    </view>
+  </view>
+
+  <view class="notice-box">
+    <view class="notice-title">📌 预约须知</view>
+    <view class="notice-item">· 请在预约时间前15分钟到达现场</view>
+    <view class="notice-item">· 现场出示预约码进行扫码签到</view>
+    <view class="notice-item">· 完成签到即可获得绿色积分奖励</view>
+    <view class="notice-item">· 如需取消请提前24小时操作</view>
+  </view>
+
+  <view class="submit-bar">
+    <button
+      class="submit-btn {{submitting ? 'disabled' : ''}}"
+      bindtap="submitReservation"
+      disabled="{{submitting}}"
+    >
+      <text wx:if="{{submitting}}">提交中...</text>
+      <text wx:else>提交预约</text>
+    </button>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

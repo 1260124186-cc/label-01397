@@ -1,0 +1,118 @@
+<view class="reservation-detail-page" wx:if="{{reservation}}">
+
+  <view class="activity-header" style="background: linear-gradient(135deg, {{reservation.activityColor}}, {{reservation.activityColor}}88);">
+    <view class="header-content">
+      <view class="activity-icon">{{reservation.activityIcon}}</view>
+      <view class="activity-name">{{reservation.activityTypeName}}</view>
+      <view class="status-tag status-{{reservation.status}}">{{statusLabel}}</view>
+    </view>
+  </view>
+
+  <view class="qr-card" wx:if="{{showQrCode}}">
+    <view class="qr-title">预约核销码</view>
+    <view class="qr-subtitle">请在活动现场出示此码进行签到</view>
+    <view class="qr-wrapper">
+      <view class="qr-mock">
+        <view class="qr-pattern">
+          <view wx:for="{{[0,1,2,3,4,5,6,7,8,9]}}" wx:for-item="row" wx:key="*this" class="qr-row">
+            <view wx:for="{{[0,1,2,3,4,5,6,7,8,9]}}" wx:for-item="col" wx:key="*this" class="qr-cell {{(row + col) % 3 === 0 ? 'filled' : ''}} {{(row === 0 && col < 3) || (row < 3 && col === 0) ? 'corner' : ''}} {{(row === 0 && col > 6) || (row < 3 && col === 9) ? 'corner' : ''}} {{(row > 6 && col < 3) ? 'corner' : ''}}"></view>
+          </view>
+        </view>
+        <view class="qr-center-icon">{{reservation.activityIcon}}</view>
+      </view>
+    </view>
+    <view class="reservation-id-row" bindtap="copyReservationId">
+      <text class="id-label">预约号</text>
+      <text class="id-value">{{reservation.id}}</text>
+      <text class="copy-btn">复制</text>
+    </view>
+    <view class="qr-tip">💡 签到成功即可获得 {{reservation.rewardPoints}} 绿色积分</view>
+  </view>
+
+  <view class="checked-in-card" wx:if="{{reservation.status === 'checked_in'}}">
+    <view class="checked-in-icon">✅</view>
+    <view class="checked-in-title">已完成签到</view>
+    <view class="checked-in-time">签到时间：{{checkInTimeLabel}}</view>
+    <view class="checked-in-points" wx:if="{{reservation.checkInPointsAwarded}}">
+      <text class="points-icon">💚</text>
+      <text>已获得 +{{reservation.rewardPoints}} 绿色积分</text>
+    </view>
+  </view>
+
+  <view class="cancelled-card" wx:if="{{reservation.status === 'cancelled'}}">
+    <view class="cancelled-icon">❌</view>
+    <view class="cancelled-title">预约已取消</view>
+  </view>
+
+  <view class="info-section">
+    <view class="section-title">预约信息</view>
+
+    <view class="info-card">
+      <view class="info-row">
+        <view class="info-label">活动类型</view>
+        <view class="info-value">{{reservation.activityTypeName}}</view>
+      </view>
+      <view class="info-row">
+        <view class="info-label">预约日期</view>
+        <view class="info-value">{{reservation.date}}</view>
+      </view>
+      <view class="info-row">
+        <view class="info-label">预约人数</view>
+        <view class="info-value">{{reservation.peopleCount}} 人</view>
+      </view>
+      <view class="info-row">
+        <view class="info-label">联系人</view>
+        <view class="info-value">{{reservation.contactName}}</view>
+      </view>
+      <view class="info-row">
+        <view class="info-label">联系电话</view>
+        <view class="info-value">{{reservation.contactPhone}}</view>
+      </view>
+      <view class="info-row">
+        <view class="info-label">已购产品</view>
+        <view class="info-value">{{reservation.hasPurchased ? '是' : '否'}}</view>
+      </view>
+      <view class="info-row" wx:if="{{reservation.remark}}">
+        <view class="info-label">备注</view>
+        <view class="info-value">{{reservation.remark}}</view>
+      </view>
+      <view class="info-row">
+        <view class="info-label">提交时间</view>
+        <view class="info-value">{{createTimeLabel}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="activity-section" wx:if="{{activityType}}">
+    <view class="section-title">活动介绍</view>
+    <view class="activity-desc">{{activityType.description}}</view>
+    <view class="activity-highlights">
+      <view wx:for="{{activityType.highlights}}" wx:key="*this" class="highlight-item">
+        <text class="highlight-bullet">✓</text>
+        <text class="highlight-text">{{item}}</text>
+      </view>
+    </view>
+    <view class="activity-meta-row">
+      <view class="meta-tag">⏱ {{activityType.duration}}</view>
+      <view class="meta-tag">👥 限{{activityType.capacity}}人</view>
+      <view class="meta-tag points-tag">💚 +{{activityType.rewardPoints}}积分</view>
+    </view>
+  </view>
+
+  <view class="bottom-actions" wx:if="{{reservation.status === 'confirmed'}}">
+    <view class="action-btn-secondary" bindtap="contactService">
+      <text class="btn-icon">📞</text>
+      <text>联系客服</text>
+    </view>
+    <view class="action-btn-danger" bindtap="cancelReservation">取消预约</view>
+  </view>
+
+  <view class="bottom-actions" wx:if="{{reservation.status === 'checked_in'}}">
+    <view class="action-btn-primary full" bindtap="goVerify">
+      <text class="btn-icon">📱</text>
+      <text>扫码核销他人预约</text>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

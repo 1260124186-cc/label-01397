@@ -1,0 +1,79 @@
+<view class="experience-page">
+
+  <view class="page-header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <view class="header-icon">🎋</view>
+      <view class="header-title">线下体验预约</view>
+      <view class="header-subtitle">茶园参观 · 制茶体验 · 品鉴会 · 开放日</view>
+    </view>
+  </view>
+
+  <view class="quick-actions">
+    <view class="action-card primary" bindtap="goMyReservations">
+      <view class="action-icon">📋</view>
+      <view class="action-info">
+        <view class="action-title">
+          我的预约
+          <view class="badge" wx:if="{{myReservationCount > 0}}">{{myReservationCount}}</view>
+        </view>
+        <view class="action-desc">查看预约记录和核销码</view>
+      </view>
+      <view class="action-arrow">›</view>
+    </view>
+
+    <view class="action-card" bindtap="goVerify">
+      <view class="action-icon">📱</view>
+      <view class="action-info">
+        <view class="action-title">扫码签到</view>
+        <view class="action-desc">现场扫码核销预约，签到送积分</view>
+      </view>
+      <view class="action-arrow">›</view>
+    </view>
+  </view>
+
+  <view class="section-title-row">
+    <view class="section-title">
+      <text class="title-icon">✨</text>
+      <text>体验活动</text>
+    </view>
+  </view>
+
+  <view class="activity-list">
+    <view
+      wx:for="{{experienceTypes}}"
+      wx:key="key"
+      class="activity-card"
+      data-key="{{item.key}}"
+      bindtap="onActivityTap"
+    >
+      <view class="activity-icon" style="background: linear-gradient(135deg, {{item.color}}, {{item.color}}88);">
+        {{item.icon}}
+      </view>
+      <view class="activity-content">
+        <view class="activity-header">
+          <view class="activity-name">{{item.name}}</view>
+          <view class="activity-points">+{{item.rewardPoints}}积分</view>
+        </view>
+        <view class="activity-desc">{{item.description}}</view>
+        <view class="activity-meta">
+          <view class="meta-item">⏱ {{item.duration}}</view>
+          <view class="meta-item">👥 限{{item.capacity}}人</view>
+        </view>
+        <view class="activity-highlights">
+          <view wx:for="{{item.highlights}}" wx:for-item="hl" wx:key="*this" class="highlight-tag">
+            · {{hl}}
+          </view>
+        </view>
+      </view>
+      <view class="activity-arrow">立即预约 ›</view>
+    </view>
+  </view>
+
+  <view class="points-tip">
+    <text class="tip-icon">💡</text>
+    <text class="tip-text">完成线下体验签到，即可获得绿色积分奖励</text>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
