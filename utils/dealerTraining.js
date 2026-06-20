@@ -4,8 +4,8 @@
  */
 
 const mockData = require('./mockData.js');
-const dealerAuth = require('./dealerAuth.js');
 
+const DEALER_USER_KEY = 'dealer_user';
 const TRAINING_PROGRESS_KEY = 'dealer_training_progress';
 const TRAINING_QUIZ_RECORDS_KEY = 'dealer_training_quiz_records';
 const TRAINING_CERTIFICATES_KEY = 'dealer_training_certificates';
@@ -40,6 +40,15 @@ const CATEGORY_COLORS = {
 
 const QUIZ_PASS_SCORE = 60;
 
+function getDealerUser() {
+  try {
+    return wx.getStorageSync(DEALER_USER_KEY) || null;
+  } catch (e) {
+    console.error('[DealerTraining] 获取经销商用户失败:', e);
+    return null;
+  }
+}
+
 function getProgress() {
   try {
     return wx.getStorageSync(TRAINING_PROGRESS_KEY) || {};
@@ -60,7 +69,7 @@ function setProgress(progress) {
 }
 
 function getDealerProgressKey() {
-  const user = dealerAuth.getDealerUser();
+  const user = getDealerUser();
   if (!user) return null;
   return user.dealerId + '_' + user.id;
 }
@@ -322,7 +331,7 @@ function issueCertificate(courseId) {
   const course = getCourseById(courseId);
   if (!course) return null;
   
-  const user = dealerAuth.getDealerUser();
+  const user = getDealerUser();
   if (!user) return null;
   
   const cert = {

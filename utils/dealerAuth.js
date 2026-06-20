@@ -4,7 +4,6 @@
  */
 
 const mockData = require('./mockData.js');
-const dealerTraining = require('./dealerTraining.js');
 
 const DEALER_USER_KEY = 'dealer_user';
 const DEALER_TOKEN_KEY = 'dealer_token';
@@ -301,14 +300,6 @@ function formatDateTime(timestamp) {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }
 
-function hasCompletedTraining() {
-  return dealerTraining.canPerformStockOut();
-}
-
-function getTrainingStatus() {
-  return dealerTraining.getTrainingStats();
-}
-
 module.exports = {
   ROLE_WAREHOUSE: ROLE_WAREHOUSE,
   ROLE_SALES: ROLE_SALES,
@@ -337,8 +328,6 @@ module.exports = {
   approveStockOut: approveStockOut,
   rejectStockOut: rejectStockOut,
   updateLastActiveTime: updateLastActiveTime,
-  hasCompletedTraining: hasCompletedTraining,
-  getTrainingStatus: getTrainingStatus,
 
   DEALER_USER_KEY: DEALER_USER_KEY,
   DEALER_TOKEN_KEY: DEALER_TOKEN_KEY,
