@@ -389,14 +389,17 @@ Page({
         wx.showLoading({ title: '转换中...', mask: true });
         setTimeout(function() {
           var reg = recallService.getRegistrationById(registrationId);
+          var rawContact = reg && reg.contact ? reg.contact : '13800138000';
           var formData = {
             traceId: reg ? reg.traceId : (that.data.traceId || 'G002'),
             problemType: 'recall_compensation',
             expectedSolution: 'refund',
-            description: (reg && reg.remark) ? reg.remark : 'G002批次召回补偿',
-            contact: reg ? reg.contact : '138****8888',
+            title: '召回补偿 - ' + (reg && reg.productName ? reg.productName : 'G002批次产品'),
+            description: (reg && reg.remark) ? reg.remark : 'G002批次召回补偿，由召回登记转换而来',
+            contact: rawContact,
             accountType: 'alipay',
-            accountNumber: reg && reg.contact ? reg.contact.replace(/^(\d{3})\d{4}(\d{4})$/, '$1*****$2') + '@alipay.com' : '138****8888@alipay.com',
+            accountNumber: rawContact + '@alipay.com',
+            alipayAccount: rawContact + '@alipay.com',
             images: reg ? reg.images : [],
             isAbnormalBatch: that.data.batchNo === 'GH202504' || (reg && reg.traceId) === 'G002',
             isRecallBatch: true

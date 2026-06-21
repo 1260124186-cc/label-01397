@@ -139,6 +139,19 @@ function maskIdCard(idCard) {
   return str.substring(0, 6) + '********' + str.substring(str.length - 4);
 }
 
+function maskAlipayAccount(account) {
+  if (!account) return '';
+  var str = String(account);
+  var atIndex = str.indexOf('@');
+  if (atIndex !== -1) {
+    var prefix = str.substring(0, atIndex);
+    var suffix = str.substring(atIndex);
+    if (prefix.length <= 2) return prefix + suffix;
+    return prefix.substring(0, 2) + '***' + suffix;
+  }
+  return maskPhone(str);
+}
+
 function calculateSlaDeadline(status, referenceTime) {
   var config = SLA_CONFIG[status];
   if (!config) return null;
@@ -298,11 +311,12 @@ function createClaim(formData) {
     contact: formData.contact || '',
     maskedContact: maskPhone(formData.contact),
 
-    bankAccount: formData.bankAccount || '',
-    maskedBankAccount: maskBankAccount(formData.bankAccount),
+    bankAccount: formData.bankAccount || (formData.accountType === 'bank' ? formData.accountNumber : ''),
+    maskedBankAccount: maskBankAccount(formData.bankAccount || (formData.accountType === 'bank' ? formData.accountNumber : '')),
     bankAccountName: formData.bankAccountName || '',
-    alipayAccount: formData.alipayAccount || '',
-    maskedAlipayAccount: maskPhone(formData.alipayAccount),
+    bankName: formData.bankName || '',
+    alipayAccount: formData.alipayAccount || (formData.accountType === 'alipay' ? formData.accountNumber : ''),
+    maskedAlipayAccount: maskAlipayAccount(formData.alipayAccount || (formData.accountType === 'alipay' ? formData.accountNumber : '')),
 
     productInfo: productInfo,
     isAbnormalBatch: isAbnormalBatch,
@@ -311,7 +325,7 @@ function createClaim(formData) {
     relatedRecallRegistrationId: formData.relatedRecallRegistrationId || '',
 
     shippingAddress: formData.shippingAddress || null,
-    isExchangeNeeded: formData.problemType === 'logistics_damage' || false,
+    isExchangeNeeded: formData.expectedSolution === 'exchange',
     sampleMethod: null,
 
     status: CLAIM_STATUS.SUBMITTED,
@@ -368,7 +382,11 @@ function simulateClaimProgress(claimId, isAbnormalBatch, isRecallBatch) {
       sampleMessage = '初审通过，需您寄送问题样品至指定地址，或安排质检员上门检测';
       updateClaimSampleMethod(claimId, 'mail_sample');
     } else if (claim.problemType === 'logistics_damage') {
-      sampleMessage = '初审通过，已确认物流破损，无需寄样，请确认收款账户';
+      if (claim.expectedSolution === 'exchange') {
+        sampleMessage = '初审通过，已确认物流破损，无需寄样，请确认收货地址用于换货';
+      } else {
+        sampleMessage = '初审通过，已确认物流破损，无需寄样，请确认收款账户';
+      }
       updateClaimSampleMethod(claimId, 'none');
     } else if (claim.problemType === 'recall_compensation') {
       sampleMessage = '初审通过，召回批次信息已匹配，无需寄样，正在核算补偿方案';
@@ -874,6 +892,7 @@ module.exports = {
   maskBankAccount: maskBankAccount,
   maskPhone: maskPhone,
   maskIdCard: maskIdCard,
+  maskAlipayAccount: maskAlipayAccount,
 
   calculateSlaDeadline: calculateSlaDeadline,
   getSlaRemainingInfo: getSlaRemainingInfo,

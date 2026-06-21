@@ -136,14 +136,15 @@ Page({
       selectedSolution: key,
       selectedSolutionLabel: label
     });
+    this.updateAddressVisibility();
   },
 
   checkSolutionAvailability: function() {
-    var type = this.data.selectedProblemType;
-    var showAddress = false;
-    if (type === 'logistics_damage') {
-      showAddress = true;
-    }
+    this.updateAddressVisibility();
+  },
+
+  updateAddressVisibility: function() {
+    var showAddress = this.data.selectedSolution === 'exchange';
     this.setData({ showAddressInput: showAddress });
   },
 
