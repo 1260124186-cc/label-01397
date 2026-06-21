@@ -3503,6 +3503,111 @@ Page({
     });
   },
 
+  createNewLotteryRound: function() {
+    var that = this;
+    wx.showModal({
+      title: '发起新一轮公开抽检',
+      content: '系统将从在售批次池中随机抽取约30%的批次进行公开抽检，抽签过程与结果将自动上链存证。是否继续？',
+      confirmText: '确认发起',
+      cancelText: '取消',
+      success: function(res) {
+        if (res.confirm) {
+          var result = publicLottery.createNewLotteryRound();
+          if (result.success) {
+            wx.showToast({ title: '抽检发起成功', icon: 'success', duration: 2000 });
+            that._refreshLotteryData();
+          } else {
+            wx.showToast({ title: result.message || '发起失败', icon: 'none' });
+          }
+        }
+      }
+    });
+  },
+
+  advanceLotteryStatus: function() {
+    var that = this;
+    var lotteryData = this.data.publicLotteryData;
+    if (!lotteryData) return;
+
+    var status = lotteryData.status;
+    var roundId = lotteryData.roundId;
+
+    if (status === publicLottery.LOTTERY_STATUS.DRAWING) {
+      var result = publicLottery.advanceLotteryToSampled(roundId);
+      if (result.success) {
+        wx.showToast({ title: '已完成取样', icon: 'success' });
+        that._refreshLotteryData();
+      } else {
+        wx.showToast({ title: result.message, icon: 'none' });
+      }
+    } else if (status === publicLottery.LOTTERY_STATUS.SAMPLED) {
+      var result2 = publicLottery.advanceLotteryToInspecting(roundId);
+      if (result2.success) {
+        wx.showToast({ title: '检测机构已接收', icon: 'success' });
+        that._refreshLotteryData();
+      } else {
+        wx.showToast({ title: result2.message, icon: 'none' });
+      }
+    } else if (status === publicLottery.LOTTERY_STATUS.INSPECTING) {
+      wx.showModal({
+        title: '完成检测',
+        content: '检测机构已出具检测报告，结果将自动上链存证并写入各批次历史报告。是否确认？',
+        confirmText: '确认完成',
+        cancelText: '取消',
+        success: function(res) {
+          if (res.confirm) {
+            var result3 = publicLottery.completeLotteryInspection(roundId);
+            if (result3.success) {
+              wx.showToast({ title: '检测已完成', icon: 'success', duration: 2000 });
+              that._refreshLotteryData();
+            } else {
+              wx.showToast({ title: result3.message, icon: 'none' });
+            }
+          }
+        }
+      });
+    } else {
+      wx.showToast({ title: '当前状态无需推进', icon: 'none' });
+    }
+  },
+
+  _refreshLotteryData: function() {
+    var traceId = this.data.traceId || 'G001';
+    var lotteryData = publicLottery.getPublicLotteryData(traceId);
+    var crossEndorsement = publicLottery.getBlockchainCrossEndorsement(traceId);
+    var enrichedReports = publicLottery.enrichHistoryReportsWithLottery(traceId);
+
+    this.setData({
+      publicLotteryData: lotteryData,
+      lotteryCrossEndorsement: crossEndorsement,
+      enrichedHistoryReports: enrichedReports
+    });
+
+    var showGiftBox = !!this.data.giftBoxInfo;
+    var hasShelfLife = !!this.data.shelfLifeData;
+    this.setData({
+      anchorTabs: buildAnchorTabs(showGiftBox, hasShelfLife, !!lotteryData)
+    });
+  },
+
+  resetLotterySystem: function() {
+    var that = this;
+    wx.showModal({
+      title: '重置抽检系统',
+      content: '此操作将清空所有抽检数据并重新初始化，仅用于测试。是否继续？',
+      confirmText: '确认重置',
+      cancelText: '取消',
+      confirmColor: '#F56C6C',
+      success: function(res) {
+        if (res.confirm) {
+          publicLottery.resetLotterySystem();
+          that._refreshLotteryData();
+          wx.showToast({ title: '已重置', icon: 'success' });
+        }
+      }
+    });
+  },
+
   /**
    * ==================== 保质期与储存提醒功能 ====================
    */

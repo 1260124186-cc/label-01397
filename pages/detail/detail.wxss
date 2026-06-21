@@ -175,7 +175,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
+  background-image:
     radial-gradient(circle at 15% 25%, rgba(255,255,255,0.1) 0%, transparent 40%),
     radial-gradient(circle at 85% 75%, rgba(218,165,32,0.15) 0%, transparent 35%);
 }
@@ -11285,3 +11285,92 @@
   align-items: center;
 }
 
+.shared-data-badge {
+  font-size: 22rpx;
+  color: #2E8B57;
+  background: #E1F3D8;
+  padding: 4rpx 16rpx;
+  border-radius: 10rpx;
+  margin-left: auto;
+  font-weight: 600;
+}
+
+.endorsement-same-source-hint {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 16rpx;
+  padding-top: 12rpx;
+  border-top: 1rpx solid #E1F3D8;
+  font-size: 22rpx;
+  color: #2E8B57;
+  line-height: 1.6;
+}
+
+.endorsement-same-source-hint .same-source-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  background: #2E8B57;
+  color: #fff;
+  font-size: 18rpx;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.lottery-brand-actions {
+  margin-top: 24rpx;
+  padding: 20rpx;
+  background: #FAFAFA;
+  border-radius: 16rpx;
+  border: 1rpx solid #E4E7ED;
+}
+
+.brand-actions-title {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #606266;
+  margin-bottom: 16rpx;
+}
+
+.brand-actions-title .brand-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.brand-actions-row {
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+
+.brand-action-btn {
+  flex: 1;
+  min-width: 160rpx;
+  padding: 18rpx 16rpx;
+  border-radius: 12rpx;
+  text-align: center;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.brand-action-btn.primary {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #fff;
+}
+
+.brand-action-btn.secondary {
+  background: linear-gradient(135deg, #409EFF 0%, #337ECC 100%);
+  color: #fff;
+}
+
+.brand-action-btn.danger {
+  background: #fff;
+  color: #F56C6C;
+  border: 1rpx solid #FBC4C4;
+}

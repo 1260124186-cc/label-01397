@@ -187,5 +187,78 @@ Page({
         wx.showToast({ title: '已复制', icon: 'success', duration: 1500 });
       }
     });
+  },
+
+  advanceStatus: function() {
+    var that = this;
+    var round = this.data.roundDetail;
+    if (!round) return;
+
+    var status = round.status;
+    var roundId = round.roundId;
+    var statusLabel = publicLottery.getStatusLabel(status);
+
+    if (status === publicLottery.LOTTERY_STATUS.DRAWING) {
+      wx.showModal({
+        title: '完成取样',
+        content: '确认已完成取样并送入检测机构？操作后状态将变更为"已取样"，并更新链上存证。',
+        confirmText: '确认取样',
+        success: function(res) {
+          if (res.confirm) {
+            var result = publicLottery.advanceLotteryToSampled(roundId);
+            if (result.success) {
+              wx.showToast({ title: '取样完成', icon: 'success' });
+              that.loadRoundDetail(roundId);
+            } else {
+              wx.showToast({ title: result.message, icon: 'none' });
+            }
+          }
+        }
+      });
+    } else if (status === publicLottery.LOTTERY_STATUS.SAMPLED) {
+      wx.showModal({
+        title: '开始检测',
+        content: '确认检测机构已接收样品并开始检测？操作后状态将变更为"检测中"。',
+        confirmText: '确认开始',
+        success: function(res) {
+          if (res.confirm) {
+            var result2 = publicLottery.advanceLotteryToInspecting(roundId);
+            if (result2.success) {
+              wx.showToast({ title: '检测中', icon: 'success' });
+              that.loadRoundDetail(roundId);
+            } else {
+              wx.showToast({ title: result2.message, icon: 'none' });
+            }
+          }
+        }
+      });
+    } else if (status === publicLottery.LOTTERY_STATUS.INSPECTING) {
+      wx.showModal({
+        title: '完成检测并出具报告',
+        content: '确认检测已完成并出具报告？操作后：\n1. 检测结果自动写入各批次历史报告\n2. 结果自动上链存证\n3. 与溯源链数据互相背书',
+        confirmText: '确认完成',
+        success: function(res) {
+          if (res.confirm) {
+            var result3 = publicLottery.completeLotteryInspection(roundId);
+            if (result3.success) {
+              wx.showToast({ title: '检测完成', icon: 'success', duration: 2000 });
+              that.loadRoundDetail(roundId);
+            } else {
+              wx.showToast({ title: result3.message, icon: 'none' });
+            }
+          }
+        }
+      });
+    } else {
+      wx.showToast({ title: '当前为' + statusLabel + '状态，无需推进', icon: 'none' });
+    }
+  },
+
+  getNextStatusText: function(status) {
+    var map = {};
+    map[publicLottery.LOTTERY_STATUS.DRAWING] = '完成取样';
+    map[publicLottery.LOTTERY_STATUS.SAMPLED] = '开始检测';
+    map[publicLottery.LOTTERY_STATUS.INSPECTING] = '出具报告';
+    return map[status] || '已完成';
   }
 });

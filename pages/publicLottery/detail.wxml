@@ -216,6 +216,45 @@
       </view>
     </view>
 
+    <!-- 状态推进操作（模拟品牌端） -->
+    <view class="section-card brand-action-card" wx:if="{{roundDetail.status !== 'reported' && roundDetail.status !== 'closed'}}">
+      <view class="section-header">
+        <view class="section-title">
+          <text class="section-icon">⚙️</text>
+          <text>状态推进（模拟品牌操作）</text>
+        </view>
+      </view>
+      <view class="section-content">
+        <view class="status-progress">
+          <view class="progress-step {{roundDetail.status === 'drawing' || roundDetail.status === 'sampled' || roundDetail.status === 'inspecting' || roundDetail.status === 'reported' || roundDetail.status === 'closed' ? 'active' : ''}}">
+            <view class="step-dot"></view>
+            <text class="step-label">抽签</text>
+          </view>
+          <view class="progress-line {{roundDetail.status === 'sampled' || roundDetail.status === 'inspecting' || roundDetail.status === 'reported' || roundDetail.status === 'closed' ? 'active' : ''}}"></view>
+          <view class="progress-step {{roundDetail.status === 'sampled' || roundDetail.status === 'inspecting' || roundDetail.status === 'reported' || roundDetail.status === 'closed' ? 'active' : ''}}">
+            <view class="step-dot"></view>
+            <text class="step-label">取样</text>
+          </view>
+          <view class="progress-line {{roundDetail.status === 'inspecting' || roundDetail.status === 'reported' || roundDetail.status === 'closed' ? 'active' : ''}}"></view>
+          <view class="progress-step {{roundDetail.status === 'inspecting' || roundDetail.status === 'reported' || roundDetail.status === 'closed' ? 'active' : ''}}">
+            <view class="step-dot"></view>
+            <text class="step-label">检测</text>
+          </view>
+          <view class="progress-line {{roundDetail.status === 'reported' || roundDetail.status === 'closed' ? 'active' : ''}}"></view>
+          <view class="progress-step {{roundDetail.status === 'reported' || roundDetail.status === 'closed' ? 'active' : ''}}">
+            <view class="step-dot"></view>
+            <text class="step-label">报告</text>
+          </view>
+        </view>
+        <view class="advance-btn" bindtap="advanceStatus">
+          <text>⏭️ 推进到下一步</text>
+        </view>
+        <view class="advance-hint">
+          <text>💡 每一步推进都会自动更新链上存证数据</text>
+        </view>
+      </view>
+    </view>
+
     <!-- 品牌叙事 -->
     <view class="section-card narrative-card">
       <view class="section-header" bindtap="toggleSection" data-key="narrative">

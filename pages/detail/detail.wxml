@@ -1759,6 +1759,9 @@
           <view class="endorsement-header">
             <text class="endorsement-icon">🔗</text>
             <text class="endorsement-title">{{currentLang === 'en-US' ? 'Blockchain Cross-Endorsement' : '区块链互相背书'}}</text>
+            <view class="shared-data-badge" wx:if="{{lotteryCrossEndorsement.sharedDataSource}}">
+              <text>📦 数据同源</text>
+            </view>
           </view>
           <view class="endorsement-content">
             <view class="endorsement-item" wx:for="{{lotteryCrossEndorsement.lotteryEndorsements}}" wx:key="roundId">
@@ -1769,6 +1772,29 @@
           </view>
           <view class="endorsement-narrative" wx:if="{{lotteryCrossEndorsement.narrative}}">
             <text>{{lotteryCrossEndorsement.narrative}}</text>
+          </view>
+          <view class="endorsement-same-source-hint">
+            <text class="same-source-icon">✓</text>
+            <text class="same-source-text">{{currentLang === 'en-US' ? 'All lottery on-chain data from the same proof source, consumed directly by blockchain module' : '抽检链上存证与溯源链存证共享同一数据源，blockchain 模块直接消费，真实互相背书'}}</text>
+          </view>
+        </view>
+
+        <!-- 品牌操作区（模拟品牌端） -->
+        <view class="lottery-brand-actions">
+          <view class="brand-actions-title">
+            <text class="brand-icon">🏭</text>
+            <text>{{currentLang === 'en-US' ? 'Brand Actions (Simulated)' : '品牌操作（模拟）'}}</text>
+          </view>
+          <view class="brand-actions-row">
+            <view class="brand-action-btn primary" bindtap="createNewLotteryRound">
+              <text>🎲 {{currentLang === 'en-US' ? 'New Round' : '发起新抽检'}}</text>
+            </view>
+            <view class="brand-action-btn secondary" bindtap="advanceLotteryStatus" wx:if="{{publicLotteryData.status !== 'reported' && publicLotteryData.status !== 'closed'}}">
+              <text>⏭️ {{currentLang === 'en-US' ? 'Advance Status' : '推进状态'}}</text>
+            </view>
+            <view class="brand-action-btn danger" bindtap="resetLotterySystem">
+              <text>🔄 {{currentLang === 'en-US' ? 'Reset' : '重置'}}</text>
+            </view>
           </view>
         </view>
 
