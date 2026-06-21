@@ -9265,6 +9265,23 @@ function getInspectionQuarantine(traceId) {
   return exportInfo.inspectionQuarantine;
 }
 
+function getPublicLotteryInfo(traceId) {
+  var data = getTraceData(traceId);
+  if (!data || !data.basicInfo) return null;
+
+  var batchNo = data.basicInfo.batchNo;
+  var lotteryData = require('./publicLottery.js');
+  return lotteryData.getPublicLotteryByBatchNo(batchNo);
+}
+
+function getEnrichedHistoryReports(traceId) {
+  var data = getTraceData(traceId);
+  if (!data || !data.pesticideTest || !data.pesticideTest.historyReports) return [];
+
+  var lotteryData = require('./publicLottery.js');
+  return lotteryData.enrichHistoryReportsWithLottery(traceId);
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -9394,5 +9411,7 @@ module.exports = {
   getOverseasDistributor,
   getExportBlockchainInfo,
   getCertificateOfOrigin,
-  getInspectionQuarantine
+  getInspectionQuarantine,
+  getPublicLotteryInfo,
+  getEnrichedHistoryReports
 };

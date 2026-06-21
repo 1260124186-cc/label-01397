@@ -16,6 +16,7 @@ const reviewTrust = require('../../utils/reviewTrust.js');
 const tts = require('../../utils/tts.js');
 const marketingAnalytics = require('../../utils/marketingAnalytics.js');
 const traceExport = require('../../utils/traceExport.js');
+const publicLottery = require('../../utils/publicLottery.js');
 
 // 锚点 Tab 配置（将在运行时根据语言填充 label）
 const ANCHOR_TABS_BASE = [
@@ -27,6 +28,7 @@ const ANCHOR_TABS_BASE = [
   { key: 'green', icon: '♻️', i18nKey: 'detail.tabs.green' },
   { key: 'giftbox', icon: '🎁', i18nKey: 'detail.tabs.giftbox', conditional: true },
   { key: 'test', icon: '🔬', i18nKey: 'detail.tabs.test' },
+  { key: 'publicLottery', icon: '🎲', i18nKey: 'detail.tabs.publicLottery', conditional: true },
   { key: 'sampleTrace', icon: '🧪', label: '检样追溯' },
   { key: 'brew', icon: '☕', i18nKey: 'detail.tabs.brew' },
   { key: 'blockchain', icon: '🔗', i18nKey: 'detail.tabs.blockchain' },
@@ -37,12 +39,13 @@ const ANCHOR_TABS_BASE = [
 const CORE_MODULES = ['treeAge', 'process', 'green'];
 
 /** 根据当前语言生成带标签的 Tab 列表 */
-function buildAnchorTabs(showGiftBox, hasShelfLife) {
+function buildAnchorTabs(showGiftBox, hasShelfLife, hasPublicLottery) {
   return ANCHOR_TABS_BASE
     .filter(item => {
       if (!item.conditional) return true;
       if (item.key === 'giftbox') return !!showGiftBox;
       if (item.key === 'shelfLife') return !!hasShelfLife;
+      if (item.key === 'publicLottery') return !!hasPublicLottery;
       return true;
     })
     .map(item => ({
@@ -110,7 +113,7 @@ Page({
     // 阅读进度 0-100
     readingProgress: 0,
     // 锚点 Tab 列表（运行时根据语言动态生成）
-    anchorTabs: buildAnchorTabs(),
+    anchorTabs: buildAnchorTabs(false, false, false),
     // 当前激活的锚点
     activeAnchor: 'basic',
     // 锚点 Tab 是否吸顶
@@ -143,6 +146,9 @@ Page({
     verifying: false,
     sampleTraceData: null,
     sampleTraceAbnormalCount: 0,
+    publicLotteryData: null,
+    lotteryCrossEndorsement: null,
+    enrichedHistoryReports: [],
     // 历史报告时间轴展开状态
     showHistoryTimeline: false,
     // 当前选中的历史报告
@@ -364,7 +370,7 @@ Page({
     // ===== 初始化多语言与无障碍 =====
     this.refreshA11yData();
     this.refreshI18nTexts();
-    this.setData({ anchorTabs: buildAnchorTabs(false) });
+    this.setData({ anchorTabs: buildAnchorTabs(false, false, false) });
 
     // ===== 初始化语音播报 =====
     this.initTTS();
@@ -412,7 +418,7 @@ Page({
     // 用户可能从首页修改了设置，返回后立即刷新
     this.refreshA11yData();
     this.refreshI18nTexts();
-    this.setData({ anchorTabs: buildAnchorTabs(!!this.data.giftBoxInfo, !!this.data.shelfLifeData) });
+    this.setData({ anchorTabs: buildAnchorTabs(!!this.data.giftBoxInfo, !!this.data.shelfLifeData, !!this.data.publicLotteryData) });
     if (this.data.traceData) {
       this.refreshCertWalletStatus();
     }
@@ -592,6 +598,10 @@ Page({
 
         var hasExportInfo = mockData.hasExportInfo(traceId);
 
+        var publicLotteryData = publicLottery.getPublicLotteryData(traceId);
+        var lotteryCrossEndorsement = publicLottery.getBlockchainCrossEndorsement(traceId);
+        var enrichedHistoryReports = publicLottery.enrichHistoryReportsWithLottery(traceId);
+
         that.setData({
           traceData: data,
           originalTraceData: data,
@@ -636,10 +646,13 @@ Page({
           shelfLifeSubscribed: shelfLifeSubscribed,
           sampleTraceData: sampleTraceInfo,
           sampleTraceAbnormalCount: sampleTraceAbnormalCount,
-          hasExportInfo: hasExportInfo
+          hasExportInfo: hasExportInfo,
+          publicLotteryData: publicLotteryData,
+          lotteryCrossEndorsement: lotteryCrossEndorsement,
+          enrichedHistoryReports: enrichedHistoryReports
         });
 
-        that.setData({ anchorTabs: buildAnchorTabs(!!giftBoxInfo, !!shelfLifeData) });
+        that.setData({ anchorTabs: buildAnchorTabs(!!giftBoxInfo, !!shelfLifeData, !!publicLotteryData) });
 
         that.refreshCertWalletStatus();
 
@@ -3471,6 +3484,22 @@ Page({
           duration: 400
         });
       }, 200);
+    });
+  },
+
+  gotoPublicLotteryDetail: function() {
+    var lotteryData = this.data.publicLotteryData;
+    if (!lotteryData) return;
+    wx.navigateTo({
+      url: '/pages/publicLottery/detail?roundId=' + lotteryData.roundId
+    });
+  },
+
+  registerLotteryWitness: function() {
+    var lotteryData = this.data.publicLotteryData;
+    if (!lotteryData) return;
+    wx.navigateTo({
+      url: '/pages/publicLottery/detail?roundId=' + lotteryData.roundId + '&action=witness'
     });
   },
 

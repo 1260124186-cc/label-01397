@@ -1,0 +1,290 @@
+<view class="page-container">
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner">⟳</view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <block wx:if="{{!loading && roundDetail}}">
+    <view class="lottery-header">
+      <view class="lottery-status-bar" style="background-color: {{roundDetail.statusColor}};">
+        <text class="status-icon">{{roundDetail.status === 'reported' ? '✓' : (roundDetail.status === 'inspecting' ? '⏳' : '📋')}}</text>
+        <text class="status-text">{{roundDetail.statusLabel}}</text>
+      </view>
+      <view class="lottery-title">{{roundDetail.roundName}}</view>
+      <view class="lottery-meta">
+        <text class="meta-item">📅 {{roundDetail.scheduleDate}}</text>
+        <text class="meta-item">🏛️ {{roundDetail.institution}}</text>
+      </view>
+      <view class="lottery-meta">
+        <text class="meta-item">🔬 {{roundDetail.inspectionTypeLabels}}</text>
+      </view>
+    </view>
+
+    <!-- 抽签过程 -->
+    <view class="section-card">
+      <view class="section-header" bindtap="toggleSection" data-key="draw">
+        <view class="section-title">
+          <text class="section-icon">🎲</text>
+          <text>公开抽签</text>
+          <text class="section-toggle">{{expandedSections.draw ? '▾' : '▸'}}</text>
+        </view>
+      </view>
+      <view class="section-content" wx:if="{{expandedSections.draw}}">
+        <view class="draw-info">
+          <view class="info-row">
+            <text class="info-label">抽签时间</text>
+            <text class="info-value">{{roundDetail.drawDate}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">抽签种子</text>
+            <text class="info-value seed-value">{{roundDetail.drawSeed}}</text>
+            <view class="copy-btn" catchtap="copyToClipboard" data-text="{{roundDetail.drawSeed}}">📋</view>
+          </view>
+          <view class="info-row">
+            <text class="info-label">抽签哈希</text>
+            <text class="info-value hash-value">{{roundDetail.drawHash}}</text>
+            <view class="copy-btn" catchtap="copyToClipboard" data-text="{{roundDetail.drawHash}}">📋</view>
+          </view>
+        </view>
+
+        <view class="draw-candidates">
+          <view class="candidates-title">候选批次（{{roundDetail.candidateBatchNos.length}}个）</view>
+          <view class="batch-tags">
+            <view class="batch-tag {{item === roundDetail.batchNo ? 'highlight' : ''}}" wx:for="{{roundDetail.candidateBatchNos}}" wx:key="*this">
+              {{item}}
+            </view>
+          </view>
+        </view>
+
+        <view class="draw-result">
+          <view class="result-title">🎯 中签批次</view>
+          <view class="batch-tags selected">
+            <view class="batch-tag selected {{item === roundDetail.batchNo ? 'highlight' : ''}}" wx:for="{{roundDetail.selectedBatchNos}}" wx:key="*this">
+              {{item}}
+            </view>
+          </view>
+        </view>
+
+        <view class="draw-verify-hint">
+          <text class="hint-icon">💡</text>
+          <text class="hint-text">抽签种子和哈希已上链存证，任何人可复现抽签过程验证公平性</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 直播/回放 -->
+    <view class="section-card">
+      <view class="section-header">
+        <view class="section-title">
+          <text class="section-icon">📹</text>
+          <text>直播与回放</text>
+        </view>
+      </view>
+      <view class="section-content">
+        <view class="media-buttons">
+          <view class="media-btn live-btn" bindtap="openLiveStream" wx:if="{{roundDetail.liveStreamUrl}}">
+            <text class="media-icon">📺</text>
+            <text class="media-label">观看直播</text>
+          </view>
+          <view class="media-btn replay-btn" bindtap="openReplay" wx:if="{{roundDetail.replayUrl}}">
+            <text class="media-icon">🎬</text>
+            <text class="media-label">查看回放</text>
+          </view>
+          <view class="media-btn disabled-btn" wx:if="{{!roundDetail.liveStreamUrl && !roundDetail.replayUrl}}">
+            <text class="media-icon">📹</text>
+            <text class="media-label">暂无视频资源</text>
+          </view>
+        </view>
+        <view class="media-hint">
+          <text>全程直播取样送检过程，确保公开透明</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 消费者见证 -->
+    <view class="section-card">
+      <view class="section-header" bindtap="toggleSection" data-key="witness">
+        <view class="section-title">
+          <text class="section-icon">👥</text>
+          <text>消费者见证</text>
+          <view class="witness-count">{{roundDetail.currentWitnessCount}}/{{roundDetail.maxWitnesses}}</view>
+          <text class="section-toggle">{{expandedSections.witness ? '▾' : '▸'}}</text>
+        </view>
+      </view>
+      <view class="section-content" wx:if="{{expandedSections.witness}}">
+        <view class="witness-list" wx:if="{{roundDetail.consumerWitnesses && roundDetail.consumerWitnesses.length > 0}}">
+          <view class="witness-item" wx:for="{{roundDetail.consumerWitnesses}}" wx:key="registeredAt">
+            <view class="witness-avatar">{{item.name.charAt(0)}}</view>
+            <view class="witness-info">
+              <text class="witness-name">{{item.name}}</text>
+              <text class="witness-phone">{{item.phone}}</text>
+            </view>
+            <view class="witness-status {{item.attended ? 'attended' : 'pending'}}">
+              {{item.attended ? '已到场' : '待到场'}}
+            </view>
+          </view>
+        </view>
+        <view class="no-witnesses" wx:else>
+          <text>暂无消费者报名见证</text>
+        </view>
+
+        <view class="witness-register-btn" bindtap="openWitnessModal" wx:if="{{!roundDetail.isWitnessFull && roundDetail.status !== 'reported' && roundDetail.status !== 'closed'}}">
+          <text>✋ 报名见证</text>
+        </view>
+        <view class="witness-full-hint" wx:elif="{{roundDetail.isWitnessFull}}">
+          <text>见证名额已满</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 检测结果 -->
+    <view class="section-card" wx:if="{{roundDetail.inspectionResult}}">
+      <view class="section-header" bindtap="toggleSection" data-key="result">
+        <view class="section-title">
+          <text class="section-icon">🔬</text>
+          <text>检测结果</text>
+          <view class="result-badge {{roundDetail.inspectionResult.overallConclusion === '合格' ? 'pass' : 'fail'}}">
+            {{roundDetail.inspectionResult.overallConclusion}}
+          </view>
+          <text class="section-toggle">{{expandedSections.result ? '▾' : '▸'}}</text>
+        </view>
+      </view>
+      <view class="section-content" wx:if="{{expandedSections.result}}">
+        <view class="result-date">报告日期：{{roundDetail.inspectionResult.reportDate}}</view>
+
+        <view class="batch-result" wx:for="{{roundDetail.inspectionResult.batchResults}}" wx:key="batchNo">
+          <view class="batch-result-header">
+            <text class="batch-no">📦 {{item.batchNo}}</text>
+            <view class="conclusion-badge {{item.conclusion === '合格' ? 'pass' : 'fail'}}">{{item.conclusion}}</view>
+          </view>
+          <view class="test-items">
+            <view class="test-item" wx:for="{{item.testItems}}" wx:for-item="test" wx:key="item">
+              <text class="test-name">{{test.item}}</text>
+              <text class="test-value">{{test.value}}{{test.unit}}</text>
+              <text class="test-limit">限值：{{test.limit}}{{test.unit}}</text>
+              <view class="test-status {{test.status === '合格' ? 'pass' : 'fail'}}">{{test.status}}</view>
+            </view>
+          </view>
+          <view class="report-no-row">
+            <text>报告编号：{{item.reportNo}}</text>
+            <view class="copy-btn" catchtap="copyToClipboard" data-text="{{item.reportNo}}">📋</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 区块链存证 -->
+    <view class="section-card" wx:if="{{roundDetail.blockchainEndorsement}}">
+      <view class="section-header" bindtap="toggleSection" data-key="blockchain">
+        <view class="section-title">
+          <text class="section-icon">🔗</text>
+          <text>区块链存证</text>
+          <view class="bc-verified">✓ 已上链</view>
+          <text class="section-toggle">{{expandedSections.blockchain ? '▾' : '▸'}}</text>
+        </view>
+      </view>
+      <view class="section-content" wx:if="{{expandedSections.blockchain}}">
+        <view class="bc-info">
+          <view class="info-row">
+            <text class="info-label">存证链</text>
+            <text class="info-value">{{roundDetail.blockchainEndorsement.chainName}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">存证时间</text>
+            <text class="info-value">{{roundDetail.blockchainEndorsement.timestamp}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">交易哈希</text>
+            <text class="info-value hash-value">{{roundDetail.blockchainEndorsement.txHashShort}}</text>
+          </view>
+        </view>
+
+        <view class="on-chain-data">
+          <view class="chain-data-title">链上数据</view>
+          <view class="chain-data-item" wx:for="{{roundDetail.blockchainEndorsement.onChainData}}" wx:key="key">
+            <text class="chain-label">{{item.label}}</text>
+            <text class="chain-value">{{item.value}}</text>
+            <text class="chain-badge" wx:if="{{item.onChain}}">已上链</text>
+          </view>
+        </view>
+
+        <view class="bc-actions">
+          <view class="bc-btn" bindtap="viewBlockchainDetail">
+            <text>🔗 链上验真</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 品牌叙事 -->
+    <view class="section-card narrative-card">
+      <view class="section-header" bindtap="toggleSection" data-key="narrative">
+        <view class="section-title">
+          <text class="section-icon">🛡️</text>
+          <text>品牌承诺</text>
+          <text class="section-toggle">{{expandedSections.narrative ? '▾' : '▸'}}</text>
+        </view>
+      </view>
+      <view class="section-content" wx:if="{{expandedSections.narrative}}">
+        <view class="narrative-text">{{roundDetail.brandNarrative}}</view>
+        <view class="narrative-points">
+          <view class="point-item">
+            <text class="point-icon">🎲</text>
+            <text class="point-text">随机抽签，品牌无法预知中签批次</text>
+          </view>
+          <view class="point-item">
+            <text class="point-icon">📹</text>
+            <text class="point-text">全程直播，送检过程公开可见</text>
+          </view>
+          <view class="point-item">
+            <text class="point-icon">👥</text>
+            <text class="point-text">消费者见证，第三方监督确保真实</text>
+          </view>
+          <view class="point-item">
+            <text class="point-icon">🔗</text>
+            <text class="point-text">区块链存证，数据不可篡改可追溯</text>
+          </view>
+          <view class="point-item">
+            <text class="point-icon">🔬</text>
+            <text class="point-text">结果自动写入检测历史，与溯源链互相背书</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 见证报名弹窗 -->
+  <view class="modal-overlay" wx:if="{{showWitnessModal}}" bindtap="closeWitnessModal">
+    <view class="modal-content" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">报名见证抽检</text>
+        <view class="modal-close" catchtap="closeWitnessModal">✕</view>
+      </view>
+      <view class="modal-body" wx:if="{{!witnessResult}}">
+        <view class="form-item">
+          <text class="form-label">真实姓名</text>
+          <input class="form-input" type="text" placeholder="请输入姓名" value="{{witnessForm.name}}" bindinput="onWitnessNameInput" maxlength="20" />
+        </view>
+        <view class="form-item">
+          <text class="form-label">手机号码</text>
+          <input class="form-input" type="number" placeholder="请输入手机号" value="{{witnessForm.phone}}" bindinput="onWitnessPhoneInput" maxlength="11" />
+        </view>
+        <view class="form-hint">
+          <text>📝 您的个人信息将做脱敏处理，仅用于现场核验身份</text>
+        </view>
+      </view>
+      <view class="modal-body result-body" wx:if="{{witnessResult}}">
+        <view class="result-icon">{{witnessResult.success ? '✅' : '❌'}}</view>
+        <view class="result-message">{{witnessResult.message}}</view>
+      </view>
+      <view class="modal-footer">
+        <view class="modal-btn cancel-btn" catchtap="closeWitnessModal">
+          <text>{{witnessResult ? '关闭' : '取消'}}</text>
+        </view>
+        <view class="modal-btn confirm-btn {{witnessSubmitting ? 'disabled' : ''}}" catchtap="submitWitnessRegistration" wx:if="{{!witnessResult}}">
+          <text>{{witnessSubmitting ? '提交中...' : '确认报名'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

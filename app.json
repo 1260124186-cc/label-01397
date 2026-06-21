@@ -68,7 +68,8 @@
     "pages/authorizedNetworkDetail/authorizedNetworkDetail",
     "pages/claim/list",
     "pages/claim/create",
-    "pages/claim/detail"
+    "pages/claim/detail",
+    "pages/publicLottery/detail"
   ],
   "window": {
     "backgroundTextStyle": "dark",

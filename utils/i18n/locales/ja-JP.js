@@ -171,7 +171,8 @@ var locale = {
       certification: '认证',
       logistics: '物流',
       recall: '召回',
-      blockchain: '区块链'
+      blockchain: '区块链',
+      publicLottery: '公開抽検'
     }
   },
 

@@ -145,6 +145,7 @@ module.exports = {
       process: 'Process',
       green: 'Green',
       test: 'Lab Test',
+      publicLottery: 'Lottery',
       brew: 'Brewing',
       blockchain: 'Proof'
     },
@@ -373,6 +374,27 @@ module.exports = {
       serialCopied: 'Serial No. copied',
       antiCounterfeit: 'Anti-Counterfeit',
       antiCounterfeitDesc: 'If first scan is later than purchase date, product may be counterfeit'
+    },
+    publicLottery: {
+      title: 'Public Lottery Inspection',
+      roundName: 'Round',
+      institution: 'Testing Institution',
+      drawDate: 'Draw Date',
+      selectedBatches: 'Selected Batches',
+      thisBatchResult: 'This Batch Result',
+      thisBatchSelected: 'This batch was selected in the public lottery',
+      thisBatchNotSelected: 'This batch was not selected this round',
+      fairnessHint: 'Draw seed & hash are on-chain, anyone can verify fairness',
+      watchLive: 'Watch Live',
+      viewReplay: 'View Replay',
+      witnesses: 'Consumer Witnesses',
+      registerWitness: 'Register as Witness',
+      witnessFull: 'Witness spots are full',
+      blockchainEndorsement: 'Blockchain Cross-Endorsement',
+      viewDetails: 'View Full Details',
+      lotteryReportBadge: 'Public Lottery',
+      witnessCount: 'Witnesses',
+      brandNarrative: 'Brand Commitment'
     },
     share: {
       shareCard: 'Generate Share Card',

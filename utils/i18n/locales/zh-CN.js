@@ -145,6 +145,7 @@ module.exports = {
       process: '工艺',
       green: '绿色',
       test: '检测',
+      publicLottery: '公开抽检',
       brew: '冲泡',
       blockchain: '存证',
       reviews: '评价'
@@ -374,6 +375,27 @@ module.exports = {
       serialCopied: '已复制证书编号',
       antiCounterfeit: '防伪提示',
       antiCounterfeitDesc: '若首次扫码时间晚于购买时间，可能为假冒产品'
+    },
+    publicLottery: {
+      title: '公开抽检',
+      roundName: '轮次',
+      institution: '检测机构',
+      drawDate: '抽签日期',
+      selectedBatches: '中签批次',
+      thisBatchResult: '本批次结果',
+      thisBatchSelected: '本批次已被公开抽检抽中',
+      thisBatchNotSelected: '本轮抽检未抽中本批次',
+      fairnessHint: '抽签种子与哈希已上链存证，任何人可复现验证公平性',
+      watchLive: '观看直播',
+      viewReplay: '查看回放',
+      witnesses: '消费者见证',
+      registerWitness: '报名见证',
+      witnessFull: '见证名额已满',
+      blockchainEndorsement: '区块链互相背书',
+      viewDetails: '查看完整抽检详情',
+      lotteryReportBadge: '公开抽检',
+      witnessCount: '见证人',
+      brandNarrative: '品牌承诺'
     },
     share: {
       shareCard: '生成分享卡片',

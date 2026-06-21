@@ -1605,12 +1605,12 @@
         </view>
 
         <!-- 历史检测报告时间轴 -->
-        <view class="history-reports-section" wx:if="{{traceData.pesticideTest.historyReports && traceData.pesticideTest.historyReports.length > 0}}" role="region" aria-label="{{currentLang === 'en-US' ? 'Historical test records' : '历次检测记录'}}">
+        <view class="history-reports-section" wx:if="{{(enrichedHistoryReports.length > 0 || (traceData.pesticideTest.historyReports && traceData.pesticideTest.historyReports.length > 0))}}" role="region" aria-label="{{currentLang === 'en-US' ? 'Historical test records' : '历次检测记录'}}">
           <view class="history-header" bindtap="toggleHistoryTimeline" role="button" aria-expanded="{{showHistoryTimeline}}" aria-label="{{currentLang === 'en-US' ? 'Toggle historical test report timeline' : '展开或收起历次检测报告时间轴'}}">
             <view class="history-title">
               <text class="history-icon" aria-hidden="true">📅</text>
               <text role="heading" aria-level="3">{{currentLang === 'en-US' ? 'Historical Reports' : '历次检测记录'}}</text>
-              <text class="history-count">{{currentLang === 'en-US' ? 'Total ' : '共 '}}{{traceData.pesticideTest.historyReports.length}}{{currentLang === 'en-US' ? ' reports' : ' 份'}}</text>
+              <text class="history-count">{{currentLang === 'en-US' ? 'Total ' : '共 '}}{{enrichedHistoryReports.length > 0 ? enrichedHistoryReports.length : traceData.pesticideTest.historyReports.length}}{{currentLang === 'en-US' ? ' reports' : ' 份'}}</text>
             </view>
             <view class="history-toggle {{showHistoryTimeline ? 'expanded' : ''}}" aria-hidden="true">
               <text>▾</text>
@@ -1618,18 +1618,18 @@
           </view>
           <view class="history-timeline {{showHistoryTimeline ? 'show' : ''}}" role="list">
             <view
-              wx:for="{{traceData.pesticideTest.historyReports}}"
+              wx:for="{{enrichedHistoryReports.length > 0 ? enrichedHistoryReports : traceData.pesticideTest.historyReports}}"
               wx:key="reportNo"
               wx:for-item="report"
-              class="timeline-item {{index === 0 ? 'latest' : ''}} {{report.status === '不合格' ? 'abnormal' : ''}} {{activeHistoryIndex === index ? 'active' : ''}}"
+              class="timeline-item {{index === 0 ? 'latest' : ''}} {{report.status === '不合格' ? 'abnormal' : ''}} {{activeHistoryIndex === index ? 'active' : ''}} {{report.isPublicLottery ? 'lottery-report' : ''}}"
               bindtap="viewHistoryReport"
               data-report="{{report}}"
               role="listitem"
               data-status="{{report.status === '不合格' ? 'fail' : 'pass'}}"
               aria-label="{{report.testDate}}，报告编号{{report.reportNo}}，检测结果{{report.status}}"
             >
-              <view class="timeline-dot {{report.status === '不合格' ? 'danger' : (report.statusLevel === '优秀' ? 'excellent' : 'good')}}"></view>
-              <view class="timeline-line" wx:if="{{index < traceData.pesticideTest.historyReports.length - 1}}"></view>
+              <view class="timeline-dot {{report.status === '不合格' ? 'danger' : (report.statusLevel === '优秀' ? 'excellent' : 'good')}} {{report.isPublicLottery ? 'lottery-dot' : ''}}"></view>
+              <view class="timeline-line" wx:if="{{index < (enrichedHistoryReports.length > 0 ? enrichedHistoryReports.length : traceData.pesticideTest.historyReports.length) - 1}}"></view>
               <view class="timeline-content">
                 <view class="timeline-date">{{report.testDate}}</view>
                 <view class="timeline-info">
@@ -1637,10 +1637,15 @@
                   <view class="timeline-status {{report.status === '不合格' ? 'danger' : (report.statusLevel === '优秀' ? 'excellent' : 'good')}} status-{{report.status === '不合格' ? 'fail' : 'pass'}}" data-status="{{report.status === '不合格' ? 'fail' : 'pass'}}">
                     {{report.status}}
                   </view>
+                  <view class="lottery-report-badge" wx:if="{{report.isPublicLottery}}">🎲 公开抽检</view>
                 </view>
                 <view class="timeline-meta">
                   <text>{{report.institution}}</text>
                   <text wx:if="{{report.batchNo}}">{{currentLang === 'en-US' ? 'Batch: ' : '批次：'}}{{report.batchNo}}</text>
+                </view>
+                <view class="timeline-lottery-meta" wx:if="{{report.isPublicLottery}}">
+                  <text class="lottery-meta-item">👥 {{currentLang === 'en-US' ? 'Witnesses: ' : '见证人：'}}{{report.witnessCount}}{{currentLang === 'en-US' ? '' : '人'}}</text>
+                  <text class="lottery-meta-item" wx:if="{{report.blockchainTxHash}}">🔗 {{report.blockchainTxHash}}</text>
                 </view>
                 <view class="timeline-version-link" catchtap="gotoHistoryReportFromChange" data-reportno="{{report.reportNo}}">
                   <text class="version-link-icon">📌</text>
@@ -1662,6 +1667,114 @@
         <view class="view-report-btn" bindtap="showPdfReport" role="button" aria-label="{{i18n.pdfBtn}}">
           <text class="btn-icon" aria-hidden="true">📄</text>
           <text>{{currentLang === 'en-US' ? 'View Full Report (PDF Style)' : '查看完整报告（PDF样式）'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ========== 模块：公开抽检 ========== -->
+    <view class="card animate-card module-card public-lottery-module-card" id="anchor-publicLottery" style="animation-delay: 0.37s;" wx:if="{{publicLotteryData}}">
+      <view class="card-title module-header" bindtap="toggleModule" data-key="publicLottery">
+        <view class="title-left">
+          <text class="title-icon">🎲</text>
+          <text>{{currentLang === 'en-US' ? 'Public Lottery Inspection' : '公开抽检'}}</text>
+          <view class="title-badge {{publicLotteryData.status === 'reported' ? 'green' : 'warning-badge'}}">
+            {{publicLotteryData.statusLabel}}
+          </view>
+        </view>
+        <view class="module-toggle {{moduleCollapsed.publicLottery ? 'collapsed' : ''}}">
+          <text class="toggle-icon">▾</text>
+        </view>
+      </view>
+      <view class="module-content {{moduleCollapsed.publicLottery ? 'hidden' : ''}}">
+
+        <!-- 抽检概览 -->
+        <view class="lottery-overview">
+          <view class="lottery-overview-row">
+            <text class="lottery-overview-label">{{currentLang === 'en-US' ? 'Round' : '轮次'}}</text>
+            <text class="lottery-overview-value">{{publicLotteryData.roundName}}</text>
+          </view>
+          <view class="lottery-overview-row">
+            <text class="lottery-overview-label">{{currentLang === 'en-US' ? 'Institution' : '检测机构'}}</text>
+            <text class="lottery-overview-value">{{publicLotteryData.institution}}</text>
+          </view>
+          <view class="lottery-overview-row">
+            <text class="lottery-overview-label">{{currentLang === 'en-US' ? 'Draw Date' : '抽签日期'}}</text>
+            <text class="lottery-overview-value">{{publicLotteryData.drawDate}}</text>
+          </view>
+          <view class="lottery-overview-row">
+            <text class="lottery-overview-label">{{currentLang === 'en-US' ? 'Selected Batches' : '中签批次'}}</text>
+            <text class="lottery-overview-value">{{publicLotteryData.selectedBatchNos.join('、')}}</text>
+          </view>
+          <view class="lottery-overview-row" wx:if="{{publicLotteryData.thisBatchResult}}">
+            <text class="lottery-overview-label">{{currentLang === 'en-US' ? 'This Batch' : '本批次结果'}}</text>
+            <view class="lottery-result-badge {{publicLotteryData.thisBatchResult.conclusion === '合格' ? 'pass' : 'fail'}}">
+              {{publicLotteryData.thisBatchResult.conclusion}}
+            </view>
+          </view>
+        </view>
+
+        <!-- 本批次是否中签 -->
+        <view class="lottery-batch-status" wx:if="{{publicLotteryData.isThisBatchSelected}}">
+          <view class="lottery-selected-badge">
+            <text class="badge-icon">🎯</text>
+            <text class="badge-text">{{currentLang === 'en-US' ? 'This batch was selected in the public lottery' : '本批次已被公开抽检抽中'}}</text>
+          </view>
+        </view>
+        <view class="lottery-batch-status not-selected" wx:else>
+          <view class="lottery-not-selected-badge">
+            <text class="badge-icon">ℹ️</text>
+            <text class="badge-text">{{currentLang === 'en-US' ? 'This batch was not selected this round' : '本轮抽检未抽中本批次'}}</text>
+          </view>
+        </view>
+
+        <!-- 抽签公平性提示 -->
+        <view class="lottery-fairness-hint">
+          <text class="hint-icon">💡</text>
+          <text class="hint-text">{{currentLang === 'en-US' ? 'Draw seed & hash on-chain, verifiable by anyone' : '抽签种子与哈希已上链存证，任何人可复现验证公平性'}}</text>
+        </view>
+
+        <!-- 直播/回放 -->
+        <view class="lottery-media-row">
+          <view class="lottery-media-btn" bindtap="gotoPublicLotteryDetail" wx:if="{{publicLotteryData.liveStreamUrl}}">
+            <text>📺 {{currentLang === 'en-US' ? 'Watch Live' : '观看直播'}}</text>
+          </view>
+          <view class="lottery-media-btn replay" bindtap="gotoPublicLotteryDetail" wx:if="{{publicLotteryData.replayUrl}}">
+            <text>🎬 {{currentLang === 'en-US' ? 'View Replay' : '查看回放'}}</text>
+          </view>
+        </view>
+
+        <!-- 消费者见证 -->
+        <view class="lottery-witness-row">
+          <view class="witness-info">
+            <text class="witness-icon">👥</text>
+            <text>{{currentLang === 'en-US' ? 'Witnesses' : '消费者见证'}}：{{publicLotteryData.currentWitnessCount}}/{{publicLotteryData.maxWitnesses}}</text>
+          </view>
+          <view class="witness-register-btn" bindtap="registerLotteryWitness" wx:if="{{!publicLotteryData.isWitnessFull && publicLotteryData.status !== 'reported' && publicLotteryData.status !== 'closed'}}">
+            <text>{{currentLang === 'en-US' ? 'Register' : '报名见证'}}</text>
+          </view>
+        </view>
+
+        <!-- 区块链互相背书 -->
+        <view class="lottery-blockchain-endorsement" wx:if="{{lotteryCrossEndorsement && lotteryCrossEndorsement.crossVerified}}">
+          <view class="endorsement-header">
+            <text class="endorsement-icon">🔗</text>
+            <text class="endorsement-title">{{currentLang === 'en-US' ? 'Blockchain Cross-Endorsement' : '区块链互相背书'}}</text>
+          </view>
+          <view class="endorsement-content">
+            <view class="endorsement-item" wx:for="{{lotteryCrossEndorsement.lotteryEndorsements}}" wx:key="roundId">
+              <text class="endorsement-round">{{item.roundName}}</text>
+              <text class="endorsement-tx">{{item.txHashShort}}</text>
+              <view class="endorsement-conclusion {{item.conclusion === '合格' ? 'pass' : 'pending'}}">{{item.conclusion}}</view>
+            </view>
+          </view>
+          <view class="endorsement-narrative" wx:if="{{lotteryCrossEndorsement.narrative}}">
+            <text>{{lotteryCrossEndorsement.narrative}}</text>
+          </view>
+        </view>
+
+        <!-- 查看详情 -->
+        <view class="lottery-detail-btn" bindtap="gotoPublicLotteryDetail">
+          <text>{{currentLang === 'en-US' ? 'View Full Details' : '查看完整抽检详情'}} ›</text>
         </view>
       </view>
     </view>
