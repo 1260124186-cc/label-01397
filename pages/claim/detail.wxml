@@ -1,0 +1,305 @@
+<view class="page" wx:if="{{!loading && claim}}">
+  <view class="header-card">
+    <view class="header-top">
+      <view class="header-status" style="background: {{claim.status === 'completed' ? '#52C41A' : (claim.isEscalated ? '#EB2F96' : '#2E8B57')}};">
+        <text class="status-text">{{claim.status === 'completed' ? '已完成' : (claim.isEscalated ? '已升级' : '处理中')}}</text>
+      </view>
+      <view class="header-id" bindtap="copyClaimId">
+        <text class="id-label">工单号</text>
+        <text class="id-value">{{claim.id}}</text>
+        <text class="id-copy">复制</text>
+      </view>
+    </view>
+
+    <view class="header-tags" wx:if="{{claim.isAbnormalBatch || claim.isRecallBatch || claim.isEscalated}}">
+      <view class="tag tag-abnormal" wx:if="{{claim.isAbnormalBatch}}">G002异常批次</view>
+      <view class="tag tag-recall" wx:elif="{{claim.isRecallBatch}}">召回补偿</view>
+      <view class="tag tag-escalated" wx:if="{{claim.isEscalated}}">已升级处理</view>
+    </view>
+
+    <view class="header-title">{{claim.title}}</view>
+    <view class="header-time">
+      <text>提交时间：{{claim.createdAt ? ('' + claim.createdAt) : ''}}</text>
+    </view>
+  </view>
+
+  <view class="sla-card" wx:if="{{slaInfo && claim.status !== 'completed' && claim.status !== 'rejected'}}">
+    <view class="sla-header">
+      <text class="sla-label">
+        <text class="sla-icon">⏱️</text>
+        SLA时效 - {{claim.slaConfigKey ? (claim.slaConfigKey === 'initial_review' ? '初审响应' : (claim.slaConfigKey === 'sample_or_onsite' ? '寄样/上门' : (claim.slaConfigKey === 'appraisal' ? '鉴定完成' : '补偿到账'))) : '处理时效'}}
+      </text>
+      <text class="sla-time {{slaInfo.expired ? 'time-expired' : ''}}">{{slaInfo.remainingText}}</text>
+    </view>
+    <view class="sla-progress-bar">
+      <view class="sla-progress {{slaInfo.expired ? 'progress-expired' : ''}}" style="width: {{slaInfo.percentage}}%;"></view>
+    </view>
+    <view class="sla-tip" wx:if="{{slaInfo.expired}}">
+      <text class="tip-icon">⚠️</text>
+      <text>已超时，系统已自动升级通知主管介入</text>
+    </view>
+  </view>
+
+  <view class="step-card">
+    <view class="step-title">
+      <text class="title-icon">📋</text>
+      <text class="title-text">处理流程</text>
+    </view>
+    <view class="step-list">
+      <block wx:for="{{stepConfig}}" wx:key="key">
+        <view class="step-item {{index <= currentStepIndex ? 'step-done' : ''}} {{index === currentStepIndex ? 'step-current' : ''}}">
+          <view class="step-icon-wrap">
+            <text class="step-icon">{{item.icon}}</text>
+            <view class="step-dot" wx:if="{{index === currentStepIndex}}"></view>
+            <view class="step-check" wx:if="{{index < currentStepIndex}}">✓</view>
+          </view>
+          <view class="step-content">
+            <text class="step-label">{{item.label}}</text>
+            <text class="step-sub" wx:if="{{index === currentStepIndex}}">当前阶段</text>
+            <text class="step-sub step-done-sub" wx:elif="{{index < currentStepIndex}}">已完成</text>
+            <text class="step-sub step-pending-sub" wx:else>待处理</text>
+          </view>
+          <view class="step-line" wx:if="{{index < stepConfig.length - 1}}"></view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="info-card" wx:if="{{claim.isAbnormalBatch}}">
+    <view class="card-alert" bindtap="goRecallDetail">
+      <view class="alert-icon">⚠️</view>
+      <view class="alert-content">
+        <text class="alert-title">G002异常批次闭环</text>
+        <text class="alert-desc">溯源 → 检测异常 → 召回公告 → 登记申请 → 鉴定 → 补偿 → 通知中心，点击查看完整链路</text>
+      </view>
+      <view class="alert-arrow">›</view>
+    </view>
+  </view>
+
+  <view class="info-card" wx:if="{{claim.productInfo || claim.traceId}}">
+    <view class="card-title">
+      <text class="title-icon">🍃</text>
+      <text class="title-text">产品信息</text>
+    </view>
+    <view class="product-row" bindtap="goProductDetail">
+      <image class="product-img" src="{{claim.productInfo.thumbnail}}" mode="aspectFill" wx:if="{{claim.productInfo}}"/>
+      <view class="product-placeholder" wx:else>📦</view>
+      <view class="product-detail">
+        <text class="product-name">{{claim.productInfo.productName || '未关联产品'}}</text>
+        <text class="product-spec" wx:if="{{claim.productInfo}}">{{claim.productInfo.specification}} · {{claim.productInfo.batchNo}}</text>
+        <view class="trace-row" bindtap="copyTraceId">
+          <text class="trace-label">溯源ID：{{claim.traceId}}</text>
+          <text class="trace-copy">复制</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="info-card">
+    <view class="card-title">
+      <text class="title-icon">📄</text>
+      <text class="title-text">申请信息</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">问题类型</text>
+      <view class="info-value-wrap">
+        <text class="type-badge type-{{claim.problemType}}">{{claim.problemTypeLabel}}</text>
+      </view>
+    </view>
+    <view class="info-row">
+      <text class="info-label">期望方案</text>
+      <text class="info-value">{{claim.expectedSolutionLabel}}</text>
+    </view>
+    <view class="info-row info-row-full">
+      <text class="info-label">问题描述</text>
+      <text class="info-desc">{{claim.description}}</text>
+    </view>
+    <view class="info-row" wx:if="{{claim.contact}}">
+      <text class="info-label">联系电话</text>
+      <text class="info-value">{{claim.maskedContact || claim.contact}}</text>
+    </view>
+    <view class="info-row" wx:if="{{maskedAccount}}">
+      <text class="info-label">{{accountType}}账户</text>
+      <text class="info-value info-value-mask">{{maskedAccount}}</text>
+    </view>
+    <view class="info-row" wx:if="{{claim.shippingAddress}}">
+      <text class="info-label">收货地址</text>
+      <text class="info-value">{{claim.shippingAddress}}</text>
+    </view>
+    <view class="image-grid" wx:if="{{claim.images && claim.images.length > 0}}">
+      <view class="img-item" wx:for="{{claim.images}}" wx:key="*this" wx:for-item="img">
+        <image
+          class="img-thumb"
+          src="{{img}}"
+          mode="aspectFill"
+          data-url="{{img}}"
+          data-urls="{{claim.images}}"
+          bindtap="previewImage"
+        />
+      </view>
+    </view>
+  </view>
+
+  <view class="info-card" wx:if="{{showSampleAddress}}">
+    <view class="card-title">
+      <text class="title-icon">📮</text>
+      <text class="title-text">寄样地址</text>
+      <view class="copy-btn" bindtap="copySampleAddress">复制地址</view>
+    </view>
+    <view class="address-card">
+      <view class="addr-row">
+        <text class="addr-label">收件方</text>
+        <text class="addr-value">{{sampleAddress.name}}（{{sampleAddress.receiver}}）</text>
+      </view>
+      <view class="addr-row">
+        <text class="addr-label">联系电话</text>
+        <text class="addr-value">{{sampleAddress.phone}}</text>
+      </view>
+      <view class="addr-row addr-row-wrap">
+        <text class="addr-label">详细地址</text>
+        <text class="addr-value">{{sampleAddress.address}}</text>
+      </view>
+      <view class="addr-tip">
+        <text class="tip-icon">💡</text>
+        <text>请在包裹内附纸条注明工单号：{{claim.id}}，退货运费到付</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="info-card" wx:if="{{claim.appraisalResult}}">
+    <view class="card-title">
+      <text class="title-icon">🔬</text>
+      <text class="title-text">鉴定结果</text>
+      <view class="report-tag">报告号 {{claim.appraisalReportNo || '-'}}</view>
+    </view>
+    <view class="appraisal-conclusion {{claim.appraisalResult.passed ? 'conclusion-pass' : 'conclusion-fail'}}">
+      <text class="conclusion-icon">{{claim.appraisalResult.passed ? '✅' : '⚠️'}}</text>
+      <text class="conclusion-text">{{claim.appraisalConclusion}}</text>
+    </view>
+    <view class="abnormal-list" wx:if="{{claim.appraisalResult.abnormalItems && claim.appraisalResult.abnormalItems.length > 0}}">
+      <text class="abnormal-title">检测异常项：</text>
+      <view class="abnormal-item" wx:for="{{claim.appraisalResult.abnormalItems}}" wx:key="item">
+        <view class="abnormal-head">
+          <text class="abnormal-name">{{item.item}}</text>
+          <text class="abnormal-status abnormal-status-fail" wx:if="{{item.status === '不合格' || item.status === '超标'}}">{{item.status}}</text>
+        </view>
+        <view class="abnormal-body">
+          <text class="abnormal-value">检测值：{{item.value}}</text>
+          <text class="abnormal-limit">标准：{{item.limit}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="info-card" wx:if="{{claim.compensationType}}">
+    <view class="card-title">
+      <text class="title-icon">💰</text>
+      <text class="title-text">补偿方案</text>
+      <view class="comp-tag comp-{{claim.compensationType}}">
+        {{claim.compensationType === 'refund' ? '退款' : (claim.compensationType === 'exchange' ? '换货' : '积分补偿')}}
+      </view>
+    </view>
+
+    <view class="comp-detail" wx:if="{{claim.compensationType === 'refund'}}">
+      <view class="comp-amount">
+        <text class="amount-label">退款金额</text>
+        <text class="amount-value">¥ {{claim.compensationAmount || 0}}</text>
+      </view>
+      <view class="comp-desc-row">
+        <text class="desc-label">退款方式</text>
+        <text class="desc-value">原路返回 · 预计3个工作日到账</text>
+      </view>
+      <view class="comp-desc-row" wx:if="{{maskedAccount}}">
+        <text class="desc-label">收款账户</text>
+        <text class="desc-value">{{accountType}} · {{maskedAccount}}</text>
+      </view>
+      <view class="comp-extra" wx:if="{{claim.compensationPoints && claim.compensationPoints > 0}}">
+        <text class="extra-bonus">🎁 额外赠送 {{claim.compensationPoints}} 积分 + 50元优惠券</text>
+      </view>
+    </view>
+
+    <view class="comp-detail" wx:if="{{claim.compensationType === 'exchange'}}">
+      <view class="comp-desc-row">
+        <text class="desc-label">换货产品</text>
+        <text class="desc-value">{{claim.productInfo.productName || '同款产品'}} × 1</text>
+      </view>
+      <view class="comp-desc-row" bindtap="copyTrackingNo">
+        <text class="desc-label">快递单号</text>
+        <text class="desc-value highlight">{{claim.trackingNo || '已安排发货'}} 复制</text>
+      </view>
+      <view class="comp-desc-row">
+        <text class="desc-label">发货状态</text>
+        <text class="desc-value status-shipping">🚚 运输中 · 预计3-5天送达</text>
+      </view>
+    </view>
+
+    <view class="comp-detail" wx:if="{{claim.compensationType === 'points'}}">
+      <view class="comp-amount">
+        <text class="amount-label">补偿积分</text>
+        <text class="amount-value amount-points">{{claim.compensationPoints || 0}}</text>
+      </view>
+      <view class="comp-extra">
+        <text class="extra-bonus">🎫 额外赠送 50元 无门槛优惠券 × 1</text>
+      </view>
+      <view class="comp-desc-row">
+        <text class="desc-label">到账状态</text>
+        <text class="desc-value status-arrived">✅ 已到账 · 可前往会员中心查看</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="timeline-card">
+    <view class="card-title">
+      <text class="title-icon">⏰</text>
+      <text class="title-text">处理日志</text>
+    </view>
+    <view class="timeline-list">
+      <view class="timeline-item" wx:for="{{timeline}}" wx:key="timestamp">
+        <view class="timeline-left">
+          <view class="timeline-dot" style="background: {{item.statusColor}};"></view>
+          <view class="timeline-line" wx:if="{{index < timeline.length - 1}}"></view>
+        </view>
+        <view class="timeline-content">
+          <view class="timeline-head">
+            <text class="timeline-status" style="color: {{item.statusColor}};">{{item.statusLabel}}</text>
+            <text class="timeline-time">{{item.timeText}}</text>
+          </view>
+          <text class="timeline-msg">{{item.message}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="info-card" wx:if="{{claim.status === 'completed'}}">
+    <view class="card-title">
+      <text class="title-icon">🔔</text>
+      <text class="title-text">通知中心</text>
+    </view>
+    <view class="notification-row" bindtap="goNotificationCenter">
+      <view class="notif-icon">✉️</view>
+      <view class="notif-content">
+        <text class="notif-title">理赔完成通知已发送</text>
+        <text class="notif-desc">补偿方案执行详情已写入通知中心，点击查看</text>
+      </view>
+      <view class="notif-arrow">›</view>
+    </view>
+  </view>
+
+  <view class="bottom-bar">
+    <button class="bar-btn bar-btn-outline" bindtap="contactService">
+      <text class="btn-icon">📞</text>
+      <text>联系客服</text>
+    </button>
+    <button class="bar-btn bar-btn-primary" wx:if="{{claim.status !== 'completed' && claim.status !== 'rejected'}}" bindtap="contactService">
+      <text>催单/升级</text>
+    </button>
+    <button class="bar-btn bar-btn-primary bar-btn-done" wx:else bindtap="goNotificationCenter">
+      <text>查看通知</text>
+    </button>
+  </view>
+</view>
+
+<view class="loading-wrap" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+  <text class="loading-text">加载中...</text>
+</view>

@@ -1,0 +1,285 @@
+<view class="page">
+  <view class="warn-banner" wx:if="{{isAbnormalBatch}}">
+    <view class="warn-icon">🚨</view>
+    <view class="warn-content">
+      <text class="warn-title">检测到G002异常批次（GH202504）</text>
+      <text class="warn-desc">该批次农残检测异常，已自动标记为召回补偿，享受优先处理</text>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">
+      <text class="title-text">溯源信息</text>
+      <text class="title-desc">关联产品以便核实批次信息</text>
+    </view>
+    <view class="form-card">
+      <view class="form-item">
+        <text class="form-label">溯源ID</text>
+        <input
+          class="form-input"
+          placeholder="请输入溯源ID，如 G001、G002"
+          value="{{traceId}}"
+          bindinput="onTraceIdInput"
+          bindblur="onTraceIdBlur"
+        />
+      </view>
+      <view class="product-preview" wx:if="{{productInfo}}">
+        <image class="preview-thumb" src="{{productInfo.thumbnail}}" mode="aspectFill" />
+        <view class="preview-info">
+          <text class="preview-name">{{productInfo.productName}}</text>
+          <text class="preview-spec">规格：{{productInfo.specification}}</text>
+          <text class="preview-batch">批次：{{productInfo.batchNo}}</text>
+        </view>
+        <view class="abnormal-tag" wx:if="{{isAbnormalBatch}}">异常批次</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">
+      <text class="title-text">问题类型</text>
+      <text class="title-desc">* 必填</text>
+    </view>
+    <view class="type-grid">
+      <view
+        class="type-card {{selectedProblemType === item.key ? 'type-selected' : ''}}"
+        wx:for="{{problemTypes}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        data-label="{{item.label}}"
+        bindtap="selectProblemType"
+      >
+        <view class="type-icon">{{item.icon}}</view>
+        <text class="type-label">{{item.label}}</text>
+        <text class="type-desc">{{item.desc}}</text>
+        <view class="type-check" wx:if="{{selectedProblemType === item.key}}">✓</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">
+      <text class="title-text">期望方案</text>
+      <text class="title-desc">* 选择您期望的补偿方式</text>
+    </view>
+    <view class="solution-grid">
+      <view
+        class="solution-card {{selectedSolution === item.key ? 'solution-selected' : ''}}"
+        wx:for="{{expectedSolutions}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        data-label="{{item.label}}"
+        bindtap="selectSolution"
+      >
+        <view class="solution-icon">{{item.icon}}</view>
+        <text class="solution-label">{{item.label}}</text>
+        <text class="solution-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">
+      <text class="title-text">问题描述</text>
+      <text class="title-desc">* 必填，请详细描述</text>
+    </view>
+    <view class="form-card">
+      <view class="form-item">
+        <text class="form-label">标题</text>
+        <input
+          class="form-input"
+          placeholder="如：包装破损、产品有异味等"
+          value="{{title}}"
+          bindinput="onTitleInput"
+          maxlength="30"
+        />
+      </view>
+      <view class="form-divider"></view>
+      <view class="form-item form-item-column">
+        <text class="form-label">详细描述</text>
+        <textarea
+          class="form-textarea"
+          placeholder="请详细描述问题情况、发生时间、购买渠道等信息，以便我们更好地为您处理"
+          value="{{description}}"
+          bindinput="onDescInput"
+          maxlength="500"
+          auto-height
+        ></textarea>
+      </view>
+      <view class="form-divider"></view>
+      <view class="form-item form-item-column">
+        <text class="form-label">凭证图片</text>
+        <view class="image-list">
+          <view class="image-item" wx:for="{{images}}" wx:key="*this">
+            <image class="image-thumb" src="{{item}}" mode="aspectFill" data-url="{{item}}" bindtap="previewImage" />
+            <view class="image-remove" data-index="{{index}}" bindtap="removeImage">×</view>
+          </view>
+          <view class="image-add" bindtap="chooseImage" wx:if="{{images.length < 6}}">
+            <text class="add-icon">+</text>
+            <text class="add-text">添加凭证</text>
+          </view>
+        </view>
+        <text class="image-tip">最多可上传6张图片，支持拍照或相册选择</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-section" wx:if="{{selectedSolution === 'refund'}}">
+    <view class="section-title">
+      <text class="title-text">收款账户</text>
+      <text class="title-desc">* 退款方案必填</text>
+    </view>
+    <view class="form-card">
+      <radio-group class="account-switch" bindchange="switchAccountType">
+        <label class="radio-item">
+          <radio value="alipay" checked="{{accountType === 'alipay'}}" color="#2E8B57" />
+          <text>支付宝</text>
+        </label>
+        <label class="radio-item">
+          <radio value="bank" checked="{{accountType === 'bank'}}" color="#2E8B57" />
+          <text>银行卡</text>
+        </label>
+      </radio-group>
+
+      <view class="form-item" wx:if="{{accountType === 'alipay'}}">
+        <text class="form-label">支付宝账户</text>
+        <input
+          class="form-input"
+          placeholder="请输入支付宝账号/手机号"
+          value="{{alipayAccount}}"
+          bindinput="onAlipayInput"
+        />
+      </view>
+
+      <block wx:if="{{accountType === 'bank'}}">
+        <view class="form-item">
+          <text class="form-label">开户银行</text>
+          <input
+            class="form-input"
+            placeholder="如：中国工商银行"
+            value="{{bankName}}"
+            bindinput="onBankNameInput"
+          />
+        </view>
+        <view class="form-divider"></view>
+        <view class="form-item">
+          <text class="form-label">银行卡号</text>
+          <input
+            class="form-input"
+            type="number"
+            placeholder="请输入银行卡号"
+            value="{{bankAccount}}"
+            bindinput="onBankAccountInput"
+          />
+        </view>
+        <view class="form-divider"></view>
+        <view class="form-item">
+          <text class="form-label">开户人姓名</text>
+          <input
+            class="form-input"
+            placeholder="请输入开户人真实姓名"
+            value="{{bankAccountName}}"
+            bindinput="onBankAccountNameInput"
+          />
+        </view>
+      </block>
+
+      <view class="privacy-tip">
+        <text class="privacy-icon">🔒</text>
+        <text class="privacy-text">账户信息将加密存储，仅用于退款转账，脱敏展示</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-section" wx:if="{{showAddressInput}}">
+    <view class="section-title">
+      <text class="title-text">收货地址</text>
+      <text class="title-desc">* 换货方案必填</text>
+    </view>
+    <view class="form-card">
+      <view class="form-item form-item-column">
+        <text class="form-label">详细地址</text>
+        <textarea
+          class="form-textarea"
+          placeholder="请填写详细的收货地址，包括省市区街道门牌号"
+          value="{{shippingAddress}}"
+          bindinput="onAddressInput"
+          maxlength="200"
+          auto-height
+        ></textarea>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <view class="section-title">
+      <text class="title-text">联系方式</text>
+      <text class="title-desc">* 必填</text>
+    </view>
+    <view class="form-card">
+      <view class="form-item">
+        <text class="form-label">联系电话</text>
+        <input
+          class="form-input"
+          type="number"
+          placeholder="请输入手机号码以便客服联系"
+          value="{{contact}}"
+          bindinput="onContactInput"
+          maxlength="11"
+        />
+      </view>
+    </view>
+  </view>
+
+  <view class="submit-bar">
+    <button
+      class="submit-btn {{submitting ? 'btn-disabled' : ''}}"
+      bindtap="submitClaim"
+      disabled="{{submitting}}"
+    >
+      <text wx:if="{{!submitting}}">提交理赔申请</text>
+      <text wx:else>提交中...</text>
+    </button>
+  </view>
+
+  <view class="sla-notice">
+    <text class="notice-icon">⏱️</text>
+    <text class="notice-text">
+      客服将在 2 小时内初审响应，全程 SLA 时效保障，超时自动升级处理
+    </text>
+  </view>
+
+  <view class="success-mask" wx:if="{{showSuccess}}">
+    <view class="success-modal">
+      <view class="success-icon">✓</view>
+      <text class="success-title">提交成功</text>
+      <text class="success-desc">您的理赔工单已提交，工单号：</text>
+      <text class="success-id">{{createdClaimId}}</text>
+
+      <view class="success-info" wx:if="{{createdClaim}}">
+        <view class="info-row">
+          <text class="info-label">问题类型</text>
+          <text class="info-value">{{createdClaim.problemTypeLabel}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">期望方案</text>
+          <text class="info-value">{{createdClaim.expectedSolutionLabel}}</text>
+        </view>
+        <view class="info-row" wx:if="{{isAbnormalBatch}}">
+          <text class="info-label">处理优先级</text>
+          <text class="info-value highlight">G002批次-优先</text>
+        </view>
+      </view>
+
+      <view class="success-sla">
+        <text class="sla-icon">⏱️</text>
+        <text class="sla-text">预计 2 小时内完成初审，您可在工单列表查看实时进度</text>
+      </view>
+
+      <view class="success-btns">
+        <button class="btn-outline" bindtap="resetAndContinue">继续提交</button>
+        <button class="btn-primary" bindtap="viewCreatedClaim">查看工单</button>
+      </view>
+    </view>
+  </view>
+</view>

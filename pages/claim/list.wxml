@@ -1,0 +1,118 @@
+<view class="page {{a11yClasses}}">
+  <view class="stat-bar">
+    <view class="stat-item">
+      <text class="stat-num">{{statData.total}}</text>
+      <text class="stat-label">全部工单</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num stat-blue">{{statData.processing}}</text>
+      <text class="stat-label">处理中</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num stat-green">{{statData.completed}}</text>
+      <text class="stat-label">已完成</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item" bindtap="goRecallG002">
+      <text class="stat-num stat-red" wx:if="{{statData.escalated > 0}}">{{statData.escalated}}</text>
+      <text class="stat-num" wx:else>0</text>
+      <text class="stat-label">G002异常批次</text>
+    </view>
+  </view>
+
+  <view class="g002-banner" bindtap="goRecallG002">
+    <view class="banner-icon">⚠️</view>
+    <view class="banner-content">
+      <text class="banner-title">G002批次召回通知</text>
+      <text class="banner-desc">批次GH202504 农残检测异常，如您已购买请查看详情并申请补偿</text>
+    </view>
+    <view class="banner-arrow">›</view>
+  </view>
+
+  <view class="tab-bar">
+    <view
+      class="tab-item {{activeTab === item.key ? 'tab-active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="switchTab"
+    >
+      {{item.label}}
+    </view>
+  </view>
+
+  <view class="claim-list" wx:if="{{!loading}}">
+    <view class="empty-state" wx:if="{{filteredClaims.length === 0}}">
+      <view class="empty-icon">📋</view>
+      <text class="empty-text">暂无工单记录</text>
+      <button class="empty-btn" bindtap="goCreate">提交理赔申请</button>
+    </view>
+
+    <view
+      class="claim-card"
+      wx:for="{{filteredClaims}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+    >
+      <view class="card-header">
+        <view class="card-title-row">
+          <text class="card-icon">{{item.problemIcon}}</text>
+          <text class="card-title">{{item.title}}</text>
+        </view>
+        <view class="card-status" style="background: {{item.statusColor}};">
+          {{item.statusLabel}}
+        </view>
+      </view>
+
+      <view class="card-badge-row">
+        <view class="badge badge-type">{{item.problemTypeLabel}}</view>
+        <view class="badge badge-sol">{{item.expectedSolutionLabel}}方案</view>
+        <view class="badge badge-red" wx:if="{{item.isAbnormalBatch}}">G002异常批次</view>
+        <view class="badge badge-recall" wx:if="{{item.isRecallBatch && !item.isAbnormalBatch}}">召回批次</view>
+        <view class="badge badge-escalated" wx:if="{{item.isEscalated}}">已升级</view>
+      </view>
+
+      <view class="card-product" wx:if="{{item.thumbnail}}">
+        <image class="product-thumb" src="{{item.thumbnail}}" mode="aspectFill" />
+        <view class="product-info">
+          <text class="product-name">{{item.productName}}</text>
+          <text class="product-trace" wx:if="{{item.traceId}}">溯源ID: {{item.traceId}}</text>
+        </view>
+      </view>
+      <view class="card-product" wx:elif="{{item.traceId}}">
+        <view class="product-info">
+          <text class="product-name">未关联产品</text>
+          <text class="product-trace">溯源ID: {{item.traceId}}</text>
+        </view>
+      </view>
+
+      <view class="card-sla" wx:if="{{item.slaText && item.slaText !== '-'}}">
+        <view class="sla-label">
+          <text class="sla-dot {{item.slaExpired ? 'dot-expired' : ''}}"></text>
+          <text class="sla-text {{item.slaExpired ? 'text-expired' : ''}}">{{item.slaText}}</text>
+        </view>
+        <view class="sla-bar">
+          <view class="sla-progress {{item.slaExpired ? 'progress-expired' : ''}}" style="width: {{item.slaPercentage}}%;"></view>
+        </view>
+      </view>
+
+      <view class="card-footer">
+        <text class="card-time">{{item.timeText}}</text>
+        <text class="card-id">工单号 {{item.id}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <view class="fab-button" bindtap="goCreate">
+    <text class="fab-icon">+</text>
+    <text class="fab-text">提交理赔</text>
+  </view>
+</view>

@@ -239,8 +239,9 @@
             <view class="reg-footer">
               <text class="reg-time">{{item.createdAtStr}}</text>
               <view class="reg-actions">
-                <text class="reg-action-link" wx:if="{{item.ticketId}}" data-ticket-id="{{item.ticketId}}" catchtap="goToTicketDetail">查看工单 →</text>
-                <text class="reg-action-link convert-link" wx:else data-id="{{item.id}}" catchtap="convertToTicket">转为工单 →</text>
+                <text class="reg-action-link claim-link" wx:if="{{item.relatedClaimId}}" data-claim-id="{{item.relatedClaimId}}" catchtap="goToClaimDetail">理赔工单 →</text>
+                <text class="reg-action-link convert-claim-link" wx:else data-id="{{item.id}}" catchtap="convertToClaim">转理赔 →</text>
+                <text class="reg-action-link" wx:if="{{item.ticketId}}" data-ticket-id="{{item.ticketId}}" catchtap="goToTicketDetail">普通工单 →</text>
               </view>
             </view>
           </view>
@@ -258,10 +259,32 @@
       </view>
     </block>
 
+    <view class="claim-flow-demo" wx:if="{{batchNo === 'GH202504' || traceId === 'G002'}}">
+      <view class="flow-title">
+        <text class="flow-icon">🔄</text>
+        <text class="flow-text">G002批次闭环演示</text>
+      </view>
+      <view class="flow-steps">
+        <view class="flow-step done"><text>溯源检测</text><view class="step-check">✓</view></view>
+        <view class="flow-arrow">→</view>
+        <view class="flow-step done"><text>异常上报</text><view class="step-check">✓</view></view>
+        <view class="flow-arrow">→</view>
+        <view class="flow-step done"><text>召回公告</text><view class="step-check">✓</view></view>
+        <view class="flow-arrow">→</view>
+        <view class="flow-step current"><text>登记补偿</text></view>
+        <view class="flow-arrow">→</view>
+        <view class="flow-step"><text>通知中心</text></view>
+      </view>
+    </view>
+
     <view class="bottom-action-bar">
       <button class="btn-secondary bar-btn" bindtap="goToDetail" wx:if="{{traceId}}">
         <text class="btn-icon">🔍</text>
         <text>查看溯源</text>
+      </button>
+      <button class="btn-claim bar-btn" bindtap="goCreateClaim">
+        <text class="btn-icon">💸</text>
+        <text>理赔申请</text>
       </button>
       <button class="btn-primary bar-btn" bindtap="openRegisterForm">
         <text class="btn-icon">📝</text>
@@ -414,11 +437,18 @@
       <view class="result-actions">
         <button class="btn-outline modal-btn" bindtap="closeRegistrationResult">知道了</button>
         <button
+          class="btn-claim modal-btn"
+          data-id="{{createdRegistration.id}}"
+          bindtap="convertToClaim"
+        >
+          转理赔
+        </button>
+        <button
           class="btn-primary modal-btn"
           data-id="{{createdRegistration.id}}"
           bindtap="convertToTicket"
         >
-          转为工单
+          转普通工单
         </button>
       </view>
     </view>
@@ -512,20 +542,28 @@
       </scroll-view>
       <view class="modal-footer">
         <button
+          class="btn-claim modal-btn"
+          wx:if="{{registrationDetail.relatedClaimId}}"
+          data-claim-id="{{registrationDetail.relatedClaimId}}"
+          bindtap="goToClaimDetail"
+        >
+          查看理赔
+        </button>
+        <button
+          class="btn-claim modal-btn"
+          wx:else
+          data-id="{{registrationDetail.id}}"
+          bindtap="convertToClaim"
+        >
+          转理赔
+        </button>
+        <button
           class="btn-outline modal-btn"
           wx:if="{{registrationDetail.ticketId}}"
           data-ticket-id="{{registrationDetail.ticketId}}"
           bindtap="goToTicketDetail"
         >
-          查看工单
-        </button>
-        <button
-          class="btn-outline modal-btn"
-          wx:else
-          data-id="{{registrationDetail.id}}"
-          bindtap="convertToTicket"
-        >
-          转为工单
+          普通工单
         </button>
         <button class="btn-primary modal-btn" bindtap="closeRegistrationDetail">关闭</button>
       </view>

@@ -234,6 +234,29 @@ function convertToTicket(registrationId) {
   return { success: true, ticketId: ticket.id, ticket: ticket };
 }
 
+function setRelatedClaimId(registrationId, claimId) {
+  var registration = getRegistrationById(registrationId);
+  if (!registration) {
+    return { success: false, error: '召回登记不存在' };
+  }
+  if (registration.relatedClaimId) {
+    return { success: true, claimId: registration.relatedClaimId, alreadyExisted: true };
+  }
+  var registrations = getRegistrations();
+  var idx = registrations.findIndex(function(r) { return r.id === registrationId; });
+  if (idx !== -1) {
+    registrations[idx].relatedClaimId = claimId;
+    registrations[idx].updatedAt = Date.now();
+    registrations[idx].statusTimeline.push({
+      status: registrations[idx].status,
+      timestamp: Date.now(),
+      message: '已转换为理赔工单，工单号：' + claimId
+    });
+    saveRegistrations(registrations);
+  }
+  return { success: true, claimId: claimId };
+}
+
 function formatTime(timestamp) {
   if (!timestamp) return '';
   const date = new Date(timestamp);
@@ -467,6 +490,7 @@ module.exports = {
   getRegistrationsByBatch,
   updateRegistrationStatus,
   convertToTicket,
+  setRelatedClaimId,
   formatTime,
   getGovRecallNotifications,
   addGovRecallNotification,

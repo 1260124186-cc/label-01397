@@ -1,0 +1,391 @@
+.page {
+  min-height: 100vh;
+  background: #F5F5F5;
+  padding-bottom: 120rpx;
+}
+
+.stat-bar {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  padding: 30rpx 20rpx;
+  border-radius: 0 0 24rpx 24rpx;
+  color: #fff;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-divider {
+  width: 1rpx;
+  height: 60rpx;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.stat-num {
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.stat-blue { color: #B3D4FC; }
+.stat-green { color: #B7EB8F; }
+.stat-red { color: #FFA39E; }
+
+.stat-label {
+  font-size: 22rpx;
+  margin-top: 6rpx;
+  opacity: 0.9;
+}
+
+.g002-banner {
+  display: flex;
+  align-items: center;
+  margin: 20rpx;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #FFF1F0 0%, #FFCCC7 100%);
+  border-radius: 16rpx;
+  border: 1rpx solid #FFA39E;
+}
+
+.banner-icon {
+  font-size: 44rpx;
+  margin-right: 20rpx;
+}
+
+.banner-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.banner-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #CF1322;
+}
+
+.banner-desc {
+  font-size: 22rpx;
+  color: #A8071A;
+  margin-top: 6rpx;
+  line-height: 1.4;
+}
+
+.banner-arrow {
+  font-size: 36rpx;
+  color: #CF1322;
+  margin-left: 10rpx;
+}
+
+.tab-bar {
+  display: flex;
+  background: #fff;
+  margin: 0 20rpx;
+  padding: 12rpx;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 26rpx;
+  color: #666;
+  border-radius: 8rpx;
+  transition: all 0.2s;
+}
+
+.tab-active {
+  background: #E6F4EA;
+  color: #2E8B57;
+  font-weight: 600;
+}
+
+.claim-list {
+  padding: 20rpx;
+}
+
+.claim-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #222;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-status {
+  padding: 8rpx 18rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: #fff;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+.card-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-bottom: 18rpx;
+}
+
+.badge {
+  padding: 4rpx 14rpx;
+  border-radius: 6rpx;
+  font-size: 20rpx;
+}
+
+.badge-type {
+  background: #E6F4EA;
+  color: #2E8B57;
+}
+
+.badge-sol {
+  background: #E6F0FF;
+  color: #1890FF;
+}
+
+.badge-red {
+  background: #FFF1F0;
+  color: #CF1322;
+  font-weight: 600;
+}
+
+.badge-recall {
+  background: #FFF7E6;
+  color: #D46B08;
+}
+
+.badge-escalated {
+  background: #FFF0F6;
+  color: #C41D7F;
+}
+
+.card-product {
+  display: flex;
+  align-items: center;
+  padding: 18rpx;
+  background: #FAFAFA;
+  border-radius: 12rpx;
+  margin-bottom: 18rpx;
+}
+
+.product-thumb {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 8rpx;
+  margin-right: 18rpx;
+  background: #F0F0F0;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.product-name {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.product-trace {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 6rpx;
+}
+
+.card-sla {
+  padding: 16rpx 20rpx;
+  background: #FFFBF0;
+  border-radius: 10rpx;
+  margin-bottom: 16rpx;
+}
+
+.sla-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.sla-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #52C41A;
+  margin-right: 10rpx;
+  animation: pulse 2s infinite;
+}
+
+.dot-expired {
+  background: #FF4D4F;
+  animation: none;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.sla-text {
+  font-size: 22rpx;
+  color: #52C41A;
+}
+
+.text-expired {
+  color: #FF4D4F;
+  font-weight: 600;
+}
+
+.sla-bar {
+  height: 8rpx;
+  background: #F0F0F0;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.sla-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #52C41A 0%, #73D13D 100%);
+  border-radius: 4rpx;
+  transition: width 0.3s;
+}
+
+.progress-expired {
+  background: linear-gradient(90deg, #FF4D4F 0%, #FF7875 100%);
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #F0F0F0;
+}
+
+.card-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.card-id {
+  font-size: 22rpx;
+  color: #BBB;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+}
+
+.empty-btn {
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  color: #fff;
+  border: none;
+  border-radius: 40rpx;
+  padding: 20rpx 60rpx;
+  font-size: 28rpx;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #F0F0F0;
+  border-top-color: #2E8B57;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.fab-button {
+  position: fixed;
+  right: 30rpx;
+  bottom: 120rpx;
+  display: flex;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+  border-radius: 50rpx;
+  box-shadow: 0 8rpx 24rpx rgba(46, 139, 87, 0.4);
+  z-index: 100;
+}
+
+.fab-icon {
+  font-size: 36rpx;
+  color: #fff;
+  margin-right: 10rpx;
+  font-weight: 300;
+}
+
+.fab-text {
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: 600;
+}

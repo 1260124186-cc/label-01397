@@ -1,5 +1,6 @@
 const mockData = require('../../utils/mockData.js');
 const recallService = require('../../utils/recallService.js');
+const claimService = require('../../utils/claimService.js');
 const i18n = require('../../utils/i18n/index.js');
 
 const MAX_IMAGE_COUNT = 3;
@@ -53,6 +54,7 @@ Page({
 
   onShow: function() {
     this.refreshA11yData();
+    claimService.initMockClaims();
     if (this.data.traceId || this.data.batchNo) {
       this.loadExistingRegistrations(this.data.traceId, this.data.batchNo);
     }
@@ -355,5 +357,78 @@ Page({
       title: `【产品召回】${data ? data.productName : ''} 批次${data ? data.batchNo : ''}安全提示`,
       path: `/pages/recall/detail?batchNo=${this.data.batchNo}&traceId=${this.data.traceId}`
     };
+  },
+
+  goCreateClaim: function() {
+    var params = [];
+    if (this.data.traceId) {
+      params.push('traceId=' + this.data.traceId);
+    }
+    if (this.data.batchNo) {
+      params.push('batchNo=' + this.data.batchNo);
+    }
+    params.push('problemType=recall_compensation');
+    wx.navigateTo({
+      url: '/pages/claim/create?' + params.join('&')
+    });
+  },
+
+  convertToClaim: function(e) {
+    var that = this;
+    var registrationId = e.currentTarget.dataset.id
+      || (this.data.registrationDetail && this.data.registrationDetail.id);
+    if (!registrationId) return;
+
+    wx.showModal({
+      title: '转理赔工单',
+      content: '确定将此召回登记转为质量理赔工单吗？将自动进入鉴定→补偿流程，享受退款/换货/积分补偿。',
+      confirmText: '确认转换',
+      cancelText: '取消',
+      success: function(res) {
+        if (!res.confirm) return;
+        wx.showLoading({ title: '转换中...', mask: true });
+        setTimeout(function() {
+          var reg = recallService.getRegistrationById(registrationId);
+          var formData = {
+            traceId: reg ? reg.traceId : (that.data.traceId || 'G002'),
+            problemType: 'recall_compensation',
+            expectedSolution: 'refund',
+            description: (reg && reg.remark) ? reg.remark : 'G002批次召回补偿',
+            contact: reg ? reg.contact : '138****8888',
+            accountType: 'alipay',
+            accountNumber: reg && reg.contact ? reg.contact.replace(/^(\d{3})\d{4}(\d{4})$/, '$1*****$2') + '@alipay.com' : '138****8888@alipay.com',
+            images: reg ? reg.images : [],
+            isAbnormalBatch: that.data.batchNo === 'GH202504' || (reg && reg.traceId) === 'G002',
+            isRecallBatch: true
+          };
+          var result = claimService.convertFromRecallRegistration(registrationId, formData);
+          wx.hideLoading();
+          if (result.success) {
+            if (result.alreadyExisted) {
+              wx.showToast({ title: '已存在关联理赔工单', icon: 'none' });
+            } else {
+              wx.showToast({ title: '理赔工单创建成功', icon: 'success' });
+            }
+            that.loadExistingRegistrations(that.data.traceId, that.data.batchNo);
+            setTimeout(function() {
+              wx.navigateTo({
+                url: '/pages/claim/detail?id=' + result.claimId
+              });
+            }, 1000);
+          } else {
+            wx.showToast({ title: result.error || '转换失败', icon: 'none' });
+          }
+        }, 800);
+      }
+    });
+  },
+
+  goToClaimDetail: function(e) {
+    var claimId = e.currentTarget.dataset.claimId;
+    if (claimId) {
+      wx.navigateTo({
+        url: '/pages/claim/detail?id=' + claimId
+      });
+    }
   }
 });

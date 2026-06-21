@@ -64,7 +64,10 @@
     "pages/experience/reservationDetail",
     "pages/experience/verify",
     "pages/authorizedNetwork/authorizedNetwork",
-    "pages/authorizedNetworkDetail/authorizedNetworkDetail"
+    "pages/authorizedNetworkDetail/authorizedNetworkDetail",
+    "pages/claim/list",
+    "pages/claim/create",
+    "pages/claim/detail"
   ],
   "window": {
     "backgroundTextStyle": "dark",

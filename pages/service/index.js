@@ -1,5 +1,6 @@
 const i18n = require('../../utils/i18n/index.js');
 const ticketService = require('../../utils/ticketService.js');
+const claimService = require('../../utils/claimService.js');
 
 const FAQ_CATEGORIES = [
   { key: 'all', i18nKey: 'service.faqAll' },
@@ -22,6 +23,8 @@ Page({
     expandedFaqIds: {},
     allExpanded: false,
     ticketCount: 0,
+    claimCount: 0,
+    showG002Badge: true,
     incomingTraceId: ''
   },
 
@@ -39,6 +42,8 @@ Page({
     this.loadI18n();
     this.refreshFaqList();
     this.refreshTicketCount();
+    this.refreshClaimCount();
+    claimService.checkAllEscalations();
   },
 
   refreshA11yData: function() {
@@ -95,6 +100,18 @@ Page({
       t.status === ticketService.TICKET_STATUS.PROCESSING
     ).length;
     this.setData({ ticketCount: pendingCount });
+  },
+
+  refreshClaimCount: function() {
+    let claims = claimService.getClaims();
+    if (claims.length === 0) {
+      claims = claimService.initMockClaims();
+    }
+    const pendingCount = claims.filter(function(c) {
+      return c.status !== claimService.CLAIM_STATUS.COMPLETED &&
+             c.status !== claimService.CLAIM_STATUS.REJECTED;
+    }).length;
+    this.setData({ claimCount: pendingCount });
   },
 
   onSearchInput: function(e) {
@@ -161,5 +178,21 @@ Page({
   previewFaqImage: function(e) {
     const url = e.currentTarget.dataset.url;
     wx.previewImage({ current: url, urls: [url] });
+  },
+
+  goClaimList: function() {
+    wx.navigateTo({ url: '/pages/claim/list' });
+  },
+
+  goCreateClaim: function() {
+    var url = '/pages/claim/create';
+    if (this.data.incomingTraceId) {
+      url += '?traceId=' + this.data.incomingTraceId;
+    }
+    wx.navigateTo({ url: url });
+  },
+
+  goRecallG002: function() {
+    wx.navigateTo({ url: '/pages/recall/detail?traceId=G002' });
   }
 });

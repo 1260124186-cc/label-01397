@@ -10,7 +10,10 @@ var TYPE_ICONS = {
   privacy: '🛡️',
   newBatch: '📦',
   reportUpdate: '🔬',
-  promotion: '🎊'
+  promotion: '🎊',
+  claim: '💸',
+  claim_compensation: '💰',
+  claim_escalation: '🚨'
 };
 
 var TYPE_COLORS = {
@@ -21,7 +24,10 @@ var TYPE_COLORS = {
   privacy: '#722ED1',
   newBatch: '#2E8B57',
   reportUpdate: '#1890FF',
-  promotion: '#DAA520'
+  promotion: '#DAA520',
+  claim: '#D46B08',
+  claim_compensation: '#2C7A6B',
+  claim_escalation: '#CF1322'
 };
 
 Page({

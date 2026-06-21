@@ -30,6 +30,37 @@
       </view>
       <view class="action-arrow">→</view>
     </view>
+
+    <view class="action-card claim-card" bindtap="goClaimList">
+      <view class="action-icon claim-icon">💸</view>
+      <view class="action-info">
+        <view class="action-title">
+          质量理赔工单
+          <view class="ticket-badge claim-badge" wx:if="{{claimCount > 0}}">{{claimCount}}</view>
+          <view class="claim-tag-g002" wx:if="{{showG002Badge}}">G002</view>
+        </view>
+        <view class="action-desc">质量问题 / 召回补偿 / 物流破损 · SLA时效保障</view>
+      </view>
+      <view class="action-arrow">→</view>
+    </view>
+
+    <view class="action-card claim-submit-card" bindtap="goCreateClaim">
+      <view class="action-icon claim-submit-icon">➕</view>
+      <view class="action-info">
+        <view class="action-title">提交理赔申请</view>
+        <view class="action-desc">支持退款 / 换货 / 积分补偿三种方案</view>
+      </view>
+      <view class="action-arrow">→</view>
+    </view>
+  </view>
+
+  <view class="g002-notice" bindtap="goRecallG002" wx:if="{{showG002Badge}}">
+    <view class="notice-icon">⚠️</view>
+    <view class="notice-text-wrap">
+      <text class="notice-title">G002异常批次（GH202504）召回公告</text>
+      <text class="notice-desc">农残检测氯氰菊酯超标27.5%，已购买用户可申请召回补偿</text>
+    </view>
+    <view class="notice-go">查看</view>
   </view>
 
   <view class="contact-info">

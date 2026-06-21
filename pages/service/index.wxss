@@ -376,3 +376,81 @@
 .bottom-space {
   height: 40rpx;
 }
+
+.claim-card {
+  background: linear-gradient(135deg, #FFF7E6 0%, #FFE7BA 100%);
+  border: 2rpx solid rgba(212, 107, 8, 0.2);
+}
+
+.claim-icon {
+  background: rgba(212, 107, 8, 0.15) !important;
+}
+
+.claim-badge {
+  background: #D46B08 !important;
+}
+
+.claim-tag-g002 {
+  background: linear-gradient(135deg, #FF4D4F 0%, #FF7875 100%);
+  color: #fff;
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 6rpx;
+  margin-left: 12rpx;
+  font-weight: 600;
+}
+
+.claim-submit-card {
+  background: linear-gradient(135deg, #E6F4EA 0%, #C8E6C9 100%);
+  border: 2rpx solid rgba(46, 139, 87, 0.2);
+}
+
+.claim-submit-icon {
+  background: rgba(46, 139, 87, 0.15) !important;
+}
+
+.g002-notice {
+  display: flex;
+  align-items: flex-start;
+  margin: 8rpx 32rpx 24rpx;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #FFF1F0 0%, #FFCCC7 100%);
+  border-radius: 16rpx;
+  border: 1rpx solid #FFA39E;
+}
+
+.g002-notice .notice-icon {
+  font-size: 40rpx;
+  margin-right: 18rpx;
+  flex-shrink: 0;
+}
+
+.g002-notice .notice-text-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.g002-notice .notice-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #CF1322;
+  margin-bottom: 6rpx;
+}
+
+.g002-notice .notice-desc {
+  font-size: 22rpx;
+  color: #A8071A;
+  line-height: 1.5;
+}
+
+.g002-notice .notice-go {
+  font-size: 24rpx;
+  color: #fff;
+  background: #CF1322;
+  padding: 10rpx 24rpx;
+  border-radius: 20rpx;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+  align-self: center;
+}

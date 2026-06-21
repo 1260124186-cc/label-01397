@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "理赔工单详情",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#F5F5F5",
+  "backgroundTextStyle": "dark",
+  "usingComponents": {}
+}
