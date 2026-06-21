@@ -1,8 +1,10 @@
 const zhCN = require('./locales/zh-CN.js');
 const enUS = require('./locales/en-US.js');
+const jaJP = require('./locales/ja-JP.js');
 
 const LANG_ZH = 'zh-CN';
 const LANG_EN = 'en-US';
+const LANG_JA = 'ja-JP';
 
 const STORAGE_KEY_LANG = 'i18n_language';
 const STORAGE_KEY_FONT = 'a11y_fontSize';
@@ -14,7 +16,8 @@ const FONT_EXTRA = 'extra';
 
 const locales = {
   [LANG_ZH]: zhCN,
-  [LANG_EN]: enUS
+  [LANG_EN]: enUS,
+  [LANG_JA]: jaJP
 };
 
 let currentLang = LANG_ZH;
@@ -31,6 +34,9 @@ function getStoredLang() {
   try {
     const sys = wx.getSystemInfoSync();
     const lang = sys.language || '';
+    if (lang.toLowerCase().startsWith('ja')) {
+      return LANG_JA;
+    }
     if (lang.toLowerCase().startsWith('en')) {
       return LANG_EN;
     }
@@ -116,7 +122,8 @@ function getLanguage() {
 function getAvailableLanguages() {
   return [
     { code: LANG_ZH, label: '中文' },
-    { code: LANG_EN, label: 'English' }
+    { code: LANG_EN, label: 'English' },
+    { code: LANG_JA, label: '日本語' }
   ];
 }
 
@@ -198,6 +205,7 @@ function applySettingsToApp(app) {
 module.exports = {
   LANG_ZH,
   LANG_EN,
+  LANG_JA,
   FONT_NORMAL,
   FONT_LARGE,
   FONT_EXTRA,

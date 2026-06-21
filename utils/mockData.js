@@ -506,6 +506,150 @@ const mockTraceData = {
       osmanthusOriginImage: 'https://picsum.photos/id/1044/750/400',
       processImage: 'https://picsum.photos/id/1036/750/400',
       certImage: 'https://picsum.photos/id/1025/750/400'
+    },
+
+    // 出口合规溯源信息
+    exportInfo: {
+      exportBatchNo: 'EXP-GH202503-JP-001',
+      hsCode: '0902.10.00',
+      hsCodeDescription: '绿茶（未发酵），内包装每件净重≤3kg',
+      countryOfOrigin: '中国',
+      originRegion: '湖北省咸宁市',
+
+      certificateOfOrigin: {
+        certNo: 'CO-CN-HUB-2025-09876',
+        issuingAuthority: '中国国际贸易促进委员会',
+        issueDate: '2025-09-28',
+        validUntil: '2026-09-27',
+        certType: '一般原产地证',
+        verifyUrl: 'https://www.ccpit.org/verify/co',
+        status: 'valid'
+      },
+
+      inspectionQuarantine: {
+        certNo: 'IQ-CN-HUB-2025-12345',
+        issuingAuthority: '武汉海关',
+        issueDate: '2025-09-26',
+        validUntil: '2026-03-25',
+        inspectionDate: '2025-09-25',
+        result: '合格',
+        quarantineResult: '合格',
+        standard: 'GB 2763-2021; 日本肯定列表制度',
+        verifyUrl: 'https://www.customs.gov.cn/iq/verify',
+        items: [
+          { item: '农药残留', result: '合格', standard: '日本肯定列表' },
+          { item: '微生物', result: '合格', standard: '食品卫生法' },
+          { item: '重金属', result: '合格', standard: 'GB 2762-2022' },
+          { item: '添加剂', result: '未检出', standard: 'GB 2760-2014' }
+        ]
+      },
+
+      multilingualLabels: {
+        availableLanguages: ['zh-CN', 'en-US', 'ja-JP'],
+        labels: {
+          'zh-CN': {
+            productName: '金桂花茶',
+            ingredients: '茶叶、桂花',
+            netContent: '100g',
+            shelfLife: '12个月',
+            storageMethod: '阴凉干燥处，避免阳光直射',
+            origin: '中国湖北咸宁',
+            manufacturer: '一茶一品（咸宁）桂花茶有限公司',
+            address: '湖北省咸宁市桂花镇工业园88号'
+          },
+          'en-US': {
+            productName: 'Golden Osmanthus Tea',
+            ingredients: 'Tea Leaves, Osmanthus Flowers',
+            netContent: '100g',
+            shelfLife: '12 months',
+            storageMethod: 'Store in cool, dry place. Avoid direct sunlight.',
+            origin: 'Xianning, Hubei, China',
+            manufacturer: 'YiChaYiPin (Xianning) Osmanthus Tea Co., Ltd.',
+            address: 'No.88 Guihua Town Industrial Park, Xianning, Hubei, China'
+          },
+          'ja-JP': {
+            productName: 'キンモクセイ茶',
+            ingredients: '茶葉、金木犀の花',
+            netContent: '100g',
+            shelfLife: '12ヶ月',
+            storageMethod: '涼しく乾燥した場所に保管し、直射日光を避けてください。',
+            origin: '中国湖北省咸寧市',
+            manufacturer: '一茶一品（咸寧）桂花茶有限公司',
+            address: '中華人民共和国湖北省咸寧市桂花鎮工業園88番'
+          }
+        }
+      },
+
+      shipping: {
+        method: 'ocean',
+        methodLabel: '海运',
+        containerNo: 'MSKU1234567',
+        containerType: '20GP',
+        vesselName: 'COSCO SHIPPING ROSE',
+        voyageNo: '025E',
+        billOfLading: 'COSHAW25090876',
+        portOfLoading: '上海港',
+        portOfDischarge: '横滨港',
+        etd: '2025-10-05',
+        eta: '2025-10-20',
+        actualDeparture: '2025-10-05',
+        actualArrival: null,
+        trackingUrl: 'https://www.coscoshipping.com/tracking'
+      },
+
+      customsClearance: {
+        status: 'in_transit',
+        statusLabel: '运输中',
+        declarationNo: 'CUS-SH-2025-1008765',
+        declareDate: '2025-10-03',
+        customsOffice: '上海海关',
+        importCountry: '日本',
+        importCustoms: '横滨税关',
+        tariffCode: '0902.10.00',
+        dutyRate: '5%',
+        importValue: 'USD 25,000.00',
+        taxPaid: null,
+        clearanceDate: null,
+        inspectionRequired: true,
+        inspectionStatus: 'pending',
+        remarks: '食品检疫中，预计10月22日完成'
+      },
+
+      overseasDistributor: {
+        name: '株式会社桜茶園',
+        country: '日本',
+        region: '神奈川県横浜市',
+        address: '〒220-0011 神奈川県横浜市西区高島2-1-1',
+        contactPerson: '山田太郎',
+        contactEmail: 'yamada@ochaen.co.jp',
+        contactPhone: '+81-45-123-4567',
+        licenseNo: 'JAPAN-FOOD-IMP-2025-00876',
+        authorizedDate: '2025-01-15',
+        authorizedProducts: ['金桂花茶', '银桂花茶'],
+        level: '一级经销商',
+        verifyUrl: 'https://www.ochaen.co.jp/auth'
+      },
+
+      exportBlockchain: {
+        chainName: '跨境贸易链',
+        chainId: 'cross-border-trade-001',
+        txHash: '0x3a7d5b9c8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b',
+        txHashShort: '0x3a7d5b...3f2a1b',
+        timestamp: '2025-09-28 10:30:00',
+        verifyStatus: '已验证',
+        onChainFields: [
+          { key: 'exportBatchNo', label: '出口批次号', value: 'EXP-GH202503-JP-001', onChain: true },
+          { key: 'hsCode', label: 'HS编码', value: '0902.10.00', onChain: true },
+          { key: 'coCertNo', label: '原产地证号', value: 'CO-CN-HUB-2025-09876', onChain: true },
+          { key: 'iqCertNo', label: '检验检疫证号', value: 'IQ-CN-HUB-2025-12345', onChain: true },
+          { key: 'containerNo', label: '集装箱号', value: 'MSKU1234567', onChain: true },
+          { key: 'blNo', label: '提单号', value: 'COSHAW25090876', onChain: true }
+        ],
+        blockExplorerUrl: 'https://cross-border.tracechain.cn/tx/0x3a7d5b9c8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b'
+      },
+
+      viewMode: 'export',
+      targetMarkets: ['JP', 'US', 'EU']
     }
   },
 
@@ -955,6 +1099,140 @@ const mockTraceData = {
       osmanthusOriginImage: 'https://picsum.photos/id/1018/750/400',
       processImage: 'https://picsum.photos/id/1039/750/400',
       certImage: 'https://picsum.photos/id/1025/750/400'
+    },
+
+    // 出口合规溯源信息
+    exportInfo: {
+      exportBatchNo: 'EXP-GH202504-US-002',
+      hsCode: '0902.10.00',
+      hsCodeDescription: 'Green tea (not fermented), in immediate packings of a net content not exceeding 3kg',
+      countryOfOrigin: 'China',
+      originRegion: 'Xianning, Hubei Province',
+
+      certificateOfOrigin: {
+        certNo: 'CO-CN-HUB-2025-09988',
+        issuingAuthority: 'China Council for the Promotion of International Trade',
+        issueDate: '2025-10-02',
+        validUntil: '2026-10-01',
+        certType: 'General Certificate of Origin',
+        verifyUrl: 'https://www.ccpit.org/verify/co',
+        status: 'valid'
+      },
+
+      inspectionQuarantine: {
+        certNo: 'IQ-CN-HUB-2025-12456',
+        issuingAuthority: 'Wuhan Customs',
+        issueDate: '2025-09-28',
+        validUntil: '2026-03-27',
+        inspectionDate: '2025-09-27',
+        result: 'Pass',
+        quarantineResult: 'Pass',
+        standard: 'GB 2763-2021; US FDA Food Safety Modernization Act',
+        verifyUrl: 'https://www.customs.gov.cn/iq/verify',
+        items: [
+          { item: 'Pesticide Residue', result: 'Pass', standard: 'US EPA Tolerances' },
+          { item: 'Microbiological', result: 'Pass', standard: 'FDA BAM' },
+          { item: 'Heavy Metals', result: 'Pass', standard: 'GB 2762-2022' },
+          { item: 'Additives', result: 'Not Detected', standard: 'GB 2760-2014' }
+        ]
+      },
+
+      multilingualLabels: {
+        availableLanguages: ['zh-CN', 'en-US'],
+        labels: {
+          'zh-CN': {
+            productName: '银桂花茶',
+            ingredients: '茶叶、桂花',
+            netContent: '100g',
+            shelfLife: '12个月',
+            storageMethod: '阴凉干燥处，避免阳光直射',
+            origin: '中国湖北咸宁',
+            manufacturer: '一茶一品（咸宁）桂花茶有限公司',
+            address: '湖北省咸宁市桂花镇工业园88号'
+          },
+          'en-US': {
+            productName: 'Silver Osmanthus Tea',
+            ingredients: 'Tea Leaves, Osmanthus Flowers',
+            netContent: '100g / 3.53 oz',
+            shelfLife: '12 months',
+            storageMethod: 'Store in a cool, dry place. Avoid direct sunlight.',
+            origin: 'Xianning, Hubei, China',
+            manufacturer: 'YiChaYiPin (Xianning) Osmanthus Tea Co., Ltd.',
+            address: 'No.88 Guihua Town Industrial Park, Xianning, Hubei, China'
+          }
+        }
+      },
+
+      shipping: {
+        method: 'ocean',
+        methodLabel: 'Ocean Freight',
+        containerNo: 'MSKU9876543',
+        containerType: '40HQ',
+        vesselName: 'MAERSK EMDEN',
+        voyageNo: '2508W',
+        billOfLading: 'MAEU250901234',
+        portOfLoading: 'Ningbo Port',
+        portOfDischarge: 'Los Angeles Port',
+        etd: '2025-10-08',
+        eta: '2025-10-28',
+        actualDeparture: '2025-10-08',
+        actualArrival: '2025-10-28',
+        trackingUrl: 'https://www.maersk.com/tracking'
+      },
+
+      customsClearance: {
+        status: 'cleared',
+        statusLabel: '已清关',
+        declarationNo: 'CUS-NB-2025-1009876',
+        declareDate: '2025-10-05',
+        customsOffice: '宁波海关',
+        importCountry: 'United States',
+        importCustoms: 'CBP Los Angeles',
+        tariffCode: '0902.10.00',
+        dutyRate: '2.3%',
+        importValue: 'USD 35,000.00',
+        taxPaid: 'USD 805.00',
+        clearanceDate: '2025-10-30',
+        inspectionRequired: false,
+        inspectionStatus: 'passed',
+        remarks: 'FDA抽样检测通过，已放行'
+      },
+
+      overseasDistributor: {
+        name: 'Golden Leaf Tea Importers Inc.',
+        country: 'United States',
+        region: 'California, Los Angeles',
+        address: '12345 Valley Blvd, El Monte, CA 91731, USA',
+        contactPerson: 'Michael Chen',
+        contactEmail: 'michael@goldenleatea.com',
+        contactPhone: '+1-626-555-0123',
+        licenseNo: 'US-FDA-FOOD-2025-10234',
+        authorizedDate: '2025-02-20',
+        authorizedProducts: ['Silver Osmanthus Tea', 'Golden Osmanthus Tea'],
+        level: 'Exclusive Distributor',
+        verifyUrl: 'https://www.goldenleatea.com/auth'
+      },
+
+      exportBlockchain: {
+        chainName: 'Cross-Border Trade Chain',
+        chainId: 'cross-border-trade-001',
+        txHash: '0x5b8e6c1d9f7a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c',
+        txHashShort: '0x5b8e6c...f1a0b9c',
+        timestamp: '2025-10-02 14:20:00',
+        verifyStatus: 'Verified',
+        onChainFields: [
+          { key: 'exportBatchNo', label: 'Export Batch No.', value: 'EXP-GH202504-US-002', onChain: true },
+          { key: 'hsCode', label: 'HS Code', value: '0902.10.00', onChain: true },
+          { key: 'coCertNo', label: 'CO Cert No.', value: 'CO-CN-HUB-2025-09988', onChain: true },
+          { key: 'iqCertNo', label: 'IQ Cert No.', value: 'IQ-CN-HUB-2025-12456', onChain: true },
+          { key: 'containerNo', label: 'Container No.', value: 'MSKU9876543', onChain: true },
+          { key: 'blNo', label: 'B/L No.', value: 'MAEU250901234', onChain: true }
+        ],
+        blockExplorerUrl: 'https://cross-border.tracechain.cn/tx/0x5b8e6c1d9f7a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c'
+      },
+
+      viewMode: 'export',
+      targetMarkets: ['US', 'CA', 'EU']
     }
   },
 
@@ -8882,6 +9160,111 @@ function getTrainingCourse(courseId) {
   return null;
 }
 
+// ==================== 出口合规溯源相关 ====================
+
+function getExportInfo(traceId) {
+  const data = getTraceData(traceId);
+  if (data && data.exportInfo) {
+    return data.exportInfo;
+  }
+  return null;
+}
+
+function hasExportInfo(traceId) {
+  const data = getTraceData(traceId);
+  return !!(data && data.exportInfo);
+}
+
+function getCustomsClearanceStatus(traceId) {
+  const exportInfo = getExportInfo(traceId);
+  if (!exportInfo || !exportInfo.customsClearance) {
+    return null;
+  }
+  return {
+    success: true,
+    data: exportInfo.customsClearance,
+    timestamp: Date.now(),
+    source: 'mock'
+  };
+}
+
+function getShippingTracking(traceId) {
+  const exportInfo = getExportInfo(traceId);
+  if (!exportInfo || !exportInfo.shipping) {
+    return null;
+  }
+  return {
+    success: true,
+    data: exportInfo.shipping,
+    timestamp: Date.now(),
+    source: 'mock'
+  };
+}
+
+function getMultilingualLabel(traceId, lang) {
+  const exportInfo = getExportInfo(traceId);
+  if (!exportInfo || !exportInfo.multilingualLabels) {
+    return null;
+  }
+  const labels = exportInfo.multilingualLabels.labels;
+  const targetLang = lang || 'zh-CN';
+  if (labels[targetLang]) {
+    return {
+      lang: targetLang,
+      data: labels[targetLang],
+      availableLanguages: exportInfo.multilingualLabels.availableLanguages
+    };
+  }
+  if (labels['en-US']) {
+    return {
+      lang: 'en-US',
+      data: labels['en-US'],
+      availableLanguages: exportInfo.multilingualLabels.availableLanguages
+    };
+  }
+  return null;
+}
+
+function getAllMultilingualLabels(traceId) {
+  const exportInfo = getExportInfo(traceId);
+  if (!exportInfo || !exportInfo.multilingualLabels) {
+    return null;
+  }
+  return exportInfo.multilingualLabels;
+}
+
+function getOverseasDistributor(traceId) {
+  const exportInfo = getExportInfo(traceId);
+  if (!exportInfo || !exportInfo.overseasDistributor) {
+    return null;
+  }
+  return exportInfo.overseasDistributor;
+}
+
+function getExportBlockchainInfo(traceId) {
+  const exportInfo = getExportInfo(traceId);
+  if (!exportInfo || !exportInfo.exportBlockchain) {
+    return null;
+  }
+  return exportInfo.exportBlockchain;
+}
+
+function getCertificateOfOrigin(traceId) {
+  const exportInfo = getExportInfo(traceId);
+  if (!exportInfo || !exportInfo.certificateOfOrigin) {
+    return null;
+  }
+  return exportInfo.certificateOfOrigin;
+}
+
+function getInspectionQuarantine(traceId) {
+  const exportInfo = getExportInfo(traceId);
+  if (!exportInfo || !exportInfo.inspectionQuarantine) {
+    return null;
+  }
+  return exportInfo.inspectionQuarantine;
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -9001,5 +9384,15 @@ module.exports = {
   getAuthorizedNetworkStores,
   getStoreReviews,
   getTrainingCourses,
-  getTrainingCourse
+  getTrainingCourse,
+  getExportInfo,
+  hasExportInfo,
+  getCustomsClearanceStatus,
+  getShippingTracking,
+  getMultilingualLabel,
+  getAllMultilingualLabels,
+  getOverseasDistributor,
+  getExportBlockchainInfo,
+  getCertificateOfOrigin,
+  getInspectionQuarantine
 };

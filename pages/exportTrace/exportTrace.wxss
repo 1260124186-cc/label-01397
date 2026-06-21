@@ -1,0 +1,866 @@
+.export-trace {
+  min-height: 100vh;
+  background-color: #F0F4F8;
+  padding-bottom: 40rpx;
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 40rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #E0E0E0;
+  border-top-color: #1E3A8A;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text,
+.error-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.error-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.retry-btn {
+  margin-top: 30rpx;
+  background-color: #1E3A8A;
+  color: white;
+  font-size: 28rpx;
+  padding: 16rpx 48rpx;
+  border-radius: 40rpx;
+}
+
+.content {
+  padding: 0;
+}
+
+.header-section {
+  background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+  color: white;
+  padding: 40rpx 32rpx 48rpx;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+}
+
+.trace-info {
+  flex: 1;
+}
+
+.trace-id-label {
+  font-size: 24rpx;
+  opacity: 0.8;
+  margin-bottom: 8rpx;
+}
+
+.trace-id-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  letter-spacing: 2rpx;
+}
+
+.export-badge {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: white;
+  font-size: 22rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.header-subtitle {
+  font-size: 26rpx;
+  opacity: 0.9;
+  margin-bottom: 32rpx;
+}
+
+.view-toggle-section {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.view-mode-label {
+  font-size: 24rpx;
+  opacity: 0.9;
+  margin-bottom: 16rpx;
+}
+
+.view-mode-toggle {
+  display: flex;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 12rpx;
+  padding: 6rpx;
+}
+
+.mode-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx;
+  border-radius: 8rpx;
+  transition: all 0.3s;
+}
+
+.mode-item.active {
+  background-color: white;
+  color: #1E3A8A;
+  font-weight: 500;
+}
+
+.mode-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.mode-text {
+  font-size: 26rpx;
+}
+
+.lang-switch {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.lang-label {
+  font-size: 24rpx;
+  opacity: 0.9;
+  margin-bottom: 16rpx;
+}
+
+.lang-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.lang-item {
+  flex: 1;
+  min-width: 160rpx;
+  text-align: center;
+  padding: 14rpx 20rpx;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  color: white;
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+}
+
+.lang-item.active {
+  background-color: white;
+  color: #1E3A8A;
+  font-weight: 500;
+  border-color: white;
+}
+
+.section {
+  margin: 24rpx 24rpx 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.section-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1E293B;
+  flex: 1;
+}
+
+.section-badge {
+  font-size: 20rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 8rpx;
+  margin-left: 12rpx;
+}
+
+.co-badge {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+
+.ciq-badge {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+.shipping-badge {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.customs-badge {
+  background-color: #E0E7FF;
+  color: #3730A3;
+}
+
+.distributor-badge {
+  background-color: #FCE7F3;
+  color: #9D174D;
+}
+
+.blockchain-badge {
+  background-color: #F3E8FF;
+  color: #6B21A8;
+}
+
+.refresh-icon {
+  font-size: 28rpx;
+  margin-left: 16rpx;
+  padding: 8rpx;
+}
+
+.info-card,
+.cert-card,
+.shipping-card,
+.customs-card,
+.distributor-card,
+.blockchain-card {
+  background-color: white;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.info-row {
+  display: flex;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #F1F5F9;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  width: 180rpx;
+  flex-shrink: 0;
+  font-size: 26rpx;
+  color: #64748B;
+}
+
+.info-value {
+  flex: 1;
+  font-size: 26rpx;
+  color: #1E293B;
+  word-break: break-all;
+}
+
+.info-value.desc {
+  line-height: 1.5;
+}
+
+.info-value.copyable {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.copy-icon {
+  font-size: 22rpx;
+  color: #94A3B8;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+}
+
+.hs-code {
+  font-family: monospace;
+  font-weight: 500;
+  color: #1E3A8A;
+}
+
+.highlight-value {
+  font-weight: 600;
+  color: #1E3A8A;
+}
+
+.market-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.market-tag {
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  background-color: #EFF6FF;
+  color: #1D4ED8;
+  border-radius: 8rpx;
+}
+
+.cert-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.cert-status.valid {
+  background-color: #ECFDF5;
+}
+
+.cert-status.pass {
+  background-color: #ECFDF5;
+}
+
+.cert-status .status-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+  color: #10B981;
+}
+
+.cert-status .status-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #065F46;
+}
+
+.verify-btn {
+  margin-top: 24rpx;
+  background-color: #1E3A8A;
+  color: white;
+  font-size: 28rpx;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  width: 100%;
+}
+
+.inspection-items {
+  margin-top: 20rpx;
+}
+
+.items-title {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 16rpx;
+}
+
+.items-table {
+  border: 1rpx solid #E2E8F0;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  background-color: #F1F5F9;
+}
+
+.table-row {
+  display: flex;
+  border-top: 1rpx solid #E2E8F0;
+}
+
+.table-cell {
+  flex: 1;
+  padding: 14rpx 12rpx;
+  font-size: 24rpx;
+  text-align: center;
+}
+
+.table-header .table-cell {
+  font-weight: 500;
+  color: #475569;
+}
+
+.result-pass {
+  color: #10B981;
+  font-weight: 500;
+}
+
+.result-fail {
+  color: #EF4444;
+  font-weight: 500;
+}
+
+.status-pass {
+  color: #10B981;
+  font-weight: 500;
+}
+
+.status-fail {
+  color: #EF4444;
+  font-weight: 500;
+}
+
+.label-section .label-subtitle {
+  font-size: 24rpx;
+  color: #64748B;
+  margin-bottom: 20rpx;
+}
+
+.label-lang-switch {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+  flex-wrap: wrap;
+}
+
+.label-lang-item {
+  padding: 12rpx 24rpx;
+  background-color: #F1F5F9;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #64748B;
+  border: 1rpx solid transparent;
+}
+
+.label-lang-item.active {
+  background-color: #1E3A8A;
+  color: white;
+  border-color: #1E3A8A;
+}
+
+.label-preview-card {
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+  border: 1rpx solid #E2E8F0;
+}
+
+.label-header {
+  background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+  padding: 24rpx;
+  border-bottom: 1rpx solid #E2E8F0;
+}
+
+.label-product-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1E293B;
+}
+
+.label-body {
+  padding: 20rpx 24rpx;
+}
+
+.label-row {
+  display: flex;
+  padding: 12rpx 0;
+  border-bottom: 1rpx dashed #E2E8F0;
+}
+
+.label-row:last-child {
+  border-bottom: none;
+}
+
+.label-key {
+  width: 140rpx;
+  flex-shrink: 0;
+  font-size: 24rpx;
+  color: #94A3B8;
+}
+
+.label-value {
+  flex: 1;
+  font-size: 24rpx;
+  color: #334155;
+  word-break: break-all;
+}
+
+.shipping-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  background-color: #EFF6FF;
+}
+
+.shipping-status .status-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+.shipping-status .status-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1E40AF;
+}
+
+.shipping-status.in-transit {
+  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+}
+
+.shipping-route {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24rpx;
+  padding: 24rpx;
+  background-color: #F8FAFC;
+  border-radius: 12rpx;
+}
+
+.route-port {
+  flex: 1;
+  text-align: center;
+}
+
+.port-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1E293B;
+  margin-bottom: 8rpx;
+}
+
+.port-label {
+  font-size: 22rpx;
+  color: #94A3B8;
+  margin-bottom: 6rpx;
+}
+
+.port-date {
+  font-size: 22rpx;
+  color: #64748B;
+}
+
+.route-arrow {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+}
+
+.arrow-line {
+  width: 40rpx;
+  height: 2rpx;
+  background-color: #CBD5E1;
+}
+
+.arrow-icon {
+  font-size: 24rpx;
+  color: #94A3B8;
+  margin: 0 8rpx;
+}
+
+.tracking-btn {
+  margin-top: 24rpx;
+  background-color: #F59E0B;
+  color: white;
+  font-size: 28rpx;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  width: 100%;
+}
+
+.customs-status {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  background-color: #F0FDF4;
+}
+
+.customs-status.cleared {
+  background: linear-gradient(135deg, #DCFCE7 0%, #BBF7D0 100%);
+}
+
+.customs-status.in_transit {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+}
+
+.customs-status.declared {
+  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+}
+
+.customs-status.pending {
+  background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
+}
+
+.customs-status.rejected {
+  background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+}
+
+.status-indicator {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  background-color: #10B981;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.customs-status.cleared .status-indicator {
+  background-color: #10B981;
+}
+
+.customs-status.in_transit .status-indicator {
+  background-color: #F59E0B;
+}
+
+.customs-status.declared .status-indicator {
+  background-color: #3B82F6;
+}
+
+.customs-status.pending .status-indicator {
+  background-color: #94A3B8;
+}
+
+.customs-status.rejected .status-indicator {
+  background-color: #EF4444;
+}
+
+.customs-status .status-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #065F46;
+}
+
+.customs-status.in_transit .status-text {
+  color: #92400E;
+}
+
+.customs-status.declared .status-text {
+  color: #1E40AF;
+}
+
+.customs-status.pending .status-text {
+  color: #475569;
+}
+
+.customs-status.rejected .status-text {
+  color: #991B1B;
+}
+
+.container-no {
+  font-family: monospace;
+}
+
+.distributor-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1E293B;
+  margin-bottom: 8rpx;
+}
+
+.distributor-level {
+  display: inline-block;
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  background-color: #FDF2F8;
+  color: #9D174D;
+  border-radius: 8rpx;
+  margin-bottom: 20rpx;
+}
+
+.product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.product-tag {
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  background-color: #F0FDF4;
+  color: #16A34A;
+  border-radius: 8rpx;
+}
+
+.blockchain-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  background-color: #F5F3FF;
+}
+
+.blockchain-status.verified {
+  background: linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%);
+}
+
+.status-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  margin-right: 12rpx;
+  background-color: #A78BFA;
+}
+
+.blockchain-status.verified .status-dot {
+  background-color: #10B981;
+}
+
+.blockchain-status .status-text {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #6B21A8;
+}
+
+.blockchain-status.verified .status-text {
+  color: #065F46;
+}
+
+.hash-value {
+  font-family: monospace;
+  font-size: 24rpx;
+  color: #6B21A8;
+}
+
+.onchain-fields {
+  margin-top: 20rpx;
+}
+
+.fields-title {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 16rpx;
+}
+
+.field-list {
+  background-color: #F8FAFC;
+  border-radius: 12rpx;
+  padding: 16rpx;
+}
+
+.field-item {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid #E2E8F0;
+}
+
+.field-item:last-child {
+  border-bottom: none;
+}
+
+.field-label {
+  width: 160rpx;
+  flex-shrink: 0;
+  font-size: 24rpx;
+  color: #64748B;
+}
+
+.field-value {
+  flex: 1;
+  font-size: 24rpx;
+  color: #1E293B;
+  font-family: monospace;
+  margin-right: 12rpx;
+}
+
+.field-badge {
+  flex-shrink: 0;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  background-color: #D1FAE5;
+  color: #065F46;
+  border-radius: 8rpx;
+}
+
+.blockchain-verify-btn {
+  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+}
+
+.footer-section {
+  margin-top: 40rpx;
+  text-align: center;
+  padding: 40rpx 24rpx;
+}
+
+.footer-hint {
+  font-size: 24rpx;
+  color: #94A3B8;
+  margin-bottom: 12rpx;
+}
+
+.footer-trace-id {
+  font-size: 26rpx;
+  color: #64748B;
+  margin-bottom: 24rpx;
+  font-family: monospace;
+}
+
+.switch-view-btn {
+  background-color: white;
+  color: #1E3A8A;
+  border: 2rpx solid #1E3A8A;
+  font-size: 28rpx;
+  padding: 20rpx 48rpx;
+  border-radius: 40rpx;
+}
+
+.font-large .info-value,
+.font-large .info-label,
+.font-large .label-value,
+.font-large .label-key {
+  font-size: 30rpx;
+}
+
+.font-extra .info-value,
+.font-extra .info-label,
+.font-extra .label-value,
+.font-extra .label-key {
+  font-size: 34rpx;
+}
+
+.color-weak .cert-status.valid,
+.color-weak .cert-status.pass {
+  border: 3rpx solid #10B981;
+}
+
+.color-weak .customs-status.cleared {
+  border: 3rpx solid #10B981;
+}
+
+.color-weak .customs-status.rejected {
+  border: 3rpx solid #EF4444;
+}
+
+.color-weak .result-pass,
+.color-weak .status-pass {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.color-weak .result-fail,
+.color-weak .status-fail {
+  font-weight: bold;
+  text-decoration: line-through;
+}

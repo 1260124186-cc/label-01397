@@ -52,7 +52,21 @@ Page({
 
     const traceId = options.traceId;
     const scanType = options.scanType || 'qrCode';
+    const viewMode = options.viewMode || 'domestic';
     const a11yData = i18n.getA11yData();
+
+    // 如果 viewMode=export，直接跳转到出口溯源页
+    if (viewMode === 'export' && traceId) {
+      wx.redirectTo({
+        url: '/pages/exportTrace/exportTrace?traceId=' + traceId,
+        fail: function() {
+          wx.navigateTo({
+            url: '/pages/exportTrace/exportTrace?traceId=' + traceId
+          });
+        }
+      });
+      return;
+    }
 
     this.initTTS();
 

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "出口合规溯源",
+  "navigationBarBackgroundColor": "#1E3A8A",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F0F4F8",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
+}

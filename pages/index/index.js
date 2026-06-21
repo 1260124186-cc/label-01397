@@ -113,6 +113,7 @@ Page({
       { key: 'green', icon: '♻️', name: '绿色认证', desc: '生态种植与环保包装', anchor: 'anchor-green', color: '#52C41A', type: 'detail' },
       { key: 'report', icon: '📋', name: '检测报告', desc: '农残检测安全保障', anchor: 'anchor-process', color: '#1890FF', type: 'detail' },
       { key: 'treeAge', icon: '🌳', name: '百年茶树', desc: '古茶树的故事', anchor: 'anchor-treeAge', color: '#8B4513', type: 'detail' },
+      { key: 'exportTrace', icon: '🌏', name: '出口合规溯源', desc: '海外经销商专用视图', color: '#1E3A8A', type: 'exportTrace' },
       { key: 'dealer', icon: '🏬', name: '经销商渠道', desc: '入库出库·渠道溯源', color: '#722ED1', type: 'dealer' },
       { key: 'experience', icon: '🎋', name: '线下体验', desc: '茶园参观·制茶·品鉴预约', color: '#2E8B57', type: 'experience' },
       { key: 'brand', icon: '🏯', name: '品牌故事', desc: '一茶一品的前世今生', color: '#B8860B', type: 'brand' }
@@ -764,6 +765,11 @@ Page({
       const defaultTraceId = 'G001';
       wx.navigateTo({
         url: '/pages/detail/detail?traceId=' + defaultTraceId + '&anchor=' + card.anchor
+      });
+    } else if (card.type === 'exportTrace') {
+      const defaultTraceId = 'G001';
+      wx.navigateTo({
+        url: '/pages/exportTrace/exportTrace?traceId=' + defaultTraceId
       });
     } else if (card.type === 'dealer') {
       wx.navigateTo({

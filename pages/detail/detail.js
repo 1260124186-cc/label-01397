@@ -61,6 +61,10 @@ Page({
   data: {
     // 溯源ID
     traceId: '',
+    // 视图模式：domestic / export
+    viewMode: 'domestic',
+    // 是否有出口信息
+    hasExportInfo: false,
     // 溯源数据对象
     traceData: null,
     // 页面加载状态
@@ -365,10 +369,24 @@ Page({
     // ===== 初始化语音播报 =====
     this.initTTS();
 
-    const traceId = options.traceId;
+    const traceId = options.traceId || options.id;
+    const viewMode = options.viewMode || 'domestic';
+
+    // 如果 viewMode=export，直接跳转到出口溯源页
+    if (viewMode === 'export') {
+      wx.redirectTo({
+        url: '/pages/exportTrace/exportTrace?traceId=' + traceId,
+        fail: function() {
+          wx.navigateTo({
+            url: '/pages/exportTrace/exportTrace?traceId=' + traceId
+          });
+        }
+      });
+      return;
+    }
 
     if (traceId) {
-      this.setData({ traceId: traceId });
+      this.setData({ traceId: traceId, viewMode: viewMode });
       this.loadTraceData(traceId);
       this.initBrewEnvironment();
 
@@ -567,6 +585,8 @@ Page({
           });
         }
 
+        var hasExportInfo = mockData.hasExportInfo(traceId);
+
         that.setData({
           traceData: data,
           originalTraceData: data,
@@ -610,7 +630,8 @@ Page({
           storageRiskData: storageRiskData,
           shelfLifeSubscribed: shelfLifeSubscribed,
           sampleTraceData: sampleTraceInfo,
-          sampleTraceAbnormalCount: sampleTraceAbnormalCount
+          sampleTraceAbnormalCount: sampleTraceAbnormalCount,
+          hasExportInfo: hasExportInfo
         });
 
         that.setData({ anchorTabs: buildAnchorTabs(!!giftBoxInfo, !!shelfLifeData) });
@@ -1024,6 +1045,21 @@ Page({
     var traceId = this.data.traceId || '';
     wx.navigateTo({
       url: '/pages/reportProduct/reportProduct?type=sample_abnormal&sampleNo=' + encodeURIComponent(sampleNo) + '&abnormalReason=' + encodeURIComponent(abnormalReason) + '&traceId=' + traceId
+    });
+  },
+
+  /**
+   * 切换到出口视图
+   */
+  switchToExportView: function() {
+    var traceId = this.data.traceId;
+    wx.redirectTo({
+      url: '/pages/exportTrace/exportTrace?traceId=' + traceId,
+      fail: function() {
+        wx.navigateTo({
+          url: '/pages/exportTrace/exportTrace?traceId=' + traceId
+        });
+      }
     });
   },
 

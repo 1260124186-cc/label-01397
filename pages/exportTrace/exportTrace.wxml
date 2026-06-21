@@ -1,0 +1,584 @@
+<view class="export-trace {{a11yClasses}}">
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <view class="loading-text">加载中...</view>
+  </view>
+
+  <view wx:elif="{{error}}" class="error-container">
+    <view class="error-icon">⚠️</view>
+    <view class="error-text">{{error}}</view>
+    <button class="retry-btn" bindtap="loadExportData">重试</button>
+  </view>
+
+  <view wx:else class="content">
+    <view class="header-section">
+      <view class="header-top">
+        <view class="trace-info">
+          <view class="trace-id-label">溯源ID</view>
+          <view class="trace-id-value">{{traceId}}</view>
+        </view>
+        <view class="export-badge">出口专用</view>
+      </view>
+      <view class="header-subtitle">跨境出口批次全链路追溯</view>
+
+      <view class="view-toggle-section">
+        <view class="view-mode-label">视图模式</view>
+        <view class="view-mode-toggle">
+          <view class="mode-item mode-domestic" bindtap="switchToDomestic">
+            <text class="mode-icon">🏠</text>
+            <text class="mode-text">国内视图</text>
+          </view>
+          <view class="mode-item mode-export active">
+            <text class="mode-icon">🌏</text>
+            <text class="mode-text">出口视图</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="lang-switch">
+        <view class="lang-label">界面语言</view>
+        <view class="lang-options">
+          <view
+            wx:for="{{availableLanguages}}"
+            wx:key="code"
+            class="lang-item {{currentLang === item.code ? 'active' : ''}}"
+            data-lang="{{item.code}}"
+            bindtap="switchLanguage"
+          >
+            {{item.label}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section basic-info-section">
+      <view class="section-header">
+        <text class="section-icon">📋</text>
+        <text class="section-title">出口批次信息</text>
+      </view>
+      <view class="info-card">
+        <view class="info-row">
+          <view class="info-label">出口批次号</view>
+          <view class="info-value copyable" data-value="{{exportInfo.exportBatchNo}}" bindtap="copyValue">
+            {{exportInfo.exportBatchNo}}
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">HS编码</view>
+          <view class="info-value copyable" data-value="{{exportInfo.hsCode}}" bindtap="copyValue">
+            <text class="hs-code">{{exportInfo.hsCode}}</text>
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">商品描述</view>
+          <view class="info-value desc">{{exportInfo.hsCodeDescription}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">原产国</view>
+          <view class="info-value">{{exportInfo.countryOfOrigin}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">原产地</view>
+          <view class="info-value">{{exportInfo.originRegion}}</view>
+        </view>
+        <view class="info-row" wx:if="{{exportInfo.targetMarkets && exportInfo.targetMarkets.length > 0}}">
+          <view class="info-label">目标市场</view>
+          <view class="info-value">
+            <view class="market-tags">
+              <text wx:for="{{exportInfo.targetMarkets}}" wx:key="*this" class="market-tag">{{item}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="info-row" wx:if="{{basicInfo && basicInfo.productName}}">
+          <view class="info-label">产品名称</view>
+          <view class="info-value">{{basicInfo.productName}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section certificate-section">
+      <view class="section-header">
+        <text class="section-icon">📜</text>
+        <text class="section-title">原产地证书</text>
+        <text class="section-badge co-badge">CO证</text>
+      </view>
+      <view class="cert-card">
+        <view class="cert-status valid">
+          <text class="status-icon">✓</text>
+          <text class="status-text">有效</text>
+        </view>
+        <view class="info-row">
+          <view class="info-label">证书编号</view>
+          <view class="info-value copyable" data-value="{{exportInfo.certificateOfOrigin.certNo}}" bindtap="copyValue">
+            {{exportInfo.certificateOfOrigin.certNo}}
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">证书类型</view>
+          <view class="info-value">{{exportInfo.certificateOfOrigin.certType}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">签发机构</view>
+          <view class="info-value">{{exportInfo.certificateOfOrigin.issuingAuthority}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">签发日期</view>
+          <view class="info-value">{{exportInfo.certificateOfOrigin.issueDate}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">有效期至</view>
+          <view class="info-value">{{exportInfo.certificateOfOrigin.validUntil}}</view>
+        </view>
+        <button
+          class="verify-btn"
+          data-url="{{exportInfo.certificateOfOrigin.verifyUrl}}"
+          bindtap="openUrl"
+        >
+          验证证书
+        </button>
+      </view>
+    </view>
+
+    <view class="section inspection-section">
+      <view class="section-header">
+        <text class="section-icon">🔬</text>
+        <text class="section-title">检验检疫证明</text>
+        <text class="section-badge ciq-badge">CIQ</text>
+      </view>
+      <view class="cert-card">
+        <view class="cert-status pass">
+          <text class="status-icon">✓</text>
+          <text class="status-text">检验合格</text>
+        </view>
+        <view class="info-row">
+          <view class="info-label">证书编号</view>
+          <view class="info-value copyable" data-value="{{exportInfo.inspectionQuarantine.certNo}}" bindtap="copyValue">
+            {{exportInfo.inspectionQuarantine.certNo}}
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">签发机构</view>
+          <view class="info-value">{{exportInfo.inspectionQuarantine.issuingAuthority}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">检验日期</view>
+          <view class="info-value">{{exportInfo.inspectionQuarantine.inspectionDate}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">执行标准</view>
+          <view class="info-value desc">{{exportInfo.inspectionQuarantine.standard}}</view>
+        </view>
+
+        <view wx:if="{{exportInfo.inspectionQuarantine.items && exportInfo.inspectionQuarantine.items.length > 0}}" class="inspection-items">
+          <view class="items-title">检验项目</view>
+          <view class="items-table">
+            <view class="table-header">
+              <view class="table-cell">项目</view>
+              <view class="table-cell">结果</view>
+              <view class="table-cell">标准</view>
+            </view>
+            <view wx:for="{{exportInfo.inspectionQuarantine.items}}" wx:key="item" class="table-row">
+              <view class="table-cell">{{item.item}}</view>
+              <view class="table-cell result-pass">{{item.result}}</view>
+              <view class="table-cell">{{item.standard}}</view>
+            </view>
+          </view>
+        </view>
+
+        <button
+          class="verify-btn"
+          data-url="{{exportInfo.inspectionQuarantine.verifyUrl}}"
+          bindtap="openUrl"
+        >
+          验真
+        </button>
+      </view>
+    </view>
+
+    <view class="section label-section">
+      <view class="section-header">
+        <text class="section-icon">🏷️</text>
+        <text class="section-title">多语言标签</text>
+      </view>
+      <view class="label-subtitle">符合目标市场法规要求</view>
+
+      <view class="label-lang-switch">
+        <view
+          wx:for="{{availableLabelLanguages}}"
+          wx:key="*this"
+          class="label-lang-item {{currentLabelLang === item ? 'active' : ''}}"
+          data-lang="{{item}}"
+          bindtap="switchLabelLang"
+        >
+          <text wx:if="{{item === 'zh-CN'}}">中文</text>
+          <text wx:elif="{{item === 'en-US'}}">English</text>
+          <text wx:elif="{{item === 'ja-JP'}}">日本語</text>
+          <text wx:else>{{item}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{currentLabelData}}" class="label-preview-card">
+        <view class="label-header">
+          <text class="label-product-name">{{currentLabelData.data.productName}}</text>
+        </view>
+        <view class="label-body">
+          <view class="label-row">
+            <view class="label-key">配料</view>
+            <view class="label-value">{{currentLabelData.data.ingredients}}</view>
+          </view>
+          <view class="label-row">
+            <view class="label-key">净含量</view>
+            <view class="label-value">{{currentLabelData.data.netContent}}</view>
+          </view>
+          <view class="label-row">
+            <view class="label-key">保质期</view>
+            <view class="label-value">{{currentLabelData.data.shelfLife}}</view>
+          </view>
+          <view class="label-row">
+            <view class="label-key">储存方式</view>
+            <view class="label-value">{{currentLabelData.data.storageMethod}}</view>
+          </view>
+          <view class="label-row">
+            <view class="label-key">原产地</view>
+            <view class="label-value">{{currentLabelData.data.origin}}</view>
+          </view>
+          <view class="label-row">
+            <view class="label-key">生产商</view>
+            <view class="label-value">{{currentLabelData.data.manufacturer}}</view>
+          </view>
+          <view class="label-row">
+            <view class="label-key">地址</view>
+            <view class="label-value">{{currentLabelData.data.address}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section shipping-section">
+      <view class="section-header">
+        <text class="section-icon">🚢</text>
+        <text class="section-title">运输信息</text>
+        <text class="section-badge shipping-badge">物流追踪</text>
+      </view>
+      <view class="shipping-card">
+        <view class="shipping-status in-transit">
+          <text class="status-icon">🚢</text>
+          <text class="status-text">
+            <text wx:if="{{shippingInfo && shippingInfo.method === 'ocean'}}">海运中</text>
+            <text wx:elif="{{shippingInfo && shippingInfo.method === 'air'}}">空运中</text>
+            <text wx:else>运输中</text>
+          </text>
+        </view>
+
+        <view class="info-row">
+          <view class="info-label">运输方式</view>
+          <view class="info-value">
+            <text wx:if="{{shippingInfo && shippingInfo.method === 'ocean'}}">海运</text>
+            <text wx:elif="{{shippingInfo && shippingInfo.method === 'air'}}">空运</text>
+            <text wx:elif="{{shippingInfo && shippingInfo.method === 'land'}}">陆运</text>
+            <text wx:else>{{shippingInfo.methodLabel || ''}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{shippingInfo && shippingInfo.containerNo}}" class="info-row">
+          <view class="info-label">集装箱号</view>
+          <view class="info-value copyable container-no" data-value="{{shippingInfo.containerNo}}" bindtap="copyValue">
+            <text class="highlight-value">{{shippingInfo.containerNo}}</text>
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+
+        <view wx:if="{{shippingInfo && shippingInfo.containerType}}" class="info-row">
+          <view class="info-label">箱型</view>
+          <view class="info-value">{{shippingInfo.containerType}}</view>
+        </view>
+
+        <view wx:if="{{shippingInfo && shippingInfo.vesselName}}" class="info-row">
+          <view class="info-label">船名</view>
+          <view class="info-value">{{shippingInfo.vesselName}}</view>
+        </view>
+
+        <view wx:if="{{shippingInfo && shippingInfo.voyageNo}}" class="info-row">
+          <view class="info-label">航次</view>
+          <view class="info-value">{{shippingInfo.voyageNo}}</view>
+        </view>
+
+        <view wx:if="{{shippingInfo && shippingInfo.billOfLading}}" class="info-row">
+          <view class="info-label">提单号</view>
+          <view class="info-value copyable" data-value="{{shippingInfo.billOfLading}}" bindtap="copyValue">
+            {{shippingInfo.billOfLading}}
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+
+        <view class="shipping-route">
+          <view class="route-port">
+            <view class="port-name">{{shippingInfo.portOfLoading || '—'}}</view>
+            <view class="port-label">装货港</view>
+            <view class="port-date">{{shippingInfo.etd || ''}}</view>
+          </view>
+          <view class="route-arrow">
+            <view class="arrow-line"></view>
+            <view class="arrow-icon">→</view>
+            <view class="arrow-line"></view>
+          </view>
+          <view class="route-port">
+            <view class="port-name">{{shippingInfo.portOfDischarge || '—'}}</view>
+            <view class="port-label">卸货港</view>
+            <view class="port-date">{{shippingInfo.eta || ''}}</view>
+          </view>
+        </view>
+
+        <button
+          class="tracking-btn"
+          data-url="{{shippingInfo.trackingUrl}}"
+          bindtap="openUrl"
+        >
+          查看物流详情
+        </button>
+      </view>
+    </view>
+
+    <view class="section customs-section">
+      <view class="section-header">
+        <text class="section-icon">🛃</text>
+        <text class="section-title">清关状态</text>
+        <text class="section-badge customs-badge">通关状态</text>
+        <text class="refresh-icon" bindtap="refreshCustoms">🔄</text>
+      </view>
+      <view class="customs-card">
+        <view class="customs-status {{customsStatus.status || 'pending'}}">
+          <view class="status-indicator"></view>
+          <view class="status-text">
+            <text wx:if="{{customsStatus.status === 'cleared'}}">已清关</text>
+            <text wx:elif="{{customsStatus.status === 'in_transit'}}">运输中</text>
+            <text wx:elif="{{customsStatus.status === 'declared'}}">已申报</text>
+            <text wx:elif="{{customsStatus.status === 'pending'}}">待申报</text>
+            <text wx:elif="{{customsStatus.status === 'rejected'}}">退运</text>
+            <text wx:else>{{customsStatus.statusLabel || '未知'}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{customsStatus.declarationNo}}" class="info-row">
+          <view class="info-label">报关单号</view>
+          <view class="info-value copyable" data-value="{{customsStatus.declarationNo}}" bindtap="copyValue">
+            {{customsStatus.declarationNo}}
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+
+        <view wx:if="{{customsStatus.declareDate}}" class="info-row">
+          <view class="info-label">申报日期</view>
+          <view class="info-value">{{customsStatus.declareDate}}</view>
+        </view>
+
+        <view wx:if="{{customsStatus.customsOffice}}" class="info-row">
+          <view class="info-label">申报海关</view>
+          <view class="info-value">{{customsStatus.customsOffice}}</view>
+        </view>
+
+        <view class="info-row">
+          <view class="info-label">进口国</view>
+          <view class="info-value">{{customsStatus.importCountry || ''}}</view>
+        </view>
+
+        <view wx:if="{{customsStatus.importCustoms}}" class="info-row">
+          <view class="info-label">进口地海关</view>
+          <view class="info-value">{{customsStatus.importCustoms}}</view>
+        </view>
+
+        <view wx:if="{{customsStatus.tariffCode}}" class="info-row">
+          <view class="info-label">进口税则号</view>
+          <view class="info-value">{{customsStatus.tariffCode}}</view>
+        </view>
+
+        <view class="info-row">
+          <view class="info-label">关税率</view>
+          <view class="info-value">{{customsStatus.dutyRate || '—'}}</view>
+        </view>
+
+        <view class="info-row">
+          <view class="info-label">进口货值</view>
+          <view class="info-value highlight-value">{{customsStatus.importValue || '—'}}</view>
+        </view>
+
+        <view wx:if="{{customsStatus.taxPaid}}" class="info-row">
+          <view class="info-label">已缴税款</view>
+          <view class="info-value">{{customsStatus.taxPaid}}</view>
+        </view>
+
+        <view wx:if="{{customsStatus.clearanceDate}}" class="info-row">
+          <view class="info-label">清关日期</view>
+          <view class="info-value">{{customsStatus.clearanceDate}}</view>
+        </view>
+
+        <view wx:if="{{customsStatus.inspectionRequired !== undefined}}" class="info-row">
+          <view class="info-label">是否查验</view>
+          <view class="info-value">
+            <text wx:if="{{customsStatus.inspectionRequired}}">是</text>
+            <text wx:else>否</text>
+          </view>
+        </view>
+
+        <view wx:if="{{customsStatus.inspectionStatus}}" class="info-row">
+          <view class="info-label">查验状态</view>
+          <view class="info-value">
+            <text wx:if="{{customsStatus.inspectionStatus === 'passed'}}" class="status-pass">查验通过</text>
+            <text wx:elif="{{customsStatus.inspectionStatus === 'pending'}}">待查验</text>
+            <text wx:elif="{{customsStatus.inspectionStatus === 'failed'}}" class="status-fail">查验不通过</text>
+            <text wx:else>{{customsStatus.inspectionStatus}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{customsStatus.remarks}}" class="info-row">
+          <view class="info-label">备注</view>
+          <view class="info-value desc">{{customsStatus.remarks}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section distributor-section">
+      <view class="section-header">
+        <text class="section-icon">🏪</text>
+        <text class="section-title">海外经销商</text>
+        <text class="section-badge distributor-badge">授权经销商</text>
+      </view>
+      <view class="distributor-card">
+        <view class="distributor-name">{{exportInfo.overseasDistributor.name}}</view>
+        <view class="distributor-level">{{exportInfo.overseasDistributor.level}}</view>
+
+        <view class="info-row">
+          <view class="info-label">所在国家</view>
+          <view class="info-value">{{exportInfo.overseasDistributor.country}}</view>
+        </view>
+
+        <view wx:if="{{exportInfo.overseasDistributor.region}}" class="info-row">
+          <view class="info-label">所在地区</view>
+          <view class="info-value">{{exportInfo.overseasDistributor.region}}</view>
+        </view>
+
+        <view class="info-row">
+          <view class="info-label">地址</view>
+          <view class="info-value desc">{{exportInfo.overseasDistributor.address}}</view>
+        </view>
+
+        <view wx:if="{{exportInfo.overseasDistributor.contactPerson}}" class="info-row">
+          <view class="info-label">联系人</view>
+          <view class="info-value">{{exportInfo.overseasDistributor.contactPerson}}</view>
+        </view>
+
+        <view wx:if="{{exportInfo.overseasDistributor.contactEmail}}" class="info-row">
+          <view class="info-label">邮箱</view>
+          <view class="info-value copyable" data-value="{{exportInfo.overseasDistributor.contactEmail}}" bindtap="copyValue">
+            {{exportInfo.overseasDistributor.contactEmail}}
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+
+        <view wx:if="{{exportInfo.overseasDistributor.contactPhone}}" class="info-row">
+          <view class="info-label">电话</view>
+          <view class="info-value copyable" data-value="{{exportInfo.overseasDistributor.contactPhone}}" bindtap="copyValue">
+            {{exportInfo.overseasDistributor.contactPhone}}
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+
+        <view wx:if="{{exportInfo.overseasDistributor.licenseNo}}" class="info-row">
+          <view class="info-label">进口许可证号</view>
+          <view class="info-value copyable" data-value="{{exportInfo.overseasDistributor.licenseNo}}" bindtap="copyValue">
+            {{exportInfo.overseasDistributor.licenseNo}}
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+
+        <view wx:if="{{exportInfo.overseasDistributor.authorizedDate}}" class="info-row">
+          <view class="info-label">授权日期</view>
+          <view class="info-value">{{exportInfo.overseasDistributor.authorizedDate}}</view>
+        </view>
+
+        <view wx:if="{{exportInfo.overseasDistributor.authorizedProducts && exportInfo.overseasDistributor.authorizedProducts.length > 0}}" class="info-row">
+          <view class="info-label">授权产品</view>
+          <view class="info-value">
+            <view class="product-tags">
+              <text wx:for="{{exportInfo.overseasDistributor.authorizedProducts}}" wx:key="*this" class="product-tag">{{item}}</text>
+            </view>
+          </view>
+        </view>
+
+        <button
+          class="verify-btn"
+          data-url="{{exportInfo.overseasDistributor.verifyUrl}}"
+          bindtap="openUrl"
+        >
+          验证授权
+        </button>
+      </view>
+    </view>
+
+    <view class="section blockchain-section">
+      <view class="section-header">
+        <text class="section-icon">🔗</text>
+        <text class="section-title">跨境区块链存证</text>
+        <text class="section-badge blockchain-badge">跨境链</text>
+      </view>
+      <view class="blockchain-card">
+        <view class="blockchain-status {{blockchainVerified ? 'verified' : ''}}">
+          <view class="status-dot"></view>
+          <view class="status-text">
+            <text wx:if="{{blockchainVerified}}">已验证</text>
+            <text wx:else>待验证</text>
+          </view>
+        </view>
+
+        <view class="info-row">
+          <view class="info-label">链名称</view>
+          <view class="info-value">{{exportInfo.exportBlockchain.chainName}}</view>
+        </view>
+
+        <view class="info-row">
+          <view class="info-label">交易哈希</view>
+          <view class="info-value hash-value copyable" data-value="{{exportInfo.exportBlockchain.txHash}}" bindtap="copyValue">
+            <text>{{exportInfo.exportBlockchain.txHashShort}}</text>
+            <text class="copy-icon">📋</text>
+          </view>
+        </view>
+
+        <view class="info-row">
+          <view class="info-label">上链时间</view>
+          <view class="info-value">{{exportInfo.exportBlockchain.timestamp}}</view>
+        </view>
+
+        <view wx:if="{{exportInfo.exportBlockchain.onChainFields && exportInfo.exportBlockchain.onChainFields.length > 0}}" class="onchain-fields">
+          <view class="fields-title">上链字段</view>
+          <view class="field-list">
+            <view wx:for="{{exportInfo.exportBlockchain.onChainFields}}" wx:key="key" class="field-item">
+              <view class="field-label">{{item.label}}</view>
+              <view class="field-value">{{item.value}}</view>
+              <view class="field-badge">已上链</view>
+            </view>
+          </view>
+        </view>
+
+        <button
+          class="verify-btn blockchain-verify-btn"
+          bindtap="verifyBlockchain"
+          loading="{{blockchainVerifying}}"
+        >
+          {{blockchainVerifying ? '验证中...' : '一键验真'}}
+        </button>
+      </view>
+    </view>
+
+    <view class="section footer-section">
+      <view class="footer-hint">同一溯源ID · 不同视图视角</view>
+      <view class="footer-trace-id">Trace ID: {{traceId}}</view>
+      <button class="switch-view-btn" bindtap="switchToDomestic">
+        切换到国内视图 →
+      </button>
+    </view>
+  </view>
+</view>

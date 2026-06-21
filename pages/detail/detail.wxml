@@ -220,6 +220,30 @@
       </view>
     </view>
 
+    <!-- ========== 视图切换：出口模式入口 ========== -->
+    <view class="card animate-card module-card view-toggle-card" id="anchor-viewToggle" wx:if="{{hasExportInfo}}" style="animation-delay: 0.14s;">
+      <view class="card-title module-header">
+        <view class="title-left">
+          <text class="title-icon">🌏</text>
+          <text>视图切换</text>
+        </view>
+        <view class="view-mode-badge domestic">国内视图</view>
+      </view>
+      <view class="module-content">
+        <view class="view-toggle-container">
+          <view class="view-toggle-info">
+            <view class="view-toggle-title">同一溯源ID · 不同视角</view>
+            <view class="view-toggle-desc">该产品支持出口合规溯源视图，包含HS编码、原产地证、检验检疫、海运清关等跨境合规信息</view>
+          </view>
+          <button class="view-toggle-btn export" bindtap="switchToExportView">
+            <text class="btn-icon">🌏</text>
+            <text class="btn-text">切换到出口视图</text>
+            <text class="btn-arrow">→</text>
+          </button>
+        </view>
+      </view>
+    </view>
+
     <!-- ========== 保质期与最佳品饮期 ========== -->
     <view class="card animate-card module-card shelf-life-card" id="anchor-shelfLife" wx:if="{{shelfLifeData}}" style="animation-delay: 0.12s;">
       <view class="card-title module-header" bindtap="toggleModule" data-key="shelfLife">

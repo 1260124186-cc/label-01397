@@ -10942,3 +10942,81 @@
   color: #bfbfbf !important;
 }
 
+/* ==================== 视图切换卡片 ==================== */
+.view-toggle-card {
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%) !important;
+  border: 1rpx solid #BFDBFE;
+}
+
+.view-toggle-card .card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-mode-badge {
+  font-size: 20rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  font-weight: 500;
+}
+
+.view-mode-badge.domestic {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.view-mode-badge.export {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+
+.view-toggle-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.view-toggle-info {
+  flex: 1;
+}
+
+.view-toggle-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1E40AF;
+  margin-bottom: 8rpx;
+}
+
+.view-toggle-desc {
+  font-size: 24rpx;
+  color: #64748B;
+  line-height: 1.5;
+}
+
+.view-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+}
+
+.view-toggle-btn.export {
+  background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+  color: white;
+}
+
+.view-toggle-btn .btn-icon {
+  font-size: 32rpx;
+}
+
+.view-toggle-btn .btn-arrow {
+  font-size: 28rpx;
+  margin-left: auto;
+}
+
