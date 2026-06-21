@@ -1057,6 +1057,14 @@ Page({
     });
   },
 
+  goToPeopleStory: function() {
+    var traceId = this.data.traceId;
+    if (!traceId) return;
+    wx.navigateTo({
+      url: '/pages/peopleStory/peopleStory?traceId=' + traceId
+    });
+  },
+
   goToSampleAbnormalReport: function(e) {
     var sampleNo = e.currentTarget.dataset.sampleno || '';
     var abnormalReason = e.currentTarget.dataset.abnormalreason || '';

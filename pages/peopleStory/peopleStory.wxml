@@ -1,0 +1,373 @@
+<!--
+  桂花茶溯源小程序 - 茶农/合作社/采摘队 人物故事页
+  功能：展示茶农、合作社、桂花采摘队的人物故事
+-->
+
+<!-- 列表模式：展示某批次的所有守护者 -->
+<view class="page-container list-mode" wx:if="{{mode === 'list' && !loading}}">
+
+  <!-- 页面头部 -->
+  <view class="list-header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <view class="header-icon">🌿</view>
+      <view class="header-title">这杯茶的守护者</view>
+      <view class="header-subtitle">从茶园到茶杯，每一步都有他们的身影</view>
+    </view>
+  </view>
+
+  <!-- 人物卡片列表 -->
+  <view class="people-list">
+    <view
+      wx:for="{{peopleList}}"
+      wx:key="personId"
+      class="person-card"
+      data-personid="{{item.personId}}"
+      bindtap="goToPersonDetail"
+    >
+      <view class="card-avatar-wrapper">
+        <image class="card-avatar" src="{{item.avatar}}" mode="aspectFill" />
+        <view class="card-type-badge" style="background: {{typeColorMap[item.type]}};">
+          <text class="type-icon">{{typeIconMap[item.type]}}</text>
+          <text class="type-label">{{item.typeLabel}}</text>
+        </view>
+      </view>
+      <view class="card-info">
+        <view class="card-name-row">
+          <text class="card-name">{{item.nameMasked}}</text>
+          <text class="card-title">{{item.title}}</text>
+        </view>
+        <view class="card-meta">
+          <text class="meta-exp">🕐 {{item.experienceYears}}年从业经验</text>
+          <text class="meta-location">📍 {{item.village}}</text>
+        </view>
+        <view class="card-desc">
+          <text class="desc-text">{{item.philosophy}}</text>
+        </view>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+  </view>
+
+  <!-- 叙事链入口：制茶师 -->
+  <view class="narrative-chain-card" bindtap="goToTeaMaster">
+    <view class="chain-icon">👨‍🍳</view>
+    <view class="chain-content">
+      <view class="chain-title">继续探索：制茶师</view>
+      <view class="chain-desc">了解窨制这杯茶的制茶师团队</view>
+    </view>
+    <view class="chain-arrow">›</view>
+  </view>
+
+  <view class="list-footer">
+    <text class="footer-text">— 每一杯好茶，都有一群默默付出的人 —</text>
+  </view>
+
+</view>
+
+<!-- 详情模式：单个人物故事详情 -->
+<view class="page-container detail-mode" wx:if="{{mode === 'detail' && !loading && personData}}">
+
+  <!-- 顶部头部：人物照片 + 基本信息 -->
+  <view class="detail-header">
+    <view class="header-bg" style="background: linear-gradient(135deg, {{typeColorMap[personData.type]}} 0%, {{typeColorMap[personData.type]}}dd 100%);"></view>
+    <view class="header-content">
+      <view class="avatar-wrapper" bindtap="previewAvatar">
+        <image class="person-avatar" src="{{personData.avatar}}" mode="aspectFill" />
+        <view class="avatar-type-badge" style="background: {{typeColorMap[personData.type]}};">
+          {{typeIconMap[personData.type]}} {{personData.typeLabel}}
+        </view>
+      </view>
+      <view class="person-info">
+        <view class="person-name-row">
+          <text class="person-name">{{personData.nameMasked}}</text>
+        </view>
+        <view class="person-title">{{personData.title}}</view>
+        <view class="person-tags">
+          <view class="tag-item primary">{{personData.qualification}}</view>
+          <view class="tag-item">{{personData.experienceYears}}年从业经验</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 核心数据卡片 -->
+  <view class="stats-card">
+    <view class="stats-item">
+      <view class="stats-value">{{personData.experienceYears}}</view>
+      <view class="stats-label">从业年限</view>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <view class="stats-value">{{personData.storyHighlights.length}}</view>
+      <view class="stats-label">人生节点</view>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <view class="stats-value">{{personData.representativeBatches.length}}</view>
+      <view class="stats-label">代表批次</view>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <view class="stats-value">{{personData.awards.length}}</view>
+      <view class="stats-label">荣誉奖项</view>
+    </view>
+  </view>
+
+  <!-- Tab 导航 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'story' ? 'active' : ''}}" data-tab="story" bindtap="switchTab">
+      <text class="tab-icon">📖</text>
+      <text class="tab-label">口述历史</text>
+    </view>
+    <view class="tab-item {{activeTab === 'highlights' ? 'active' : ''}}" data-tab="highlights" bindtap="switchTab">
+      <text class="tab-icon">⭐</text>
+      <text class="tab-label">人生节点</text>
+    </view>
+    <view class="tab-item {{activeTab === 'batches' ? 'active' : ''}}" data-tab="batches" bindtap="switchTab">
+      <text class="tab-icon">📦</text>
+      <text class="tab-label">代表批次</text>
+    </view>
+    <view class="tab-item {{activeTab === 'photos' ? 'active' : ''}}" data-tab="photos" bindtap="switchTab">
+      <text class="tab-icon">📷</text>
+      <text class="tab-label">照片故事</text>
+    </view>
+  </view>
+
+  <!-- Tab 内容 -->
+  <view class="tab-content">
+
+    <!-- Tab1：口述历史 -->
+    <view class="tab-pane" wx:if="{{activeTab === 'story'}}">
+      <view class="philosophy-card" style="border-color: {{typeColorMap[personData.type]}}40;">
+        <view class="philosophy-icon">💭</view>
+        <view class="philosophy-quote">"{{personData.philosophy}}"</view>
+        <view class="philosophy-author">—— {{personData.nameMasked}}</view>
+      </view>
+
+      <view class="section-card">
+        <view class="section-title">
+          <text class="title-icon">🎤</text>
+          <text>口述历史</text>
+        </view>
+        <view class="oral-history-content">
+          <text class="oral-text">{{personData.oralHistory}}</text>
+        </view>
+      </view>
+
+      <view class="section-card">
+        <view class="section-title">
+          <text class="title-icon">🎯</text>
+          <text>专长领域</text>
+        </view>
+        <view class="specialty-tags">
+          <view
+            wx:for="{{personData.specialty}}"
+            wx:key="*this"
+            class="specialty-tag"
+            style="color: {{typeColorMap[personData.type]}}; background: {{typeColorMap[personData.type]}}15;"
+          >
+            {{item}}
+          </view>
+        </view>
+      </view>
+
+      <view class="section-card">
+        <view class="section-title">
+          <text class="title-icon">📍</text>
+          <text>基本信息</text>
+        </view>
+        <view class="info-grid">
+          <view class="info-item">
+            <view class="info-icon">🏠</view>
+            <view class="info-detail">
+              <view class="info-label">所在地区</view>
+              <view class="info-value">{{personData.location}}</view>
+            </view>
+          </view>
+          <view class="info-item" wx:if="{{personData.age}}">
+            <view class="info-icon">🎂</view>
+            <view class="info-detail">
+              <view class="info-label">年龄</view>
+              <view class="info-value">{{personData.age}}岁</view>
+            </view>
+          </view>
+          <view class="info-item" wx:if="{{personData.foundingYear}}">
+            <view class="info-icon">📅</view>
+            <view class="info-detail">
+              <view class="info-label">成立年份</view>
+              <view class="info-value">{{personData.foundingYear}}年</view>
+            </view>
+          </view>
+          <view class="info-item" wx:if="{{personData.teamSize}}">
+            <view class="info-icon">👥</view>
+            <view class="info-detail">
+              <view class="info-label">团队规模</view>
+              <view class="info-value">{{personData.teamSize}}人</view>
+            </view>
+          </view>
+          <view class="info-item" wx:if="{{personData.memberCount}}">
+            <view class="info-icon">👨‍👩‍👧‍👦</view>
+            <view class="info-detail">
+              <view class="info-label">社员人数</view>
+              <view class="info-value">{{personData.memberCount}}户</view>
+            </view>
+          </view>
+          <view class="info-item" wx:if="{{personData.joinYear}}">
+            <view class="info-icon">🤝</view>
+            <view class="info-detail">
+              <view class="info-label">入行年份</view>
+              <view class="info-value">{{personData.joinYear}}年</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="section-card" wx:if="{{personData.awards && personData.awards.length > 0}}">
+        <view class="section-title">
+          <text class="title-icon">🏆</text>
+          <text>荣誉奖项</text>
+        </view>
+        <view class="award-list">
+          <view
+            wx:for="{{personData.awards}}"
+            wx:key="title"
+            class="award-item"
+            data-award="{{item}}"
+            bindtap="viewAwardDetail"
+          >
+            <view class="award-year">{{item.year}}</view>
+            <view class="award-info">
+              <view class="award-title">{{item.title}}</view>
+              <view class="award-level">{{item.level}}</view>
+            </view>
+            <text class="award-arrow">›</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Tab2：人生节点时间轴 -->
+    <view class="tab-pane" wx:if="{{activeTab === 'highlights'}}">
+      <view class="timeline-section">
+        <view class="timeline-title">
+          <text class="timeline-icon">📜</text>
+          <text>人生大事记</text>
+        </view>
+        <view class="timeline">
+          <view
+            wx:for="{{personData.storyHighlights}}"
+            wx:key="year"
+            class="timeline-item"
+          >
+            <view class="timeline-dot" style="background: {{typeColorMap[personData.type]}};">
+              <text class="dot-inner"></text>
+            </view>
+            <view class="timeline-line" wx:if="{{index < personData.storyHighlights.length - 1}}"></view>
+            <view class="timeline-content">
+              <view class="timeline-year">{{item.year}}年</view>
+              <view class="timeline-event">{{item.event}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Tab3：代表批次 -->
+    <view class="tab-pane" wx:if="{{activeTab === 'batches'}}">
+      <view class="batch-list" wx:if="{{personData.representativeBatches && personData.representativeBatches.length > 0}}">
+        <view
+          wx:for="{{personData.representativeBatches}}"
+          wx:key="batchNo"
+          class="batch-card"
+          data-batchno="{{item.batchNo}}"
+          bindtap="viewBatchDetail"
+          style="border-left-color: {{typeColorMap[personData.type]}};"
+        >
+          <view class="batch-header">
+            <view class="batch-no-badge" style="background: linear-gradient(135deg, {{typeColorMap[personData.type]}}, {{typeColorMap[personData.type]}}cc);">
+              {{item.batchNo}}
+            </view>
+            <view class="batch-year">{{item.year}}年</view>
+          </view>
+          <view class="batch-product">{{item.productName}}</view>
+          <view class="batch-role" wx:if="{{item.role}}">
+            <text class="role-icon">👤</text>
+            <text class="role-text">角色：{{item.role}}</text>
+          </view>
+          <view class="batch-remark" wx:if="{{item.remark}}">
+            <text class="remark-icon">⭐</text>
+            <text class="remark-text">{{item.remark}}</text>
+          </view>
+          <view class="batch-footer">
+            <text class="batch-link" style="color: {{typeColorMap[personData.type]}};">查看批次详情 ›</text>
+          </view>
+        </view>
+      </view>
+      <view class="empty-tip" wx:else>
+        <text class="empty-icon">📦</text>
+        <text class="empty-text">暂无代表批次</text>
+      </view>
+    </view>
+
+    <!-- Tab4：照片故事 -->
+    <view class="tab-pane" wx:if="{{activeTab === 'photos'}}">
+      <view class="photo-section" wx:if="{{personData.photos && personData.photos.length > 0}}">
+        <swiper
+          class="photo-swiper"
+          indicator-dots="{{true}}"
+          autoplay="{{true}}"
+          interval="{{3500}}"
+          circular="{{true}}"
+          bindchange="onPhotoChange"
+          indicator-color="rgba(255,255,255,0.4)"
+          indicator-active-color="#FFFFFF"
+        >
+          <swiper-item wx:for="{{personData.photos}}" wx:key="*this">
+            <image
+              class="swiper-photo"
+              src="{{item}}"
+              mode="aspectFill"
+              data-url="{{item}}"
+              bindtap="previewPhoto"
+            />
+          </swiper-item>
+        </swiper>
+        <view class="photo-counter">
+          {{currentPhotoIndex + 1}} / {{personData.photos.length}}
+        </view>
+      </view>
+
+      <view class="photo-grid-section">
+        <view class="section-title">
+          <text class="title-icon">📸</text>
+          <text>影像记录</text>
+        </view>
+        <view class="photo-grid">
+          <view
+            wx:for="{{personData.photos}}"
+            wx:key="*this"
+            class="photo-grid-item"
+            data-url="{{item}}"
+            bindtap="previewPhoto"
+          >
+            <image class="grid-photo" src="{{item}}" mode="aspectFill" />
+          </view>
+        </view>
+      </view>
+
+      <view class="empty-tip" wx:if="{{(!personData.photos || personData.photos.length === 0)}}">
+        <text class="empty-icon">📷</text>
+        <text class="empty-text">暂无照片</text>
+      </view>
+    </view>
+
+  </view>
+
+</view>
+
+<!-- 加载状态 -->
+<view class="loading-container" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+  <text class="loading-text">加载中...</text>
+</view>

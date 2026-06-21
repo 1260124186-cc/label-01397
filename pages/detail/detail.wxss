@@ -4975,6 +4975,113 @@
   font-weight: 500;
 }
 
+/* ---- People Story Entry ---- */
+.people-story-entry {
+  display: flex;
+  align-items: center;
+  margin-top: 24rpx;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #FFF8F0 0%, #FFEFD5 100%);
+  border-radius: 20rpx;
+  border: 2rpx solid #F5DEB3;
+  position: relative;
+  overflow: hidden;
+}
+
+.people-story-entry::before {
+  content: '';
+  position: absolute;
+  top: -30rpx;
+  right: -30rpx;
+  width: 120rpx;
+  height: 120rpx;
+  background: radial-gradient(circle, rgba(218, 165, 32, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.entry-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.entry-icon-group {
+  position: relative;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.entry-main-icon {
+  font-size: 56rpx;
+  display: block;
+}
+
+.entry-badge {
+  position: absolute;
+  bottom: -8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #DAA520, #B8860B);
+  color: #FFFFFF;
+  font-size: 18rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 20rpx;
+  white-space: nowrap;
+  font-weight: 500;
+  box-shadow: 0 2rpx 8rpx rgba(218, 165, 32, 0.3);
+}
+
+.entry-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.entry-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #5D4037;
+  margin-bottom: 8rpx;
+}
+
+.entry-subtitle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.entry-type-tag {
+  font-size: 20rpx;
+  color: #8B4513;
+  background: rgba(139, 69, 19, 0.1);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  font-weight: 500;
+}
+
+.entry-avatars {
+  display: flex;
+  align-items: center;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.entry-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  border: 3rpx solid #FFFFFF;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  background: #F5F5F0;
+}
+
+.entry-arrow {
+  font-size: 36rpx;
+  color: #DAA520;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
 /* ===================================================== */
 /*  ===== 产地地理信息 · Location Section =====          */
 /* ===================================================== */

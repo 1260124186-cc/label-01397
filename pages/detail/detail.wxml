@@ -576,6 +576,34 @@
             </view>
           </block>
         </view>
+
+        <!-- ========== 人物故事入口：认识这杯茶的守护者 ========== -->
+        <view class="people-story-entry" wx:if="{{traceData.peopleStories}}" bindtap="goToPeopleStory">
+          <view class="entry-left">
+            <view class="entry-icon-group">
+              <text class="entry-main-icon">👨‍🌾</text>
+              <view class="entry-badge">{{traceData.peopleStories.count}}位守护者</view>
+            </view>
+            <view class="entry-info">
+              <view class="entry-title">认识这杯茶的守护者</view>
+              <view class="entry-subtitle">
+                <text wx:for="{{traceData.peopleStories.types}}" wx:key="*this" wx:for-item="type" class="entry-type-tag">{{type}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="entry-avatars">
+            <image
+              wx:for="{{traceData.peopleStories.people}}"
+              wx:for-index="idx"
+              wx:key="personId"
+              class="entry-avatar"
+              style="z-index: {{3 - idx}}; margin-left: {{idx > 0 ? '-20rpx' : '0'}};"
+              src="{{item.avatar}}"
+              mode="aspectFill"
+            />
+          </view>
+          <view class="entry-arrow">›</view>
+        </view>
       </view>
     </view>
 

@@ -7748,6 +7748,220 @@ function getTeaMasterTeamByTraceId(traceId) {
   return TEA_MASTER_TEAMS[teamId] || null;
 }
 
+// ==================== 茶农/合作社/采摘队 人物故事数据 ====================
+
+const PEOPLE_STORIES = {
+  'PS-001': {
+    personId: 'PS-001',
+    type: 'farmer',
+    typeLabel: '茶农',
+    name: '陈守田',
+    nameMasked: maskOperator('陈守田'),
+    avatar: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=elderly%20chinese%20tea%20farmer%20portrait%20tea%20garden%20weathered%20face%20kind%20smile&image_size=portrait_4_3',
+    experienceYears: 42,
+    age: 68,
+    location: '湖北省咸宁市桂花镇',
+    village: '白沙村',
+    joinYear: 1982,
+    title: '资深茶农',
+    qualification: '高级农艺师',
+    specialty: ['古树茶养护', '手工采茶', '有机种植'],
+    photos: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=old%20chinese%20farmer%20picking%20tea%20leaves%20in%20tea%20garden%20morning%20mist&image_size=landscape_16_9',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20farmer%20with%20ancient%20tea%20tree%20showing%20pride&image_size=landscape_16_9',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20garden%20sunrise%20terraced%20hills%20morning%20light&image_size=landscape_16_9'
+    ],
+    oralHistory: '我16岁就跟着父亲学种茶，那时候村里家家户户都有几棵老茶树。记得八十年代初，包产到户，我家分到了三亩茶山，那时候高兴得几夜没睡好。后来合作社成立，我们这些老茶农有了依靠，茶叶销路也稳了。\n\n这四十多年来，我就守着这几十棵老茶树，看着它们一年年发芽、采摘、再发芽。有人说我傻，守着老树不如种新品种产量高。可我知道，这些老树长了上百年，根扎得深，茶味才醇。就像做人一样，根基稳了，才能走得远。\n\n现在年纪大了，儿子也接了班，但我还是每天要去山上转一圈。看着茶芽冒尖，心里就踏实。这茶啊，是有灵性的，你对它好，它就回报你最香的味道。',
+    storyHighlights: [
+      { year: 1982, event: '开始跟随父亲学种茶，包产到户分到三亩茶山' },
+      { year: 1995, event: '加入桂花茶合作社，成为首批核心社员' },
+      { year: 2008, event: '获评"高级农艺师"职称，带动全村推广有机种植' },
+      { year: 2015, event: '养护的百年古茶树被列为"古树名木"保护名录' },
+      { year: 2023, event: '荣获"全国最美茶农"称号，事迹被多家媒体报道' }
+    ],
+    representativeBatches: [
+      { batchNo: 'GH202503', productName: '金桂花茶', year: 2025, role: '茶青供应', remark: '核心产区古树茶青' },
+      { batchNo: 'GH202409', productName: '金桂花茶（礼盒装）', year: 2024, role: '茶青供应', remark: '国礼茶原料供应者' },
+      { batchNo: 'GH202306', productName: '金桂花茶', year: 2023, role: '茶青供应', remark: '国际银奖产品原料' }
+    ],
+    awards: [
+      { year: 2023, title: '全国最美茶农', level: '国家级' },
+      { year: 2021, title: '省级劳动模范', level: '省级' },
+      { year: 2019, title: '乡村振兴带头人', level: '市级' }
+    ],
+    philosophy: '种茶如做人，要守得住初心，耐得住寂寞。百年树木，百年树人，茶品见人品。'
+  },
+  'PS-002': {
+    personId: 'PS-002',
+    type: 'cooperative',
+    typeLabel: '合作社',
+    name: '白沙村茶叶专业合作社',
+    nameMasked: '白沙村茶叶专业合作社',
+    avatar: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20rural%20tea%20cooperative%20building%20village%20green%20mountains&image_size=landscape_4_3',
+    experienceYears: 28,
+    foundingYear: 1997,
+    memberCount: 156,
+    location: '湖北省咸宁市桂花镇白沙村',
+    village: '白沙村',
+    title: '省级示范合作社',
+    qualification: '国家级农民合作社示范社',
+    specialty: ['古树茶保护', '有机茶种植', '茶农技能培训', '订单农业'],
+    photos: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20farmers%20cooperative%20meeting%20village%20hall%20chinese%20rural&image_size=landscape_16_9',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20plantation%20cooperative%20terraced%20fields%20aerial%20view&image_size=landscape_16_9',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tea%20farmers%20harvesting%20teamwork%20cooperative%20china&image_size=landscape_16_9'
+    ],
+    oralHistory: '白沙村茶叶合作社成立于1997年，那时候村里茶叶卖不出去，茶农们守着金山银山却过着穷日子。老支书带着我们几户人家，凑了点钱，成立了这个合作社。\n\n刚开始难啊，没技术、没销路、没品牌。我们就骑着自行车跑市场，一家家去推销。后来慢慢有了起色，加入的农户越来越多。2008年，我们和桂花茶厂签订了长期合作协议，茶农们的收入才真正稳了下来。\n\n现在合作社有156户社员，茶园面积2000多亩，其中百年以上古茶树300多棵。我们实行"五统一"：统一种苗、统一施肥、统一防治、统一采摘、统一销售。就是要让每一片叶子都有保障，让每一位茶农都能安心种茶。\n\n这些年，合作社带领大家脱贫致富，村里盖新房的多了，娶媳妇的多了，孩子上大学的也多了。这就是我们合作社存在的意义——不让一个茶农掉队，不让一片好茶埋没。',
+    storyHighlights: [
+      { year: 1997, event: '白沙村茶叶合作社成立，首批社员23户' },
+      { year: 2005, event: '通过无公害农产品认证，茶园面积突破1000亩' },
+      { year: 2008, event: '与桂花茶厂签订长期战略合作协议' },
+      { year: 2015, event: '获评"国家级农民合作社示范社"' },
+      { year: 2020, event: '带动全村脱贫，茶农户均年收入超8万元' },
+      { year: 2024, event: '入选全国乡村振兴典型案例' }
+    ],
+    representativeBatches: [
+      { batchNo: 'GH202503', productName: '金桂花茶', year: 2025, role: '茶青供应', remark: '核心合作社供应' },
+      { batchNo: 'GH202409', productName: '金桂花茶（礼盒装）', year: 2024, role: '茶青供应', remark: '高端礼盒原料基地' },
+      { batchNo: 'GH202306', productName: '金桂花茶', year: 2023, role: '茶青供应', remark: '国际银奖原料' },
+      { batchNo: 'GH202504', productName: '银桂花茶', year: 2025, role: '茶青供应', remark: '清雅系列原料' }
+    ],
+    awards: [
+      { year: 2024, title: '全国乡村振兴典型案例', level: '国家级' },
+      { year: 2015, title: '国家级农民合作社示范社', level: '国家级' },
+      { year: 2022, title: '省级乡村振兴先进集体', level: '省级' }
+    ],
+    philosophy: '合作社不是一个人的事，是大家的事。抱团取暖，共同富裕，这就是我们的初心。'
+  },
+  'PS-003': {
+    personId: 'PS-003',
+    type: 'pickingTeam',
+    typeLabel: '桂花采摘队',
+    name: '桂花镇女子采摘队',
+    nameMasked: '桂花镇女子采摘队',
+    avatar: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20female%20farmers%20picking%20osmanthus%20flowers%20team%20colorful%20scarves&image_size=portrait_4_3',
+    experienceYears: 18,
+    teamSize: 32,
+    foundingYear: 2007,
+    location: '湖北省咸宁市桂花镇',
+    village: '桂花村',
+    title: '桂花采摘先锋队',
+    qualification: '市级三八红旗集体',
+    specialty: ['桂花采摘', '鲜花分拣', '品质初检', '时令调度'],
+    photos: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=women%20picking%20osmanthus%20flowers%20chinese%20village%20autumn%20golden&image_size=landscape_16_9',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20flower%20harvest%20baskets%20full%20of%20golden%20flowers&image_size=landscape_16_9',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=women%20farmers%20team%20photo%20village%20china%20smiling%20harvest&image_size=landscape_16_9'
+    ],
+    oralHistory: '我们这支采摘队，全是镇上的妇女姐妹。2007年成立的时候，只有8个人，都是家里种了桂花树的农妇。那时候桂花采摘全靠手，一天下来腰酸背痛，还卖不上好价钱。\n\n后来茶厂需要大量新鲜桂花，我们就组织起来，统一培训、统一标准、统一采摘。姐妹们手都巧，眼睛也尖，什么样的桂花好，一看就知道。我们有个规矩：晴天采、带露采、开八成、不采嫩。这样采下来的桂花，香得正、香得久。\n\n现在队伍壮大到32人，都是十里八乡的采摘能手。每年桂花开放的季节，就是我们最忙的时候。天不亮就上山，太阳落山才回家。虽然辛苦，但看着一篮篮金灿灿的桂花变成一杯杯香甜的茶，心里就美滋滋的。\n\n姐妹们常说，以前我们在家带孩子做饭，现在靠自己的双手挣钱，腰杆都挺直了。这桂花啊，不仅香了茶，也香了我们的日子。',
+    storyHighlights: [
+      { year: 2007, event: '桂花镇女子采摘队成立，首批队员8人' },
+      { year: 2012, event: '制定桂花采摘标准，培训采摘能手50余人' },
+      { year: 2018, event: '获评"市级三八红旗集体"' },
+      { year: 2021, event: '采摘队规模扩大到32人，带动200余户花农增收' },
+      { year: 2024, event: '入选"全国巾帼建功先进集体"候选名单' }
+    ],
+    representativeBatches: [
+      { batchNo: 'GH202503', productName: '金桂花茶', year: 2025, role: '桂花采摘', remark: '金秋一级桂花原料' },
+      { batchNo: 'GH202504', productName: '银桂花茶', year: 2025, role: '桂花采摘', remark: '银桂精品原料' },
+      { batchNo: 'GH202409', productName: '金桂花茶（礼盒装）', year: 2024, role: '桂花采摘', remark: '头采精品桂花' }
+    ],
+    awards: [
+      { year: 2024, title: '全国巾帼建功先进集体（候选）', level: '国家级' },
+      { year: 2018, title: '市级三八红旗集体', level: '市级' },
+      { year: 2022, title: '乡村振兴巾帼示范队', level: '县级' }
+    ],
+    philosophy: '手巧心细，采好每一朵花。我们是桂花的搬运工，也是茶香的守护者。'
+  },
+  'PS-004': {
+    personId: 'PS-004',
+    type: 'farmer',
+    typeLabel: '茶农',
+    name: '李桂英',
+    nameMasked: maskOperator('李桂英'),
+    avatar: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=middle%20aged%20chinese%20female%20tea%20farmer%20osmanthus%20garden%20warm%20smile&image_size=portrait_4_3',
+    experienceYears: 25,
+    age: 52,
+    location: '湖北省咸宁市桂花镇',
+    village: '桂香村',
+    joinYear: 2000,
+    title: '桂花种植能手',
+    qualification: '初级农技师',
+    specialty: ['桂花种植', '桂花树养护', '鲜花品质把控'],
+    photos: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=woman%20farmer%20tending%20osmanthus%20trees%20chinese%20countryside&image_size=landscape_16_9',
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=osmanthus%20tree%20garden%20golden%20blossoms%20autumn%20sunlight&image_size=landscape_16_9'
+    ],
+    oralHistory: '我娘家就在桂花镇，从小闻着桂花香长大。2000年嫁到桂香村，婆家有二十几棵桂花树。那时候桂花不值钱，很多人家都把树砍了种庄稼。我舍不得，就一棵一棵养着。\n\n后来合作社找上门来，说要收购桂花做茶。我那叫一个高兴啊，这些桂花树终于有了用武之地！我跟着技术员学修剪、学施肥、学防虫，把每棵树都伺候得好好的。\n\n二十多年了，我养的桂花树从二十几棵变成了八十多棵，年年开花都比别人的多、比别人的香。茶厂的人说，我家的桂花是"特级原料"。\n\n有人问我有啥秘诀？我说没啥秘诀，就是用心。你对树好，树就对你好。你糊弄它，它就糊弄你。这道理，种树种茶做人，都是一样的。',
+    storyHighlights: [
+      { year: 2000, event: '嫁到桂香村，开始养护婆家的20余棵桂花树' },
+      { year: 2006, event: '加入合作社，成为首批桂花种植户' },
+      { year: 2015, event: '获评"桂花种植能手"称号' },
+      { year: 2020, event: '家庭桂花树发展到80余棵，年收入超5万元' },
+      { year: 2023, event: '作为农技师培训新花农30余人' }
+    ],
+    representativeBatches: [
+      { batchNo: 'GH202503', productName: '金桂花茶', year: 2025, role: '桂花供应', remark: '特级金桂原料' },
+      { batchNo: 'GH202409', productName: '金桂花茶（礼盒装）', year: 2024, role: '桂花供应', remark: '头采桂花供应户' }
+    ],
+    awards: [
+      { year: 2023, title: '桂花种植能手', level: '县级' },
+      { year: 2021, title: '最美巾帼奋斗者', level: '镇级' }
+    ],
+    philosophy: '种树如养孩子，要用心、要有耐心。花开的时候，所有的辛苦都值了。'
+  }
+};
+
+const TRACE_TO_PEOPLE_MAP = {
+  'G001': ['PS-001', 'PS-002', 'PS-003'],
+  'G002': ['PS-003', 'PS-004'],
+  'G003': ['PS-002', 'PS-004'],
+  'G004': ['PS-001', 'PS-002', 'PS-003', 'PS-004']
+};
+
+function getPeopleStory(personId) {
+  return PEOPLE_STORIES[personId] || null;
+}
+
+function getPeopleStoriesByTraceId(traceId) {
+  const personIds = TRACE_TO_PEOPLE_MAP[traceId];
+  if (!personIds) return [];
+  return personIds.map(function(id) { return PEOPLE_STORIES[id]; }).filter(Boolean);
+}
+
+function getPeopleSummaryByTraceId(traceId) {
+  const personIds = TRACE_TO_PEOPLE_MAP[traceId];
+  if (!personIds) return null;
+  const people = personIds.map(function(id) { return PEOPLE_STORIES[id]; }).filter(Boolean);
+  if (people.length === 0) return null;
+  return {
+    count: people.length,
+    types: [...new Set(people.map(function(p) { return p.typeLabel; }))],
+    people: people.map(function(p) {
+      return {
+        personId: p.personId,
+        type: p.type,
+        typeLabel: p.typeLabel,
+        name: p.name,
+        nameMasked: p.nameMasked,
+        avatar: p.avatar,
+        title: p.title,
+        experienceYears: p.experienceYears
+      };
+    })
+  };
+}
+
+(function injectPeopleInfo() {
+  Object.keys(TRACE_TO_PEOPLE_MAP).forEach(function(traceId) {
+    var traceData = mockTraceData[traceId];
+    var summary = getPeopleSummaryByTraceId(traceId);
+    if (traceData && summary) {
+      traceData.peopleStories = summary;
+    }
+  });
+})();
+
 function getAllTeaMasterTeams() {
   return Object.values(TEA_MASTER_TEAMS);
 }
@@ -9389,6 +9603,9 @@ module.exports = {
   getTeaMasterTeam,
   getTeaMasterTeamByTraceId,
   getAllTeaMasterTeams,
+  getPeopleStory,
+  getPeopleStoriesByTraceId,
+  getPeopleSummaryByTraceId,
   verifyDealerAccount,
   verifyDealerAuthCode,
   getDealerAccountList,

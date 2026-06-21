@@ -33,6 +33,7 @@
     "pages/brewEnvironment/brewEnvironment",
     "pages/brewRecord/brewRecord",
     "pages/teaMaster/teaMaster",
+    "pages/peopleStory/peopleStory",
     "pages/marketingAnalysis/marketingAnalysis",
     "pages/procurement/login",
     "pages/procurement/dashboard",
