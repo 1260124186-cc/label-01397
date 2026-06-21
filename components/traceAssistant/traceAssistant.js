@@ -15,6 +15,7 @@ Component({
   data: {
     showPanel: false,
     inputText: '',
+    canSend: false,
     messages: [],
     suggestedQuestions: [],
     thinking: false,
@@ -61,7 +62,11 @@ Component({
     },
 
     onInputChange: function(e) {
-      this.setData({ inputText: e.detail.value });
+      var value = e.detail.value;
+      this.setData({
+        inputText: value,
+        canSend: value && value.trim().length > 0
+      });
     },
 
     sendMessage: function() {
@@ -71,7 +76,7 @@ Component({
       var traceId = this.properties.traceId;
       var traceData = this.properties.traceData;
 
-      this.setData({ inputText: '' });
+      this.setData({ inputText: '', canSend: false });
 
       var userMsg = {
         id: Date.now().toString() + '_user',
@@ -98,6 +103,7 @@ Component({
           role: 'assistant',
           content: result.answer,
           type: result.type,
+          sources: result.sources || [],
           timestamp: Date.now()
         };
 
@@ -115,7 +121,7 @@ Component({
     askSuggested: function(e) {
       var question = e.currentTarget.dataset.question;
       if (!question) return;
-      this.setData({ inputText: question });
+      this.setData({ inputText: question, canSend: true });
       this.sendMessage();
     },
 

@@ -63,8 +63,18 @@
           <view class="message-avatar" wx:if="{{item.role === 'assistant'}}">
             <text class="avatar-icon">🤖</text>
           </view>
-          <view class="message-bubble {{item.role === 'user' ? 'user-bubble' : 'bot-bubble'}} {{item.type === 'sensitive' ? 'sensitive-bubble' : ''}}">
+          <view class="message-bubble {{item.role === 'user' ? 'user-bubble' : 'bot-bubble'}} {{item.type === 'sensitive' ? 'sensitive-bubble' : ''}} {{item.type === 'no_data' ? 'no-data-bubble' : ''}}">
             <text class="message-text">{{item.content}}</text>
+            <view class="sources-section" wx:if="{{item.role === 'assistant' && item.sources && item.sources.length > 0}}">
+              <view class="sources-divider"></view>
+              <view class="sources-title">📋 依据来源</view>
+              <view class="sources-list">
+                <view class="source-item" wx:for="{{item.sources}}" wx:for-item="src" wx:key="key">
+                  <text class="source-label">{{src.label}}</text>
+                  <text class="source-value">：{{src.value}}</text>
+                </view>
+              </view>
+            </view>
           </view>
           <view class="message-avatar" wx:if="{{item.role === 'user'}}">
             <text class="avatar-icon">👤</text>
@@ -114,7 +124,7 @@
           confirm-type="send"
           adjust-position="{{true}}"
         />
-        <view class="send-btn {{inputText.trim() ? 'active' : ''}}" bindtap="sendMessage" role="button" aria-label="发送">
+        <view class="send-btn {{canSend ? 'active' : ''}}" bindtap="sendMessage" role="button" aria-label="发送">
           <text class="send-icon">➤</text>
         </view>
       </view>

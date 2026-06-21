@@ -269,9 +269,59 @@
   border: 2rpx solid #FFB300;
 }
 
+.no-data-bubble {
+  background: #FAFAFA;
+  border: 2rpx dashed #CCCCCC;
+  color: #888888;
+}
+
 .message-text {
   font-size: 28rpx;
   line-height: 1.7;
+}
+
+.sources-section {
+  margin-top: 20rpx;
+}
+
+.sources-divider {
+  height: 1rpx;
+  background: linear-gradient(90deg, transparent, #E0E0E0, transparent);
+  margin-bottom: 16rpx;
+}
+
+.sources-title {
+  font-size: 22rpx;
+  color: #999999;
+  margin-bottom: 12rpx;
+  font-weight: 500;
+}
+
+.sources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.source-item {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 22rpx;
+  line-height: 1.6;
+  padding: 8rpx 12rpx;
+  background: #F5F5F0;
+  border-radius: 8rpx;
+}
+
+.source-label {
+  color: #2E8B57;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.source-value {
+  color: #555555;
+  word-break: break-all;
 }
 
 .thinking-row {
