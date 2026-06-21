@@ -453,7 +453,12 @@ Page({
       'i18n.shareBtn': t('nav.share'),
       'i18n.pdfBtn': t('detail.share.downloadPdf'),
       'i18n.verifyBtn': t('detail.test.verifyReport'),
-      'i18n.loadingText': t('common.loading')
+      'i18n.loadingText': t('common.loading'),
+      'i18n.viewToggleTitle': t('exportTrace.viewToggle.title'),
+      'i18n.viewToggleDomesticBadge': t('exportTrace.viewModeDomestic'),
+      'i18n.viewToggleInfoTitle': t('exportTrace.viewToggle.sameTraceId') + ' · ' + t('exportTrace.viewToggle.differentView'),
+      'i18n.viewToggleInfoDesc': t('exportTrace.viewToggle.exportDesc'),
+      'i18n.viewToggleBtnText': t('exportTrace.viewToggle.switchToExport')
     });
   },
 

@@ -225,19 +225,19 @@
       <view class="card-title module-header">
         <view class="title-left">
           <text class="title-icon">🌏</text>
-          <text>视图切换</text>
+          <text>{{i18n.viewToggleTitle}}</text>
         </view>
-        <view class="view-mode-badge domestic">国内视图</view>
+        <view class="view-mode-badge domestic">{{i18n.viewToggleDomesticBadge}}</view>
       </view>
       <view class="module-content">
         <view class="view-toggle-container">
           <view class="view-toggle-info">
-            <view class="view-toggle-title">同一溯源ID · 不同视角</view>
-            <view class="view-toggle-desc">该产品支持出口合规溯源视图，包含HS编码、原产地证、检验检疫、海运清关等跨境合规信息</view>
+            <view class="view-toggle-title">{{i18n.viewToggleInfoTitle}}</view>
+            <view class="view-toggle-desc">{{i18n.viewToggleInfoDesc}}</view>
           </view>
           <button class="view-toggle-btn export" bindtap="switchToExportView">
             <text class="btn-icon">🌏</text>
-            <text class="btn-text">切换到出口视图</text>
+            <text class="btn-text">{{i18n.viewToggleBtnText}}</text>
             <text class="btn-arrow">→</text>
           </button>
         </view>

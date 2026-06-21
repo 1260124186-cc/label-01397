@@ -16,6 +16,9 @@ module.exports = {
     edit: 'Edit',
     view: 'View',
     copy: 'Copy',
+    copied: 'Copied',
+    retry: 'Retry',
+    loadFailed: 'Load failed, please try again',
     share: 'Share',
     search: 'Search',
     more: 'More',
@@ -68,6 +71,18 @@ module.exports = {
     emptyHistory: 'No scan history yet',
     featureSection: 'Traceability Features',
     brandVideo: 'Brand Story',
+    featureCards: {
+      dualVerify: { name: 'Dual Code Verify', desc: 'Outer Box + Inner Bag Dual Anti-Counterfeit' },
+      origin: { name: 'Origin Trace', desc: 'Tea Tree & Osmanthus Origin Info' },
+      process: { name: 'Process Tracking', desc: 'Scenting Process Full Workflow' },
+      green: { name: 'Green Certification', desc: 'Eco-Planting & Eco-Packaging' },
+      report: { name: 'Test Report', desc: 'Pesticide Residue Safety Guarantee' },
+      treeAge: { name: 'Century-Old Tree', desc: 'The Story of Ancient Tea Trees' },
+      exportTrace: { name: 'Export Compliance', desc: 'Exclusive View for Overseas Distributors' },
+      dealer: { name: 'Dealer Channel', desc: 'Inbound/Outbound & Channel Trace' },
+      experience: { name: 'Offline Experience', desc: 'Tea Garden Tour · Tea Making · Tasting' },
+      brand: { name: 'Brand Story', desc: 'History of YiChaYiPin' }
+    },
     blockchainBanner: {
       title: 'Blockchain Certification',
       desc: 'Data is verifiable and tamper-proof',
@@ -562,6 +577,12 @@ module.exports = {
     pageTitle: 'Export Compliance Traceability',
     subtitle: 'End-to-End Traceability for Export Batches',
     badge: 'Export Only',
+    noExportInfo: 'No export information available for this product',
+    traceIdLabel: 'Trace ID',
+    refreshSuccess: 'Refresh successful',
+    urlCopied: 'Link copied',
+    refreshCustomsLoading: 'Refreshing...',
+    customsStatusUpdated: 'Status updated',
     viewMode: 'View Mode',
     viewModeDomestic: 'Domestic View',
     viewModeExport: 'Export View',
@@ -607,6 +628,9 @@ module.exports = {
       quarantineResult: 'Quarantine Result',
       standard: 'Standard',
       items: 'Inspection Items',
+      tableItem: 'Item',
+      tableResult: 'Result',
+      tableStandard: 'Standard',
       verifyButton: 'Verify'
     },
 
@@ -677,7 +701,9 @@ module.exports = {
       inspectionPassed: 'Inspection Passed',
       inspectionFailed: 'Inspection Failed',
       remarks: 'Remarks',
-      refreshButton: 'Refresh'
+      refreshButton: 'Refresh',
+      yes: 'Yes',
+      no: 'No'
     },
 
     overseasDistributor: {
@@ -714,6 +740,7 @@ module.exports = {
       verifying: 'Verifying...',
       copyHash: 'Copy Hash',
       hashCopied: 'Copied',
+      pendingVerify: 'Pending Verification',
       openExplorer: 'Open Explorer'
     },
 
@@ -726,7 +753,8 @@ module.exports = {
       switchToExport: 'Switch to Export View',
       switchToDomestic: 'Switch to Domestic View',
       sameTraceId: 'Same Trace ID',
-      differentView: 'Different Perspective'
+      differentView: 'Different Perspective',
+      footerTraceId: 'Trace ID'
     },
 
     scanEntry: {

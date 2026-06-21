@@ -16,6 +16,9 @@ module.exports = {
     edit: '编辑',
     view: '查看',
     copy: '复制',
+    copied: '已复制',
+    retry: '重试',
+    loadFailed: '加载失败，请稍后重试',
     share: '分享',
     search: '搜索',
     more: '更多',
@@ -68,6 +71,18 @@ module.exports = {
     emptyHistory: '暂无扫码历史',
     featureSection: '溯源功能',
     brandVideo: '品牌故事',
+    featureCards: {
+      dualVerify: { name: '双码验真', desc: '外盒码+内袋码双重防伪' },
+      origin: { name: '产地溯源', desc: '茶树与桂花产地信息' },
+      process: { name: '工艺追踪', desc: '窨制工艺全流程' },
+      green: { name: '绿色认证', desc: '生态种植与环保包装' },
+      report: { name: '检测报告', desc: '农残检测安全保障' },
+      treeAge: { name: '百年茶树', desc: '古茶树的故事' },
+      exportTrace: { name: '出口合规溯源', desc: '海外经销商专用视图' },
+      dealer: { name: '经销商渠道', desc: '入库出库·渠道溯源' },
+      experience: { name: '线下体验', desc: '茶园参观·制茶·品鉴预约' },
+      brand: { name: '品牌故事', desc: '一茶一品的前世今生' }
+    },
     blockchainBanner: {
       title: '区块链存证技术',
       desc: '数据真实可查、不可篡改',
@@ -631,6 +646,12 @@ module.exports = {
     pageTitle: '出口合规溯源',
     subtitle: '跨境出口批次全链路追溯',
     badge: '出口专用',
+    noExportInfo: '该产品暂无出口信息',
+    traceIdLabel: '溯源ID',
+    refreshSuccess: '刷新成功',
+    urlCopied: '链接已复制',
+    refreshCustomsLoading: '刷新中...',
+    customsStatusUpdated: '状态已更新',
     viewMode: '视图模式',
     viewModeDomestic: '国内视图',
     viewModeExport: '出口视图',
@@ -676,6 +697,9 @@ module.exports = {
       quarantineResult: '检疫结果',
       standard: '执行标准',
       items: '检验项目',
+      tableItem: '项目',
+      tableResult: '结果',
+      tableStandard: '标准',
       verifyButton: '验真'
     },
 
@@ -746,7 +770,9 @@ module.exports = {
       inspectionPassed: '查验通过',
       inspectionFailed: '查验不通过',
       remarks: '备注',
-      refreshButton: '刷新状态'
+      refreshButton: '刷新状态',
+      yes: '是',
+      no: '否'
     },
 
     overseasDistributor: {
@@ -783,6 +809,7 @@ module.exports = {
       verifying: '验证中...',
       copyHash: '复制哈希',
       hashCopied: '已复制',
+      pendingVerify: '待验证',
       openExplorer: '打开浏览器'
     },
 
@@ -795,7 +822,8 @@ module.exports = {
       switchToExport: '切换到出口视图',
       switchToDomestic: '切换到国内视图',
       sameTraceId: '同一溯源ID',
-      differentView: '不同视角'
+      differentView: '不同视角',
+      footerTraceId: 'Trace ID'
     },
 
     scanEntry: {

@@ -10,6 +10,7 @@ var locale = {
     loadMore: 'もっと読み込む',
     noMore: 'これ以上ありません',
     retry: '再試行',
+    loadFailed: '読み込みに失敗しました、後でもう一度お試しください',
     back: '戻る',
     home: 'ホーム',
     more: 'もっと見る',
@@ -72,7 +73,6 @@ var locale = {
     unknownError: '不明なエラー',
     dataLoading: 'データ読み込み中...',
     dataLoaded: 'データ読み込み完了',
-    loadFailed: '読み込みに失敗しました',
     operationSuccess: '操作成功',
     operationFailed: '操作失敗',
     pleaseWait: 'お待ちください...',
@@ -121,8 +121,20 @@ var locale = {
     news: '最新动态',
     knowledge: '桂花小知识',
     quality: '品质保障',
-    origin: '核心产区',
-    craft: '传统工艺'
+    origin: '核心産地',
+    craft: '伝統工芸',
+    featureCards: {
+      dualVerify: { name: 'デュアルコード認証', desc: '外箱コード+内袋コード二重偽造防止' },
+      origin: { name: '原産地トレース', desc: '茶樹と桂花の原産地情報' },
+      process: { name: '工程追跡', desc: '薫製工程の全ワークフロー' },
+      green: { name: 'グリーン認証', desc: 'エコ栽培とエコ包装' },
+      report: { name: '検査レポート', desc: '残留農薬検査の安全保証' },
+      treeAge: { name: '百年茶樹', desc: '古茶樹の物語' },
+      exportTrace: { name: '輸出コンプライアンス', desc: '海外ディストリビューター専用ビュー' },
+      dealer: { name: '販売チャネル', desc: '入出庫・チャネルトレース' },
+      experience: { name: 'オフライン体験', desc: '茶園見学・製茶・試飲予約' },
+      brand: { name: 'ブランド物語', desc: '一茶一品の由来' }
+    }
   },
 
   detail: {
@@ -167,6 +179,12 @@ var locale = {
     pageTitle: '輸出コンプライアンス・トレーサビリティ',
     subtitle: '輸出ロットのエンドツーエンド・トレーサビリティ',
     badge: '輸出専用',
+    noExportInfo: 'この製品の輸出情報はありません',
+    traceIdLabel: 'トレースID',
+    refreshSuccess: '更新成功',
+    urlCopied: 'リンクをコピーしました',
+    refreshCustomsLoading: '更新中...',
+    customsStatusUpdated: 'ステータスを更新しました',
     viewMode: '表示モード',
     viewModeDomestic: '国内ビュー',
     viewModeExport: '輸出ビュー',
@@ -212,6 +230,9 @@ var locale = {
       quarantineResult: '検疫結果',
       standard: '基準',
       items: '検査項目',
+      tableItem: '項目',
+      tableResult: '結果',
+      tableStandard: '基準',
       verifyButton: '検証'
     },
 
@@ -282,7 +303,9 @@ var locale = {
       inspectionPassed: '検査合格',
       inspectionFailed: '検査不合格',
       remarks: '備考',
-      refreshButton: '更新'
+      refreshButton: '更新',
+      yes: 'はい',
+      no: 'いいえ'
     },
 
     overseasDistributor: {
@@ -319,6 +342,7 @@ var locale = {
       verifying: '検証中...',
       copyHash: 'ハッシュをコピー',
       hashCopied: 'コピーしました',
+      pendingVerify: '検証待ち',
       openExplorer: 'エクスプローラーを開く'
     },
 
@@ -331,7 +355,8 @@ var locale = {
       switchToExport: '輸出ビューに切り替え',
       switchToDomestic: '国内ビューに切り替え',
       sameTraceId: '同じトレースID',
-      differentView: '異なる視点'
+      differentView: '異なる視点',
+      footerTraceId: 'Trace ID'
     },
 
     scanEntry: {

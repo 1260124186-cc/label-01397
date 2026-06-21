@@ -212,6 +212,35 @@ Page({
   /** 刷新页面上所有 i18n 文本字段 */
   refreshI18nTexts: function() {
     const t = function(key) { return i18n.t(key); };
+
+    var i18nCards = {};
+    try {
+      var cardKeys = Object.keys(this.data.featureCards || []);
+      (this.data.featureCards || []).forEach(function(card) {
+        if (card.key) {
+          var i18nCard = t('home.featureCards.' + card.key);
+          if (i18nCard && typeof i18nCard === 'object') {
+            i18nCards[card.key] = {
+              name: i18nCard.name || card.name,
+              desc: i18nCard.desc || card.desc
+            };
+          }
+        }
+      });
+    } catch (e) {
+      i18nCards = {};
+    }
+
+    var localizedCards = (this.data.featureCards || []).map(function(card) {
+      if (card.key && i18nCards[card.key]) {
+        return Object.assign({}, card, {
+          name: i18nCards[card.key].name,
+          desc: i18nCards[card.key].desc
+        });
+      }
+      return card;
+    });
+
     this.setData({
       'i18n.scanBtn': t('home.scanBtn'),
       'i18n.inputPlaceholder': t('home.inputPlaceholder'),
@@ -236,7 +265,8 @@ Page({
       'i18n.announcementTag': t('home.announcementTag'),
       'i18n.featureHint': t('home.featureHint'),
       'i18n.scanGuideTitle': t('home.scanGuideTitle'),
-      'i18n.brandStoryTitle': t('nav.brandStory')
+      'i18n.brandStoryTitle': t('nav.brandStory'),
+      featureCards: localizedCards
     });
   },
 
