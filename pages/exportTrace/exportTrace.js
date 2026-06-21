@@ -10,12 +10,12 @@ function buildI18nTexts() {
     loadingText: t('common.loading'),
     loadFailed: t('common.loadFailed'),
     retry: t('common.retry'),
-    noExportInfo: t('exportTrace.noExportInfo') || '该产品暂无出口信息',
-    refreshSuccess: '刷新成功',
-    urlCopied: '链接已复制',
-    refreshCustomsLoading: '刷新中...',
-    customsStatusUpdated: '状态已更新',
-    traceIdLabel: '溯源ID',
+    noExportInfo: t('exportTrace.noExportInfo'),
+    refreshSuccess: t('exportTrace.refreshSuccess'),
+    urlCopied: t('exportTrace.urlCopied'),
+    refreshCustomsLoading: t('exportTrace.refreshCustomsLoading'),
+    customsStatusUpdated: t('exportTrace.customsStatusUpdated'),
+    traceIdLabel: t('exportTrace.traceIdLabel'),
 
     header: {
       viewModeLabel: t('exportTrace.viewMode'),
@@ -64,9 +64,9 @@ function buildI18nTexts() {
       standard: t('exportTrace.inspectionQuarantine.standard'),
       items: t('exportTrace.inspectionQuarantine.items'),
       verifyButton: t('exportTrace.inspectionQuarantine.verifyButton'),
-      tableItem: '项目',
-      tableResult: '结果',
-      tableStandard: '标准'
+      tableItem: t('exportTrace.inspectionQuarantine.tableItem'),
+      tableResult: t('exportTrace.inspectionQuarantine.tableResult'),
+      tableStandard: t('exportTrace.inspectionQuarantine.tableStandard')
     },
 
     multilingualLabel: {
@@ -168,14 +168,14 @@ function buildI18nTexts() {
       verifying: t('exportTrace.blockchain.verifying'),
       copyHash: t('exportTrace.blockchain.copyHash'),
       hashCopied: t('exportTrace.blockchain.hashCopied'),
-      pendingVerify: '待验证'
+      pendingVerify: t('exportTrace.blockchain.pendingVerify')
     },
 
     viewToggle: {
       switchToDomestic: t('exportTrace.viewToggle.switchToDomestic'),
       sameTraceId: t('exportTrace.viewToggle.sameTraceId'),
       differentView: t('exportTrace.viewToggle.differentView'),
-      footerTraceId: 'Trace ID'
+      footerTraceId: t('exportTrace.viewToggle.footerTraceId')
     }
   };
 }
