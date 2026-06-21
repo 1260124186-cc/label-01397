@@ -2848,6 +2848,9 @@
     <text class="back-top-icon" aria-hidden="true">↑</text>
   </view>
 
+  <!-- ==================== 溯源AI助手 ==================== -->
+  <trace-assistant traceId="{{traceId}}" traceData="{{traceData}}"></trace-assistant>
+
   <!-- ==================== PDF报告弹窗 ==================== -->
   <view class="pdf-modal {{showPdfModal ? 'show' : ''}}" catchtouchmove="preventBubble" bindtap="closePdfModal">
     <view class="pdf-content" catchtap="preventBubble" catchtouchmove="preventBubble">

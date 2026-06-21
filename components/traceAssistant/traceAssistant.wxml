@@ -1,0 +1,126 @@
+<view class="trace-assistant-container">
+  <view class="assistant-fab {{showPanel ? 'active' : ''}}" bindtap="togglePanel" role="button" aria-label="{{showPanel ? '关闭AI助手' : '问一问'}}">
+    <text class="fab-icon">{{showPanel ? '✕' : '💬'}}</text>
+    <text class="fab-label" wx:if="{{!showPanel}}">问一问</text>
+  </view>
+
+  <view class="assistant-panel {{showPanel ? 'show' : ''}}" wx:if="{{showPanel}}">
+    <view class="panel-header">
+      <view class="panel-header-left">
+        <text class="panel-icon">🤖</text>
+        <view class="panel-title-group">
+          <text class="panel-title">溯源AI助手</text>
+          <text class="panel-subtitle">基于当前批次数据回答</text>
+        </view>
+      </view>
+      <view class="panel-header-right">
+        <view class="panel-clear-btn" bindtap="clearChat" role="button" aria-label="清空对话">
+          <text class="clear-icon">🗑️</text>
+        </view>
+        <view class="panel-close-btn" bindtap="closePanel" role="button" aria-label="关闭">
+          <text class="close-icon">✕</text>
+        </view>
+      </view>
+    </view>
+
+    <scroll-view
+      class="messages-area"
+      scroll-y="true"
+      scroll-into-view="msg-bottom"
+      scroll-with-animation="true"
+      enhanced
+      show-scrollbar="{{false}}"
+    >
+      <view class="messages-inner">
+        <view class="welcome-message" wx:if="{{messages.length === 0}}">
+          <view class="welcome-icon">🌿</view>
+          <view class="welcome-text">你好！我是溯源AI助手，可以回答关于当前批次的溯源问题。</view>
+          <view class="welcome-hint">我的回答均基于页面已有数据，无数据时会明确告知"暂无记录"。</view>
+        </view>
+
+        <view class="suggested-section" wx:if="{{messages.length === 0 && suggestedQuestions.length > 0}}">
+          <view class="suggested-title">💡 你可以这样问：</view>
+          <view class="suggested-list">
+            <view
+              wx:for="{{suggestedQuestions}}"
+              wx:key="*this"
+              class="suggested-item"
+              data-question="{{item}}"
+              bindtap="askSuggested"
+              role="button"
+              aria-label="提问：{{item}}"
+            >
+              <text class="suggested-text">{{item}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view
+          wx:for="{{messages}}"
+          wx:key="id"
+          class="message-row {{item.role === 'user' ? 'user-row' : 'bot-row'}}"
+        >
+          <view class="message-avatar" wx:if="{{item.role === 'assistant'}}">
+            <text class="avatar-icon">🤖</text>
+          </view>
+          <view class="message-bubble {{item.role === 'user' ? 'user-bubble' : 'bot-bubble'}} {{item.type === 'sensitive' ? 'sensitive-bubble' : ''}}">
+            <text class="message-text">{{item.content}}</text>
+          </view>
+          <view class="message-avatar" wx:if="{{item.role === 'user'}}">
+            <text class="avatar-icon">👤</text>
+          </view>
+        </view>
+
+        <view class="thinking-row" wx:if="{{thinking}}">
+          <view class="message-avatar">
+            <text class="avatar-icon">🤖</text>
+          </view>
+          <view class="message-bubble bot-bubble thinking-bubble">
+            <view class="thinking-dots">
+              <view class="dot dot1"></view>
+              <view class="dot dot2"></view>
+              <view class="dot dot3"></view>
+            </view>
+          </view>
+        </view>
+
+        <view id="msg-bottom"></view>
+      </view>
+    </scroll-view>
+
+    <view class="input-area">
+      <view class="quick-asks" wx:if="{{messages.length > 0 && suggestedQuestions.length > 0}}">
+        <scroll-view scroll-x="true" class="quick-scroll" enhanced show-scrollbar="{{false}}">
+          <view class="quick-asks-inner">
+            <view
+              wx:for="{{suggestedQuestions}}"
+              wx:key="*this"
+              class="quick-ask-chip"
+              data-question="{{item}}"
+              bindtap="askSuggested"
+            >
+              <text class="quick-chip-text">{{item}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+      <view class="input-row">
+        <input
+          class="chat-input"
+          placeholder="问我关于这批次的溯源问题..."
+          value="{{inputText}}"
+          bindinput="onInputChange"
+          bindconfirm="sendMessage"
+          confirm-type="send"
+          adjust-position="{{true}}"
+        />
+        <view class="send-btn {{inputText.trim() ? 'active' : ''}}" bindtap="sendMessage" role="button" aria-label="发送">
+          <text class="send-icon">➤</text>
+        </view>
+      </view>
+      <view class="input-disclaimer">
+        <text class="disclaimer-text">回答基于页面已有数据，不构成专业建议</text>
+      </view>
+    </view>
+  </view>
+</view>
