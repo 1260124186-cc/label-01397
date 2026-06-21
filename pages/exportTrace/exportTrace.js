@@ -16,6 +16,9 @@ function buildI18nTexts() {
     refreshCustomsLoading: t('exportTrace.refreshCustomsLoading'),
     customsStatusUpdated: t('exportTrace.customsStatusUpdated'),
     traceIdLabel: t('exportTrace.traceIdLabel'),
+    na: t('exportTrace.na'),
+    unknown: t('exportTrace.unknown'),
+    notAvailable: t('exportTrace.notAvailable'),
 
     header: {
       viewModeLabel: t('exportTrace.viewMode'),
@@ -218,7 +221,19 @@ Page({
     currentLang: 'zh-CN',
     availableLanguages: [],
     availableLanguagesWithLabel: [],
-    i18n: buildI18nTexts()
+    i18n: buildI18nTexts(),
+    mappedShippingMethodLabel: '',
+    mappedShippingStatusLabel: '',
+    mappedCustomsStatusLabel: '',
+    mappedInspectionStatusLabel: '',
+    mappedDistributorLevel: '',
+    mappedBlockchainChainName: '',
+    mappedOnChainFields: [],
+    safePortOfLoading: '',
+    safePortOfDischarge: '',
+    safeImportCountry: '',
+    safeDutyRate: '',
+    safeImportValue: ''
   },
 
   onLoad(options) {
@@ -328,6 +343,7 @@ Page({
         loading: false,
         error: ''
       });
+      this.refreshMappedFields();
 
       if (isRefresh) {
         wx.stopPullDownRefresh();
@@ -454,6 +470,7 @@ Page({
       this.setData({
         customsStatus: customsStatus ? customsStatus.data : null
       });
+      this.refreshMappedFields();
       wx.hideLoading();
       wx.showToast({
         title: this.data.i18n.customsStatusUpdated,
@@ -465,19 +482,19 @@ Page({
 
   getShippingMethodLabel() {
     const shippingInfo = this.data.shippingInfo;
-    if (!shippingInfo) return '';
+    if (!shippingInfo) return this.data.i18n.na;
     const i18n = this.data.i18n.shipping;
     switch (shippingInfo.method) {
       case 'ocean': return i18n.methodOcean;
       case 'air': return i18n.methodAir;
       case 'land': return i18n.methodLand;
-      default: return shippingInfo.methodLabel || i18n.methodOcean;
+      default: return i18n.methodOcean;
     }
   },
 
   getShippingStatusLabel() {
     const shippingInfo = this.data.shippingInfo;
-    if (!shippingInfo) return '';
+    if (!shippingInfo) return this.data.i18n.na;
     const i18n = this.data.i18n.shipping;
     if (shippingInfo.actualArrival) return i18n.delivered;
     if (shippingInfo.actualDeparture) return i18n.inTransit;
@@ -486,7 +503,7 @@ Page({
 
   getCustomsStatusLabel() {
     const customsStatus = this.data.customsStatus;
-    if (!customsStatus) return '';
+    if (!customsStatus) return this.data.i18n.na;
     const i18n = this.data.i18n.customsClearance;
     switch (customsStatus.status) {
       case 'cleared': return i18n.statusCleared;
@@ -494,20 +511,102 @@ Page({
       case 'declared': return i18n.statusDeclared;
       case 'pending': return i18n.statusPending;
       case 'rejected': return i18n.statusRejected;
-      default: return customsStatus.statusLabel || i18n.statusPending;
+      default: return i18n.statusPending;
     }
   },
 
   getInspectionStatusLabel() {
     const customsStatus = this.data.customsStatus;
-    if (!customsStatus || !customsStatus.inspectionStatus) return '';
+    if (!customsStatus || !customsStatus.inspectionStatus) return this.data.i18n.na;
     const i18n = this.data.i18n.customsClearance;
     switch (customsStatus.inspectionStatus) {
       case 'passed': return i18n.inspectionPassed;
       case 'pending': return i18n.inspectionPending;
       case 'failed': return i18n.inspectionFailed;
-      default: return customsStatus.inspectionStatus;
+      default: return i18n.inspectionPending;
     }
+  },
+
+  getSafeValue: function(value, fallback) {
+    var fb = (typeof fallback === 'undefined') ? this.data.i18n.na : fallback;
+    if (value === null || value === undefined) return fb;
+    if (typeof value === 'string' && value.trim() === '') return fb;
+    if (Array.isArray(value) && value.length === 0) return fb;
+    return value;
+  },
+
+  getDistributorLevelLabel: function() {
+    var d = this.data.exportInfo && this.data.exportInfo.overseasDistributor;
+    if (!d || !d.level) return this.data.i18n.na;
+    var levels = t('exportTrace.overseasDistributor.levels');
+    var raw = String(d.level);
+    var norm = raw.toLowerCase();
+    var matchedKey;
+    // Step 1: exact/semantic match via keyword heuristics
+    if (norm.indexOf('exclusive') >= 0 || raw.indexOf('独家') >= 0 || raw.indexOf('専属') >= 0) {
+      matchedKey = 'exclusive';
+    } else if (norm.indexOf('level 1') >= 0 || norm.indexOf('level1') >= 0 || raw.indexOf('一级') >= 0 || raw.indexOf('1次') >= 0 || raw === 'level1') {
+      matchedKey = 'level1';
+    } else if (norm.indexOf('level 2') >= 0 || norm.indexOf('level2') >= 0 || raw.indexOf('二级') >= 0 || raw.indexOf('2次') >= 0 || raw === 'level2') {
+      matchedKey = 'level2';
+    } else if (norm.indexOf('author') >= 0 || raw.indexOf('授权') >= 0 || raw.indexOf('認定') >= 0) {
+      matchedKey = 'authorized';
+    } else if (norm.indexOf('general') >= 0 || raw.indexOf('普通') >= 0 || raw.indexOf('一般') >= 0) {
+      matchedKey = 'general';
+    }
+    // Step 2: check against current locale values / keys
+    if (!matchedKey && levels && typeof levels === 'object') {
+      var k;
+      for (k in levels) {
+        if (raw === k || raw === levels[k]) { matchedKey = k; break; }
+      }
+    }
+    if (matchedKey && levels && levels[matchedKey]) return levels[matchedKey];
+    // Step 3: fallback to level1 if plausible
+    return (levels && (levels.level1 || levels.authorized)) || raw;
+  },
+
+  getBlockchainChainNameLabel: function() {
+    var bc = this.data.exportInfo && this.data.exportInfo.exportBlockchain;
+    var defaultName = t('exportTrace.blockchain.defaultChainName');
+    if (!bc || !bc.chainName) return defaultName;
+    return defaultName;
+  },
+
+  getMappedOnChainFields: function() {
+    var bc = this.data.exportInfo && this.data.exportInfo.exportBlockchain;
+    if (!bc || !bc.onChainFields || !Array.isArray(bc.onChainFields)) return [];
+    var labels = t('exportTrace.blockchain.onChainFieldLabels');
+    var na = this.data.i18n.na;
+    return bc.onChainFields.map(function(f) {
+      var lbl = (labels && labels[f.key]) ? labels[f.key] : (f.label || na);
+      return {
+        key: f.key || '',
+        label: lbl,
+        value: (f.value === null || f.value === undefined || f.value === '') ? na : f.value,
+        onChain: true
+      };
+    });
+  },
+
+  refreshMappedFields: function() {
+    var na = this.data.i18n.na;
+    var shippingInfo = this.data.shippingInfo || {};
+    var customsStatus = this.data.customsStatus || {};
+    this.setData({
+      mappedShippingMethodLabel: this.getShippingMethodLabel(),
+      mappedShippingStatusLabel: this.getShippingStatusLabel(),
+      mappedCustomsStatusLabel: this.getCustomsStatusLabel(),
+      mappedInspectionStatusLabel: this.getInspectionStatusLabel(),
+      mappedDistributorLevel: this.getDistributorLevelLabel(),
+      mappedBlockchainChainName: this.getBlockchainChainNameLabel(),
+      mappedOnChainFields: this.getMappedOnChainFields(),
+      safePortOfLoading: this.getSafeValue(shippingInfo.portOfLoading),
+      safePortOfDischarge: this.getSafeValue(shippingInfo.portOfDischarge),
+      safeImportCountry: this.getSafeValue(customsStatus.importCountry),
+      safeDutyRate: this.getSafeValue(customsStatus.dutyRate),
+      safeImportValue: this.getSafeValue(customsStatus.importValue)
+    });
   },
 
   switchToDomestic() {

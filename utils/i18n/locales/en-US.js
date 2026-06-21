@@ -583,6 +583,9 @@ module.exports = {
     urlCopied: 'Link copied',
     refreshCustomsLoading: 'Refreshing...',
     customsStatusUpdated: 'Status updated',
+    na: '—',
+    unknown: 'Unknown',
+    notAvailable: 'N/A',
     viewMode: 'View Mode',
     viewModeDomestic: 'Domestic View',
     viewModeExport: 'Export View',
@@ -721,7 +724,14 @@ module.exports = {
       authorizedProducts: 'Authorized Products',
       level: 'Distributor Level',
       verifyUrl: 'Authorization Verify',
-      verifyButton: 'Verify Authorization'
+      verifyButton: 'Verify Authorization',
+      levels: {
+        exclusive: 'Exclusive Distributor',
+        level1: 'Level 1 Distributor',
+        level2: 'Level 2 Distributor',
+        authorized: 'Authorized Distributor',
+        general: 'General Distributor'
+      }
     },
 
     blockchain: {
@@ -741,7 +751,22 @@ module.exports = {
       copyHash: 'Copy Hash',
       hashCopied: 'Copied',
       pendingVerify: 'Pending Verification',
-      openExplorer: 'Open Explorer'
+      openExplorer: 'Open Explorer',
+      defaultChainName: 'Cross-Border Trade Chain',
+      onChainFieldLabels: {
+        exportBatchNo: 'Export Batch No.',
+        hsCode: 'HS Code',
+        countryOfOrigin: 'Country of Origin',
+        targetMarkets: 'Target Markets',
+        certificateOfOriginNo: 'CO Certificate No.',
+        inspectionCertNo: 'CIQ Certificate No.',
+        declarationNo: 'Declaration No.',
+        shippingMethod: 'Shipping Method',
+        containerNo: 'Container No.',
+        customsStatus: 'Customs Status',
+        distributor: 'Overseas Distributor',
+        authorizedDate: 'Authorization Date'
+      }
     },
 
     viewToggle: {

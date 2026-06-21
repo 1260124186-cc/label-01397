@@ -185,6 +185,9 @@ var locale = {
     urlCopied: 'リンクをコピーしました',
     refreshCustomsLoading: '更新中...',
     customsStatusUpdated: 'ステータスを更新しました',
+    na: '—',
+    unknown: '不明',
+    notAvailable: 'データなし',
     viewMode: '表示モード',
     viewModeDomestic: '国内ビュー',
     viewModeExport: '輸出ビュー',
@@ -323,7 +326,14 @@ var locale = {
       authorizedProducts: '認定製品',
       level: 'ディストリビューターレベル',
       verifyUrl: '認定検証',
-      verifyButton: '認定を検証'
+      verifyButton: '認定を検証',
+      levels: {
+        exclusive: '専属ディストリビューター',
+        level1: '1次ディストリビューター',
+        level2: '2次ディストリビューター',
+        authorized: '認定ディストリビューター',
+        general: '一般ディストリビューター'
+      }
     },
 
     blockchain: {
@@ -343,7 +353,22 @@ var locale = {
       copyHash: 'ハッシュをコピー',
       hashCopied: 'コピーしました',
       pendingVerify: '検証待ち',
-      openExplorer: 'エクスプローラーを開く'
+      openExplorer: 'エクスプローラーを開く',
+      defaultChainName: 'クロスボーダー・トレードチェーン',
+      onChainFieldLabels: {
+        exportBatchNo: '輸出ロット番号',
+        hsCode: 'HSコード',
+        countryOfOrigin: '原産国',
+        targetMarkets: '対象市場',
+        certificateOfOriginNo: '原産地証明書番号',
+        inspectionCertNo: '検査検疫証明書番号',
+        declarationNo: '通関申告番号',
+        shippingMethod: '輸送方法',
+        containerNo: 'コンテナ番号',
+        customsStatus: '通関状況',
+        distributor: '海外ディストリビューター',
+        authorizedDate: '認定日'
+      }
     },
 
     viewToggle: {

@@ -265,20 +265,15 @@
         <view class="shipping-status in-transit">
           <text class="status-icon">🚢</text>
           <text class="status-text">
-            <text wx:if="{{shippingInfo && shippingInfo.method === 'ocean'}}">{{i18n.shipping.methodOcean}} {{i18n.shipping.inTransit}}</text>
-            <text wx:elif="{{shippingInfo && shippingInfo.method === 'air'}}">{{i18n.shipping.methodAir}} {{i18n.shipping.inTransit}}</text>
-            <text wx:else>{{i18n.shipping.inTransit}}</text>
+            <text wx:if="{{shippingInfo && shippingInfo.method === 'ocean'}}">{{i18n.shipping.methodOcean}} {{mappedShippingStatusLabel}}</text>
+            <text wx:elif="{{shippingInfo && shippingInfo.method === 'air'}}">{{i18n.shipping.methodAir}} {{mappedShippingStatusLabel}}</text>
+            <text wx:else>{{mappedShippingStatusLabel}}</text>
           </text>
         </view>
 
         <view class="info-row">
           <view class="info-label">{{i18n.shipping.method}}</view>
-          <view class="info-value">
-            <text wx:if="{{shippingInfo && shippingInfo.method === 'ocean'}}">{{i18n.shipping.methodOcean}}</text>
-            <text wx:elif="{{shippingInfo && shippingInfo.method === 'air'}}">{{i18n.shipping.methodAir}}</text>
-            <text wx:elif="{{shippingInfo && shippingInfo.method === 'land'}}">{{i18n.shipping.methodLand}}</text>
-            <text wx:else>{{shippingInfo.methodLabel || ''}}</text>
-          </view>
+          <view class="info-value">{{mappedShippingMethodLabel}}</view>
         </view>
 
         <view wx:if="{{shippingInfo && shippingInfo.containerNo}}" class="info-row">
@@ -314,9 +309,9 @@
 
         <view class="shipping-route">
           <view class="route-port">
-            <view class="port-name">{{shippingInfo.portOfLoading || '—'}}</view>
+            <view class="port-name">{{safePortOfLoading}}</view>
             <view class="port-label">{{i18n.shipping.portOfLoading}}</view>
-            <view class="port-date">{{shippingInfo.etd || ''}}</view>
+            <view class="port-date">{{shippingInfo.etd || i18n.na}}</view>
           </view>
           <view class="route-arrow">
             <view class="arrow-line"></view>
@@ -324,9 +319,9 @@
             <view class="arrow-line"></view>
           </view>
           <view class="route-port">
-            <view class="port-name">{{shippingInfo.portOfDischarge || '—'}}</view>
+            <view class="port-name">{{safePortOfDischarge}}</view>
             <view class="port-label">{{i18n.shipping.portOfDischarge}}</view>
-            <view class="port-date">{{shippingInfo.eta || ''}}</view>
+            <view class="port-date">{{shippingInfo.eta || i18n.na}}</view>
           </view>
         </view>
 
@@ -356,7 +351,7 @@
             <block wx:elif="{{customsStatus.status === 'declared'}}">{{i18n.customsClearance.statusDeclared}}</block>
             <block wx:elif="{{customsStatus.status === 'pending'}}">{{i18n.customsClearance.statusPending}}</block>
             <block wx:elif="{{customsStatus.status === 'rejected'}}">{{i18n.customsClearance.statusRejected}}</block>
-            <block wx:else>{{customsStatus.statusLabel || ''}}</block>
+            <block wx:else>{{mappedCustomsStatusLabel}}</block>
           </view>
         </view>
 
@@ -380,7 +375,7 @@
 
         <view class="info-row">
           <view class="info-label">{{i18n.customsClearance.importCountry}}</view>
-          <view class="info-value">{{customsStatus.importCountry || ''}}</view>
+          <view class="info-value">{{safeImportCountry}}</view>
         </view>
 
         <view wx:if="{{customsStatus.importCustoms}}" class="info-row">
@@ -395,12 +390,12 @@
 
         <view class="info-row">
           <view class="info-label">{{i18n.customsClearance.dutyRate}}</view>
-          <view class="info-value">{{customsStatus.dutyRate || '—'}}</view>
+          <view class="info-value">{{safeDutyRate}}</view>
         </view>
 
         <view class="info-row">
           <view class="info-label">{{i18n.customsClearance.importValue}}</view>
-          <view class="info-value highlight-value">{{customsStatus.importValue || '—'}}</view>
+          <view class="info-value highlight-value">{{safeImportValue}}</view>
         </view>
 
         <view wx:if="{{customsStatus.taxPaid}}" class="info-row">
@@ -427,7 +422,7 @@
             <block wx:if="{{customsStatus.inspectionStatus === 'passed'}}"><text class="status-pass">{{i18n.customsClearance.inspectionPassed}}</text></block>
             <block wx:elif="{{customsStatus.inspectionStatus === 'pending'}}">{{i18n.customsClearance.inspectionPending}}</block>
             <block wx:elif="{{customsStatus.inspectionStatus === 'failed'}}"><text class="status-fail">{{i18n.customsClearance.inspectionFailed}}</text></block>
-            <block wx:else>{{customsStatus.inspectionStatus}}</block>
+            <block wx:else>{{mappedInspectionStatusLabel}}</block>
           </view>
         </view>
 
@@ -446,7 +441,7 @@
       </view>
       <view class="distributor-card">
         <view class="distributor-name">{{exportInfo.overseasDistributor.name}}</view>
-        <view class="distributor-level">{{exportInfo.overseasDistributor.level}}</view>
+        <view class="distributor-level">{{mappedDistributorLevel}}</view>
 
         <view class="info-row">
           <view class="info-label">{{i18n.overseasDistributor.country}}</view>
@@ -533,7 +528,7 @@
 
         <view class="info-row">
           <view class="info-label">{{i18n.blockchain.chainName}}</view>
-          <view class="info-value">{{exportInfo.exportBlockchain.chainName}}</view>
+          <view class="info-value">{{mappedBlockchainChainName}}</view>
         </view>
 
         <view class="info-row">
@@ -549,10 +544,10 @@
           <view class="info-value">{{exportInfo.exportBlockchain.timestamp}}</view>
         </view>
 
-        <view wx:if="{{exportInfo.exportBlockchain.onChainFields && exportInfo.exportBlockchain.onChainFields.length > 0}}" class="onchain-fields">
+        <view wx:if="{{mappedOnChainFields && mappedOnChainFields.length > 0}}" class="onchain-fields">
           <view class="fields-title">{{i18n.blockchain.onChainFields}}</view>
           <view class="field-list">
-            <view wx:for="{{exportInfo.exportBlockchain.onChainFields}}" wx:key="key" class="field-item">
+            <view wx:for="{{mappedOnChainFields}}" wx:key="key" class="field-item">
               <view class="field-label">{{item.label}}</view>
               <view class="field-value">{{item.value}}</view>
               <view class="field-badge">{{i18n.blockchain.onChain}}</view>

@@ -652,6 +652,9 @@ module.exports = {
     urlCopied: '链接已复制',
     refreshCustomsLoading: '刷新中...',
     customsStatusUpdated: '状态已更新',
+    na: '—',
+    unknown: '未知',
+    notAvailable: '暂无数据',
     viewMode: '视图模式',
     viewModeDomestic: '国内视图',
     viewModeExport: '出口视图',
@@ -790,7 +793,14 @@ module.exports = {
       authorizedProducts: '授权产品',
       level: '经销商级别',
       verifyUrl: '授权验证',
-      verifyButton: '验证授权'
+      verifyButton: '验证授权',
+      levels: {
+        exclusive: '独家经销商',
+        level1: '一级经销商',
+        level2: '二级经销商',
+        authorized: '授权经销商',
+        general: '普通经销商'
+      }
     },
 
     blockchain: {
@@ -810,7 +820,22 @@ module.exports = {
       copyHash: '复制哈希',
       hashCopied: '已复制',
       pendingVerify: '待验证',
-      openExplorer: '打开浏览器'
+      openExplorer: '打开浏览器',
+      defaultChainName: '跨境贸易链',
+      onChainFieldLabels: {
+        exportBatchNo: '出口批次号',
+        hsCode: 'HS编码',
+        countryOfOrigin: '原产国',
+        targetMarkets: '目标市场',
+        certificateOfOriginNo: '原产地证编号',
+        inspectionCertNo: '检验检疫证编号',
+        declarationNo: '报关单号',
+        shippingMethod: '运输方式',
+        containerNo: '集装箱号',
+        customsStatus: '清关状态',
+        distributor: '海外经销商',
+        authorizedDate: '授权日期'
+      }
     },
 
     viewToggle: {
