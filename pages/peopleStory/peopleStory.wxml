@@ -362,6 +362,24 @@
       </view>
     </view>
 
+    <!-- 叙事链入口：制茶师（详情页） -->
+    <view class="narrative-chain-card detail-chain-card" wx:if="{{relatedTeaMaster}}" bindtap="goToTeaMasterFromDetail">
+      <view class="chain-label">叙事链 · 人的延续</view>
+      <view class="chain-main">
+        <view class="chain-icon">👨‍🍳</view>
+        <view class="chain-content">
+          <view class="chain-title">制茶师：{{relatedTeaMaster.leaderNameMasked}}</view>
+          <view class="chain-desc">{{relatedTeaMaster.teamName}} · {{relatedTeaMaster.leaderExperienceYears}}年从业经验</view>
+          <view class="chain-batch">关联批次：{{relatedTeaMaster.batchNo}}</view>
+        </view>
+        <view class="chain-arrow">›</view>
+      </view>
+    </view>
+
+    <view class="detail-footer" wx:if="{{relatedTeaMaster}}">
+      <text class="footer-text">— 从茶园采摘到窨制而成，这杯茶凝聚了两代人的坚守 —</text>
+    </view>
+
   </view>
 
 </view>

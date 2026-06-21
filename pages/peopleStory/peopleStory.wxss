@@ -224,6 +224,81 @@
   font-style: italic;
 }
 
+/* 详情页叙事链卡片 */
+.detail-chain-card {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 24rpx 26rpx;
+  margin: 32rpx 0 0;
+  background: linear-gradient(135deg, #5D403710 0%, #DAA52020 100%);
+  border: 2rpx solid #DAA52040;
+  box-shadow: none;
+}
+
+.chain-label {
+  font-size: 22rpx;
+  color: #8D6E63;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+  padding-left: 4rpx;
+  letter-spacing: 2rpx;
+}
+
+.chain-main {
+  display: flex;
+  align-items: center;
+}
+
+.chain-main .chain-icon {
+  font-size: 52rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.chain-main .chain-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.chain-main .chain-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #3E2723;
+  margin-bottom: 6rpx;
+}
+
+.chain-main .chain-desc {
+  font-size: 22rpx;
+  color: #6D4C41;
+  margin-bottom: 4rpx;
+}
+
+.chain-batch {
+  font-size: 20rpx;
+  color: #8D6E63;
+  background: #FFFFFF90;
+  display: inline-block;
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+  margin-top: 4rpx;
+}
+
+.chain-main .chain-arrow {
+  font-size: 38rpx;
+  color: #DAA520;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.detail-footer {
+  text-align: center;
+  padding: 28rpx 32rpx 20rpx;
+}
+
+.detail-footer .footer-text {
+  color: #A1887F;
+}
+
 /* ========== 详情模式 ========== */
 .detail-mode .detail-header {
   position: relative;

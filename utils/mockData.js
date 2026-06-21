@@ -7962,6 +7962,105 @@ function getPeopleSummaryByTraceId(traceId) {
   });
 })();
 
+/* =====================================================
+ * ===== 叙事链映射：人物 ↔ 制茶师 ↔ 批次 ↔ traceId =====
+ * ===================================================== */
+
+/**
+ * 通过批次号查找对应的 traceId
+ * @param {string} batchNo - 批次号
+ * @returns {string|null} traceId 或 null
+ */
+function getTraceIdByBatchNo(batchNo) {
+  if (!batchNo) return null;
+  var normalized = batchNo.trim().toUpperCase();
+  for (var traceId in mockTraceData) {
+    var data = mockTraceData[traceId];
+    if (data.basicInfo && data.basicInfo.batchNo === normalized) {
+      return traceId;
+    }
+  }
+  return null;
+}
+
+/**
+ * 通过人物ID获取关联的制茶师信息
+ * 优先通过代表批次找到 traceId，再通过 traceId 找制茶师团队
+ * @param {string} personId - 人物ID
+ * @returns {Object|null} { teamId, teamName, leaderName, traceId } 或 null
+ */
+function getTeaMasterByPersonId(personId) {
+  if (!personId) return null;
+  var person = PEOPLE_STORIES[personId];
+  if (!person) return null;
+
+  var traceId = null;
+  if (person.representativeBatches && person.representativeBatches.length > 0) {
+    for (var i = 0; i < person.representativeBatches.length; i++) {
+      var batch = person.representativeBatches[i];
+      traceId = getTraceIdByBatchNo(batch.batchNo);
+      if (traceId) break;
+    }
+  }
+
+  if (!traceId) {
+    for (var tId in TRACE_TO_PEOPLE_MAP) {
+      if (TRACE_TO_PEOPLE_MAP[tId].indexOf(personId) !== -1) {
+        traceId = tId;
+        break;
+      }
+    }
+  }
+
+  if (!traceId) return null;
+
+  var team = getTeaMasterTeamByTraceId(traceId);
+  if (!team) return null;
+
+  return {
+    teamId: team.teamId,
+    teamName: team.teamName,
+    leaderName: team.leaderName,
+    leaderNameMasked: team.leaderNameMasked,
+    leaderAvatar: team.leaderAvatar,
+    leaderExperienceYears: team.leaderExperienceYears,
+    teamSize: team.teamSize,
+    traceId: traceId,
+    batchNo: mockTraceData[traceId] ? mockTraceData[traceId].basicInfo.batchNo : ''
+  };
+}
+
+/**
+ * 通过制茶师团队ID获取关联的人物故事列表
+ * 先通过 teamId 找到 traceId，再通过 traceId 找人物
+ * @param {string} teamId - 制茶师团队ID
+ * @returns {Object|null} { traceId, people: [...] } 或 null
+ */
+function getPeopleByTeamId(teamId) {
+  if (!teamId) return null;
+
+  var traceId = null;
+  for (var tId in TRACE_TO_TEAM_MAP) {
+    if (TRACE_TO_TEAM_MAP[tId] === teamId) {
+      traceId = tId;
+      break;
+    }
+  }
+
+  if (!traceId) return null;
+
+  var peopleList = getPeopleStoriesByTraceId(traceId);
+  var summary = getPeopleSummaryByTraceId(traceId);
+
+  return {
+    traceId: traceId,
+    batchNo: mockTraceData[traceId] ? mockTraceData[traceId].basicInfo.batchNo : '',
+    count: summary ? summary.count : 0,
+    types: summary ? summary.types : [],
+    people: peopleList
+  };
+}
+
 function getAllTeaMasterTeams() {
   return Object.values(TEA_MASTER_TEAMS);
 }
@@ -9606,6 +9705,9 @@ module.exports = {
   getPeopleStory,
   getPeopleStoriesByTraceId,
   getPeopleSummaryByTraceId,
+  getTraceIdByBatchNo,
+  getTeaMasterByPersonId,
+  getPeopleByTeamId,
   verifyDealerAccount,
   verifyDealerAuthCode,
   getDealerAccountList,

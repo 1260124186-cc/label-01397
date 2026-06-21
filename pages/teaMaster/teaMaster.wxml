@@ -288,6 +288,40 @@
       </view>
     </view>
 
+    <!-- 叙事链入口：茶农与守护者（制茶师页面） -->
+    <view class="narrative-chain-card master-chain-card" wx:if="{{relatedPeople}}" bindtap="goToPeopleStory">
+      <view class="chain-label">叙事链 · 溯源上游</view>
+      <view class="chain-main">
+        <view class="chain-icon-group">
+          <text class="chain-icon-main">👨‍🌾</text>
+        </view>
+        <view class="chain-content">
+          <view class="chain-title">茶的守护者：{{relatedPeople.count}}位幕后英雄</view>
+          <view class="chain-desc">
+            <text wx:for="{{relatedPeople.types}}" wx:key="*this" class="chain-type-tag">{{item}}</text>
+          </view>
+          <view class="chain-avatars">
+            <image
+              wx:for="{{relatedPeople.people}}"
+              wx:for-item="p"
+              wx:key="personId"
+              class="chain-mini-avatar"
+              src="{{p.avatar}}"
+              mode="aspectFill"
+              data-personid="{{p.personId}}"
+              catchtap="goToPersonDetail"
+            />
+          </view>
+          <view class="chain-batch">关联批次：{{relatedPeople.batchNo}}</view>
+        </view>
+        <view class="chain-arrow">›</view>
+      </view>
+    </view>
+
+    <view class="master-footer" wx:if="{{relatedPeople}}">
+      <text class="footer-text">— 一片好茶，是种植者与窨制者的一场跨越时空的对话 —</text>
+    </view>
+
   </view>
 
 </view>

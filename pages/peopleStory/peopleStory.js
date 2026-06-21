@@ -26,6 +26,7 @@ Page({
     traceId: '',
     personData: null,
     peopleList: [],
+    relatedTeaMaster: null,
     loading: true,
     currentPhotoIndex: 0,
     activeTab: 'story',
@@ -66,10 +67,12 @@ Page({
 
     setTimeout(function() {
       const person = mockData.getPeopleStory(personId);
+      const relatedTeaMaster = mockData.getTeaMasterByPersonId(personId);
       if (person) {
         wx.setNavigationBarTitle({ title: person.name });
         that.setData({
           personData: person,
+          relatedTeaMaster: relatedTeaMaster,
           loading: false
         });
       } else {
@@ -153,14 +156,31 @@ Page({
   },
 
   goToTeaMaster: function() {
-    if (!this.data.traceId) return;
-    const team = mockData.getTeaMasterTeamByTraceId(this.data.traceId);
-    if (team) {
+    var teamId = null;
+
+    if (this.data.mode === 'detail' && this.data.relatedTeaMaster) {
+      teamId = this.data.relatedTeaMaster.teamId;
+    } else if (this.data.traceId) {
+      var team = mockData.getTeaMasterTeamByTraceId(this.data.traceId);
+      if (team) teamId = team.teamId;
+    }
+
+    if (teamId) {
       wx.navigateTo({
-        url: '/pages/teaMaster/teaMaster?teamId=' + team.teamId
+        url: '/pages/teaMaster/teaMaster?teamId=' + teamId
       });
     } else {
       wx.showToast({ title: '暂无制茶师信息', icon: 'none' });
+    }
+  },
+
+  goToTeaMasterFromDetail: function() {
+    if (this.data.relatedTeaMaster && this.data.relatedTeaMaster.teamId) {
+      wx.navigateTo({
+        url: '/pages/teaMaster/teaMaster?teamId=' + this.data.relatedTeaMaster.teamId
+      });
+    } else {
+      wx.showToast({ title: '暂无关联制茶师信息', icon: 'none' });
     }
   },
 

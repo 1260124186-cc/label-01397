@@ -12,6 +12,7 @@ Page({
     teamId: '',
     traceId: '',
     teamData: null,
+    relatedPeople: null,
     loading: true,
     currentPhotoIndex: 0,
     activeTab: 'intro',
@@ -49,11 +50,14 @@ Page({
 
     setTimeout(function() {
       const team = mockData.getTeaMasterTeam(teamId);
+      const relatedPeople = mockData.getPeopleByTeamId(teamId);
       if (team) {
         wx.setNavigationBarTitle({ title: team.teamName });
         that.setData({
           teamData: team,
           teamId: teamId,
+          relatedPeople: relatedPeople,
+          traceId: relatedPeople ? relatedPeople.traceId : '',
           loading: false
         });
       } else {
@@ -71,10 +75,12 @@ Page({
     setTimeout(function() {
       const team = mockData.getTeaMasterTeamByTraceId(traceId);
       if (team) {
+        const relatedPeople = mockData.getPeopleByTeamId(team.teamId);
         wx.setNavigationBarTitle({ title: team.teamName });
         that.setData({
           teamData: team,
           teamId: team.teamId,
+          relatedPeople: relatedPeople,
           loading: false
         });
       } else {
@@ -138,6 +144,31 @@ Page({
       content: cert,
       showCancel: false,
       confirmText: '知道了'
+    });
+  },
+
+  goToPeopleStory: function() {
+    var traceId = null;
+    if (this.data.relatedPeople && this.data.relatedPeople.traceId) {
+      traceId = this.data.relatedPeople.traceId;
+    } else if (this.data.traceId) {
+      traceId = this.data.traceId;
+    }
+
+    if (traceId) {
+      wx.navigateTo({
+        url: '/pages/peopleStory/peopleStory?traceId=' + traceId
+      });
+    } else {
+      wx.showToast({ title: '暂无守护者信息', icon: 'none' });
+    }
+  },
+
+  goToPersonDetail: function(e) {
+    var personId = e.currentTarget.dataset.personid;
+    if (!personId) return;
+    wx.navigateTo({
+      url: '/pages/peopleStory/peopleStory?personId=' + personId
     });
   },
 

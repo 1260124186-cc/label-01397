@@ -594,6 +594,132 @@
   color: #AAAAAA;
 }
 
+/* ========== 叙事链入口：制茶师页面 ========== */
+.narrative-chain-card {
+  display: flex;
+  align-items: center;
+  margin: 32rpx 24rpx;
+  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+  border-radius: 24rpx;
+  padding: 32rpx 28rpx;
+  box-shadow: 0 6rpx 20rpx rgba(218, 165, 32, 0.15);
+}
+
+.master-chain-card {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 24rpx 26rpx;
+  margin: 32rpx 0 0;
+  background: linear-gradient(135deg, #2E8B5710 0%, #5D403715 100%);
+  border: 2rpx solid #2E8B5730;
+  box-shadow: none;
+}
+
+.chain-label {
+  font-size: 22rpx;
+  color: #4A6741;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+  padding-left: 4rpx;
+  letter-spacing: 2rpx;
+}
+
+.chain-main {
+  display: flex;
+  align-items: center;
+}
+
+.chain-icon-group {
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.chain-icon-main {
+  font-size: 56rpx;
+  display: block;
+}
+
+.chain-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.chain-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1F3A1F;
+  margin-bottom: 8rpx;
+}
+
+.chain-desc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-bottom: 10rpx;
+}
+
+.chain-type-tag {
+  font-size: 20rpx;
+  color: #2E8B57;
+  background: rgba(46, 139, 87, 0.1);
+  padding: 3rpx 12rpx;
+  border-radius: 8rpx;
+  font-weight: 500;
+}
+
+.chain-avatars {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.chain-mini-avatar {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  border: 2rpx solid #FFFFFF;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+  margin-right: -10rpx;
+  background: #F5F5F0;
+}
+
+.chain-mini-avatar:first-child {
+  z-index: 3;
+}
+.chain-mini-avatar:nth-child(2) {
+  z-index: 2;
+}
+.chain-mini-avatar:nth-child(3) {
+  z-index: 1;
+}
+
+.chain-batch {
+  font-size: 20rpx;
+  color: #667766;
+  background: #FFFFFF90;
+  display: inline-block;
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+}
+
+.chain-arrow {
+  font-size: 38rpx;
+  color: #2E8B57;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.master-footer {
+  text-align: center;
+  padding: 28rpx 32rpx 20rpx;
+}
+
+.master-footer .footer-text {
+  font-size: 24rpx;
+  color: #8AA08A;
+  font-style: italic;
+}
+
 /* ========== 加载状态 ========== */
 .loading-container {
   min-height: 100vh;
