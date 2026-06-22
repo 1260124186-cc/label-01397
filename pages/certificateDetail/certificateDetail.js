@@ -1,5 +1,6 @@
 var certWallet = require('../../utils/certificateWallet.js');
 var share = require('../../utils/share.js');
+var ecoFund = require('../../utils/ecoFund.js');
 
 Page({
   data: {
@@ -198,6 +199,44 @@ Page({
           setTimeout(function() { wx.navigateBack(); }, 1200);
         }
       }
+    });
+  },
+
+  onApplyInvoice: function() {
+    var cert = this.data.cert;
+    if (!cert || cert.type !== 'donation_cert') return;
+    var that = this;
+    wx.showModal({
+      title: '申请捐赠票据',
+      content: '将向中华环境保护基金会申请开具电子捐赠票据，可用于个人所得税抵扣。\n\n将在7个工作日内发送至您填写的邮箱，请确认是否继续？',
+      confirmText: '申请票据',
+      confirmColor: '#EB2F96',
+      success: function(res) {
+        if (res.confirm) {
+          wx.showLoading({ title: '提交中...', mask: true });
+          setTimeout(function() {
+            wx.hideLoading();
+            wx.showToast({ title: '申请已提交', icon: 'success', duration: 2000 });
+          }, 1200);
+        }
+      }
+    });
+  },
+
+  onCopyTransactionId: function() {
+    var cert = this.data.cert;
+    if (!cert || !cert.summary || !cert.summary.transactionId) return;
+    wx.setClipboardData({
+      data: cert.summary.transactionId,
+      success: function() {
+        wx.showToast({ title: '流水号已复制', icon: 'success' });
+      }
+    });
+  },
+
+  onOpenCharityQualification: function() {
+    wx.navigateTo({
+      url: '/pages/charityQualification/charityQualification'
     });
   }
 });

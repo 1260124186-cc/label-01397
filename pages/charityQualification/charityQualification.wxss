@@ -1,0 +1,386 @@
+.qualification-page {
+  min-height: 100vh;
+  background: #F5F5F0;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 40rpx);
+}
+
+.org-hero {
+  background: linear-gradient(135deg, #EB2F96, #FF85C0);
+  padding: 60rpx 40rpx 48rpx;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.org-badge {
+  font-size: 96rpx;
+  margin-bottom: 16rpx;
+}
+
+.org-name {
+  font-size: 40rpx;
+  font-weight: 800;
+  letter-spacing: 2rpx;
+  margin-bottom: 16rpx;
+}
+
+.org-level-badge {
+  display: inline-block;
+  padding: 8rpx 28rpx;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 24rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  margin-bottom: 16rpx;
+}
+
+.org-mission {
+  font-size: 24rpx;
+  opacity: 0.9;
+  margin-bottom: 8rpx;
+}
+
+.org-slogan {
+  font-size: 24rpx;
+  opacity: 0.85;
+  line-height: 1.6;
+  margin-top: 12rpx;
+  padding: 12rpx 24rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12rpx;
+}
+
+.section {
+  padding: 24rpx 32rpx 0;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+}
+
+.section-title::before {
+  content: '';
+  width: 8rpx;
+  height: 28rpx;
+  background: linear-gradient(180deg, #EB2F96, #FF85C0);
+  border-radius: 4rpx;
+  margin-right: 12rpx;
+}
+
+.cert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.cert-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.cert-card:active {
+  transform: scale(0.99);
+}
+
+.cert-header {
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #FFFFFF;
+}
+
+.cert-icon {
+  font-size: 48rpx;
+}
+
+.cert-status {
+  padding: 6rpx 18rpx;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 16rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
+.cert-body {
+  padding: 24rpx;
+}
+
+.cert-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 12rpx;
+}
+
+.cert-no-row {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  margin-bottom: 8rpx;
+}
+
+.cert-label {
+  color: #999999;
+  flex-shrink: 0;
+}
+
+.cert-no {
+  color: #333333;
+}
+
+.cert-no.mono {
+  font-family: 'Courier New', monospace;
+  font-size: 22rpx;
+}
+
+.cert-issuer {
+  font-size: 22rpx;
+  color: #BBBBBB;
+}
+
+.cert-footer {
+  padding: 16rpx 24rpx;
+  border-top: 1rpx solid #F5F5F0;
+}
+
+.view-detail {
+  font-size: 24rpx;
+  color: #EB2F96;
+  font-weight: 500;
+}
+
+.audit-badge {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx 20rpx;
+  background: linear-gradient(135deg, rgba(114, 46, 209, 0.08), rgba(24, 144, 255, 0.08));
+  border: 1rpx solid rgba(114, 46, 209, 0.2);
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.audit-badge-icon {
+  font-size: 28rpx;
+  flex-shrink: 0;
+}
+
+.audit-badge-text {
+  font-size: 22rpx;
+  color: #722ED1;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.report-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.report-card {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.report-year {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  gap: 20rpx;
+}
+
+.report-year:active {
+  background: #FAFAFA;
+}
+
+.report-year-badge {
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #EB2F96, #FF85C0);
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.report-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.report-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.report-meta {
+  font-size: 22rpx;
+  color: #999999;
+  line-height: 1.5;
+}
+
+.report-size {
+  font-size: 22rpx;
+  color: #BBBBBB;
+  flex-shrink: 0;
+}
+
+.report-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 20rpx 24rpx;
+  border-top: 1rpx solid #F5F5F0;
+  font-size: 26rpx;
+  color: #2E8B57;
+  font-weight: 500;
+}
+
+.report-download:active {
+  background: #F5FAF7;
+}
+
+.transparency-card,
+.legal-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 8rpx 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.transparency-item,
+.legal-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F5F5F0;
+}
+
+.transparency-item:last-child,
+.legal-item:last-child {
+  border-bottom: none;
+}
+
+.transparency-icon,
+.legal-icon {
+  font-size: 32rpx;
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.transparency-text,
+.legal-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.6;
+}
+
+.contact-section {
+  padding-bottom: 0;
+}
+
+.contact-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 24rpx;
+  gap: 16rpx;
+}
+
+.contact-row:active {
+  background: #FAFAFA;
+}
+
+.contact-icon {
+  font-size: 40rpx;
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(235, 47, 150, 0.1), rgba(255, 133, 192, 0.1));
+  border-radius: 14rpx;
+  flex-shrink: 0;
+}
+
+.contact-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-label {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 4rpx;
+}
+
+.contact-value {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contact-value.mono {
+  font-family: 'Courier New', monospace;
+  font-size: 24rpx;
+}
+
+.contact-arrow {
+  font-size: 36rpx;
+  color: #CCCCCC;
+  flex-shrink: 0;
+}
+
+.contact-divider {
+  height: 1rpx;
+  background: #F5F5F0;
+  margin: 0 24rpx;
+}
+
+.footer-tip {
+  margin-top: 48rpx;
+  padding: 32rpx;
+  text-align: center;
+}
+
+.footer-tip text {
+  font-size: 22rpx;
+  color: #BBBBBB;
+  font-weight: 500;
+}

@@ -226,6 +226,111 @@
     </view>
   </block>
 
+  <block wx:if="{{cert.type === 'donation_cert' && cert.summary}}">
+    <view class="section">
+      <view class="section-title">💝 捐赠信息</view>
+
+      <view class="donation-amount-card">
+        <view class="donation-amount-label">捐赠金额</view>
+        <view class="donation-amount-value">¥{{cert.summary.amount}}</view>
+        <view wx:if="{{cert.summary.matchAmount}}" class="donation-match-tip">
+          🏢 品牌 1:1 配捐 ¥{{cert.summary.matchAmount}}，合计贡献 ¥{{cert.summary.totalAmount}}
+        </view>
+      </view>
+
+      <view class="info-card mt-md">
+        <view class="info-row">
+          <text class="info-label">捐赠项目</text>
+          <view class="info-value-row">
+            <text class="project-emoji">{{cert.summary.projectIcon || '🌱'}}</text>
+            <text class="info-value highlight-pink">{{cert.summary.projectName || '-'}}</text>
+          </view>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row column">
+          <text class="info-label">捐赠用途</text>
+          <text class="info-value left-align">{{cert.summary.projectPurpose || '-'}}</text>
+        </view>
+        <view wx:if="{{cert.summary.directedRegion}}" class="info-divider"></view>
+        <view wx:if="{{cert.summary.directedRegion}}" class="info-row">
+          <text class="info-label">定向支持</text>
+          <text class="info-value">{{cert.summary.directedRegion}}</text>
+        </view>
+        <view wx:if="{{cert.summary.batchNo}}" class="info-divider"></view>
+        <view wx:if="{{cert.summary.batchNo}}" class="info-row">
+          <text class="info-label">关联批次</text>
+          <text class="info-value mono">{{cert.summary.batchNo}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">捐赠者</text>
+          <text class="info-value">{{cert.summary.donorName || '爱心人士'}}</text>
+        </view>
+        <view wx:if="{{cert.summary.donorMessage}}" class="info-divider"></view>
+        <view wx:if="{{cert.summary.donorMessage}}" class="info-row column">
+          <text class="info-label">爱心留言</text>
+          <text class="info-value left-align">"{{cert.summary.donorMessage}}"</text>
+        </view>
+      </view>
+
+      <view class="info-card mt-md">
+        <view class="section-subtitle">📋 捐赠凭证</view>
+        <view class="info-row">
+          <text class="info-label">证书编号</text>
+          <text class="info-value mono">{{cert.summary.certificateNo || cert.certNo || '-'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">交易流水号</text>
+          <view class="info-value-row">
+            <text class="info-value mono small">{{cert.summary.transactionId || '-'}}</text>
+            <view wx:if="{{cert.summary.transactionId}}" class="copy-btn" catchtap="onCopyTransactionId">复制</view>
+          </view>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">捐赠时间</text>
+          <text class="info-value">{{cert.summary.donationTime || cert.issueDate || '-'}}</text>
+        </view>
+      </view>
+
+      <view class="info-card mt-md">
+        <view class="section-subtitle">🏛️ 执行机构</view>
+        <view class="info-row">
+          <text class="info-label">慈善组织</text>
+          <text class="info-value">{{cert.summary.charityOrg || '中华环境保护基金会'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">组织等级</text>
+          <text class="info-value highlight-green">{{cert.summary.orgLevel || '5A级社会组织'}}</text>
+        </view>
+        <view class="info-divider"></view>
+        <view class="info-row">
+          <text class="info-label">资质公示</text>
+          <text class="info-value link" bindtap="onOpenCharityQualification">查看资质 →</text>
+        </view>
+      </view>
+
+      <view class="donation-tax-tip mt-md">
+        <view class="tax-icon">📑</view>
+        <view class="tax-content">
+          <view class="tax-title">个人所得税抵扣说明</view>
+          <view class="tax-desc">根据《中华人民共和国个人所得税法》，向公益慈善组织捐赠的支出，可在计算应纳税所得额时依法扣除。请申请电子捐赠票据后在个人所得税 APP 中填报。</view>
+        </view>
+      </view>
+
+      <view class="donation-action-row mt-md">
+        <view class="donation-action-btn outline" bindtap="onOpenCharityQualification">
+          <text>资质公示</text>
+        </view>
+        <view class="donation-action-btn primary" bindtap="onApplyInvoice">
+          <text>🧾 申请捐赠票据</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
   <view class="section">
     <view class="trust-tip">
       <view class="trust-icon">🛡️</view>

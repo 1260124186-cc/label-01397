@@ -2839,6 +2839,34 @@ var greenTraceExtended = {
         { name: '绿色回收便民点（光谷广场）', address: '湖北省A市光谷大道88号', lat: 30.5039, lng: 114.4243, distance: '2.5km' },
         { name: '环保驿站（南湖小区）', address: '湖北省A市南湖路56号', lat: 30.4912, lng: 114.3612, distance: '3.8km' }
       ]
+    },
+    ecoFund: {
+      enabled: true,
+      defaultAmount: 1,
+      availableAmounts: [1, 5, 10, 50],
+      hasBatchDonation: true,
+      batchDonation: {
+        batchNo: 'GH202503',
+        projectKey: 'osmanthusReplant',
+        targetProjectName: 'A市桂花园定向支持计划',
+        targetLocation: '湖北省A市咸安区桂花镇',
+        description: '购买GH202503批次金桂花茶，每罐捐赠1元定向用于A市桂花园桂花树复种项目。',
+        matchedDonation: true,
+        matchRatio: '1:1',
+        matchNote: '品牌方1:1配捐，您捐1元，品牌再捐1元'
+      },
+      donationStats: {
+        totalRaised: 382560,
+        donorCount: 12580,
+        batchRaised: 128600,
+        batchDonorCount: 4280
+      },
+      recentDonors: [
+        { name: '张*明', amount: 1, time: '2分钟前', message: '为咸宁桂花出一份力' },
+        { name: '李*华', amount: 10, time: '15分钟前', message: '希望桂花树越长越好' },
+        { name: '王*芳', amount: 5, time: '32分钟前', message: '' },
+        { name: '匿名茶友', amount: 1, time: '1小时前', message: '' }
+      ]
     }
   },
   'G002': {
@@ -2902,6 +2930,24 @@ var greenTraceExtended = {
       nearbyPoints: [
         { name: 'A市垃圾分类回收站（东湖社区）', address: '湖北省A市东湖路128号', lat: 30.5928, lng: 114.3055, distance: '1.2km' },
         { name: '环保驿站（南湖小区）', address: '湖北省A市南湖路56号', lat: 30.4912, lng: 114.3612, distance: '3.8km' }
+      ]
+    },
+    ecoFund: {
+      enabled: true,
+      defaultAmount: 1,
+      availableAmounts: [1, 5, 10, 50],
+      hasBatchDonation: false,
+      batchDonation: null,
+      donationStats: {
+        totalRaised: 382560,
+        donorCount: 12580,
+        batchRaised: 0,
+        batchDonorCount: 0
+      },
+      recentDonors: [
+        { name: '陈*伟', amount: 1, time: '5分钟前', message: '支持环保事业' },
+        { name: '刘*', amount: 5, time: '28分钟前', message: '' },
+        { name: '匿名茶友', amount: 1, time: '2小时前', message: '' }
       ]
     }
   },

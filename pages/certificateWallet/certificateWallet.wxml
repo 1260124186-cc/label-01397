@@ -2,7 +2,7 @@
   <view wx:if="{{isEmpty}}" class="empty-state">
     <view class="empty-icon">📜</view>
     <view class="empty-title">证书钱包空空如也</view>
-    <view class="empty-desc">在产品溯源页将有机认证、检测报告、区块链存证加入证书钱包，随时验真、分享、导出</view>
+    <view class="empty-desc">在产品溯源页将有机认证、检测报告、区块链存证、公益捐赠证书加入证书钱包，随时验真、分享、导出</view>
     <view class="empty-btn" bindtap="onGoScan">去扫码查看产品</view>
   </view>
 
@@ -35,6 +35,13 @@
           <view class="stat-info">
             <view class="stat-value">{{blockchainCount}}</view>
             <view class="stat-label">区块链存证</view>
+          </view>
+        </view>
+        <view class="stat-card donation">
+          <view class="stat-icon">💝</view>
+          <view class="stat-info">
+            <view class="stat-value">{{donationCertCount}}</view>
+            <view class="stat-label">公益捐赠</view>
           </view>
         </view>
       </view>

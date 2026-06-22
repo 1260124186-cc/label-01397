@@ -1,15 +1,18 @@
 var mockData = require('../../utils/mockData.js');
 var greenPoints = require('../../utils/greenPoints.js');
+var ecoFund = require('../../utils/ecoFund.js');
 
 Page({
   data: {
     traceId: '',
     productName: '',
+    batchNo: '',
     activeTab: 'certificate',
     tabs: [
       { key: 'certificate', label: '认证证书', icon: '📜' },
       { key: 'carbon', label: '碳足迹', icon: '🌍' },
       { key: 'recycling', label: '回收指引', icon: '♻️' },
+      { key: 'ecoFund', label: '公益基金', icon: '💚' },
       { key: 'points', label: '绿色积分', icon: '🌟' }
     ],
     certificates: [],
@@ -25,7 +28,20 @@ Page({
     userLevel: null,
     pointsHistory: [],
     showPointsDetail: false,
-    carbonChartData: null
+    carbonChartData: null,
+    ecoFundData: null,
+    fundProjects: [],
+    selectedProjectKey: '',
+    selectedAmount: 1,
+    donorName: '',
+    donorMessage: '',
+    showDonationModal: false,
+    isDonating: false,
+    donationResult: null,
+    batchDonationConfig: null,
+    hasBatchDonation: false,
+    donationStats: null,
+    recentDonors: []
   },
 
   onLoad: function(options) {
@@ -45,12 +61,26 @@ Page({
       return;
     }
 
+    var fundProjects = ecoFund.getFundProjects();
+    var batchNo = traceData && traceData.basicInfo ? traceData.basicInfo.batchNo : '';
+    var batchConfig = ecoFund.getBatchDonationConfig(batchNo);
+    var selectedKey = batchConfig ? batchConfig.projectKey : fundProjects[0].key;
+
     this.setData({
       traceId: traceId,
       productName: traceData ? traceData.basicInfo.productName : '',
+      batchNo: batchNo,
       certificates: greenData.certificates || [],
       carbonFootprint: greenData.carbonFootprint || null,
-      recyclingGuide: greenData.recyclingGuide || null
+      recyclingGuide: greenData.recyclingGuide || null,
+      ecoFundData: greenData.ecoFund || null,
+      fundProjects: fundProjects,
+      selectedProjectKey: selectedKey,
+      selectedAmount: (greenData.ecoFund && greenData.ecoFund.defaultAmount) || 1,
+      batchDonationConfig: batchConfig,
+      hasBatchDonation: !!batchConfig,
+      donationStats: (greenData.ecoFund && greenData.ecoFund.donationStats) || null,
+      recentDonors: (greenData.ecoFund && greenData.ecoFund.recentDonors) || []
     });
 
     this.loadGreenPoints();
@@ -68,6 +98,10 @@ Page({
 
   onShow: function() {
     this.loadGreenPoints();
+    var donationStats = ecoFund.getDonationStats();
+    if (donationStats.totalCount > 0) {
+      this.setData({ userDonationStats: donationStats });
+    }
   },
 
   loadGreenPoints: function() {
@@ -103,6 +137,9 @@ Page({
     } else if (key === 'certificate') {
       var earnResult3 = greenPoints.earnPoints('viewCertificate');
       if (earnResult3.earned > 0) this.loadGreenPoints();
+    } else if (key === 'ecoFund') {
+      var earnResult4 = greenPoints.earnPoints('viewEcoFund');
+      if (earnResult4.earned > 0) this.loadGreenPoints();
     }
   },
 
@@ -267,6 +304,120 @@ Page({
 
   togglePointsDetail: function() {
     this.setData({ showPointsDetail: !this.data.showPointsDetail });
+  },
+
+  openDonationModal: function(e) {
+    var projectKey = e && e.currentTarget && e.currentTarget.dataset.projectkey;
+    if (projectKey) {
+      this.setData({ selectedProjectKey: projectKey });
+    }
+    this.setData({
+      showDonationModal: true,
+      donationResult: null,
+      donorName: this.data.donorName || '',
+      donorMessage: ''
+    });
+  },
+
+  closeDonationModal: function() {
+    this.setData({ showDonationModal: false, donationResult: null });
+  },
+
+  preventBubbleDonation: function() {},
+
+  selectProject: function(e) {
+    var key = e.currentTarget.dataset.key;
+    this.setData({ selectedProjectKey: key });
+  },
+
+  selectAmount: function(e) {
+    var amount = Number(e.currentTarget.dataset.amount);
+    this.setData({ selectedAmount: amount });
+  },
+
+  onDonorNameInput: function(e) {
+    this.setData({ donorName: e.detail.value });
+  },
+
+  onDonorMessageInput: function(e) {
+    this.setData({ donorMessage: e.detail.value });
+  },
+
+  doDonation: function() {
+    var that = this;
+    if (this.data.isDonating) return;
+
+    var amount = this.data.selectedAmount;
+    var projectKey = this.data.selectedProjectKey;
+    if (!amount || amount <= 0) {
+      wx.showToast({ title: '请选择捐赠金额', icon: 'none' });
+      return;
+    }
+    if (!projectKey) {
+      wx.showToast({ title: '请选择捐赠项目', icon: 'none' });
+      return;
+    }
+
+    this.setData({ isDonating: true });
+    wx.showLoading({ title: '正在捐赠...', mask: true });
+
+    setTimeout(function() {
+      wx.hideLoading();
+      var traceData = mockData.getTraceData(that.data.traceId);
+      var result = ecoFund.processOneYuanDonation({
+        amount: amount,
+        projectKey: projectKey,
+        batchNo: that.data.batchNo,
+        traceData: traceData,
+        channel: 'trace_scan',
+        donorName: that.data.donorName || '爱心人士',
+        donorMessage: that.data.donorMessage || ''
+      });
+
+      that.setData({
+        isDonating: false,
+        donationResult: result
+      });
+
+      var earnRes = greenPoints.earnPoints('makeDonation');
+      if (earnRes.earned > 0) that.loadGreenPoints();
+
+      wx.showToast({ title: '捐赠成功！', icon: 'success', duration: 2000 });
+    }, 1200);
+  },
+
+  viewDonationCert: function() {
+    var result = this.data.donationResult;
+    if (!result || !result.certificate) return;
+    this.setData({ showDonationModal: false });
+    wx.navigateTo({
+      url: '/pages/certificateDetail/certificateDetail?certId=' + result.certificate.certId
+    });
+  },
+
+  goCertificateWallet: function() {
+    wx.navigateTo({ url: '/pages/certificateWallet/certificateWallet' });
+  },
+
+  openCharityQualification: function() {
+    wx.navigateTo({ url: '/pages/charityQualification/charityQualification' });
+  },
+
+  applyInvoice: function() {
+    var result = this.data.donationResult;
+    if (!result || !result.donationRecord) return;
+    var that = this;
+    wx.showModal({
+      title: '申请捐赠票据',
+      content: '请联系慈善组织申请票据，您的捐赠凭证编号为：\n\n' + result.donationRecord.orderNo + '\n\n是否立即联系客服？',
+      confirmText: '联系客服',
+      cancelText: '稍后再说',
+      success: function(res) {
+        if (res.confirm) {
+          wx.showToast({ title: '客服正在接入...', icon: 'none' });
+        }
+      }
+    });
   },
 
   onShareAppMessage: function() {

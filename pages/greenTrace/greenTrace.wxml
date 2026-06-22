@@ -207,6 +207,141 @@
       </view>
     </view>
 
+    <!-- ========== 公益基金 ========== -->
+    <view class="eco-fund-section" wx:if="{{activeTab === 'ecoFund'}}">
+      <view class="section-header">
+        <text class="section-icon">💚</text>
+        <text class="section-title">产区生态基金</text>
+        <view class="compliance-link" bindtap="openCharityQualification">
+          <text>资质公示 ›</text>
+        </view>
+      </view>
+      <view class="section-desc">扫码即可捐赠一元，让每一杯茶都成为一份善意</view>
+
+      <!-- 批次定向捐赠提示 -->
+      <view class="batch-donation-banner" wx:if="{{hasBatchDonation && batchDonationConfig}}">
+        <view class="banner-icon-wrap">
+          <text class="banner-icon">🌼</text>
+        </view>
+        <view class="banner-info">
+          <view class="banner-title">{{batchDonationConfig.targetProjectName}}</view>
+          <view class="banner-desc">{{batchDonationConfig.description}}</view>
+          <view class="banner-match">
+            <text class="match-tag">🎁 {{batchDonationConfig.matchRatio}}配捐</text>
+            <text class="match-note">{{batchDonationConfig.matchNote}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 基金总览统计 -->
+      <view class="fund-stats-card" wx:if="{{donationStats}}">
+        <view class="fund-stat-item">
+          <view class="stat-num">¥{{donationStats.totalRaised}}</view>
+          <view class="stat-label">累计筹集</view>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="fund-stat-item">
+          <view class="stat-num">{{donationStats.donorCount}}</view>
+          <view class="stat-label">爱心人数</view>
+        </view>
+        <view class="stat-divider" wx:if="{{hasBatchDonation}}"></view>
+        <view class="fund-stat-item" wx:if="{{hasBatchDonation}}">
+          <view class="stat-num">¥{{donationStats.batchRaised}}</view>
+          <view class="stat-label">本批次定向</view>
+        </view>
+      </view>
+
+      <!-- 基金项目展示 -->
+      <view class="projects-title">📢 基金用途说明</view>
+      <view class="fund-projects">
+        <view 
+          wx:for="{{fundProjects}}" 
+          wx:key="key"
+          class="project-card {{selectedProjectKey === item.key ? 'selected' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="selectProject"
+        >
+          <view class="project-header">
+            <view class="project-icon" style="background: {{item.color}}15; color: {{item.color}};">
+              <text>{{item.icon}}</text>
+            </view>
+            <view class="project-name">{{item.name}}</view>
+            <view class="project-select-indicator" wx:if="{{selectedProjectKey === item.key}}">✓</view>
+          </view>
+          <view class="project-desc">{{item.description}}</view>
+          <view class="project-progress">
+            <view class="progress-track">
+              <view class="progress-fill" style="width: {{item.progress}}%; background: {{item.color}};"></view>
+            </view>
+            <view class="progress-info">
+              <text class="progress-percent" style="color: {{item.color}};">{{item.progress}}%</text>
+              <text class="progress-text">¥{{item.raised}} / ¥{{item.target}}</text>
+            </view>
+          </view>
+          <view class="project-impact">
+            <text class="impact-icon">💡</text>
+            <text class="impact-text">{{item.impactMetric}}</text>
+          </view>
+          <view class="project-area">
+            <text class="area-icon">📍</text>
+            <text class="area-text">{{item.targetArea}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 最近捐赠动态 -->
+      <view class="recent-donors-card" wx:if="{{recentDonors.length > 0}}">
+        <view class="recent-title">❤️ 最近爱心榜</view>
+        <view class="donor-list">
+          <view wx:for="{{recentDonors}}" wx:key="time" class="donor-item">
+            <view class="donor-avatar">🧑</view>
+            <view class="donor-info">
+              <view class="donor-name">{{item.name}}</view>
+              <view class="donor-message" wx:if="{{item.message}}">「{{item.message}}」</view>
+            </view>
+            <view class="donor-right">
+              <view class="donor-amount">¥{{item.amount}}</view>
+              <view class="donor-time">{{item.time}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 捐赠入口按钮 -->
+      <view class="donate-entry" bindtap="openDonationModal">
+        <view class="donate-btn-main">
+          <text class="btn-icon">💝</text>
+          <text class="btn-text">扫码捐一元</text>
+        </view>
+        <view class="donate-tips">
+          <text>🔒 由</text>
+          <text class="tip-highlight" bindtap="openCharityQualification">中华环境保护基金会</text>
+          <text>监管 · 可开捐赠票据</text>
+        </view>
+      </view>
+
+      <!-- 我的贡献 -->
+      <view class="my-contribution-card" wx:if="{{userDonationStats && userDonationStats.totalCount > 0}}">
+        <view class="my-contrib-title">🎖️ 我的公益贡献</view>
+        <view class="my-contrib-stats">
+          <view class="my-stat-item">
+            <view class="my-stat-num">{{userDonationStats.totalCount}}</view>
+            <view class="my-stat-label">捐赠次数</view>
+          </view>
+          <view class="my-stat-divider"></view>
+          <view class="my-stat-item">
+            <view class="my-stat-num">¥{{userDonationStats.totalAmount}}</view>
+            <view class="my-stat-label">累计金额</view>
+          </view>
+          <view class="my-stat-divider"></view>
+          <view class="my-stat-item go-wallet" bindtap="goCertificateWallet">
+            <view class="my-stat-num">📜</view>
+            <view class="my-stat-label">我的证书</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
     <!-- ========== 绿色积分 ========== -->
     <view class="points-section" wx:if="{{activeTab === 'points'}}">
       <view class="section-header">
@@ -427,6 +562,163 @@
           </view>
         </view>
       </view>
+    </view>
+  </view>
+
+  <!-- 捐赠弹窗 -->
+  <view class="modal-overlay donation-modal" wx:if="{{showDonationModal}}" catchtap="closeDonationModal">
+    <view class="donation-modal-content" catchtap="preventBubbleDonation">
+      <view class="donation-modal-header">
+        <text class="donation-modal-title">💝 公益捐赠</text>
+        <view class="donation-modal-close" bindtap="closeDonationModal">×</view>
+      </view>
+
+      <block wx:if="{{!donationResult}}">
+        <view class="donation-modal-body">
+
+          <!-- 批次定向提示 -->
+          <view class="donation-batch-tip" wx:if="{{hasBatchDonation && batchDonationConfig}}">
+            <text class="batch-tip-icon">🎯</text>
+            <view class="batch-tip-content">
+              <view class="batch-tip-title">批次定向支持</view>
+              <view class="batch-tip-desc">{{batchDonationConfig.description}}</view>
+            </view>
+          </view>
+
+          <!-- 项目选择 -->
+          <view class="donation-section-title">选择捐赠项目</view>
+          <view class="donation-project-list">
+            <view
+              wx:for="{{fundProjects}}"
+              wx:key="key"
+              class="donation-project-item {{selectedProjectKey === item.key ? 'active' : ''}}"
+              data-key="{{item.key}}"
+              bindtap="selectProject"
+            >
+              <view class="dpi-icon" style="background: {{item.color}}15; color: {{item.color}};">{{item.icon}}</view>
+              <view class="dpi-name">{{item.name}}</view>
+              <view class="dpi-check" wx:if="{{selectedProjectKey === item.key}}">✓</view>
+            </view>
+          </view>
+
+          <!-- 金额选择 -->
+          <view class="donation-section-title">选择捐赠金额</view>
+          <view class="donation-amount-list">
+            <view
+              wx:for="{{[1, 5, 10, 50]}}"
+              wx:key="*this"
+              class="donation-amount-item {{selectedAmount === item ? 'active' : ''}}"
+              data-amount="{{item}}"
+              bindtap="selectAmount"
+            >
+              <text class="da-symbol">¥</text>
+              <text class="da-value">{{item}}</text>
+            </view>
+          </view>
+
+          <!-- 信息填写 -->
+          <view class="donation-section-title">您的信息（选填）</view>
+          <view class="donation-input-group">
+            <view class="donation-input-row">
+              <text class="di-label">昵称</text>
+              <input
+                class="di-input"
+                placeholder="默认：爱心人士"
+                placeholder-class="di-placeholder"
+                value="{{donorName}}"
+                bindinput="onDonorNameInput"
+                maxlength="20"
+              />
+            </view>
+            <view class="donation-input-row">
+              <text class="di-label">留言</text>
+              <input
+                class="di-input"
+                placeholder="留下您的祝福..."
+                placeholder-class="di-placeholder"
+                value="{{donorMessage}}"
+                bindinput="onDonorMessageInput"
+                maxlength="50"
+              />
+            </view>
+          </view>
+
+          <!-- 合规提示 -->
+          <view class="donation-compliance">
+            <view class="compliance-row">
+              <text class="compliance-icon">🛡️</text>
+              <text class="compliance-text">捐赠资金由</text>
+              <text class="compliance-link" bindtap="openCharityQualification">中华环境保护基金会</text>
+              <text class="compliance-text">监管</text>
+            </view>
+            <view class="compliance-row">
+              <text class="compliance-icon">📄</text>
+              <text class="compliance-text">可凭捐赠凭证申请公益捐赠票据，支持个税抵扣</text>
+            </view>
+            <view class="compliance-row">
+              <text class="compliance-icon">🎖️</text>
+              <text class="compliance-text">捐赠成功后将自动生成公益捐赠证书存入证书钱包</text>
+            </view>
+          </view>
+
+        </view>
+
+        <view class="donation-modal-footer">
+          <view class="donation-confirm-btn {{isDonating ? 'disabled' : ''}}" bindtap="doDonation">
+            <text wx:if="{{!isDonating}}">确认捐赠 ¥{{selectedAmount}}</text>
+            <text wx:else>捐赠中...</text>
+          </view>
+          <view class="donation-summary-row">
+            <text class="ds-text">您捐赠的 ¥{{selectedAmount}} 将用于</text>
+            <text
+              wx:for="{{fundProjects}}"
+              wx:key="key"
+              wx:if="{{item.key === selectedProjectKey}}"
+              class="ds-highlight"
+            >{{item.name}}</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 捐赠成功 -->
+      <block wx:else>
+        <view class="donation-success-body">
+          <view class="success-icon-wrap">
+            <text class="success-icon">🎉</text>
+          </view>
+          <view class="success-title">感谢您的爱心捐赠！</view>
+          <view class="success-amount">¥{{donationResult.donationRecord.amount}}</view>
+          <view class="success-info-card">
+            <view class="si-row">
+              <text class="si-label">捐赠项目</text>
+              <text class="si-value">{{donationResult.donationRecord.projectName}}</text>
+            </view>
+            <view class="si-divider"></view>
+            <view class="si-row">
+              <text class="si-label">凭证编号</text>
+              <text class="si-value mono">{{donationResult.donationRecord.orderNo}}</text>
+            </view>
+            <view class="si-divider"></view>
+            <view class="si-row" wx:if="{{donationResult.certificate}}">
+              <text class="si-label">证书编号</text>
+              <text class="si-value mono">{{donationResult.certificate.certNo}}</text>
+            </view>
+          </view>
+          <view class="success-match-tip" wx:if="{{hasBatchDonation && batchDonationConfig}}">
+            <text>🎁 </text>
+            <text class="smt-text">{{batchDonationConfig.matchNote}}</text>
+          </view>
+        </view>
+        <view class="donation-success-footer">
+          <view class="success-btn secondary" bindtap="applyInvoice">
+            <text>申请票据</text>
+          </view>
+          <view class="success-btn primary" bindtap="viewDonationCert">
+            <text>查看证书</text>
+          </view>
+        </view>
+      </block>
+
     </view>
   </view>
 

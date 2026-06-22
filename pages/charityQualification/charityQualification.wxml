@@ -1,0 +1,142 @@
+<view class="qualification-page">
+
+  <view class="org-hero">
+    <view class="org-badge">🏛️</view>
+    <view class="org-name">中华环境保护基金会</view>
+    <view class="org-level-badge">⭐ 5A级社会组织</view>
+    <view class="org-mission">民政部  1993年4月注册 · 民政部登记注册</view>
+    <view class="org-slogan">宗旨：保护生态环境、建设美丽中国</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">核心资质证书</view>
+    <view class="cert-list">
+      <view
+        wx:for="{{qualificationCerts}}"
+        wx:key="id"
+        class="cert-card"
+        data-certid="{{item.id}}"
+        bindtap="onViewCert"
+      >
+        <view class="cert-header" style="background: linear-gradient(135deg, {{item.color}}, {{item.color}}88);">
+          <view class="cert-icon">{{item.icon}}</view>
+          <view class="cert-status">✅ 有效</view>
+        </view>
+        <view class="cert-body">
+          <view class="cert-title">{{item.title}}</view>
+          <view class="cert-no-row">
+            <text class="cert-label">编号：</text>
+            <text class="cert-no mono">{{item.no}}</text>
+          </view>
+          <view class="cert-issuer">{{item.issuer}}</view>
+        </view>
+        <view class="cert-footer">
+          <text class="view-detail">查看详情 →</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">年度审计报告</view>
+    <view class="audit-badge">
+      <view class="audit-badge-icon">🔍</view>
+      <view class="audit-badge-text">独立第三方审计：立信会计师事务所（特殊普通合伙）</view>
+    </view>
+    <view class="report-list">
+      <view
+        wx:for="{{annualReports}}"
+        wx:key="year"
+        class="report-card"
+      >
+        <view class="report-year" data-year="{{item.year}}" bindtap="onDownloadReport">
+          <view class="report-year-badge">{{item.year}}</view>
+          <view class="report-info">
+            <view class="report-title">{{item.title}}</view>
+            <view class="report-meta">审计机构：{{item.auditor}}</view>
+          </view>
+          <view class="report-size">{{item.size}}</view>
+        </view>
+        <view class="report-download" data-year="{{item.year}}" catchtap="onDownloadReport">
+          <text>📄</text>
+          <text>下载PDF</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">信息公开与透明度</view>
+    <view class="transparency-card">
+      <view
+        wx:for="{{transparencyItems}}"
+        wx:key="text"
+        class="transparency-item"
+      >
+        <view class="transparency-icon">{{item.icon}}</view>
+        <view class="transparency-text">{{item.text}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">法律与合规说明</view>
+    <view class="legal-card">
+      <view
+        wx:for="{{legalNotices}}"
+        wx:key="text"
+        class="legal-item"
+      >
+        <view class="legal-icon">{{item.icon}}</view>
+        <view class="legal-text">{{item.text}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section contact-section">
+    <view class="section-title">联系方式</view>
+    <view class="contact-card">
+      <view class="contact-row" bindtap="onOpenOfficialSite">
+        <view class="contact-icon">🌐</view>
+        <view class="contact-info">
+          <view class="contact-label">官方网站</view>
+          <view class="contact-value">www.cepf.org.cn</view>
+        </view>
+        <view class="contact-arrow">›</view>
+      </view>
+      <view class="contact-divider"></view>
+      <view class="contact-row" bindtap="onCallHotline">
+        <view class="contact-icon">📞</view>
+        <view class="contact-info">
+          <view class="contact-label">服务热线</view>
+          <view class="contact-value">400-675-1100</view>
+        </view>
+        <view class="contact-arrow">›</view>
+      </view>
+      <view class="contact-divider"></view>
+      <view class="contact-row" bindtap="onCopyOrgInfo" data-info="北京市东城区广渠门内大街16号">
+        <view class="contact-icon">📍</view>
+        <view class="contact-info">
+          <view class="contact-label">办公地址</view>
+          <view class="contact-value">北京市东城区广渠门内大街16号</view>
+        </view>
+        <view class="contact-arrow">›</view>
+      </view>
+      <view class="contact-divider"></view>
+      <view class="contact-row" bindtap="onCopyOrgInfo" data-info="中华环境保护基金会 统一社会信用代码 53100000500012015T">
+        <view class="contact-icon">🆔</view>
+        <view class="contact-info">
+          <view class="contact-label">统一社会信用代码</view>
+          <view class="contact-value mono">53100000500012015T</view>
+        </view>
+        <view class="contact-arrow">›</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="footer-tip">
+    <text>信息真实有效 · 感谢您的信任与支持</text>
+  </view>
+
+  <view style="height: 40rpx;"></view>
+</view>

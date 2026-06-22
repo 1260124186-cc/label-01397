@@ -10,11 +10,13 @@ Page({
       { key: 'all', label: '全部', icon: '📜' },
       { key: 'organic', label: '有机认证', icon: '🌱' },
       { key: 'testReport', label: '检测报告', icon: '🔬' },
-      { key: 'blockchain', label: '区块链存证', icon: '🔗' }
+      { key: 'blockchain', label: '区块链存证', icon: '🔗' },
+      { key: 'donation_cert', label: '公益捐赠', icon: '💝' }
     ],
     organicCount: 0,
     testReportCount: 0,
     blockchainCount: 0,
+    donationCertCount: 0,
     sortBy: 'time'
   },
 
@@ -43,11 +45,12 @@ Page({
       });
     });
 
-    var organicCount = 0, testReportCount = 0, blockchainCount = 0;
+    var organicCount = 0, testReportCount = 0, blockchainCount = 0, donationCertCount = 0;
     formatted.forEach(function(c) {
       if (c.type === 'organic') organicCount++;
       else if (c.type === 'testReport') testReportCount++;
       else if (c.type === 'blockchain') blockchainCount++;
+      else if (c.type === 'donation_cert') donationCertCount++;
     });
 
     this.setData({
@@ -55,6 +58,7 @@ Page({
       organicCount: organicCount,
       testReportCount: testReportCount,
       blockchainCount: blockchainCount,
+      donationCertCount: donationCertCount,
       isEmpty: formatted.length === 0
     });
 

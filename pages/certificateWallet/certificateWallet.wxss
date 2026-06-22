@@ -53,8 +53,8 @@
 
 .wallet-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16rpx;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12rpx;
 }
 
 .stat-card {
@@ -70,6 +70,7 @@
 .stat-card.organic { border-top: 4rpx solid #52C41A; }
 .stat-card.test { border-top: 4rpx solid #1890FF; }
 .stat-card.bc { border-top: 4rpx solid #722ED1; }
+.stat-card.donation { border-top: 4rpx solid #EB2F96; }
 
 .stat-icon {
   font-size: 36rpx;

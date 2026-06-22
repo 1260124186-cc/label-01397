@@ -70,7 +70,8 @@
     "pages/claim/list",
     "pages/claim/create",
     "pages/claim/detail",
-    "pages/publicLottery/detail"
+    "pages/publicLottery/detail",
+    "pages/charityQualification/charityQualification"
   ],
   "window": {
     "backgroundTextStyle": "dark",

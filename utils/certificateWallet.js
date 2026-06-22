@@ -4,7 +4,8 @@ var MAX_CERTIFICATES = 200;
 var CERTIFICATE_TYPES = {
   ORGANIC: 'organic',
   TEST_REPORT: 'testReport',
-  BLOCKCHAIN: 'blockchain'
+  BLOCKCHAIN: 'blockchain',
+  DONATION_CERT: 'donation_cert'
 };
 
 function getCertificates() {
@@ -225,6 +226,7 @@ function formatType(type) {
     case CERTIFICATE_TYPES.ORGANIC: return '有机认证';
     case CERTIFICATE_TYPES.TEST_REPORT: return '检测报告';
     case CERTIFICATE_TYPES.BLOCKCHAIN: return '区块链存证';
+    case CERTIFICATE_TYPES.DONATION_CERT: return '公益捐赠';
     default: return '数字证书';
   }
 }
@@ -234,6 +236,7 @@ function formatTypeIcon(type) {
     case CERTIFICATE_TYPES.ORGANIC: return '🌱';
     case CERTIFICATE_TYPES.TEST_REPORT: return '🔬';
     case CERTIFICATE_TYPES.BLOCKCHAIN: return '🔗';
+    case CERTIFICATE_TYPES.DONATION_CERT: return '💝';
     default: return '📜';
   }
 }
@@ -243,6 +246,7 @@ function formatTypeColor(type) {
     case CERTIFICATE_TYPES.ORGANIC: return '#52C41A';
     case CERTIFICATE_TYPES.TEST_REPORT: return '#1890FF';
     case CERTIFICATE_TYPES.BLOCKCHAIN: return '#722ED1';
+    case CERTIFICATE_TYPES.DONATION_CERT: return '#EB2F96';
     default: return '#2E8B57';
   }
 }

@@ -1,0 +1,7 @@
+{
+  "usingComponents": {},
+  "navigationBarTitleText": "慈善组织资质公示",
+  "navigationBarBackgroundColor": "#EB2F96",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": true
+}
