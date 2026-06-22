@@ -706,6 +706,345 @@
       </view>
     </view>
 
+    <!-- ========== 土壤健康档案 ========== -->
+    <view class="soil-health-section" wx:if="{{activeTab === 'soilHealth' && soilHealth}}">
+      <view class="section-header">
+        <text class="section-icon">🌱</text>
+        <text class="section-title">土壤健康档案</text>
+      </view>
+      <view class="section-desc">与生态种植描述互补，提供量化数据背书。连续7年跟踪监测，数据来源：{{soilHealth.testInstitution}}</view>
+
+      <view class="soil-overview-card">
+        <view class="soil-trend-banner {{soilHealth.overallTrend}}">
+          <view class="trend-icon">{{soilHealth.overallTrend === 'improving' ? '📈' : soilHealth.overallTrend === 'stable' ? '📊' : '⚠️'}}</view>
+          <view class="trend-text">
+            <view class="trend-title">{{soilHealth.overallTrend === 'improving' ? '土壤持续优化中' : soilHealth.overallTrend === 'stable' ? '土壤质量稳定' : '需关注'}}</view>
+            <view class="trend-desc">{{soilHealth.overallTrendDesc}}</view>
+          </view>
+        </view>
+        <view class="soil-summary-grid">
+          <view class="soil-stat-item">
+            <view class="soil-stat-icon">⚗️</view>
+            <view class="soil-stat-value">{{soilHealth.summary.phStatus}}</view>
+            <view class="soil-stat-label">pH酸碱度</view>
+          </view>
+          <view class="soil-stat-item">
+            <view class="soil-stat-icon">🍂</view>
+            <view class="soil-stat-value trend-{{soilHealth.summary.organicMatterTrend}}">
+              {{soilHealth.summary.organicMatterTrend === 'up' ? '↑ 提升' : soilHealth.summary.organicMatterTrend === 'down' ? '↓ 下降' : '→ 稳定'}}
+            </view>
+            <view class="soil-stat-label">有机质趋势</view>
+          </view>
+          <view class="soil-stat-item">
+            <view class="soil-stat-icon">🛡️</view>
+            <view class="soil-stat-value safe">{{soilHealth.summary.heavyMetalStatus}}</view>
+            <view class="soil-stat-label">重金属检测</view>
+          </view>
+        </view>
+        <view class="soil-improvement-note">
+          <text class="note-icon">💡</text>
+          <text class="note-text">{{soilHealth.summary.improvementNote}}</text>
+        </view>
+        <view class="eco-planting-link-card" wx:if="{{ecoPlanting}}" bindtap="goToEcoPlanting">
+          <view class="epl-left">
+            <view class="epl-icon">{{ecoPlanting.icon}}</view>
+            <view class="epl-info">
+              <view class="epl-title">
+                <text>{{ecoPlanting.title}}</text>
+                <text class="epl-cert" wx:if="{{ecoPlanting.certification}}">{{ecoPlanting.certification}}</text>
+              </view>
+              <view class="epl-records">
+                <text wx:for="{{ecoPlanting.records}}" wx:key="*this" class="epl-record-item">{{item}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="epl-arrow">›</view>
+        </view>
+      </view>
+
+      <view class="plot-selector-card" wx:if="{{soilHealth.plots.length > 1}}">
+        <view class="plot-selector-title">📍 选择监测地块</view>
+        <scroll-view scroll-x="true" class="plot-scroll">
+          <view class="plot-tabs">
+            <view 
+              wx:for="{{soilHealth.plots}}" 
+              wx:key="id"
+              class="plot-tab-item {{currentPlotIndex === index ? 'active' : ''}}"
+              data-index="{{index}}"
+              bindtap="switchPlot"
+            >
+              <text class="plot-tab-name">{{item.name}}</text>
+              <text class="plot-tab-area">{{item.area}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="plot-detail-card" wx:if="{{soilHealth.plots[currentPlotIndex]}}">
+        <view class="plot-detail-header">
+          <text class="plot-detail-icon">🏞️</text>
+          <view class="plot-detail-info">
+            <view class="plot-detail-name">{{soilHealth.plots[currentPlotIndex].name}}</view>
+            <view class="plot-detail-meta">
+              <text class="meta-item">📍 {{soilHealth.plots[currentPlotIndex].location}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="plot-detail-grid">
+          <view class="plot-detail-item">
+            <text class="pdi-label">土壤类型</text>
+            <text class="pdi-value">{{soilHealth.plots[currentPlotIndex].soilType}}</text>
+          </view>
+          <view class="plot-detail-item">
+            <text class="pdi-label">海拔高度</text>
+            <text class="pdi-value">{{soilHealth.plots[currentPlotIndex].elevation}}</text>
+          </view>
+          <view class="plot-detail-item">
+            <text class="pdi-label">种植作物</text>
+            <text class="pdi-value">{{soilHealth.plots[currentPlotIndex].mainCrop}}</text>
+          </view>
+          <view class="plot-detail-item">
+            <text class="pdi-label">灌溉方式</text>
+            <text class="pdi-value">{{soilHealth.plots[currentPlotIndex].irrigation}}</text>
+          </view>
+          <view class="plot-detail-item full">
+            <text class="pdi-label">施肥方案</text>
+            <text class="pdi-value">{{soilHealth.plots[currentPlotIndex].fertilization}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="soil-chart-card">
+        <view class="chart-type-tabs">
+          <view 
+            class="chart-type-tab {{soilChartType === 'ph' ? 'active' : ''}}"
+            data-type="ph"
+            bindtap="switchSoilChartType"
+          >
+            <text>⚗️ pH酸碱度</text>
+          </view>
+          <view 
+            class="chart-type-tab {{soilChartType === 'organic' ? 'active' : ''}}"
+            data-type="organic"
+            bindtap="switchSoilChartType"
+          >
+            <text>🍂 有机质</text>
+          </view>
+          <view 
+            class="chart-type-tab {{soilChartType === 'heavyMetal' ? 'active' : ''}}"
+            data-type="heavyMetal"
+            bindtap="switchSoilChartType"
+          >
+            <text>🛡️ 重金属</text>
+          </view>
+        </view>
+        <view class="chart-canvas-wrapper">
+          <canvas type="2d" id="soilPhCanvas" class="soil-chart-canvas" wx:if="{{soilChartType === 'ph'}}"></canvas>
+          <canvas type="2d" id="soilOrganicCanvas" class="soil-chart-canvas" wx:if="{{soilChartType === 'organic'}}"></canvas>
+          <canvas type="2d" id="soilHeavyMetalCanvas" class="soil-chart-canvas" wx:if="{{soilChartType === 'heavyMetal'}}"></canvas>
+        </view>
+        <view class="chart-legend-row">
+          <view class="chart-legend-item">
+            <view class="legend-line" style="background-color: #FAAD14;"></view>
+            <text class="legend-text">适宜区间</text>
+          </view>
+          <view class="chart-legend-item" wx:if="{{soilChartType === 'heavyMetal'}}">
+            <view class="legend-line" style="background-color: #52C41A;"></view>
+            <text class="legend-text">安全警戒线</text>
+          </view>
+          <view class="chart-legend-item">
+            <view class="legend-dot abnormal"></view>
+            <text class="legend-text">异常事件年份</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="year-timeline-card">
+        <view class="timeline-header">
+          <text class="timeline-icon">📋</text>
+          <text class="timeline-title">年度抽检记录（2019–2025）</text>
+        </view>
+        <view class="year-tabs">
+          <view 
+            wx:for="{{currentPlotRecords}}" 
+            wx:key="year"
+            class="year-tab-item {{selectedYearRecord && selectedYearRecord.year === item.year ? 'active' : ''}} {{item.abnormalEvent ? 'has-abnormal' : ''}}"
+            data-index="{{index}}"
+            bindtap="selectYearRecord"
+          >
+            <text class="year-tab-year">{{item.year}}</text>
+            <text class="year-tab-level {{item.overallLevel}}">{{item.overallLevel}}</text>
+            <view class="year-tab-abnormal" wx:if="{{item.abnormalEvent}}">{{item.abnormalEvent.icon}}</view>
+          </view>
+        </view>
+
+        <view class="year-record-detail" wx:if="{{selectedYearRecord}}">
+          <view class="yrd-header">
+            <view class="yrd-year-badge">{{selectedYearRecord.year}}年 · {{selectedYearRecord.season}}抽检</view>
+            <view class="yrd-level-badge {{selectedYearRecord.overallLevel}}">{{selectedYearRecord.overallLevel}}</view>
+          </view>
+          <view class="yrd-meta-row">
+            <view class="yrd-meta-item">
+              <text class="yrd-meta-label">检测日期</text>
+              <text class="yrd-meta-value">{{selectedYearRecord.testDate}}</text>
+            </view>
+            <view class="yrd-meta-item">
+              <text class="yrd-meta-label">关联批次</text>
+              <text class="yrd-meta-value batch">{{selectedYearRecord.batchNo}}</text>
+            </view>
+          </view>
+
+          <view class="yrd-indicators-grid">
+            <view class="yrd-indicator-item">
+              <view class="yrd-ind-header">
+                <text class="yrd-ind-icon">⚗️</text>
+                <text class="yrd-ind-name">pH酸碱度</text>
+              </view>
+              <view class="yrd-ind-value ph">{{selectedYearRecord.ph}}</view>
+              <view class="yrd-ind-bar">
+                <view class="yrd-ind-fill ph" style="width: {{((selectedYearRecord.ph - 3) / 5) * 100}}%;"></view>
+              </view>
+              <view class="yrd-ind-note">茶树适宜4.5-6.5</view>
+            </view>
+            <view class="yrd-indicator-item">
+              <view class="yrd-ind-header">
+                <text class="yrd-ind-icon">🍂</text>
+                <text class="yrd-ind-name">有机质</text>
+              </view>
+              <view class="yrd-ind-value organic">{{selectedYearRecord.organicMatter}} {{selectedYearRecord.organicMatterUnit}}</view>
+              <view class="yrd-ind-bar">
+                <view class="yrd-ind-fill organic" style="width: {{(selectedYearRecord.organicMatter / 50) * 100}}%;"></view>
+              </view>
+              <view class="yrd-ind-note">优级标准≥20g/kg</view>
+            </view>
+            <view class="yrd-indicator-item">
+              <view class="yrd-ind-header">
+                <text class="yrd-ind-icon">🧪</text>
+                <text class="yrd-ind-name">碱解氮</text>
+              </view>
+              <view class="yrd-ind-value">{{selectedYearRecord.alkaliHydrolyzableN}} mg/kg</view>
+              <view class="yrd-ind-bar">
+                <view class="yrd-ind-fill nitrogen" style="width: {{(selectedYearRecord.alkaliHydrolyzableN / 200) * 100}}%;"></view>
+              </view>
+              <view class="yrd-ind-note">丰富等级≥120mg/kg</view>
+            </view>
+            <view class="yrd-indicator-item">
+              <view class="yrd-ind-header">
+                <text class="yrd-ind-icon">🔬</text>
+                <text class="yrd-ind-name">有效磷</text>
+              </view>
+              <view class="yrd-ind-value">{{selectedYearRecord.availableP}} mg/kg</view>
+              <view class="yrd-ind-bar">
+                <view class="yrd-ind-fill phosphorus" style="width: {{(selectedYearRecord.availableP / 30) * 100}}%;"></view>
+              </view>
+              <view class="yrd-ind-note">丰富等级≥15mg/kg</view>
+            </view>
+            <view class="yrd-indicator-item">
+              <view class="yrd-ind-header">
+                <text class="yrd-ind-icon">⚡</text>
+                <text class="yrd-ind-name">速效钾</text>
+              </view>
+              <view class="yrd-ind-value">{{selectedYearRecord.availableK}} mg/kg</view>
+              <view class="yrd-ind-bar">
+                <view class="yrd-ind-fill potassium" style="width: {{(selectedYearRecord.availableK / 200) * 100}}%;"></view>
+              </view>
+              <view class="yrd-ind-note">丰富等级≥150mg/kg</view>
+            </view>
+          </view>
+
+          <view class="yrd-heavymetal-section">
+            <view class="yrd-hm-header">🛡️ 重金属抽检结果（GB 15618-2018 标准）</view>
+            <view class="yrd-hm-list">
+              <view 
+                wx:for="{{selectedYearRecord.heavyMetals}}" 
+                wx:key="item"
+                class="yrd-hm-item"
+              >
+                <view class="yrd-hm-left">
+                  <text class="yrd-hm-name">{{item.item}}</text>
+                  <text class="yrd-hm-status {{item.status}}">{{item.status}}</text>
+                </view>
+                <view class="yrd-hm-right">
+                  <view class="yrd-hm-bar-track">
+                    <view class="yrd-hm-bar-fill" style="width: {{(item.value / item.limit) * 100}}%;"></view>
+                  </view>
+                  <view class="yrd-hm-values">
+                    <text class="yrd-hm-value">{{item.value}}{{item.unit}}</text>
+                    <text class="yrd-hm-limit">/ 限值{{item.limit}}{{item.unit}}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <view class="yrd-abnormal-card" wx:if="{{selectedYearRecord.abnormalEvent}}">
+            <view class="abnormal-card-header {{selectedYearRecord.impactLevel}}">
+              <text class="abnormal-card-icon">{{selectedYearRecord.abnormalEvent.icon}}</text>
+              <view class="abnormal-card-info">
+                <view class="abnormal-card-title">{{selectedYearRecord.abnormalEvent.name}}</view>
+                <view class="abnormal-card-meta">
+                  <text>发生日期：{{selectedYearRecord.abnormalEvent.date}}</text>
+                  <text class="impact-level-tag">{{selectedYearRecord.impactLevel === 'mild' ? '轻度影响' : selectedYearRecord.impactLevel === 'moderate' ? '中度影响' : '严重影响'}}</text>
+                </view>
+              </view>
+            </view>
+            <view class="abnormal-card-desc">
+              <text class="desc-label">事件描述：</text>
+              <text class="desc-text">{{selectedYearRecord.abnormalEvent.description}}</text>
+            </view>
+            <view class="abnormal-card-impact">
+              <text class="impact-label">🔍 影响与处置说明：</text>
+              <text class="impact-text">{{selectedYearRecord.impactNote}}</text>
+            </view>
+            <view class="abnormal-card-batches" wx:if="{{selectedYearRecord.batchImpact && selectedYearRecord.batchImpact.length > 0}}">
+              <view class="batch-impact-title">📦 关联批次影响</view>
+              <view 
+                wx:for="{{selectedYearRecord.batchImpact}}" 
+                wx:key="batchNo"
+                class="batch-impact-item"
+              >
+                <text class="bi-batch">{{item.batchNo}}</text>
+                <text class="bi-impact">{{item.impact}}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="yrd-impact-note-card" wx:if="{{!selectedYearRecord.abnormalEvent && selectedYearRecord.impactNote}}">
+            <text class="note-icon">📝</text>
+            <text class="note-text">{{selectedYearRecord.impactNote}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="improvement-timeline-card">
+        <view class="im-header">
+          <text class="im-icon">🔧</text>
+          <text class="im-title">土壤改良措施时间轴</text>
+        </view>
+        <view class="im-list">
+          <view 
+            wx:for="{{soilHealth.improvementMeasures}}" 
+            wx:key="year"
+            class="im-item"
+          >
+            <view class="im-year-col">
+              <view class="im-year">{{item.year}}</view>
+              <view class="im-dot"></view>
+              <view class="im-line" wx:if="{{index < soilHealth.improvementMeasures.length - 1}}"></view>
+            </view>
+            <view class="im-content-col">
+              <view class="im-content">{{item.measure}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="data-source-tag">
+        <text class="ds-icon">📡</text>
+        <text class="ds-text">检测机构：{{soilHealth.testInstitution}} · 执行标准：{{soilHealth.standard}}</text>
+      </view>
+    </view>
+
   </view>
 
   <!-- 证书详情弹窗 -->

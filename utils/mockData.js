@@ -2954,6 +2954,405 @@ var greenTraceExtended = {
         { name: '王*芳', amount: 5, time: '32分钟前', message: '' },
         { name: '匿名茶友', amount: 1, time: '1小时前', message: '' }
       ]
+    },
+    soilHealth: {
+      title: '土壤健康档案',
+      dataSource: '农业农村部耕地质量监测保护中心',
+      testInstitution: '湖北省土壤肥料测试中心',
+      standard: 'GB 15618-2018 土壤环境质量标准',
+      overallTrend: 'improving',
+      overallTrendDesc: '连续7年土壤质量稳步提升，各项指标均优于国家标准',
+      summary: {
+        phStatus: '适宜',
+        organicMatterTrend: 'up',
+        heavyMetalStatus: '全部达标',
+        improvementNote: '通过7年有机种植，土壤有机质提升36%，pH值持续稳定在茶树适宜区间'
+      },
+      plots: [
+        {
+          id: 'PLOT-A001',
+          name: '武夷山茶园A区·百年古树园',
+          location: '福建省武夷山市星村镇九龙窠',
+          area: '128亩',
+          soilType: '红壤·丹霞岩风化土',
+          elevation: '820米',
+          mainCrop: '武夷岩茶·水仙/肉桂',
+          irrigation: '自然山泉+雨水收集',
+          fertilization: '羊粪腐熟有机肥+绿肥轮作',
+          currentBatch: 'GH202503'
+        },
+        {
+          id: 'PLOT-A002',
+          name: '咸宁金桂基地·核心种植区',
+          location: '湖北省咸宁市咸安区桂花镇王家湾',
+          area: '86亩',
+          soilType: '黄棕壤·冲积土',
+          elevation: '68米',
+          mainCrop: '金桂/银桂混植',
+          irrigation: '淦河支流灌溉+自然降水',
+          fertilization: '菜籽饼肥+微生物菌肥',
+          currentBatch: 'GH202503'
+        }
+      ],
+      currentPlotId: 'PLOT-A001',
+      yearlyRecords: {
+        'PLOT-A001': [
+          {
+            year: 2019,
+            season: '春季',
+            testDate: '2019-03-22',
+            batchNo: 'GH201901',
+            ph: 4.8,
+            organicMatter: 28.5,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 128,
+            availableP: 12.3,
+            availableK: 98,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 18.2, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.08, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.042, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.8, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 42, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 18.5, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '',
+            overallLevel: '良好'
+          },
+          {
+            year: 2020,
+            season: '春季',
+            testDate: '2020-03-28',
+            batchNo: 'GH202001',
+            ph: 4.9,
+            organicMatter: 30.2,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 135,
+            availableP: 13.1,
+            availableK: 102,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 17.8, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.075, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.040, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.5, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 40, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 17.8, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '',
+            overallLevel: '良好'
+          },
+          {
+            year: 2021,
+            season: '春季',
+            testDate: '2021-03-20',
+            batchNo: 'GH202101',
+            ph: 4.9,
+            organicMatter: 32.8,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 142,
+            availableP: 14.5,
+            availableK: 108,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 17.2, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.070, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.038, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.2, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 38, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 17.2, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '',
+            overallLevel: '优秀'
+          },
+          {
+            year: 2022,
+            season: '春季',
+            testDate: '2022-03-25',
+            batchNo: 'GH202201',
+            ph: 5.0,
+            organicMatter: 34.5,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 148,
+            availableP: 15.2,
+            availableK: 112,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 16.8, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.068, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.035, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.0, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 37, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 16.8, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: {
+              type: 'flood',
+              name: '梅雨季洪涝',
+              icon: '🌊',
+              date: '2022-06-18',
+              description: '持续强降雨导致茶园局部积水36小时'
+            },
+            impactNote: '当年6月梅雨季期间，连续5天强降雨累计降雨量达420mm，茶园低洼处积水36小时。通过及时排水晾晒+增施微生物菌肥修复，2022秋茶批次产量减少12%，但各项品质指标仍达优级标准。土壤重金属无异常迁移。',
+            impactLevel: 'mild',
+            batchImpact: [
+              { batchNo: 'GH202202', impact: '产量减少12%，品质达标' },
+              { batchNo: 'GH202203', impact: '品质正常，产量恢复' }
+            ],
+            overallLevel: '优秀'
+          },
+          {
+            year: 2023,
+            season: '春季',
+            testDate: '2023-03-22',
+            batchNo: 'GH202301',
+            ph: 5.1,
+            organicMatter: 36.8,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 156,
+            availableP: 16.0,
+            availableK: 118,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 16.2, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.062, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.032, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 5.8, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 35, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 16.2, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '洪涝后经一年土壤修复，各项指标全面恢复并超越灾前水平，有机质年增幅达6.7%',
+            overallLevel: '优秀'
+          },
+          {
+            year: 2024,
+            season: '春季',
+            testDate: '2024-03-20',
+            batchNo: 'GH202401',
+            ph: 5.2,
+            organicMatter: 38.2,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 162,
+            availableP: 16.8,
+            availableK: 122,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 15.8, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.058, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.030, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 5.5, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 33, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 15.8, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '',
+            overallLevel: '优秀'
+          },
+          {
+            year: 2025,
+            season: '春季',
+            testDate: '2025-03-25',
+            batchNo: 'GH202503',
+            ph: 5.3,
+            organicMatter: 38.8,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 168,
+            availableP: 17.5,
+            availableK: 128,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 15.2, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.055, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.028, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 5.2, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 32, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 15.2, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '',
+            overallLevel: '优秀'
+          }
+        ],
+        'PLOT-A002': [
+          {
+            year: 2019,
+            season: '春季',
+            testDate: '2019-04-02',
+            batchNo: 'GH201901',
+            ph: 5.8,
+            organicMatter: 24.5,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 108,
+            availableP: 10.2,
+            availableK: 88,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 22.5, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.10, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.050, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 8.2, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 48, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 22.0, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '',
+            overallLevel: '良好'
+          },
+          {
+            year: 2020,
+            season: '春季',
+            testDate: '2020-04-05',
+            batchNo: 'GH202001',
+            ph: 5.8,
+            organicMatter: 26.2,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 115,
+            availableP: 11.0,
+            availableK: 92,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 21.8, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.095, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.048, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 7.8, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 46, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 21.2, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '',
+            overallLevel: '良好'
+          },
+          {
+            year: 2021,
+            season: '春季',
+            testDate: '2021-04-01',
+            batchNo: 'GH202101',
+            ph: 5.9,
+            organicMatter: 28.5,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 122,
+            availableP: 12.2,
+            availableK: 98,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 21.0, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.088, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.045, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 7.5, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 44, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 20.5, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '',
+            overallLevel: '良好'
+          },
+          {
+            year: 2022,
+            season: '春季',
+            testDate: '2022-04-03',
+            batchNo: 'GH202201',
+            ph: 5.9,
+            organicMatter: 30.2,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 128,
+            availableP: 13.0,
+            availableK: 105,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 20.5, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.082, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.042, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 7.2, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 42, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 19.8, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: {
+              type: 'flood',
+              name: '梅雨季洪涝',
+              icon: '🌊',
+              date: '2022-06-18',
+              description: '咸宁地区遭遇超历史极值梅雨季，持续强降雨'
+            },
+            impactNote: '2022年6月咸宁地区遭遇超历史极值梅雨季，淦河水位上涨，桂花园低洼处被淹约48小时。及时排水消毒后，桂花花期延迟5天，但花朵品质未受影响。土壤检测显示重金属无异常迁移。',
+            impactLevel: 'moderate',
+            batchImpact: [
+              { batchNo: 'GH202203', impact: '花期延迟5天，品质正常' }
+            ],
+            overallLevel: '良好'
+          },
+          {
+            year: 2023,
+            season: '春季',
+            testDate: '2023-04-02',
+            batchNo: 'GH202301',
+            ph: 6.0,
+            organicMatter: 32.5,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 136,
+            availableP: 14.2,
+            availableK: 112,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 19.8, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.078, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.040, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.8, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 40, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 19.0, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '洪涝灾后土壤修复效果显著，有机质增幅达7.6%，超过灾前水平',
+            overallLevel: '优秀'
+          },
+          {
+            year: 2024,
+            season: '春季',
+            testDate: '2024-04-01',
+            batchNo: 'GH202401',
+            ph: 6.0,
+            organicMatter: 34.2,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 145,
+            availableP: 15.0,
+            availableK: 118,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 19.2, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.072, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.038, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.5, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 38, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 18.5, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '',
+            overallLevel: '优秀'
+          },
+          {
+            year: 2025,
+            season: '春季',
+            testDate: '2025-04-02',
+            batchNo: 'GH202503',
+            ph: 6.1,
+            organicMatter: 35.8,
+            organicMatterUnit: 'g/kg',
+            alkaliHydrolyzableN: 152,
+            availableP: 16.0,
+            availableK: 125,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 18.5, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.068, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.035, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.2, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 36, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 17.8, limit: 50, unit: 'mg/kg', status: '达标' }
+            ],
+            abnormalEvent: null,
+            impactNote: '',
+            overallLevel: '优秀'
+          }
+        ]
+      },
+      improvementMeasures: [
+        { year: 2019, measure: '停止使用化肥农药，全面转有机种植' },
+        { year: 2020, measure: '引入羊粪腐熟有机肥+绿肥轮作制度' },
+        { year: 2021, measure: '茶园周边种植防护林带，保持水土' },
+        { year: 2022, measure: '洪涝灾后增施EM菌剂+生物炭修复土壤' },
+        { year: 2023, measure: '建立土壤墒情自动监测站' },
+        { year: 2024, measure: '引入蚯蚓养殖改良土壤团粒结构' },
+        { year: 2025, measure: '应用纳米碳基肥提升养分吸收率' }
+      ]
     }
   },
   'G002': {
@@ -3107,6 +3506,111 @@ var greenTraceExtended = {
         { name: '陈*伟', amount: 1, time: '5分钟前', message: '支持环保事业' },
         { name: '刘*', amount: 5, time: '28分钟前', message: '' },
         { name: '匿名茶友', amount: 1, time: '2小时前', message: '' }
+      ]
+    },
+    soilHealth: {
+      title: '土壤健康档案',
+      dataSource: '农业农村部耕地质量监测保护中心',
+      testInstitution: '湖北省土壤肥料测试中心',
+      standard: 'GB 15618-2018 土壤环境质量标准',
+      overallTrend: 'stable',
+      overallTrendDesc: '连续7年土壤质量稳定达标，各项指标均优于国家标准',
+      summary: {
+        phStatus: '适宜',
+        organicMatterTrend: 'stable',
+        heavyMetalStatus: '全部达标',
+        improvementNote: '采用绿色食品种植标准，土壤肥力稳定，重金属含量持续低于国标限值'
+      },
+      plots: [
+        {
+          id: 'PLOT-B001',
+          name: '武夷山茶园B区·生态种植区',
+          location: '福建省武夷山市星村镇桐木村',
+          area: '96亩',
+          soilType: '红壤·山地棕壤',
+          elevation: '650米',
+          mainCrop: '武夷红茶·正山小种',
+          irrigation: '山涧溪流灌溉',
+          fertilization: '菜籽饼肥+商品有机肥',
+          currentBatch: 'GH202502'
+        }
+      ],
+      currentPlotId: 'PLOT-B001',
+      yearlyRecords: {
+        'PLOT-B001': [
+          { year: 2019, season: '春季', testDate: '2019-03-20', batchNo: 'GH201902', ph: 5.2, organicMatter: 26.8, organicMatterUnit: 'g/kg', alkaliHydrolyzableN: 118, availableP: 11.5, availableK: 95,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 20.5, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.09, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.045, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 7.2, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 45, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 20.0, limit: 50, unit: 'mg/kg', status: '达标' }
+            ], abnormalEvent: null, impactNote: '', overallLevel: '良好' },
+          { year: 2020, season: '春季', testDate: '2020-03-25', batchNo: 'GH202002', ph: 5.2, organicMatter: 27.2, organicMatterUnit: 'g/kg', alkaliHydrolyzableN: 120, availableP: 11.8, availableK: 96,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 20.2, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.088, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.044, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 7.0, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 44, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 19.8, limit: 50, unit: 'mg/kg', status: '达标' }
+            ], abnormalEvent: null, impactNote: '', overallLevel: '良好' },
+          { year: 2021, season: '春季', testDate: '2021-03-22', batchNo: 'GH202102', ph: 5.3, organicMatter: 27.8, organicMatterUnit: 'g/kg', alkaliHydrolyzableN: 122, availableP: 12.0, availableK: 98,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 19.8, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.085, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.042, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.8, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 43, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 19.5, limit: 50, unit: 'mg/kg', status: '达标' }
+            ], abnormalEvent: null, impactNote: '', overallLevel: '良好' },
+          { year: 2022, season: '春季', testDate: '2022-03-28', batchNo: 'GH202202', ph: 5.3, organicMatter: 28.0, organicMatterUnit: 'g/kg', alkaliHydrolyzableN: 124, availableP: 12.2, availableK: 100,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 19.5, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.082, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.040, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.6, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 42, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 19.2, limit: 50, unit: 'mg/kg', status: '达标' }
+            ], abnormalEvent: null, impactNote: '', overallLevel: '良好' },
+          { year: 2023, season: '春季', testDate: '2023-03-25', batchNo: 'GH202302', ph: 5.3, organicMatter: 28.2, organicMatterUnit: 'g/kg', alkaliHydrolyzableN: 125, availableP: 12.5, availableK: 102,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 19.2, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.080, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.038, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.5, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 41, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 19.0, limit: 50, unit: 'mg/kg', status: '达标' }
+            ], abnormalEvent: null, impactNote: '', overallLevel: '优秀' },
+          { year: 2024, season: '春季', testDate: '2024-03-22', batchNo: 'GH202402', ph: 5.4, organicMatter: 28.5, organicMatterUnit: 'g/kg', alkaliHydrolyzableN: 128, availableP: 12.8, availableK: 105,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 18.8, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.078, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.036, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.3, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 40, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 18.8, limit: 50, unit: 'mg/kg', status: '达标' }
+            ], abnormalEvent: null, impactNote: '', overallLevel: '优秀' },
+          { year: 2025, season: '春季', testDate: '2025-03-28', batchNo: 'GH202502', ph: 5.4, organicMatter: 28.8, organicMatterUnit: 'g/kg', alkaliHydrolyzableN: 130, availableP: 13.0, availableK: 108,
+            heavyMetals: [
+              { item: '铅(Pb)', value: 18.5, limit: 50, unit: 'mg/kg', status: '达标' },
+              { item: '镉(Cd)', value: 0.075, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '汞(Hg)', value: 0.035, limit: 0.3, unit: 'mg/kg', status: '达标' },
+              { item: '砷(As)', value: 6.2, limit: 25, unit: 'mg/kg', status: '达标' },
+              { item: '铬(Cr)', value: 39, limit: 150, unit: 'mg/kg', status: '达标' },
+              { item: '铜(Cu)', value: 18.5, limit: 50, unit: 'mg/kg', status: '达标' }
+            ], abnormalEvent: null, impactNote: '', overallLevel: '优秀' }
+        ]
+      },
+      improvementMeasures: [
+        { year: 2019, measure: '推行绿色食品种植标准，减少化肥用量30%' },
+        { year: 2020, measure: '建立水土保持梯田，减少水土流失' },
+        { year: 2021, measure: '推广菜籽饼肥替代部分化肥' },
+        { year: 2022, measure: '安装墒情监测设备，精准灌溉' },
+        { year: 2023, measure: '引入测土配方施肥技术' },
+        { year: 2024, measure: '茶园行间种植绿肥覆盖作物' },
+        { year: 2025, measure: '推广生物防治技术，减少农药使用' }
       ]
     }
   },

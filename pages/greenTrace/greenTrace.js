@@ -10,6 +10,7 @@ Page({
     activeTab: 'certificate',
     tabs: [
       { key: 'certificate', label: '认证证书', icon: '📜' },
+      { key: 'soilHealth', label: '土壤档案', icon: '🌱' },
       { key: 'carbon', label: '碳足迹', icon: '🌍' },
       { key: 'water', label: '水足迹', icon: '💧' },
       { key: 'biodiversity', label: '生物多样性', icon: '🦜' },
@@ -45,7 +46,14 @@ Page({
     batchDonationConfig: null,
     hasBatchDonation: false,
     donationStats: null,
-    recentDonors: []
+    recentDonors: [],
+    soilHealth: null,
+    ecoPlanting: null,
+    currentPlotIndex: 0,
+    currentPlotRecords: [],
+    selectedYearRecord: null,
+    soilChartType: 'ph',
+    soilChartDrawn: false
   },
 
   onLoad: function(options) {
@@ -78,6 +86,25 @@ Page({
       bioMaxMonitor = Math.ceil(bioMaxMonitor * 1.2 / 10) * 10;
     }
 
+    var soilHealthData = greenData.soilHealth || null;
+    var ecoPlantingData = (traceData && traceData.greenTrace && traceData.greenTrace.ecoPlanting) || null;
+    var initialPlotIndex = 0;
+    var initialRecords = [];
+    var initialSelectedRecord = null;
+    if (soilHealthData && soilHealthData.plots && soilHealthData.plots.length > 0) {
+      var initialPlotId = soilHealthData.currentPlotId || soilHealthData.plots[0].id;
+      for (var pi = 0; pi < soilHealthData.plots.length; pi++) {
+        if (soilHealthData.plots[pi].id === initialPlotId) {
+          initialPlotIndex = pi;
+          break;
+        }
+      }
+      initialRecords = (soilHealthData.yearlyRecords && soilHealthData.yearlyRecords[initialPlotId]) || [];
+      if (initialRecords.length > 0) {
+        initialSelectedRecord = initialRecords[initialRecords.length - 1];
+      }
+    }
+
     this.setData({
       traceId: traceId,
       productName: traceData ? traceData.basicInfo.productName : '',
@@ -95,7 +122,12 @@ Page({
       batchDonationConfig: batchConfig,
       hasBatchDonation: !!batchConfig,
       donationStats: (greenData.ecoFund && greenData.ecoFund.donationStats) || null,
-      recentDonors: (greenData.ecoFund && greenData.ecoFund.recentDonors) || []
+      recentDonors: (greenData.ecoFund && greenData.ecoFund.recentDonors) || [],
+      soilHealth: soilHealthData,
+      ecoPlanting: ecoPlantingData,
+      currentPlotIndex: initialPlotIndex,
+      currentPlotRecords: initialRecords,
+      selectedYearRecord: initialSelectedRecord
     });
 
     this.loadGreenPoints();
@@ -184,7 +216,266 @@ Page({
     } else if (key === 'ecoFund') {
       var earnResult4 = greenPoints.earnPoints('viewEcoFund');
       if (earnResult4.earned > 0) this.loadGreenPoints();
+    } else if (key === 'soilHealth') {
+      var earnResult5 = greenPoints.earnPoints('viewSoilHealth');
+      if (earnResult5.earned > 0) this.loadGreenPoints();
+      this.setData({ soilChartDrawn: false });
+      setTimeout(function() {
+        that.drawSoilChart();
+      }, 100);
     }
+  },
+
+  switchPlot: function(e) {
+    var index = Number(e.currentTarget.dataset.index);
+    var soilHealthData = this.data.soilHealth;
+    if (!soilHealthData || !soilHealthData.plots || index >= soilHealthData.plots.length) return;
+
+    var plot = soilHealthData.plots[index];
+    var records = (soilHealthData.yearlyRecords && soilHealthData.yearlyRecords[plot.id]) || [];
+    var selectedRecord = records.length > 0 ? records[records.length - 1] : null;
+
+    this.setData({
+      currentPlotIndex: index,
+      currentPlotRecords: records,
+      selectedYearRecord: selectedRecord,
+      soilChartDrawn: false
+    });
+
+    var that = this;
+    setTimeout(function() {
+      that.drawSoilChart();
+    }, 100);
+  },
+
+  switchSoilChartType: function(e) {
+    var type = e.currentTarget.dataset.type;
+    this.setData({ soilChartType: type, soilChartDrawn: false });
+    var that = this;
+    setTimeout(function() {
+      that.drawSoilChart();
+    }, 100);
+  },
+
+  selectYearRecord: function(e) {
+    var index = Number(e.currentTarget.dataset.index);
+    var records = this.data.currentPlotRecords;
+    if (index >= 0 && index < records.length) {
+      this.setData({ selectedYearRecord: records[index] });
+    }
+  },
+
+  drawSoilChart: function() {
+    var that = this;
+    var records = this.data.currentPlotRecords;
+    var chartType = this.data.soilChartType;
+    if (!records || records.length === 0) return;
+
+    var canvasId = '';
+    var title = '';
+    var color = '';
+    var unit = '';
+    var values = [];
+    var standardMin = null;
+    var standardMax = null;
+
+    if (chartType === 'ph') {
+      canvasId = '#soilPhCanvas';
+      title = 'pH值变化趋势';
+      color = '#52C41A';
+      unit = '';
+      standardMin = 4.5;
+      standardMax = 6.5;
+      for (var i = 0; i < records.length; i++) {
+        values.push(records[i].ph);
+      }
+    } else if (chartType === 'organic') {
+      canvasId = '#soilOrganicCanvas';
+      title = '有机质含量变化';
+      color = '#DAA520';
+      unit = 'g/kg';
+      standardMin = 20;
+      for (var j = 0; j < records.length; j++) {
+        values.push(records[j].organicMatter);
+      }
+    } else if (chartType === 'heavyMetal') {
+      canvasId = '#soilHeavyMetalCanvas';
+      title = '重金属安全指数';
+      color = '#1890FF';
+      unit = '%';
+      for (var k = 0; k < records.length; k++) {
+        var maxRatio = 0;
+        var hms = records[k].heavyMetals;
+        for (var m = 0; m < hms.length; m++) {
+          var ratio = (hms[m].value / hms[m].limit) * 100;
+          if (ratio > maxRatio) maxRatio = ratio;
+        }
+        values.push(Math.round(maxRatio * 10) / 10);
+      }
+    } else {
+      return;
+    }
+
+    var query = wx.createSelectorQuery();
+    query.select(canvasId).fields({ node: true, size: true }).exec(function(res) {
+      if (!res || !res[0]) {
+        console.warn('[SoilHealth] Canvas节点未找到:', canvasId);
+        return;
+      }
+
+      var canvas = res[0].node;
+      var ctx = canvas.getContext('2d');
+      var dpr = wx.getSystemInfoSync().pixelRatio;
+      var width = res[0].width;
+      var height = res[0].height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+
+      var paddingLeft = 48;
+      var paddingRight = 20;
+      var paddingTop = 30;
+      var paddingBottom = 40;
+      var chartWidth = width - paddingLeft - paddingRight;
+      var chartHeight = height - paddingTop - paddingBottom;
+
+      var minVal = Math.min.apply(null, values);
+      var maxVal = Math.max.apply(null, values);
+      if (standardMin !== null) minVal = Math.min(minVal, standardMin);
+      if (standardMax !== null) maxVal = Math.max(maxVal, standardMax);
+      var range = maxVal - minVal;
+      if (range < 1) range = 1;
+      minVal = minVal - range * 0.15;
+      maxVal = maxVal + range * 0.15;
+      range = maxVal - minVal;
+
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.font = '10px sans-serif';
+      ctx.fillStyle = '#999';
+      ctx.textAlign = 'center';
+      ctx.fillText(title, width / 2, 14);
+
+      ctx.strokeStyle = '#EEEEEE';
+      ctx.lineWidth = 1;
+      var ySteps = 4;
+      for (var s = 0; s <= ySteps; s++) {
+        var y = paddingTop + (chartHeight / ySteps) * s;
+        ctx.beginPath();
+        ctx.moveTo(paddingLeft, y);
+        ctx.lineTo(width - paddingRight, y);
+        ctx.stroke();
+
+        var val = maxVal - (range / ySteps) * s;
+        var valText = Math.round(val * 100) / 100;
+        ctx.font = '9px sans-serif';
+        ctx.fillStyle = '#999999';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(valText.toString(), paddingLeft - 6, y);
+      }
+
+      if (standardMin !== null) {
+        var stdMinY = paddingTop + chartHeight * (1 - (standardMin - minVal) / range);
+        ctx.strokeStyle = '#FAAD14';
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(paddingLeft, stdMinY);
+        ctx.lineTo(width - paddingRight, stdMinY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = '9px sans-serif';
+        ctx.fillStyle = '#FAAD14';
+        ctx.textAlign = 'left';
+        ctx.fillText('适宜下限', width - paddingRight - 50, stdMinY - 6);
+      }
+      if (standardMax !== null) {
+        var stdMaxY = paddingTop + chartHeight * (1 - (standardMax - minVal) / range);
+        ctx.strokeStyle = '#FAAD14';
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(paddingLeft, stdMaxY);
+        ctx.lineTo(width - paddingRight, stdMaxY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = '9px sans-serif';
+        ctx.fillStyle = '#FAAD14';
+        ctx.textAlign = 'left';
+        ctx.fillText('适宜上限', width - paddingRight - 50, stdMaxY - 6);
+      }
+
+      if (chartType === 'heavyMetal') {
+        var safeLineY = paddingTop + chartHeight * (1 - (60 - minVal) / range);
+        ctx.strokeStyle = '#52C41A';
+        ctx.setLineDash([3, 3]);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(paddingLeft, safeLineY);
+        ctx.lineTo(width - paddingRight, safeLineY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = '9px sans-serif';
+        ctx.fillStyle = '#52C41A';
+        ctx.textAlign = 'left';
+        ctx.fillText('安全警戒线60%', width - paddingRight - 60, safeLineY - 6);
+      }
+
+      var pointGap = chartWidth / (values.length - 1 || 1);
+      var points = [];
+
+      for (var p = 0; p < values.length; p++) {
+        var px = paddingLeft + pointGap * p;
+        var py = paddingTop + chartHeight * (1 - (values[p] - minVal) / range);
+        points.push({ x: px, y: py, value: values[p], year: records[p].year, abnormal: records[p].abnormalEvent });
+
+        ctx.font = '9px sans-serif';
+        ctx.fillStyle = '#666666';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(records[p].year.toString(), px, height - paddingBottom + 8);
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (var li = 1; li < points.length; li++) {
+        ctx.lineTo(points[li].x, points[li].y);
+      }
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+      ctx.stroke();
+
+      for (var pi = 0; pi < points.length; pi++) {
+        var pt = points[pi];
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.abnormal ? 6 : 4, 0, Math.PI * 2);
+        ctx.fillStyle = pt.abnormal ? '#FF4D4F' : color;
+        ctx.fill();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        if (pt.abnormal) {
+          ctx.font = 'bold 10px sans-serif';
+          ctx.fillStyle = '#FF4D4F';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(pt.abnormal.icon || '⚠', pt.x, pt.y - 10);
+        }
+
+        ctx.font = '9px sans-serif';
+        ctx.fillStyle = color;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        var valDisplay = Math.round(pt.value * 10) / 10;
+        if (unit) valDisplay = valDisplay + unit;
+        ctx.fillText(valDisplay.toString(), pt.x, pt.y - 8);
+      }
+
+      that.setData({ soilChartDrawn: true });
+    });
   },
 
   previewCertImage: function(e) {
@@ -510,6 +801,12 @@ Page({
 
   goCertificateWallet: function() {
     wx.navigateTo({ url: '/pages/certificateWallet/certificateWallet' });
+  },
+
+  goToEcoPlanting: function() {
+    wx.redirectTo({
+      url: '/pages/detail/detail?traceId=' + this.data.traceId + '&anchor=green'
+    });
   },
 
   openCharityQualification: function() {

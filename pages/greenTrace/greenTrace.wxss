@@ -118,7 +118,7 @@
   margin-bottom: 32rpx;
 }
 
-.cert-section, .carbon-section, .water-section, .biodiversity-section, .recycling-section, .points-section {
+.cert-section, .carbon-section, .water-section, .biodiversity-section, .recycling-section, .points-section, .soil-health-section {
   animation: fadeInUp 0.3s ease;
 }
 
@@ -2689,4 +2689,1065 @@
   background: linear-gradient(135deg, #EB2F96, #FF69B4);
   color: #FFFFFF;
   box-shadow: 0 6rpx 16rpx rgba(235, 47, 150, 0.25);
+}
+
+/* ===== 土壤健康档案 ===== */
+.soil-overview-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.soil-trend-banner {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  margin-bottom: 28rpx;
+}
+
+.soil-trend-banner.improving {
+  background: linear-gradient(135deg, #F6FFED 0%, #D9F7BE 100%);
+  border: 2rpx solid #B7EB8F;
+}
+
+.soil-trend-banner.stable {
+  background: linear-gradient(135deg, #E6F7FF 0%, #BAE7FF 100%);
+  border: 2rpx solid #91D5FF;
+}
+
+.soil-trend-banner.warning {
+  background: linear-gradient(135deg, #FFF7E6 0%, #FFE7BA 100%);
+  border: 2rpx solid #FFD591;
+}
+
+.trend-icon {
+  width: 72rpx;
+  height: 72rpx;
+  background: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.trend-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.trend-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #262626;
+  margin-bottom: 6rpx;
+}
+
+.trend-desc {
+  font-size: 24rpx;
+  color: #595959;
+  line-height: 1.5;
+}
+
+.soil-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.soil-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24rpx 12rpx;
+  background: linear-gradient(135deg, #FAFAFA, #F5F5F5);
+  border-radius: 16rpx;
+  border: 1rpx solid #F0F0F0;
+}
+
+.soil-stat-icon {
+  font-size: 36rpx;
+  margin-bottom: 10rpx;
+}
+
+.soil-stat-value {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #262626;
+  line-height: 1.3;
+  margin-bottom: 6rpx;
+}
+
+.soil-stat-value.safe {
+  color: #52C41A;
+}
+
+.soil-stat-value.trend-up {
+  color: #52C41A;
+}
+
+.soil-stat-value.trend-down {
+  color: #FF4D4F;
+}
+
+.soil-stat-value.trend-stable {
+  color: #1890FF;
+}
+
+.soil-stat-label {
+  font-size: 22rpx;
+  color: #8C8C8C;
+}
+
+.soil-improvement-note {
+  display: flex;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #F6FFED, #FFFFFF);
+  border: 1rpx solid #B7EB8F;
+  border-radius: 12rpx;
+  padding: 20rpx;
+}
+
+.soil-improvement-note .note-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.soil-improvement-note .note-text {
+  font-size: 24rpx;
+  color: #389E0D;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.eco-planting-link-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20rpx;
+  padding: 20rpx 24rpx;
+  background: linear-gradient(135deg, #E6F7FF 0%, #F0F5FF 100%);
+  border: 1rpx solid #91D5FF;
+  border-radius: 16rpx;
+}
+
+.eco-planting-link-card:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+.eco-planting-link-card .epl-left {
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+.eco-planting-link-card .epl-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.eco-planting-link-card .epl-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.eco-planting-link-card .epl-title {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #096DD9;
+  margin-bottom: 8rpx;
+}
+
+.eco-planting-link-card .epl-cert {
+  margin-left: 12rpx;
+  padding: 2rpx 12rpx;
+  font-size: 20rpx;
+  color: #1890FF;
+  background: #BAE7FF;
+  border-radius: 20rpx;
+  font-weight: 500;
+}
+
+.eco-planting-link-card .epl-records {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.eco-planting-link-card .epl-record-item {
+  padding: 4rpx 14rpx;
+  font-size: 22rpx;
+  color: #0050B3;
+  background: rgba(24, 144, 255, 0.1);
+  border-radius: 20rpx;
+  line-height: 1.4;
+}
+
+.eco-planting-link-card .epl-arrow {
+  font-size: 40rpx;
+  color: #1890FF;
+  margin-left: 12rpx;
+  font-weight: 300;
+  flex-shrink: 0;
+}
+
+/* 地块选择器 */
+.plot-selector-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 24rpx 0 24rpx 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.plot-selector-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 16rpx;
+  padding-right: 32rpx;
+}
+
+.plot-scroll {
+  white-space: nowrap;
+}
+
+.plot-tabs {
+  display: inline-flex;
+  gap: 16rpx;
+  padding-right: 32rpx;
+}
+
+.plot-tab-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 28rpx;
+  background: #F5F5F5;
+  border-radius: 16rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+  min-width: 180rpx;
+}
+
+.plot-tab-item.active {
+  background: linear-gradient(135deg, #F6FFED, #FFFFFF);
+  border-color: #52C41A;
+  box-shadow: 0 4rpx 12rpx rgba(82, 196, 26, 0.15);
+}
+
+.plot-tab-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 4rpx;
+}
+
+.plot-tab-item.active .plot-tab-name {
+  color: #389E0D;
+}
+
+.plot-tab-area {
+  font-size: 20rpx;
+  color: #8C8C8C;
+}
+
+.plot-tab-item.active .plot-tab-area {
+  color: #73D13D;
+}
+
+/* 地块详情 */
+.plot-detail-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.plot-detail-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.plot-detail-icon {
+  width: 64rpx;
+  height: 64rpx;
+  background: linear-gradient(135deg, #E6F7FF, #BAE7FF);
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.plot-detail-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.plot-detail-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #262626;
+  margin-bottom: 6rpx;
+}
+
+.plot-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.plot-detail-meta .meta-item {
+  font-size: 22rpx;
+  color: #8C8C8C;
+}
+
+.plot-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+}
+
+.plot-detail-item {
+  padding: 16rpx;
+  background: #FAFAFA;
+  border-radius: 12rpx;
+}
+
+.plot-detail-item.full {
+  grid-column: span 2;
+}
+
+.pdi-label {
+  display: block;
+  font-size: 22rpx;
+  color: #8C8C8C;
+  margin-bottom: 6rpx;
+}
+
+.pdi-value {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #262626;
+  line-height: 1.4;
+}
+
+/* 土壤图表卡片 */
+.soil-chart-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.chart-type-tabs {
+  display: flex;
+  background: #F5F5F5;
+  border-radius: 14rpx;
+  padding: 6rpx;
+  margin-bottom: 24rpx;
+}
+
+.chart-type-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 8rpx;
+  border-radius: 10rpx;
+  font-size: 24rpx;
+  color: #595959;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.chart-type-tab.active {
+  background: #FFFFFF;
+  color: #2E8B57;
+  font-weight: 600;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.chart-canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 16rpx 0 20rpx;
+}
+
+.soil-chart-canvas {
+  width: 100%;
+  height: 360rpx;
+}
+
+.chart-legend-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24rpx;
+  padding-top: 12rpx;
+  border-top: 1rpx solid #F0F0F0;
+}
+
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: #8C8C8C;
+}
+
+.chart-legend-item .legend-line {
+  width: 28rpx;
+  height: 6rpx;
+  border-radius: 3rpx;
+}
+
+.chart-legend-item .legend-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+
+.chart-legend-item .legend-dot.abnormal {
+  background: #FF4D4F;
+  box-shadow: 0 0 6rpx rgba(255, 77, 79, 0.4);
+}
+
+.chart-legend-item .legend-text {
+  color: #595959;
+}
+
+/* 年度时间轴卡片 */
+.year-timeline-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.timeline-icon {
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+
+.timeline-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.year-tabs {
+  display: flex;
+  gap: 10rpx;
+  overflow-x: auto;
+  padding-bottom: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.year-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.year-tab-item {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14rpx 20rpx;
+  background: #FAFAFA;
+  border-radius: 14rpx;
+  border: 2rpx solid transparent;
+  position: relative;
+  transition: all 0.2s ease;
+  min-width: 96rpx;
+}
+
+.year-tab-item.active {
+  background: linear-gradient(135deg, #2E8B57, #52C41A);
+  border-color: #2E8B57;
+  box-shadow: 0 4rpx 12rpx rgba(46, 139, 87, 0.25);
+}
+
+.year-tab-item.has-abnormal {
+  border-color: #FFCCC7;
+}
+
+.year-tab-item.has-abnormal.active {
+  border-color: #2E8B57;
+}
+
+.year-tab-year {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #595959;
+  margin-bottom: 4rpx;
+}
+
+.year-tab-item.active .year-tab-year {
+  color: #FFFFFF;
+}
+
+.year-tab-level {
+  font-size: 20rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 10rpx;
+  background: #F0F0F0;
+  color: #8C8C8C;
+  font-weight: 500;
+}
+
+.year-tab-item.active .year-tab-level {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.year-tab-level.优秀 {
+  background: rgba(82, 196, 26, 0.12);
+  color: #389E0D;
+}
+
+.year-tab-item.active .year-tab-level.优秀 {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.year-tab-level.良好 {
+  background: rgba(24, 144, 255, 0.12);
+  color: #096DD9;
+}
+
+.year-tab-item.active .year-tab-level.良好 {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.year-tab-abnormal {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  width: 32rpx;
+  height: 32rpx;
+  background: #FFF1F0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18rpx;
+  border: 2rpx solid #FFCCC7;
+}
+
+/* 年度记录详情 */
+.year-record-detail {
+  background: #FAFAFA;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.yrd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx dashed #E8E8E8;
+}
+
+.yrd-year-badge {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #262626;
+}
+
+.yrd-level-badge {
+  font-size: 24rpx;
+  font-weight: 600;
+  padding: 6rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+.yrd-level-badge.优秀 {
+  background: linear-gradient(135deg, #52C41A, #73D13D);
+  color: #FFFFFF;
+}
+
+.yrd-level-badge.良好 {
+  background: linear-gradient(135deg, #1890FF, #40A9FF);
+  color: #FFFFFF;
+}
+
+.yrd-meta-row {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.yrd-meta-item {
+  flex: 1;
+}
+
+.yrd-meta-label {
+  display: block;
+  font-size: 22rpx;
+  color: #8C8C8C;
+  margin-bottom: 4rpx;
+}
+
+.yrd-meta-value {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #262626;
+}
+
+.yrd-meta-value.batch {
+  color: #2E8B57;
+  font-family: monospace;
+}
+
+.yrd-indicators-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.yrd-indicator-item {
+  background: #FFFFFF;
+  border-radius: 14rpx;
+  padding: 18rpx;
+}
+
+.yrd-ind-header {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  margin-bottom: 10rpx;
+}
+
+.yrd-ind-icon {
+  font-size: 24rpx;
+}
+
+.yrd-ind-name {
+  font-size: 24rpx;
+  color: #595959;
+  font-weight: 500;
+}
+
+.yrd-ind-value {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #262626;
+  margin-bottom: 8rpx;
+  line-height: 1.2;
+}
+
+.yrd-ind-value.ph {
+  color: #52C41A;
+}
+
+.yrd-ind-value.organic {
+  color: #DAA520;
+}
+
+.yrd-ind-bar {
+  height: 8rpx;
+  background: #F0F0F0;
+  border-radius: 4rpx;
+  overflow: hidden;
+  margin-bottom: 6rpx;
+}
+
+.yrd-ind-fill {
+  height: 100%;
+  border-radius: 4rpx;
+  transition: width 0.5s ease;
+}
+
+.yrd-ind-fill.ph {
+  background: linear-gradient(90deg, #95DE64, #52C41A);
+}
+
+.yrd-ind-fill.organic {
+  background: linear-gradient(90deg, #FFD666, #DAA520);
+}
+
+.yrd-ind-fill.nitrogen {
+  background: linear-gradient(90deg, #69C0FF, #1890FF);
+}
+
+.yrd-ind-fill.phosphorus {
+  background: linear-gradient(90deg, #FF9C6E, #FA8C16);
+}
+
+.yrd-ind-fill.potassium {
+  background: linear-gradient(90deg, #B37FEB, #722ED1);
+}
+
+.yrd-ind-note {
+  font-size: 20rpx;
+  color: #BFBFBF;
+}
+
+/* 重金属抽检 */
+.yrd-heavymetal-section {
+  background: #FFFFFF;
+  border-radius: 14rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.yrd-hm-header {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 16rpx;
+}
+
+.yrd-hm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.yrd-hm-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.yrd-hm-left {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  flex-shrink: 0;
+  width: 160rpx;
+}
+
+.yrd-hm-name {
+  font-size: 24rpx;
+  color: #595959;
+  font-weight: 500;
+}
+
+.yrd-hm-status {
+  font-size: 18rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  background: rgba(82, 196, 26, 0.12);
+  color: #389E0D;
+  font-weight: 500;
+}
+
+.yrd-hm-right {
+  flex: 1;
+  min-width: 0;
+}
+
+.yrd-hm-bar-track {
+  height: 10rpx;
+  background: #F5F5F5;
+  border-radius: 5rpx;
+  overflow: hidden;
+  margin-bottom: 6rpx;
+}
+
+.yrd-hm-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #95DE64, #52C41A);
+  border-radius: 5rpx;
+  transition: width 0.5s ease;
+}
+
+.yrd-hm-values {
+  display: flex;
+  align-items: baseline;
+  gap: 6rpx;
+}
+
+.yrd-hm-value {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #389E0D;
+}
+
+.yrd-hm-limit {
+  font-size: 20rpx;
+  color: #BFBFBF;
+}
+
+/* 异常事件卡片 */
+.yrd-abnormal-card {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-top: 20rpx;
+  border: 2rpx solid #FFCCC7;
+}
+
+.abnormal-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx;
+}
+
+.abnormal-card-header.mild {
+  background: linear-gradient(135deg, #FFF7E6, #FFE7BA);
+}
+
+.abnormal-card-header.moderate {
+  background: linear-gradient(135deg, #FFF1F0, #FFCCC7);
+}
+
+.abnormal-card-header.severe {
+  background: linear-gradient(135deg, #FFF1F0, #FFA39E);
+}
+
+.abnormal-card-icon {
+  width: 56rpx;
+  height: 56rpx;
+  background: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  flex-shrink: 0;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.abnormal-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.abnormal-card-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #CF1322;
+  margin-bottom: 6rpx;
+}
+
+.abnormal-card-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  font-size: 22rpx;
+  color: #8C8C8C;
+}
+
+.impact-level-tag {
+  padding: 2rpx 12rpx;
+  border-radius: 10rpx;
+  font-size: 20rpx;
+  font-weight: 500;
+}
+
+.impact-level-tag.mild {
+  background: #FFF7E6;
+  color: #D46B08;
+  border: 1rpx solid #FFD591;
+}
+
+.impact-level-tag.moderate {
+  background: #FFF1F0;
+  color: #CF1322;
+  border: 1rpx solid #FFCCC7;
+}
+
+.impact-level-tag.severe {
+  background: #FFF1F0;
+  color: #A8071A;
+  border: 1rpx solid #FFA39E;
+}
+
+.abnormal-card-desc,
+.abnormal-card-impact,
+.abnormal-card-batches {
+  padding: 16rpx 20rpx;
+  border-top: 1rpx solid #FFF1F0;
+}
+
+.desc-label,
+.impact-label,
+.batch-impact-title {
+  display: block;
+  font-size: 22rpx;
+  color: #8C8C8C;
+  margin-bottom: 6rpx;
+  font-weight: 500;
+}
+
+.desc-text,
+.impact-text {
+  font-size: 24rpx;
+  color: #595959;
+  line-height: 1.6;
+}
+
+.batch-impact-title {
+  margin-bottom: 12rpx;
+  font-size: 24rpx;
+  color: #595959;
+}
+
+.batch-impact-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10rpx 14rpx;
+  background: #FFFBF0;
+  border-radius: 10rpx;
+  margin-bottom: 8rpx;
+}
+
+.batch-impact-item:last-child {
+  margin-bottom: 0;
+}
+
+.bi-batch {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #D46B08;
+  font-family: monospace;
+}
+
+.bi-impact {
+  font-size: 22rpx;
+  color: #8C8C8C;
+}
+
+.yrd-impact-note-card {
+  display: flex;
+  align-items: flex-start;
+  background: #F6FFED;
+  border-radius: 12rpx;
+  padding: 18rpx;
+  margin-top: 20rpx;
+}
+
+.yrd-impact-note-card .note-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.yrd-impact-note-card .note-text {
+  font-size: 24rpx;
+  color: #389E0D;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* 土壤改良措施时间轴 */
+.improvement-timeline-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.im-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.im-icon {
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+
+.im-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.im-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.im-item {
+  display: flex;
+  gap: 20rpx;
+}
+
+.im-year-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80rpx;
+  flex-shrink: 0;
+}
+
+.im-year {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #2E8B57;
+  margin-bottom: 8rpx;
+}
+
+.im-dot {
+  width: 16rpx;
+  height: 16rpx;
+  background: linear-gradient(135deg, #52C41A, #2E8B57);
+  border-radius: 50%;
+  box-shadow: 0 0 8rpx rgba(82, 196, 26, 0.4);
+  z-index: 2;
+}
+
+.im-line {
+  flex: 1;
+  width: 3rpx;
+  background: linear-gradient(180deg, #B7EB8F, #E8E8E8);
+  margin: 4rpx 0;
+}
+
+.im-content-col {
+  flex: 1;
+  padding-bottom: 24rpx;
+}
+
+.im-content {
+  font-size: 26rpx;
+  color: #595959;
+  line-height: 1.6;
+  padding: 14rpx 18rpx;
+  background: linear-gradient(135deg, #F6FFED, #FFFFFF);
+  border-radius: 12rpx;
+  border: 1rpx solid #D9F7BE;
 }
