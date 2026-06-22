@@ -268,25 +268,18 @@ Page({
    */
   goToDetail: function(e) {
     var varietyKey = e.currentTarget.dataset.variety;
-    var traceMap = {
-      'jin-gui': 'G001',
-      'yin-gui': 'G002',
-      'dan-gui': 'G003',
-      'si-ji-gui': 'G004'
-    };
-    var traceId = traceMap[varietyKey] || '';
-    if (!traceId) {
+    if (!varietyKey) {
       wx.showToast({
-        title: '产品不存在',
+        title: '参数错误',
         icon: 'none'
       });
       return;
     }
     wx.navigateTo({
-      url: '/pages/detail/detail?traceId=' + traceId,
+      url: '/pages/teaPairing/detail?varietyKey=' + varietyKey,
       fail: function() {
         wx.reLaunch({
-          url: '/pages/detail/detail?traceId=' + traceId
+          url: '/pages/teaPairing/detail?varietyKey=' + varietyKey
         });
       }
     });
@@ -299,11 +292,10 @@ Page({
     var boxId = e.currentTarget.dataset.boxid;
     if (!boxId) return;
     wx.navigateTo({
-      url: '/pages/shop/detail?traceId=GIFT-' + boxId,
+      url: '/pages/teaPairing/detail?boxId=' + boxId,
       fail: function() {
-        wx.showToast({
-          title: '礼盒详情页开发中',
-          icon: 'none'
+        wx.reLaunch({
+          url: '/pages/teaPairing/detail?boxId=' + boxId
         });
       }
     });
