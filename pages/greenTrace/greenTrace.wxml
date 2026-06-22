@@ -10,8 +10,8 @@
   </view>
 
   <view class="tab-bar">
-    <view 
-      wx:for="{{tabs}}" 
+    <view
+      wx:for="{{tabs}}"
       wx:key="key"
       class="tab-item {{activeTab === item.key ? 'active' : ''}}"
       data-key="{{item.key}}"
@@ -34,8 +34,8 @@
       <view class="section-desc">点击证书缩略图查看大图，支持证书编号验真</view>
 
       <view class="cert-grid">
-        <view 
-          wx:for="{{certificates}}" 
+        <view
+          wx:for="{{certificates}}"
           wx:key="id"
           class="cert-card"
           data-cert="{{item}}"
@@ -90,8 +90,8 @@
         </view>
 
         <view class="chart-legend">
-          <view 
-            wx:for="{{carbonFootprint.stages}}" 
+          <view
+            wx:for="{{carbonFootprint.stages}}"
             wx:key="name"
             class="legend-item"
           >
@@ -109,8 +109,8 @@
           <text class="comparison-title">与行业均值对比</text>
         </view>
         <view class="comparison-bars">
-          <view 
-            wx:for="{{carbonFootprint.stages}}" 
+          <view
+            wx:for="{{carbonFootprint.stages}}"
             wx:key="name"
             class="comparison-item"
           >
@@ -169,8 +169,8 @@
         </view>
 
         <view class="chart-legend">
-          <view 
-            wx:for="{{waterFootprint.stages}}" 
+          <view
+            wx:for="{{waterFootprint.stages}}"
             wx:key="name"
             class="legend-item"
           >
@@ -188,8 +188,8 @@
           <text class="comparison-title">单位产品耗水 vs 行业均值</text>
         </view>
         <view class="comparison-bars">
-          <view 
-            wx:for="{{waterFootprint.stages}}" 
+          <view
+            wx:for="{{waterFootprint.stages}}"
             wx:key="name"
             class="comparison-item"
           >
@@ -220,8 +220,8 @@
           <text class="monitor-title">水表监测点</text>
         </view>
         <view class="monitor-list">
-          <view 
-            wx:for="{{waterFootprint.monitorPoints}}" 
+          <view
+            wx:for="{{waterFootprint.monitorPoints}}"
             wx:key="id"
             class="monitor-item"
           >
@@ -332,8 +332,8 @@
       <view class="bio-key-species-card">
         <view class="bks-title">🦋 重点物种</view>
         <view class="bks-list">
-          <view 
-            wx:for="{{biodiversity.keySpecies}}" 
+          <view
+            wx:for="{{biodiversity.keySpecies}}"
             wx:key="name"
             class="bks-item"
           >
@@ -356,8 +356,8 @@
       <view class="bio-recent-monitor-card">
         <view class="brm-title">📋 近期监测记录</view>
         <view class="brm-list">
-          <view 
-            wx:for="{{biodiversity.recentMonitoring}}" 
+          <view
+            wx:for="{{biodiversity.recentMonitoring}}"
             wx:key="date"
             class="brm-item"
           >
@@ -368,9 +368,9 @@
             </view>
             <view class="brm-observer">{{item.observer}}</view>
             <view class="brm-findings">
-              <view 
-                wx:for="{{item.findings}}" 
-                wx:for-item="finding" 
+              <view
+                wx:for="{{item.findings}}"
+                wx:for-item="finding"
                 wx:key="species"
                 class="brm-finding-item"
               >
@@ -412,8 +412,8 @@
 
       <view class="recycling-steps">
         <view class="steps-title">分类回收步骤</view>
-        <view 
-          wx:for="{{recyclingGuide.steps}}" 
+        <view
+          wx:for="{{recyclingGuide.steps}}"
           wx:key="step"
           class="step-item"
         >
@@ -437,8 +437,8 @@
           <text class="nearby-title">附近回收点</text>
         </view>
         <view class="nearby-list">
-          <view 
-            wx:for="{{recyclingGuide.nearbyPoints}}" 
+          <view
+            wx:for="{{recyclingGuide.nearbyPoints}}"
             wx:key="name"
             class="nearby-item"
             data-point="{{item}}"
@@ -506,8 +506,8 @@
       <!-- 基金项目展示 -->
       <view class="projects-title">📢 基金用途说明</view>
       <view class="fund-projects">
-        <view 
-          wx:for="{{fundProjects}}" 
+        <view
+          wx:for="{{fundProjects}}"
           wx:key="key"
           class="project-card {{selectedProjectKey === item.key ? 'selected' : ''}}"
           data-key="{{item.key}}"
@@ -688,8 +688,8 @@
           <text class="history-toggle {{showPointsDetail ? 'expanded' : ''}}">▾</text>
         </view>
         <view class="history-list {{showPointsDetail ? 'show' : ''}}" wx:if="{{pointsHistory.length > 0}}">
-          <view 
-            wx:for="{{pointsHistory}}" 
+          <view
+            wx:for="{{pointsHistory}}"
             wx:key="timestamp"
             class="history-item"
           >
@@ -766,8 +766,8 @@
         <view class="plot-selector-title">📍 选择监测地块</view>
         <scroll-view scroll-x="true" class="plot-scroll">
           <view class="plot-tabs">
-            <view 
-              wx:for="{{soilHealth.plots}}" 
+            <view
+              wx:for="{{soilHealth.plots}}"
               wx:key="id"
               class="plot-tab-item {{currentPlotIndex === index ? 'active' : ''}}"
               data-index="{{index}}"
@@ -816,21 +816,21 @@
 
       <view class="soil-chart-card">
         <view class="chart-type-tabs">
-          <view 
+          <view
             class="chart-type-tab {{soilChartType === 'ph' ? 'active' : ''}}"
             data-type="ph"
             bindtap="switchSoilChartType"
           >
             <text>⚗️ pH酸碱度</text>
           </view>
-          <view 
+          <view
             class="chart-type-tab {{soilChartType === 'organic' ? 'active' : ''}}"
             data-type="organic"
             bindtap="switchSoilChartType"
           >
             <text>🍂 有机质</text>
           </view>
-          <view 
+          <view
             class="chart-type-tab {{soilChartType === 'heavyMetal' ? 'active' : ''}}"
             data-type="heavyMetal"
             bindtap="switchSoilChartType"
@@ -865,15 +865,15 @@
           <text class="timeline-title">年度抽检记录（2019–2025）</text>
         </view>
         <view class="year-tabs">
-          <view 
-            wx:for="{{currentPlotRecords}}" 
+          <view
+            wx:for="{{currentPlotRecords}}"
             wx:key="year"
             class="year-tab-item {{selectedYearRecord && selectedYearRecord.year === item.year ? 'active' : ''}} {{item.abnormalEvent ? 'has-abnormal' : ''}}"
             data-index="{{index}}"
             bindtap="selectYearRecord"
           >
             <text class="year-tab-year">{{item.year}}</text>
-            <text class="year-tab-level {{item.overallLevel}}">{{item.overallLevel}}</text>
+            <text class="year-tab-level {{item.overallLevel === '优秀' ? 'excellent' : 'good'}}">{{item.overallLevel}}</text>
             <view class="year-tab-abnormal" wx:if="{{item.abnormalEvent}}">{{item.abnormalEvent.icon}}</view>
           </view>
         </view>
@@ -881,7 +881,7 @@
         <view class="year-record-detail" wx:if="{{selectedYearRecord}}">
           <view class="yrd-header">
             <view class="yrd-year-badge">{{selectedYearRecord.year}}年 · {{selectedYearRecord.season}}抽检</view>
-            <view class="yrd-level-badge {{selectedYearRecord.overallLevel}}">{{selectedYearRecord.overallLevel}}</view>
+            <view class="yrd-level-badge {{selectedYearRecord.overallLevel === '优秀' ? 'excellent' : 'good'}}">{{selectedYearRecord.overallLevel}}</view>
           </view>
           <view class="yrd-meta-row">
             <view class="yrd-meta-item">
@@ -955,8 +955,8 @@
           <view class="yrd-heavymetal-section">
             <view class="yrd-hm-header">🛡️ 重金属抽检结果（GB 15618-2018 标准）</view>
             <view class="yrd-hm-list">
-              <view 
-                wx:for="{{selectedYearRecord.heavyMetals}}" 
+              <view
+                wx:for="{{selectedYearRecord.heavyMetals}}"
                 wx:key="item"
                 class="yrd-hm-item"
               >
@@ -998,8 +998,8 @@
             </view>
             <view class="abnormal-card-batches" wx:if="{{selectedYearRecord.batchImpact && selectedYearRecord.batchImpact.length > 0}}">
               <view class="batch-impact-title">📦 关联批次影响</view>
-              <view 
-                wx:for="{{selectedYearRecord.batchImpact}}" 
+              <view
+                wx:for="{{selectedYearRecord.batchImpact}}"
                 wx:key="batchNo"
                 class="batch-impact-item"
               >
@@ -1022,8 +1022,8 @@
           <text class="im-title">土壤改良措施时间轴</text>
         </view>
         <view class="im-list">
-          <view 
-            wx:for="{{soilHealth.improvementMeasures}}" 
+          <view
+            wx:for="{{soilHealth.improvementMeasures}}"
             wx:key="year"
             class="im-item"
           >
@@ -1108,9 +1108,9 @@
         <view class="verify-input-section">
           <text class="verify-label">请输入证书编号</text>
           <view class="verify-input-wrapper">
-            <input 
-              class="verify-input" 
-              placeholder="如 ORG-CERT-2025-GH001" 
+            <input
+              class="verify-input"
+              placeholder="如 ORG-CERT-2025-GH001"
               value="{{certVerifyInput}}"
               bindinput="onCertVerifyInputChange"
             />
