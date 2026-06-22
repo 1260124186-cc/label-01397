@@ -12,7 +12,9 @@ var LOTTERY_STATUS = {
   SAMPLED: 'sampled',
   INSPECTING: 'inspecting',
   REPORTED: 'reported',
-  CLOSED: 'closed'
+  CLOSED: 'closed',
+  FAILED: 'failed',
+  CANCELLED: 'cancelled'
 };
 
 var LOTTERY_STATUS_LABELS = {
@@ -21,7 +23,9 @@ var LOTTERY_STATUS_LABELS = {
   sampled: '已取样',
   inspecting: '检测中',
   reported: '已出报告',
-  closed: '已归档'
+  closed: '已归档',
+  failed: '启动失败',
+  cancelled: '已取消'
 };
 
 var LOTTERY_STATUS_COLORS = {
@@ -30,7 +34,9 @@ var LOTTERY_STATUS_COLORS = {
   sampled: '#409EFF',
   inspecting: '#E6A23C',
   reported: '#67C23A',
-  closed: '#909399'
+  closed: '#909399',
+  failed: '#F56C6C',
+  cancelled: '#909399'
 };
 
 var INSPECTION_TYPE_LABELS = {
@@ -857,6 +863,32 @@ function _checkMemberAdequacy(round) {
   };
 }
 
+function _updateRoundStatus(roundId, newStatus, extraFields) {
+  var rounds = _loadRounds();
+  var found = false;
+
+  for (var i = 0; i < rounds.length; i++) {
+    if (rounds[i].roundId === roundId) {
+      rounds[i].status = newStatus;
+      if (extraFields && typeof extraFields === 'object') {
+        for (var key in extraFields) {
+          if (extraFields.hasOwnProperty(key)) {
+            rounds[i][key] = extraFields[key];
+          }
+        }
+      }
+      found = true;
+      break;
+    }
+  }
+
+  if (found) {
+    _saveRounds(rounds);
+    return rounds[i];
+  }
+  return null;
+}
+
 function createScheduledLotteryRound(options) {
   initializeLotterySystem();
   options = options || {};
@@ -921,15 +953,26 @@ function _handleFailStrategy(round, adequacy, meta) {
   if (!adequacy.isSufficient) {
     var failReason = '成员不足，当前 ' + adequacy.currentCount + ' 人，最低要求 ' + adequacy.minWitnesses + ' 人，缺 ' + adequacy.deficit + ' 人';
 
+    _updateRoundStatus(round.roundId, LOTTERY_STATUS.FAILED, {
+      startFailReason: failReason,
+      startFailedAt: _formatDateTime(_now())
+    });
+
     _setRoundMeta(round.roundId, {
       startStatus: START_STATUS.FAILED,
       failedAt: _formatDateTime(_now()),
       failReason: failReason
     });
 
+    var updatedRound = Object.assign({}, round, {
+      status: LOTTERY_STATUS.FAILED,
+      startFailReason: failReason,
+      startFailedAt: _formatDateTime(_now())
+    });
+
     return {
       success: false,
-      round: round,
+      round: updatedRound,
       startStatus: START_STATUS.FAILED,
       adequacy: adequacy,
       message: failReason
@@ -1051,6 +1094,12 @@ function _handleWaitStrategy(round, adequacy, meta) {
           message: timedOutMsg + '，已按部分可用模式启动'
         };
       } else {
+        _updateRoundStatus(round.roundId, LOTTERY_STATUS.FAILED, {
+          startFailReason: timedOutMsg,
+          startFailedAt: _formatDateTime(now),
+          waitTimedOut: true
+        });
+
         _setRoundMeta(round.roundId, {
           startStatus: START_STATUS.FAILED,
           failedAt: _formatDateTime(now),
@@ -1059,9 +1108,15 @@ function _handleWaitStrategy(round, adequacy, meta) {
           waitElapsedMs: elapsedMs
         });
 
+        var failedRound = Object.assign({}, round, {
+          status: LOTTERY_STATUS.FAILED,
+          startFailReason: timedOutMsg,
+          startFailedAt: _formatDateTime(now)
+        });
+
         return {
           success: false,
-          round: round,
+          round: failedRound,
           startStatus: START_STATUS.FAILED,
           adequacy: adequacy,
           waitTimedOut: true,
@@ -1150,6 +1205,32 @@ function startLotteryRound(roundId) {
     };
   }
 
+  var meta = _getRoundMeta(roundId);
+
+  if (meta && meta.startStatus) {
+    if (meta.startStatus === START_STATUS.STARTED) {
+      return {
+        success: false,
+        startStatus: START_STATUS.STARTED,
+        message: '该轮次已正常启动，无需重复启动'
+      };
+    }
+    if (meta.startStatus === START_STATUS.PARTIAL) {
+      return {
+        success: false,
+        startStatus: START_STATUS.PARTIAL,
+        message: '该轮次已按部分可用模式启动，无法再次启动'
+      };
+    }
+    if (meta.startStatus === START_STATUS.FAILED) {
+      return {
+        success: false,
+        startStatus: START_STATUS.FAILED,
+        message: '该轮次启动已失败（' + (meta.failReason || '未知原因') + '），无法再次启动'
+      };
+    }
+  }
+
   if (round.status !== LOTTERY_STATUS.SCHEDULED && round.status !== LOTTERY_STATUS.DRAWING) {
     return {
       success: false,
@@ -1158,7 +1239,6 @@ function startLotteryRound(roundId) {
     };
   }
 
-  var meta = _getRoundMeta(roundId);
   var adequacy = _checkMemberAdequacy(round);
   var strategy = (meta && meta.strategy) || round.memberStrategy || MEMBER_STRATEGY.WAIT;
 
@@ -1198,6 +1278,11 @@ function cancelStartLottery(roundId) {
       message: '当前轮次不处于等待状态，无法取消'
     };
   }
+
+  _updateRoundStatus(roundId, LOTTERY_STATUS.CANCELLED, {
+    startCancelledAt: _formatDateTime(_now()),
+    startCancelReason: '等待被手动取消'
+  });
 
   _setRoundMeta(roundId, {
     startStatus: START_STATUS.FAILED,

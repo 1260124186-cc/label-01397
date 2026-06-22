@@ -955,5 +955,220 @@ describe('公开抽检与透明 Lottery 模块测试', function() {
         expect(status.meta.adequacyAtStart.isSufficient).toBe(false);
       });
     });
+
+    describe('启动后再次调用应被拒绝', function() {
+      test('FAIL 策略失败后再次调用启动应被拒绝', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-FAIL-REJECT-TEST',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.FAIL
+        });
+
+        var roundId = result.round.roundId;
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+
+        var firstResult = publicLottery.startLotteryRound(roundId);
+        expect(firstResult.success).toBe(false);
+        expect(firstResult.startStatus).toBe('failed');
+        expect(firstResult.round.status).toBe('failed');
+
+        var secondResult = publicLottery.startLotteryRound(roundId);
+        expect(secondResult.success).toBe(false);
+        expect(secondResult.startStatus).toBe('failed');
+        expect(secondResult.message).toContain('启动已失败');
+        expect(secondResult.message).toContain('无法再次启动');
+      });
+
+      test('ALERT 策略部分启动后再次调用应被拒绝', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-ALERT-REJECT-TEST',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.ALERT
+        });
+
+        var roundId = result.round.roundId;
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+
+        var firstResult = publicLottery.startLotteryRound(roundId);
+        expect(firstResult.success).toBe(true);
+        expect(firstResult.startStatus).toBe('partial');
+        expect(firstResult.round.status).toBe('drawing');
+
+        var secondResult = publicLottery.startLotteryRound(roundId);
+        expect(secondResult.success).toBe(false);
+        expect(secondResult.startStatus).toBe('partial');
+        expect(secondResult.message).toContain('部分可用模式启动');
+        expect(secondResult.message).toContain('无法再次启动');
+      });
+
+      test('成员充足正常启动后再次调用应被拒绝', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-START-REJECT-TEST',
+          minWitnesses: 2,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.WAIT
+        });
+
+        var roundId = result.round.roundId;
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+        publicLottery.registerWitness(roundId, '李四', '13800138002');
+
+        var firstResult = publicLottery.startLotteryRound(roundId);
+        expect(firstResult.success).toBe(true);
+        expect(firstResult.startStatus).toBe('started');
+
+        var secondResult = publicLottery.startLotteryRound(roundId);
+        expect(secondResult.success).toBe(false);
+        expect(secondResult.startStatus).toBe('started');
+        expect(secondResult.message).toContain('已正常启动');
+        expect(secondResult.message).toContain('无需重复启动');
+      });
+
+      test('取消等待后再次调用启动应被拒绝', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-CANCEL-REJECT-TEST',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.WAIT
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.startLotteryRound(roundId);
+
+        publicLottery.cancelStartLottery(roundId);
+
+        var statusAfterCancel = publicLottery.getRoundStartStatus(roundId);
+        expect(statusAfterCancel.startStatus).toBe('failed');
+        expect(statusAfterCancel.status).toBe('cancelled');
+        expect(statusAfterCancel.meta.cancelled).toBe(true);
+
+        var startResult = publicLottery.startLotteryRound(roundId);
+        expect(startResult.success).toBe(false);
+        expect(startResult.startStatus).toBe('failed');
+        expect(startResult.message).toContain('等待被手动取消');
+        expect(startResult.message).toContain('无法再次启动');
+      });
+
+      test('WAIT 超时失败（allowPartial=false）后再次调用应被拒绝', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-WAIT-TIMEOUT-REJECT',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.WAIT,
+          waitTimeout: 1000,
+          allowPartial: false
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+
+        publicLottery.startLotteryRound(roundId);
+
+        var timeoutPromise = new Promise(function(resolve) {
+          setTimeout(function() {
+            var firstResult = publicLottery.startLotteryRound(roundId);
+            resolve(firstResult);
+          }, 1200);
+        });
+
+        return timeoutPromise.then(function(firstResult) {
+          expect(firstResult.success).toBe(false);
+          expect(firstResult.startStatus).toBe('failed');
+          expect(firstResult.waitTimedOut).toBe(true);
+          expect(firstResult.round.status).toBe('failed');
+
+          var secondResult = publicLottery.startLotteryRound(roundId);
+          expect(secondResult.success).toBe(false);
+          expect(secondResult.startStatus).toBe('failed');
+          expect(secondResult.message).toContain('等待超时');
+          expect(secondResult.message).toContain('无法再次启动');
+        });
+      });
+
+      test('WAIT 超时部分启动（allowPartial=true）后再次调用应被拒绝', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-WAIT-PARTIAL-REJECT',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.WAIT,
+          waitTimeout: 1000,
+          allowPartial: true
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+
+        publicLottery.startLotteryRound(roundId);
+
+        var timeoutPromise = new Promise(function(resolve) {
+          setTimeout(function() {
+            var firstResult = publicLottery.startLotteryRound(roundId);
+            resolve(firstResult);
+          }, 1200);
+        });
+
+        return timeoutPromise.then(function(firstResult) {
+          expect(firstResult.success).toBe(true);
+          expect(firstResult.startStatus).toBe('partial');
+          expect(firstResult.isPartial).toBe(true);
+          expect(firstResult.waitTimedOut).toBe(true);
+
+          var secondResult = publicLottery.startLotteryRound(roundId);
+          expect(secondResult.success).toBe(false);
+          expect(secondResult.startStatus).toBe('partial');
+          expect(secondResult.message).toContain('部分可用模式启动');
+          expect(secondResult.message).toContain('无法再次启动');
+        });
+      });
+
+      test('FAIL 失败后 round.status 应为 failed', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-STATUS-CHECK-FAIL',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.FAIL
+        });
+
+        var roundId = result.round.roundId;
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+
+        publicLottery.startLotteryRound(roundId);
+
+        var roundInfo = publicLottery.getLotteryRoundById(roundId);
+        expect(roundInfo.status).toBe('failed');
+        expect(roundInfo.startFailReason).toContain('成员不足');
+        expect(roundInfo.startFailedAt).toBeDefined();
+      });
+
+      test('CANCELLED 状态应已在 LOTTERY_STATUS_COLORS 中定义颜色', function() {
+        expect(publicLottery.LOTTERY_STATUS_COLORS.failed).toBe('#F56C6C');
+        expect(publicLottery.LOTTERY_STATUS_COLORS.cancelled).toBeDefined();
+        expect(publicLottery.LOTTERY_STATUS.FAILED).toBe('failed');
+        expect(publicLottery.LOTTERY_STATUS.CANCELLED).toBe('cancelled');
+      });
+
+      test('FAIL / ALERT / WAIT 策略失败消息中应包含失败原因', function() {
+        publicLottery.initializeLotterySystem();
+        var failResult = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-REASON-CHECK',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.FAIL
+        });
+
+        var roundId = failResult.round.roundId;
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+
+        publicLottery.startLotteryRound(roundId);
+
+        var secondResult = publicLottery.startLotteryRound(roundId);
+        expect(secondResult.message).toContain('成员不足');
+        expect(secondResult.message).toContain('缺 4 人');
+      });
+    });
   });
 });
