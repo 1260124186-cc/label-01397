@@ -33,9 +33,6 @@ Page({
     userLevel: null,
     pointsHistory: [],
     showPointsDetail: false,
-    carbonChartData: null,
-    waterChartDrawn: false,
-    carbonChartDrawn: false,
     ecoFundData: null,
     fundProjects: [],
     selectedProjectKey: '',
@@ -162,19 +159,17 @@ Page({
     if (key === 'carbon') {
       var earnResult = greenPoints.earnPoints('viewCarbon');
       if (earnResult.earned > 0) this.loadGreenPoints();
-      if (!this.data.carbonChartDrawn && greenData && greenData.carbonFootprint) {
+      if (greenData && greenData.carbonFootprint) {
         setTimeout(function() {
           that.drawCarbonChart(greenData.carbonFootprint);
-          that.setData({ carbonChartDrawn: true });
         }, 100);
       }
     } else if (key === 'water') {
       var earnResultW = greenPoints.earnPoints('viewWater');
       if (earnResultW.earned > 0) this.loadGreenPoints();
-      if (!this.data.waterChartDrawn && greenData && greenData.waterFootprint) {
+      if (greenData && greenData.waterFootprint) {
         setTimeout(function() {
           that.drawWaterChart(greenData.waterFootprint);
-          that.setData({ waterChartDrawn: true });
         }, 100);
       }
     } else if (key === 'biodiversity') {
@@ -328,8 +323,6 @@ Page({
       ctx.fillStyle = '#999999';
       ctx.font = '9px sans-serif';
       ctx.fillText(carbonData.unit, centerX, centerY + 10);
-
-      that.setData({ carbonChartData: carbonData, carbonChartDrawn: true });
     });
   },
 
