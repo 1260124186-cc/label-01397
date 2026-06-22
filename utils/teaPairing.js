@@ -93,21 +93,33 @@ function getCurrentFestivalRecommendations() {
     all: festivals
   };
 
+  var i;
   if (month === 9 || month === 10) {
-    var midAutumn = festivals.find(function(f) { return f.festivalKey === 'mid-autumn'; });
-    if (midAutumn) result.current = midAutumn;
+    for (i = 0; i < festivals.length; i++) {
+      if (festivals[i].festivalKey === 'mid-autumn') {
+        result.current = festivals[i];
+        break;
+      }
+    }
   } else if (month === 1 || month === 2) {
-    var springFestival = festivals.find(function(f) { return f.festivalKey === 'spring-festival'; });
-    if (springFestival) result.current = springFestival;
+    for (i = 0; i < festivals.length; i++) {
+      if (festivals[i].festivalKey === 'spring-festival') {
+        result.current = festivals[i];
+        break;
+      }
+    }
   }
 
   if (!result.current) {
     result.current = festivals[0];
   }
 
-  result.upcoming = festivals.filter(function(f) {
-    return f.festivalKey !== (result.current ? result.current.festivalKey : '');
-  });
+  var currentKey = result.current ? result.current.festivalKey : '';
+  for (i = 0; i < festivals.length; i++) {
+    if (festivals[i].festivalKey !== currentKey) {
+      result.upcoming.push(festivals[i]);
+    }
+  }
 
   return result;
 }

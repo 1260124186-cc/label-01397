@@ -10991,7 +10991,7 @@ function getUserPreference() {
 }
 
 function getPersonalizedRecommendations(preference) {
-  pref = preference || getUserPreference() || {};
+  var pref = preference || getUserPreference() || {};
   var result = {
     pairings: [],
     giftBoxes: [],
