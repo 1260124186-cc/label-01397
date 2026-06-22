@@ -1,0 +1,172 @@
+<!--
+  桂花茶溯源小程序 - UGC上传发布页
+  功能：上传图片、填写内容、选择品种和搭配食品
+-->
+
+<view class="page-container">
+
+  <!-- 整体滚动区 -->
+  <scroll-view scroll-y class="main-scroll" enhanced show-scrollbar="{{false}}">
+
+    <!-- ==================== 图片上传区 ==================== -->
+    <view class="section-card">
+      <view class="section-header-row">
+        <text class="section-title">📸 上传搭配美图</text>
+        <text class="section-count">{{images.length}}/{{maxImages}}</text>
+      </view>
+
+      <view class="image-grid">
+        <!-- 已选图片 -->
+        <view
+          wx:for="{{images}}"
+          wx:key="*this"
+          class="image-item"
+        >
+          <image
+            class="image-thumb"
+            src="{{item}}"
+            mode="aspectFill"
+            data-index="{{index}}"
+            bindtap="onPreviewImage"
+          />
+          <!-- 删除按钮 -->
+          <view
+            class="delete-btn"
+            catchtap="onDeleteImage"
+            data-index="{{index}}"
+          >
+            <text class="delete-icon">✕</text>
+          </view>
+        </view>
+
+        <!-- 添加图片占位框（未满9张时显示） -->
+        <view
+          wx:if="{{images.length < maxImages}}"
+          class="upload-placeholder"
+          bindtap="onChooseImage"
+        >
+          <text class="upload-icon">📷</text>
+          <text class="upload-text">添加图片</text>
+        </view>
+      </view>
+
+      <view class="image-tip">
+        <text>💡 最多上传9张精美搭配图，建议清晰美观哦~</text>
+      </view>
+    </view>
+
+    <!-- ==================== 文字内容区 ==================== -->
+    <view class="section-card">
+      <view class="section-header-row">
+        <text class="section-title">✍️ 搭配心得</text>
+        <text class="word-count {{contentLength >= contentMax ? 'over' : ''}}">{{contentLength}}/{{contentMax}}</text>
+      </view>
+
+      <textarea
+        class="content-textarea"
+        placeholder="分享您的搭配秘诀、口感体验、推荐理由..."
+        placeholder-class="textarea-placeholder"
+        value="{{content}}"
+        maxlength="{{contentMax}}"
+        auto-height
+        bindinput="onContentInput"
+        cursor-spacing="20"
+      />
+
+      <!-- 建议标签 -->
+      <view class="suggest-tags-wrap">
+        <text class="suggest-label">推荐标签：</text>
+        <view class="suggest-tags">
+          <view
+            wx:for="{{suggestTags}}"
+            wx:key="*this"
+            class="suggest-tag"
+            data-tag="{{item}}"
+            bindtap="onTagTap"
+          >
+            <text>#{{item}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ==================== 选择品种区 ==================== -->
+    <view class="section-card">
+      <view class="section-header-row">
+        <text class="section-title">🌼 这是哪个品种的搭配？</text>
+      </view>
+
+      <view class="variety-grid">
+        <view
+          wx:for="{{varietyOptions}}"
+          wx:key="name"
+          class="variety-card {{variety === item.name ? 'selected' : ''}}"
+          data-variety="{{item.name}}"
+          bindtap="onSelectVariety"
+        >
+          <view class="variety-card-inner" style="border-color: {{item.color}};">
+            <text class="variety-icon">{{item.icon}}</text>
+            <text class="variety-name">{{item.name}}</text>
+            <view class="check-mark" wx:if="{{variety === item.name}}">
+              <text>✓</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ==================== 选择搭配食品区 ==================== -->
+    <view class="section-card">
+      <view class="section-header-row">
+        <text class="section-title">🍪 您搭配了哪些茶点？</text>
+        <text class="section-subtitle">（可多选）</text>
+      </view>
+
+      <view class="food-grid">
+        <view
+          wx:for="{{allFoods}}"
+          wx:key="foodId"
+          class="food-item"
+          data-foodname="{{item.name}}"
+          bindtap="onToggleFood"
+        >
+          <view class="food-image-wrap">
+            <image
+              class="food-image"
+              src="{{item.thumbnail}}"
+              mode="aspectFill"
+            />
+            <!-- 选中蒙层 + 打勾 -->
+            <view class="food-overlay" wx:if="{{pairedFoods.indexOf(item.name) > -1}}">
+              <view class="food-check">
+                <text>✓</text>
+              </view>
+            </view>
+          </view>
+          <view class="food-name">{{item.name}}</view>
+        </view>
+      </view>
+
+      <view class="food-tip" wx:if="{{pairedFoods.length > 0}}">
+        <text>已选择 {{pairedFoods.length}} 款搭配食品</text>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-safe-area"></view>
+  </scroll-view>
+
+  <!-- ==================== 底部固定发布按钮 ==================== -->
+  <view class="submit-bar">
+    <button
+      class="submit-btn {{submitting ? 'disabled' : ''}}"
+      bindtap="onSubmit"
+      disabled="{{submitting}}"
+      loading="{{submitting}}"
+    >
+      <text wx:if="{{!submitting}}">✨ 发布我的搭配</text>
+      <text wx:else>发布中...</text>
+    </button>
+  </view>
+
+</view>

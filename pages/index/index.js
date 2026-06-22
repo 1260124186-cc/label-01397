@@ -8,6 +8,7 @@ const mockData = require('../../utils/mockData.js');
 const storage = require('../../utils/storage.js');
 const i18n = require('../../utils/i18n/index.js');
 const theme = require('../../utils/theme.js');
+const teaPairing = require('../../utils/teaPairing.js');
 
 Page({
   data: {
@@ -94,6 +95,24 @@ Page({
         tag: 'EVENT',
         image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=autumn%20osmanthus%20flower%20picking%20festival%20people%20harvesting%20golden%20flowers&image_size=landscape_16_9',
         traceId: ''
+      },
+      {
+        id: 4,
+        type: 'giftBoxMidAutumn',
+        title: '中秋礼盒',
+        subtitle: '桂花茶配月饼・佳节送礼首选',
+        tag: 'MID-AUTUMN',
+        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mid%20autumn%20festival%20osmanthus%20tea%20gift%20box%20mooncake%20festive%20elegant&image_size=landscape_16_9',
+        traceId: ''
+      },
+      {
+        id: 5,
+        type: 'giftBoxSpringFestival',
+        title: '春节礼盒',
+        subtitle: '金桂迎春・新年贺岁佳品',
+        tag: 'SPRING',
+        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=spring%20festival%20chinese%20new%20year%20osmanthus%20tea%20gift%20box%20red%20gold%20festive&image_size=landscape_16_9',
+        traceId: ''
       }
     ],
     currentBanner: 0,
@@ -116,7 +135,8 @@ Page({
       { key: 'exportTrace', icon: '🌏', name: '出口合规溯源', desc: '海外经销商专用视图', color: '#1E3A8A', type: 'exportTrace' },
       { key: 'dealer', icon: '🏬', name: '经销商渠道', desc: '入库出库·渠道溯源', color: '#722ED1', type: 'dealer' },
       { key: 'experience', icon: '🎋', name: '线下体验', desc: '茶园参观·制茶·品鉴预约', color: '#2E8B57', type: 'experience' },
-      { key: 'brand', icon: '🏯', name: '品牌故事', desc: '一茶一品的前世今生', color: '#B8860B', type: 'brand' }
+      { key: 'brand', icon: '🏯', name: '品牌故事', desc: '一茶一品的前世今生', color: '#B8860B', type: 'brand' },
+      { key: 'teaPairing', icon: '🍵', name: '茶食搭配', desc: '品种搭配+节日礼盒推荐', color: '#FF8C00', type: 'teaPairing' }
     ],
 
     showScanGuide: false,
@@ -133,7 +153,9 @@ Page({
       title: '一茶一品・桂花茶品牌宣传片',
       duration: '0:30',
       playing: false
-    }
+    },
+
+    currentFestival: null
   },
 
   onLoad: function(options) {
@@ -145,6 +167,9 @@ Page({
     setTimeout(() => {
       this.setData({ pageLoaded: true });
     }, 100);
+
+    var festivalData = teaPairing.getCurrentFestivalRecommendations();
+    this.setData({ currentFestival: festivalData });
 
     if (options.traceId) {
       this.queryTraceInfo(options.traceId);
@@ -743,6 +768,14 @@ Page({
       wx.navigateTo({
         url: '/pages/brandStory/brandStory'
       });
+    } else if (banner.type === 'giftBoxMidAutumn') {
+      wx.navigateTo({
+        url: '/pages/teaPairing/detail?boxId=GB-MA-001'
+      });
+    } else if (banner.type === 'giftBoxSpringFestival') {
+      wx.navigateTo({
+        url: '/pages/teaPairing/detail?boxId=GB-SF-001'
+      });
     }
   },
 
@@ -813,7 +846,31 @@ Page({
       wx.navigateTo({
         url: '/pages/experience/list'
       });
+    } else if (card.type === 'teaPairing') {
+      wx.navigateTo({
+        url: '/pages/teaPairing/list'
+      });
     }
+  },
+
+  onFestivalShortcutTap: function(e) {
+    var festival = e.currentTarget.dataset.festival;
+    wx.navigateTo({
+      url: '/pages/teaPairing/list?festival=' + festival
+    });
+  },
+
+  onQuickPairingTap: function(e) {
+    var variety = e.currentTarget.dataset.variety;
+    wx.navigateTo({
+      url: '/pages/teaPairing/detail?varietyKey=' + variety
+    });
+  },
+
+  onPreferenceShortcutTap: function() {
+    wx.navigateTo({
+      url: '/pages/preference/preference'
+    });
   },
 
   checkFirstVisit: function() {

@@ -1,0 +1,752 @@
+/*
+ * 桂花茶溯源小程序 - 茶食搭配与场景化推荐首页样式
+ * 页面路径：pages/teaPairing/list
+ */
+
+.page-container {
+  min-height: 100vh;
+  background-color: #F5F5F5;
+  padding-bottom: 140rpx;
+}
+
+.page-loaded {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ==================== 顶部节日Banner区 ==================== */
+.festival-banner {
+  position: relative;
+  width: 100%;
+  height: 320rpx;
+  overflow: hidden;
+}
+
+.banner-bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.35;
+}
+
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
+}
+
+.banner-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 60rpx 40rpx;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.banner-icon {
+  font-size: 80rpx;
+  margin-right: 30rpx;
+  flex-shrink: 0;
+}
+
+.banner-text-wrap {
+  flex: 1;
+  color: #FFFFFF;
+}
+
+.banner-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 12rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0,0,0,0.3);
+}
+
+.banner-subtitle {
+  font-size: 26rpx;
+  opacity: 0.95;
+  margin-bottom: 10rpx;
+  line-height: 1.5;
+}
+
+.banner-date {
+  font-size: 24rpx;
+  opacity: 0.85;
+}
+
+/* ==================== Tab切换栏 ==================== */
+.tab-bar {
+  display: flex;
+  flex-direction: row;
+  background-color: #FFFFFF;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 96rpx;
+  position: relative;
+  cursor: pointer;
+}
+
+.tab-text {
+  font-size: 28rpx;
+  color: #666666;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active .tab-text {
+  color: #2E8B57;
+  font-weight: bold;
+  font-size: 30rpx;
+}
+
+.tab-underline {
+  position: absolute;
+  bottom: 0;
+  width: 60rpx;
+  height: 6rpx;
+  background: linear-gradient(90deg, #2E8B57, #52C41A);
+  border-radius: 3rpx;
+}
+
+/* ==================== 内容滚动区 ==================== */
+.content-scroll {
+  height: calc(100vh - 416rpx);
+  box-sizing: border-box;
+}
+
+.tab-content {
+  padding: 24rpx;
+}
+
+.section-header {
+  padding: 16rpx 8rpx 24rpx;
+}
+
+.section-title {
+  display: block;
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 10rpx;
+}
+
+.section-subtitle {
+  display: block;
+  font-size: 24rpx;
+  color: #999999;
+}
+
+/* ==================== 品种搭配卡片 ==================== */
+.variety-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.variety-card {
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.variety-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.variety-icon-wrap {
+  width: 88rpx;
+  height: 88rpx;
+  background: rgba(255,255,255,0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
+}
+
+.variety-icon {
+  font-size: 48rpx;
+}
+
+.variety-info {
+  flex: 1;
+}
+
+.variety-name {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+  margin-bottom: 8rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0,0,0,0.15);
+}
+
+.variety-tagline {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.95);
+}
+
+.food-preview-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+  gap: 16rpx;
+}
+
+.food-preview-img {
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 16rpx;
+  background: #FFFFFF;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
+}
+
+.food-preview-more {
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 16rpx;
+  background: rgba(255,255,255,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  color: #666666;
+  font-weight: 500;
+}
+
+.card-footer {
+  background: rgba(255,255,255,0.95);
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.card-desc {
+  font-size: 24rpx;
+  color: #666666;
+  line-height: 1.6;
+  margin-bottom: 16rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.add-cart-btn {
+  width: 100%;
+  height: 72rpx;
+  line-height: 72rpx;
+  background: linear-gradient(135deg, #2E8B57, #52C41A);
+  color: #FFFFFF;
+  border-radius: 36rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.add-cart-btn::after {
+  border: none;
+}
+
+/* ==================== 节日礼盒Tab ==================== */
+.festival-theme-header {
+  position: relative;
+  width: 100%;
+  height: 280rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  margin-bottom: 24rpx;
+}
+
+.festival-theme-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.festival-theme-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
+}
+
+.festival-theme-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 0 40rpx;
+}
+
+.festival-theme-icon {
+  font-size: 72rpx;
+  margin-bottom: 16rpx;
+}
+
+.festival-theme-title {
+  font-size: 38rpx;
+  font-weight: bold;
+  margin-bottom: 12rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0,0,0,0.4);
+}
+
+.festival-theme-subtitle {
+  font-size: 26rpx;
+  opacity: 0.95;
+}
+
+/* 礼盒卡片 */
+.gift-box-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.gift-box-card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.08);
+}
+
+.gift-box-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 360rpx;
+}
+
+.gift-box-image {
+  width: 100%;
+  height: 100%;
+  background: #F0F0F0;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 20rpx;
+  left: 20rpx;
+  background: linear-gradient(135deg, #FF6B6B, #FF4757);
+  color: #FFFFFF;
+  font-size: 22rpx;
+  font-weight: bold;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255,71,87,0.3);
+}
+
+.tag-list {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  align-items: flex-end;
+}
+
+.tag-item {
+  background: rgba(255,255,255,0.95);
+  color: #DAA520;
+  font-size: 20rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 6rpx;
+  font-weight: 500;
+}
+
+.gift-box-info {
+  padding: 24rpx 28rpx 28rpx;
+}
+
+.gift-box-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 10rpx;
+  line-height: 1.4;
+}
+
+.gift-box-subtitle {
+  font-size: 24rpx;
+  color: #888888;
+  margin-bottom: 16rpx;
+}
+
+.includes-list {
+  background: #FAFAFA;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  margin-bottom: 20rpx;
+  font-size: 22rpx;
+  line-height: 1.8;
+}
+
+.includes-label {
+  color: #999999;
+  margin-right: 8rpx;
+}
+
+.includes-item {
+  color: #666666;
+  margin-right: 12rpx;
+}
+
+.includes-more {
+  color: #2E8B57;
+  font-weight: 500;
+}
+
+.gift-box-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.price-wrap {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.current-price {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #FF4757;
+}
+
+.original-price {
+  font-size: 24rpx;
+  color: #BBBBBB;
+  text-decoration: line-through;
+}
+
+.member-price {
+  font-size: 22rpx;
+  color: #FFA500;
+  background: #FFF8E7;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+}
+
+.sales-info {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.rating {
+  font-size: 22rpx;
+  color: #FFA500;
+}
+
+.sold-count {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+/* ==================== 为你推荐Tab ==================== */
+.preference-guide {
+  padding: 40rpx 0;
+}
+
+.guide-card {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8FFF8 100%);
+  border-radius: 32rpx;
+  padding: 48rpx 40rpx;
+  box-shadow: 0 8rpx 32rpx rgba(46,139,87,0.1);
+  border: 2rpx solid rgba(46,139,87,0.15);
+}
+
+.guide-icon-wrap {
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #2E8B57, #52C41A);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28rpx;
+  box-shadow: 0 8rpx 24rpx rgba(46,139,87,0.3);
+}
+
+.guide-icon {
+  font-size: 64rpx;
+}
+
+.guide-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333333;
+  text-align: center;
+  margin-bottom: 16rpx;
+}
+
+.guide-desc {
+  font-size: 26rpx;
+  color: #666666;
+  text-align: center;
+  line-height: 1.7;
+  margin-bottom: 36rpx;
+}
+
+.guide-features {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 40rpx;
+}
+
+.guide-feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.feature-icon {
+  font-size: 44rpx;
+  margin-bottom: 12rpx;
+}
+
+.feature-text {
+  font-size: 24rpx;
+  color: #555555;
+}
+
+.start-preference-btn {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: linear-gradient(135deg, #2E8B57, #52C41A);
+  color: #FFFFFF;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: bold;
+  border: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 8rpx 24rpx rgba(46,139,87,0.3);
+}
+
+.start-preference-btn::after {
+  border: none;
+}
+
+/* 推荐区块 */
+.rec-section {
+  margin-bottom: 36rpx;
+}
+
+.rec-subtitle {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin: 8rpx 0 20rpx;
+  padding-left: 8rpx;
+}
+
+.rec-card {
+  margin-bottom: 24rpx;
+}
+
+.reset-preference-wrap {
+  padding: 20rpx 0 40rpx;
+  text-align: center;
+}
+
+.reset-preference-btn {
+  display: inline-block;
+  font-size: 26rpx;
+  color: #2E8B57;
+  padding: 16rpx 32rpx;
+  background: rgba(46,139,87,0.08);
+  border-radius: 32rpx;
+}
+
+/* ==================== 搭配社区UGC Tab ==================== */
+.ugc-waterfall {
+  display: flex;
+  flex-direction: row;
+  gap: 20rpx;
+  padding: 8rpx 0;
+}
+
+.ugc-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.ugc-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+}
+
+.ugc-image {
+  width: 100%;
+  min-height: 280rpx;
+  background: #F0F0F0;
+}
+
+.ugc-content {
+  padding: 20rpx;
+}
+
+.ugc-user-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 14rpx;
+}
+
+.ugc-avatar {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: #EEEEEE;
+  margin-right: 12rpx;
+}
+
+.ugc-nickname {
+  font-size: 22rpx;
+  color: #666666;
+  font-weight: 500;
+}
+
+.ugc-text {
+  font-size: 24rpx;
+  color: #333333;
+  line-height: 1.6;
+  margin-bottom: 14rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ugc-tags {
+  margin-bottom: 14rpx;
+}
+
+.ugc-tag {
+  display: inline-block;
+  font-size: 20rpx;
+  color: #2E8B57;
+  background: rgba(46,139,87,0.08);
+  padding: 6rpx 14rpx;
+  border-radius: 6rpx;
+  margin-right: 10rpx;
+  margin-bottom: 8rpx;
+}
+
+.ugc-actions {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding-top: 12rpx;
+  border-top: 1rpx solid #F5F5F5;
+}
+
+.ugc-action-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.action-icon {
+  font-size: 24rpx;
+}
+
+.action-count {
+  font-size: 22rpx;
+  color: #888888;
+}
+
+.view-more-wrap {
+  padding: 32rpx 0 16rpx;
+}
+
+.view-more-btn {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #FFFFFF;
+  color: #2E8B57;
+  border: 2rpx solid rgba(46,139,87,0.3);
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  padding: 0;
+  margin: 0;
+}
+
+.view-more-btn::after {
+  border: none;
+}
+
+/* ==================== 底部占位 ==================== */
+.bottom-placeholder {
+  height: 40rpx;
+}
+
+/* ==================== 底部悬浮按钮 ==================== */
+.float-btn {
+  position: fixed;
+  right: 32rpx;
+  bottom: 60rpx;
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #2E8B57, #52C41A);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(46,139,87,0.4);
+  z-index: 999;
+}
+
+.float-btn-icon {
+  font-size: 36rpx;
+  margin-bottom: 4rpx;
+}
+
+.float-btn-text {
+  font-size: 20rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+}

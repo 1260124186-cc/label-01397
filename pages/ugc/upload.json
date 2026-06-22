@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "分享我的搭配",
+  "navigationBarBackgroundColor": "#E91E63",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": false,
+  "backgroundTextStyle": "light",
+  "backgroundColor": "#F5F5F5",
+  "usingComponents": {}
+}

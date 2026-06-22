@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "搭配社区",
+  "navigationBarBackgroundColor": "#E91E63",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "light",
+  "backgroundColor": "#FAFAFA",
+  "usingComponents": {}
+}

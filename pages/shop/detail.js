@@ -1,6 +1,7 @@
 var mockData = require('../../../utils/mockData.js');
 var shop = require('../../../utils/shop.js');
 var marketingAnalytics = require('../../../utils/marketingAnalytics.js');
+var teaPairing = require('../../../utils/teaPairing.js');
 
 Page({
   data: {
@@ -18,7 +19,10 @@ Page({
     isMember: false,
     memberLevel: null,
     promotions: [],
-    showShareMenu: false
+    showShareMenu: false,
+    pairingPlan: null,
+    relatedUgcs: [],
+    showPairingSection: false
   },
 
   onLoad: function(options) {
@@ -73,6 +77,7 @@ Page({
           selectedSku: defaultSku,
           loading: false
         });
+        that.loadPairingPlan();
       } else {
         wx.showToast({ title: '商品不存在', icon: 'none' });
         setTimeout(function() { wx.navigateBack(); }, 1500);
@@ -273,6 +278,68 @@ Page({
       query: 'traceId=' + this.data.traceId,
       imageUrl: product ? product.thumbnail : ''
     };
+  },
+
+  loadPairingPlan: function() {
+    var that = this;
+    var traceId = that.data.traceId;
+    var plan = teaPairing.getFullPairingPlan(traceId);
+    if (plan && plan.pairing) {
+      var recommendedFoodIds = plan.pairing.recommendedFoods || [];
+      plan.pairing.defaultFoodIds = recommendedFoodIds.slice(0, 2);
+      var defaultSkuId = plan.product && plan.product.skuList
+        ? plan.product.skuList[plan.product.defaultSkuIndex || 0].skuId
+        : null;
+      var priceInfo = teaPairing.calculatePairingPrice(
+        traceId, defaultSkuId, plan.pairing.defaultFoodIds, that.data.isMember
+      );
+      plan.priceInfo = priceInfo;
+      that.setData({
+        pairingPlan: plan,
+        relatedUgcs: plan.relatedUgcs || [],
+        showPairingSection: true
+      });
+    }
+  },
+
+  onPairingOneClickAdd: function() {
+    var that = this;
+    var plan = that.data.pairingPlan;
+    if (!plan) return;
+    wx.showLoading({ title: '正在加入购物车...', mask: true });
+    var defaultSkuId = plan.product && plan.product.skuList
+      ? plan.product.skuList[plan.product.defaultSkuIndex || 0].skuId
+      : null;
+    var result = teaPairing.addCustomPairingToCart(
+      plan.traceId,
+      defaultSkuId,
+      plan.pairing && plan.pairing.defaultFoodIds ? plan.pairing.defaultFoodIds : []
+    );
+    wx.hideLoading();
+    if (result.success) {
+      wx.showToast({
+        title: '成功加入' + result.addedCount + '件商品',
+        icon: 'success',
+        duration: 1500
+      });
+      that.refreshCartCount();
+    } else {
+      wx.showToast({ title: '加入失败', icon: 'none' });
+    }
+  },
+
+  onViewFullPairing: function() {
+    var traceId = this.data.traceId;
+    wx.navigateTo({
+      url: '/pages/teaPairing/detail?traceId=' + traceId
+    });
+  },
+
+  onUgcCardTap: function(e) {
+    var images = e.currentTarget.dataset.images;
+    if (images && images.length > 0) {
+      wx.previewImage({ urls: images, current: images[0] });
+    }
   },
 
   onBackHome: function() {

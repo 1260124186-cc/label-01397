@@ -1,0 +1,365 @@
+<!-- 加载状态 -->
+<view class="loading-page" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+  <text class="loading-text">加载中...</text>
+</view>
+
+<!-- 页面主内容 -->
+<view class="page-container" wx:if="{{!loading}}">
+
+  <!-- ========== 品种详情 / 溯源ID搭配方案 ========== -->
+  <block wx:if="{{pageType === 'variety' || pageType === 'product'}}">
+
+    <!-- 头部渐变Banner -->
+    <view class="variety-banner" style="background: {{pairingData.themeBg || 'linear-gradient(135deg, #FFD700 0%, #DAA520 100%)'}};">
+      <view class="banner-icon-wrap">
+        <text class="banner-icon">{{pairingData.icon || '🌼'}}</text>
+      </view>
+      <view class="banner-info">
+        <view class="banner-name">{{pairingData.varietyName || '桂花茶'}}</view>
+        <view class="banner-tagline">{{pairingData.tagline || ''}}</view>
+        <view class="banner-btns">
+          <view class="banner-btn" bindtap="goToPreference">
+            <text class="btn-icon">📋</text>
+            <text class="btn-text">测偏好</text>
+          </view>
+          <view class="banner-btn" bindtap="goToUgcUpload">
+            <text class="btn-icon">✍️</text>
+            <text class="btn-text">晒搭配</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 搭配介绍区 -->
+    <view class="card-section">
+      <view class="section-header">
+        <text class="section-title">搭配介绍</text>
+      </view>
+      <view class="intro-content">
+        <view class="intro-block">
+          <view class="intro-label">搭配原理</view>
+          <view class="intro-text">{{pairingData.pairingReason || ''}}</view>
+        </view>
+        <view class="intro-block expert-block">
+          <view class="intro-label">专家点评</view>
+          <view class="intro-text expert-text">{{pairingData.expertComment || ''}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 茶品选择区 -->
+    <view class="card-section" wx:if="{{productData}}">
+      <view class="section-header">
+        <text class="section-title">茶品选择</text>
+      </view>
+      <view class="tea-card" bindtap="goToProductDetail" data-trace-id="{{teaTraceId}}">
+        <image
+          class="tea-image"
+          src="{{productData.thumbnail}}"
+          mode="aspectFill"
+        ></image>
+        <view class="tea-info">
+          <view class="tea-name">{{productData.productName}}</view>
+          <view class="tea-spec">
+            <text wx:for="{{productData.skuList[defaultSkuIndex || 0].specValues}}" wx:key="*this">{{item}} </text>
+          </view>
+          <view class="tea-price-row">
+            <view class="tea-price">
+              <text class="price-symbol">¥</text>
+              <text class="price-value">{{productData.skuList[defaultSkuIndex || 0].price}}</text>
+            </view>
+            <view class="quantity-wrap">
+              <view
+                class="qty-btn qty-minus"
+                catchtap="changeQuantity"
+                data-type="tea"
+                data-delta="-1"
+              >-</view>
+              <text class="qty-value">{{teaQuantity}}</text>
+              <view
+                class="qty-btn qty-plus"
+                catchtap="changeQuantity"
+                data-type="tea"
+                data-delta="1"
+              >+</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 推荐配餐区 -->
+    <view class="card-section" wx:if="{{pairingData.recommendedFoodList && pairingData.recommendedFoodList.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">推荐配餐</text>
+        <text class="section-subtitle">勾选后可一键加购</text>
+      </view>
+      <view class="food-list">
+        <view
+          class="food-card {{selectedFoods.indexOf(item.foodId) >= 0 ? 'selected' : ''}}"
+          wx:for="{{pairingData.recommendedFoodList}}"
+          wx:key="foodId"
+        >
+          <view
+            class="food-checkbox"
+            catchtap="toggleFoodSelect"
+            data-food-id="{{item.foodId}}"
+          >
+            <text class="checkbox-icon" wx:if="{{selectedFoods.indexOf(item.foodId) >= 0}}">✓</text>
+          </view>
+          <image
+            class="food-image"
+            src="{{item.thumbnail}}"
+            mode="aspectFill"
+            data-url="{{item.thumbnail}}"
+            bindtap="onFoodPreviewImage"
+          ></image>
+          <view class="food-info">
+            <view class="food-name">{{item.name}}</view>
+            <view class="food-spec">{{item.spec}}</view>
+            <view class="food-tags">
+              <text class="food-tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+            </view>
+            <view class="food-bottom-row">
+              <view class="food-price-wrap">
+                <text class="food-price-symbol">¥</text>
+                <text class="food-price-value">{{item.price}}</text>
+                <text class="food-member-price" wx:if="{{isMember && item.memberPrice < item.price}}">¥{{item.memberPrice}}</text>
+              </view>
+              <view class="food-actions">
+                <view class="mini-qty-wrap">
+                  <view
+                    class="mini-qty-btn mini-qty-minus"
+                    catchtap="changeQuantity"
+                    data-type="{{item.foodId}}"
+                    data-delta="-1"
+                  >-</view>
+                  <text class="mini-qty-value">{{foodQuantities[item.foodId] || 1}}</text>
+                  <view
+                    class="mini-qty-btn mini-qty-plus"
+                    catchtap="changeQuantity"
+                    data-type="{{item.foodId}}"
+                    data-delta="1"
+                  >+</view>
+                </view>
+                <view
+                  class="add-single-btn"
+                  catchtap="addFoodToCart"
+                  data-food-id="{{item.foodId}}"
+                >单独加购</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 避坑提示区 -->
+    <view class="card-section warning-section" wx:if="{{pairingData.avoidFoodList && pairingData.avoidFoodList.length > 0}}">
+      <view class="section-header">
+        <text class="section-title warning-title">⚠️ 避坑提示</text>
+      </view>
+      <view class="warning-desc">以下食品不建议与{{pairingData.varietyName || '此茶'}}搭配，以免影响口感</view>
+      <view class="avoid-list">
+        <view class="avoid-item" wx:for="{{pairingData.avoidFoodList}}" wx:key="foodId">
+          <image class="avoid-image" src="{{item.thumbnail}}" mode="aspectFill"></image>
+          <view class="avoid-info">
+            <view class="avoid-name">{{item.name}}</view>
+            <view class="avoid-spec">{{item.spec}}</view>
+          </view>
+          <text class="avoid-badge">不推荐</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 相关UGC推荐 -->
+    <view class="card-section ugc-section" wx:if="{{relatedUgcs.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">茶友晒图</text>
+        <text class="section-more" bindtap="goToUgcList">更多 ›</text>
+      </view>
+      <scroll-view class="ugc-scroll" scroll-x enable-flex>
+        <view
+          class="ugc-card"
+          wx:for="{{relatedUgcs}}"
+          wx:key="postId"
+          wx:for-index="idx"
+        >
+          <image
+            class="ugc-image"
+            src="{{item.images[0]}}"
+            mode="aspectFill"
+            data-url="{{item.images[0]}}"
+            data-index="{{idx}}"
+            bindtap="onUgcPreviewImage"
+          ></image>
+          <view class="ugc-content">
+            <view class="ugc-user">
+              <image class="ugc-avatar" src="{{item.user.avatar}}" mode="aspectFill"></image>
+              <text class="ugc-nick">{{item.user.nickName}}</text>
+            </view>
+            <view class="ugc-text">{{item.content}}</view>
+            <view class="ugc-meta">
+              <text class="ugc-like">❤️ {{item.likes}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 占位 -->
+    <view class="bottom-placeholder"></view>
+
+    <!-- 底部悬浮栏 -->
+    <view class="bottom-bar">
+      <view class="bar-left">
+        <view class="total-price-wrap">
+          <text class="total-label">合计</text>
+          <view class="total-price-row">
+            <text class="total-symbol">¥</text>
+            <text class="total-value">{{isMember ? memberTotalPrice : totalPrice}}</text>
+          </view>
+          <view class="total-original" wx:if="{{isMember && memberTotalPrice < totalPrice}}">
+            ¥{{totalPrice}}
+          </view>
+        </view>
+      </view>
+      <view class="bar-right">
+        <view class="bar-cart-btn" bindtap="goToCart">
+          <text class="cart-icon">🛒</text>
+          <view class="cart-badge" wx:if="{{cartCount > 0}}">{{cartCount > 99 ? '99+' : cartCount}}</view>
+        </view>
+        <view class="bar-add-btn" bindtap="addAllToCart">
+          <text class="add-btn-text">一键加购全部</text>
+        </view>
+      </view>
+    </view>
+
+  </block>
+
+  <!-- ========== 礼盒详情 ========== -->
+  <block wx:if="{{pageType === 'giftbox' && giftBox}}">
+
+    <!-- 头部节日主题Banner -->
+    <view class="giftbox-banner" style="background: {{giftBox.themeBg || 'linear-gradient(135deg, #FF6B6B 0%, #CD5C5C 100%)'}};">
+      <view class="giftbox-banner-tag">{{giftBox.festivalName || '节日限定'}}</view>
+      <view class="giftbox-banner-slogan">{{giftBox.slogan || '精美礼盒 送礼首选'}}</view>
+    </view>
+
+    <!-- 礼盒卡片 -->
+    <view class="giftbox-card">
+      <image
+        class="giftbox-image"
+        src="{{giftBox.bigImage || giftBox.thumbnail}}"
+        mode="aspectFill"
+      ></image>
+      <view class="giftbox-info">
+        <view class="giftbox-name">{{giftBox.name}}</view>
+        <view class="giftbox-subtitle">{{giftBox.subtitle || ''}}</view>
+        <view class="giftbox-tags">
+          <text class="giftbox-tag" wx:for="{{giftBox.tags}}" wx:key="*this">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 价格区 -->
+    <view class="price-section">
+      <view class="price-main-row">
+        <view class="original-price-wrap">
+          <text class="original-label">原价</text>
+          <text class="original-value">¥{{giftBox.calculatedOriginal || giftBox.price}}</text>
+        </view>
+        <view class="gift-price-wrap">
+          <text class="gift-label">礼盒价</text>
+          <text class="gift-symbol">¥</text>
+          <text class="gift-value">{{giftBox.price}}</text>
+        </view>
+      </view>
+      <view class="member-price-row" wx:if="{{isMember && giftBox.memberPrice}}">
+        <text class="member-label">会员价</text>
+        <text class="member-symbol">¥</text>
+        <text class="member-value">{{giftBox.memberPrice}}</text>
+      </view>
+      <view class="savings-row">
+        <view class="savings-tag">立省 ¥{{giftBox.savings || 0}}</view>
+        <view class="discount-tag">{{giftBox.discountPercent || 0}}% OFF</view>
+      </view>
+    </view>
+
+    <!-- 礼盒包含清单 -->
+    <view class="card-section">
+      <view class="section-header">
+        <text class="section-title">礼盒包含</text>
+        <text class="section-subtitle">共{{giftBox.includes.length}}件好物</text>
+      </view>
+      <view class="include-list">
+        <view class="include-item" wx:for="{{giftBox.includes}}" wx:key="index">
+          <view class="include-icon-wrap">
+            <text class="include-icon">
+              {{item.type === 'tea' ? '🍵' : item.type === 'mooncake' ? '🥮' : item.type === 'teaware' ? '🫖' : item.type === 'snack' ? '🍪' : item.type === 'cultural' ? '🎁' : '🍬'}}
+            </text>
+          </view>
+          <view class="include-info">
+            <view class="include-name">{{item.name}}</view>
+            <view class="include-desc" wx:if="{{item.spec || item.desc}}">{{item.spec || item.desc}}</view>
+          </view>
+          <view class="include-qty">x{{item.quantity || 1}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 销量/评分/库存 -->
+    <view class="stats-section">
+      <view class="stat-item">
+        <text class="stat-value">{{giftBox.sales || 0}}</text>
+        <text class="stat-label">已售</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-value">{{giftBox.rating || '4.9'}}</text>
+        <text class="stat-label">评分</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-value">{{giftBox.stock || 100}}</text>
+        <text class="stat-label">库存</text>
+      </view>
+    </view>
+
+    <!-- 礼盒说明 -->
+    <view class="card-section" wx:if="{{giftBox.description}}">
+      <view class="section-header">
+        <text class="section-title">礼盒说明</text>
+      </view>
+      <view class="desc-content">{{giftBox.description}}</view>
+    </view>
+
+    <!-- 占位 -->
+    <view class="bottom-placeholder"></view>
+
+    <!-- 底部悬浮栏 -->
+    <view class="bottom-bar giftbox-bar">
+      <view class="bar-left giftbox-bar-left">
+        <view class="gift-final-price">
+          <text class="final-label">到手价</text>
+          <view class="final-price-row">
+            <text class="final-symbol">¥</text>
+            <text class="final-value">{{isMember && giftBox.memberPrice ? giftBox.memberPrice : giftBox.price}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="bar-right giftbox-bar-right">
+        <view class="bar-cart-btn" bindtap="goToCart">
+          <text class="cart-icon">🛒</text>
+          <view class="cart-badge" wx:if="{{cartCount > 0}}">{{cartCount > 99 ? '99+' : cartCount}}</view>
+        </view>
+        <view class="bar-add-btn bar-buy-btn" bindtap="addGiftBoxToCart">
+          <text class="add-btn-text">立即购买</text>
+        </view>
+      </view>
+    </view>
+
+  </block>
+
+</view>

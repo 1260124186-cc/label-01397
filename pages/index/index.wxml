@@ -198,6 +198,51 @@
       </view>
     </view>
 
+    <!-- ==================== 茶食搭配与节日礼盒专区 ==================== -->
+    <section class="pairing-festival-section">
+      <view class="section-title">
+        <view class="title-icon">🍵</view>
+        <text>茶食搭配 · 节日礼盒</text>
+      </view>
+      
+      <!-- 节日礼盒快捷入口 -->
+      <view wx:if="{{currentFestival.current}}" class="festival-shortcut-card" bindtap="onFestivalShortcutTap" data-festival="{{currentFestival.current.festivalKey}}">
+        <image class="festival-bg-img" src="{{currentFestival.current.coverImage}}" mode="aspectFill" />
+        <view class="festival-overlay"></view>
+        <view class="festival-content">
+          <view class="festival-icon">{{currentFestival.current.icon}}</view>
+          <view class="festival-info">
+            <view class="festival-name">{{currentFestival.current.festivalName}}限定</view>
+            <view class="festival-tagline">{{currentFestival.current.tagline}}</view>
+            <view class="festival-date">{{currentFestival.current.date}}</view>
+          </view>
+          <view class="festival-action">
+            <text class="festival-action-text">立即选购</text>
+            <text class="festival-arrow">›</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 快速搭配入口 3个小卡片 -->
+      <view class="quick-pairing-grid">
+        <view class="quick-pairing-card" bindtap="onQuickPairingTap" data-variety="jin-gui">
+          <view class="qp-icon qp-jin-gui">🌼</view>
+          <view class="qp-name">金桂配糕点</view>
+          <view class="qp-desc">浓香+甜点</view>
+        </view>
+        <view class="quick-pairing-card" bindtap="onQuickPairingTap" data-variety="yin-gui">
+          <view class="qp-icon qp-yin-gui">🌸</view>
+          <view class="qp-name">银桂配凉菜</view>
+          <view class="qp-desc">清香+爽口</view>
+        </view>
+        <view class="quick-pairing-card" bindtap="onPreferenceShortcutTap">
+          <view class="qp-icon qp-pref">🎯</view>
+          <view class="qp-name">为我推荐</view>
+          <view class="qp-desc">定制专属</view>
+        </view>
+      </view>
+    </section>
+
     <!-- ==================== 品牌视频区域 ==================== -->
     <view class="brand-video-section" role="region" aria-label="{{i18n.brandStoryTitle}}">
       <view class="section-title" role="heading" aria-level="2">

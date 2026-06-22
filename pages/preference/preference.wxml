@@ -1,0 +1,308 @@
+<!--
+  桂花茶溯源小程序 - 口味偏好问卷与个性化推荐页
+  页面路径：pages/preference/preference
+-->
+<view class="pref-page">
+
+  <!-- ==================== 问卷状态 ==================== -->
+  <block wx:if="{{!showResult}}">
+
+    <!-- 顶部进度条区域 -->
+    <view class="progress-section">
+      <view class="progress-header">
+        <text class="progress-label">问卷进度</text>
+        <text class="progress-count">{{currentStep + 1}} / {{totalSteps}}</text>
+      </view>
+      <view class="progress-bar-wrap">
+        <view class="progress-bar-bg">
+          <view class="progress-bar-fill" style="width: {{progressPercent}}%;"></view>
+        </view>
+        <text class="progress-percent">{{progressPercent}}%</text>
+      </view>
+
+      <!-- 步骤指示圆点 -->
+      <view class="step-dots">
+        <view
+          wx:for="{{questions}}"
+          wx:key="questionId"
+          class="step-dot {{index < currentStep ? 'done' : ''}} {{index === currentStep ? 'active' : ''}}"
+        >
+          <view class="dot-inner"></view>
+          <view wx:if="{{index < currentStep}}" class="dot-check">✓</view>
+          <view wx:elif="{{index === currentStep}}" class="dot-num">{{index + 1}}</view>
+          <view wx:else class="dot-num-empty">{{index + 1}}</view>
+        </view>
+        <!-- 连接线 -->
+        <view class="step-line" wx:for="{{questions}}" wx:for-item="q" wx:for-index="i" wx:key="i" wx:if="{{i < totalSteps - 1}}" style="left: calc({{i + 1}} * (100% / {{totalSteps}}) - 12rpx); width: calc(100% / {{totalSteps}} - 12rpx);">
+          <view class="step-line-fill" style="width: {{i < currentStep ? '100%' : '0%'}};"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 当前题目卡片 -->
+    <view class="question-card" wx:if="{{questions[currentStep]}}">
+      <view class="question-icon">🌼</view>
+      <view class="question-title">{{questions[currentStep].title}}</view>
+      <view class="question-desc">{{questions[currentStep].description}}</view>
+
+      <!-- 选项列表 -->
+      <view class="option-list">
+        <view
+          wx:for="{{questions[currentStep].options}}"
+          wx:key="key"
+          class="option-card {{selectedKey === item.key ? 'selected' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="selectOption"
+          hover-class="option-hover"
+        >
+          <view class="option-left-border {{selectedKey === item.key ? 'active-border' : ''}}"></view>
+          <view class="option-content">
+            <view class="option-label">{{item.label}}</view>
+            <view class="option-desc">{{item.desc}}</view>
+          </view>
+          <view class="option-check-wrap">
+            <view class="option-check {{selectedKey === item.key ? 'checked' : ''}}">
+              <text wx:if="{{selectedKey === item.key}}">✓</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部导航按钮 -->
+    <view class="nav-btn-section">
+      <view
+        class="prev-btn"
+        wx:if="{{currentStep > 0}}"
+        bindtap="prevStep"
+        hover-class="btn-hover"
+      >
+        <text class="prev-icon">←</text>
+        <text>上一题</text>
+      </view>
+      <view
+        class="prev-btn placeholder"
+        wx:else
+      >
+      </view>
+
+      <view
+        class="next-btn {{!selectedKey ? 'disabled' : ''}}"
+        bindtap="nextStep"
+        hover-class="{{selectedKey ? 'btn-hover' : ''}}"
+      >
+        <text wx:if="{{currentStep < totalSteps - 1}}">下一题</text>
+        <text wx:else>完 成</text>
+        <text class="next-icon" wx:if="{{currentStep < totalSteps - 1}}">→</text>
+      </view>
+    </view>
+
+  </block>
+
+  <!-- ==================== 结果页状态 ==================== -->
+  <block wx:else>
+
+    <!-- 顶部成功提示 -->
+    <view class="result-success-tip">
+      <view class="success-icon">✨</view>
+      <view class="success-text">已为您生成个性化推荐</view>
+    </view>
+
+    <!-- 推荐标题行 -->
+    <view class="result-header">
+      <view class="result-tagline">{{recommendations.tagline || '为您精选的茶食搭配'}}</view>
+      <view class="result-decoration"></view>
+    </view>
+
+    <!-- 推荐理由卡片 -->
+    <view class="reason-card" wx:if="{{recommendations.reason}}">
+      <view class="reason-icon">💡</view>
+      <view class="reason-content">
+        <view class="reason-title">推荐理由</view>
+        <view class="reason-text">{{recommendations.reason}}</view>
+      </view>
+    </view>
+
+    <!-- 推荐茶食搭配卡片列表 -->
+    <view class="section-wrap" wx:if="{{recommendations.pairings && recommendations.pairings.length > 0}}">
+      <view class="section-title-row">
+        <view class="section-title">
+          <text class="section-icon">🍵</text>
+          <text>推荐茶食搭配</text>
+        </view>
+        <view class="section-count">共{{recommendations.pairings.length}}款</view>
+      </view>
+
+      <view
+        wx:for="{{recommendations.pairings}}"
+        wx:key="varietyKey"
+        class="pairing-card"
+        data-variety="{{item.varietyKey}}"
+        bindtap="goToDetail"
+        hover-class="card-hover"
+      >
+        <view class="pairing-header" style="background: {{item.themeBg || 'linear-gradient(135deg, #98FB98 0%, #52C41A 100%)'}};">
+          <view class="pairing-icon">{{item.icon || '🌼'}}</view>
+          <view class="pairing-header-info">
+            <view class="pairing-name">{{item.varietyName}}</view>
+            <view class="pairing-tagline">{{item.tagline}}</view>
+          </view>
+        </view>
+
+        <view class="pairing-body">
+          <view class="pairing-intro">{{item.pairingIntro}}</view>
+
+          <!-- 推荐食品 -->
+          <view class="food-section" wx:if="{{item.recommendedFoodList && item.recommendedFoodList.length > 0}}">
+            <view class="food-label">推荐搭配：</view>
+            <view class="food-tags">
+              <view
+                wx:for="{{item.recommendedFoodList}}"
+                wx:for-item="food"
+                wx:for-index="fi"
+                wx:key="foodId"
+                class="food-tag"
+              >
+                <text class="food-emoji">🍪</text>
+                <text class="food-name">{{food.name}}</text>
+                <text class="food-price">¥{{food.price}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 操作区 -->
+          <view class="pairing-actions">
+            <view
+              class="detail-btn"
+              catchtap="goToDetail"
+              data-variety="{{item.varietyKey}}"
+              hover-class="btn-hover"
+            >
+              查看详情
+            </view>
+            <view
+              class="add-cart-btn"
+              catchtap="addRecToCart"
+              data-variety="{{item.varietyKey}}"
+              hover-class="btn-hover"
+            >
+              <text class="cart-icon">🛒</text>
+              <text>一键加购</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 推荐礼盒卡片列表 -->
+    <view class="section-wrap" wx:if="{{recommendations.giftBoxes && recommendations.giftBoxes.length > 0}}">
+      <view class="section-title-row">
+        <view class="section-title">
+          <text class="section-icon">🎁</text>
+          <text>推荐礼盒精选</text>
+        </view>
+        <view class="section-count">共{{recommendations.giftBoxes.length}}款</view>
+      </view>
+
+      <view
+        wx:for="{{recommendations.giftBoxes}}"
+        wx:key="boxId"
+        class="giftbox-card"
+        data-boxid="{{item.boxId}}"
+        bindtap="goToGiftBoxDetail"
+        hover-class="card-hover"
+      >
+        <view class="giftbox-image-wrap">
+          <image class="giftbox-image" src="{{item.thumbnail}}" mode="aspectFill" />
+          <view class="giftbox-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+            <view
+              wx:for="{{item.tags}}"
+              wx:for-item="tag"
+              wx:for-index="ti"
+              wx:key="*this"
+              class="giftbox-tag"
+            >{{tag}}</view>
+          </view>
+        </view>
+
+        <view class="giftbox-body">
+          <view class="giftbox-name">{{item.name}}</view>
+          <view class="giftbox-subtitle">{{item.subtitle}}</view>
+
+          <view class="giftbox-meta" wx:if="{{item.rating || item.soldCount}}">
+            <text class="giftbox-rating" wx:if="{{item.rating}}">⭐ {{item.rating}}</text>
+            <text class="giftbox-sold" wx:if="{{item.soldCount}}">已售{{item.soldCount}}件</text>
+          </view>
+
+          <view class="giftbox-price-row">
+            <view class="price-left">
+              <text class="price-symbol">¥</text>
+              <text class="price-value">{{item.price}}</text>
+              <text class="price-member" wx:if="{{item.memberPrice}}">会员价¥{{item.memberPrice}}</text>
+            </view>
+            <view class="price-original" wx:if="{{item.originalPrice}}">
+              原价¥{{item.originalPrice}}
+            </view>
+          </view>
+
+          <view class="giftbox-actions">
+            <view
+              class="detail-btn"
+              catchtap="goToGiftBoxDetail"
+              data-boxid="{{item.boxId}}"
+              hover-class="btn-hover"
+            >
+              礼盒详情
+            </view>
+            <view
+              class="add-cart-btn"
+              catchtap="addGiftBoxToCart"
+              data-boxid="{{item.boxId}}"
+              hover-class="btn-hover"
+            >
+              <text class="cart-icon">🛒</text>
+              <text>加入购物车</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮区 -->
+    <view class="result-btn-section">
+      <view
+        class="primary-btn"
+        bindtap="goToPairingList"
+        hover-class="btn-hover"
+      >
+        <text class="primary-icon">🍵</text>
+        <text>立即去搭配页</text>
+      </view>
+
+      <view class="secondary-row">
+        <view
+          class="secondary-btn"
+          bindtap="addAllRecToCart"
+          hover-class="btn-hover"
+        >
+          <text>📦 一键加购全部</text>
+        </view>
+        <view
+          class="reset-btn"
+          bindtap="resetQuestionnaire"
+          hover-class="btn-hover"
+        >
+          <text>🔄 重新测试</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部提示 -->
+    <view class="footer-tip">
+      <view class="tip-icon">🔒</view>
+      <view class="tip-text">您的偏好已安全保存，可随时在搭配首页修改您的口味偏好</view>
+    </view>
+
+  </block>
+
+</view>

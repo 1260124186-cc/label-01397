@@ -71,7 +71,12 @@
     "pages/claim/create",
     "pages/claim/detail",
     "pages/publicLottery/detail",
-    "pages/charityQualification/charityQualification"
+    "pages/charityQualification/charityQualification",
+    "pages/teaPairing/list",
+    "pages/teaPairing/detail",
+    "pages/preference/preference",
+    "pages/ugc/list",
+    "pages/ugc/upload"
   ],
   "window": {
     "backgroundTextStyle": "dark",

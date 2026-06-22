@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "口味偏好",
+  "navigationBarBackgroundColor": "#722ED1",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F5F5F5",
+  "backgroundTextStyle": "dark",
+  "enablePullDownRefresh": false,
+  "usingComponents": {}
+}

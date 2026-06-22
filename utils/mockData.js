@@ -10429,6 +10429,812 @@ function getEnrichedHistoryReports(traceId) {
   return lotteryData.enrichHistoryReportsWithLottery(traceId);
 }
 
+// ==================== 茶食搭配与场景化推荐模块 ====================
+
+var foodProducts = {
+  'F001': {
+    foodId: 'F001',
+    name: '桂花糕',
+    category: '糕点',
+    taste: 'sweet',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20chinese%20osmanthus%20cake%20pastry%20elegant%20dessert%20golden&image_size=square',
+    description: '选用上等糯米粉与新鲜桂花制作，甜而不腻，入口即化',
+    price: 38.00,
+    memberPrice: 32.00,
+    stock: 150,
+    skuId: 'F001-S01',
+    spec: '200g/盒',
+    tags: ['传统糕点', '桂花风味', '甜而不腻']
+  },
+  'F002': {
+    foodId: 'F002',
+    name: '绿豆糕',
+    category: '糕点',
+    taste: 'sweet',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20chinese%20mung%20bean%20cake%20pastry%20green%20elegant&image_size=square',
+    description: '精选优质绿豆，细腻绵密，清凉解暑，是搭配茶饮的经典选择',
+    price: 32.00,
+    memberPrice: 28.00,
+    stock: 200,
+    skuId: 'F002-S01',
+    spec: '250g/盒',
+    tags: ['传统糕点', '清凉解暑', '细腻绵密']
+  },
+  'F003': {
+    foodId: 'F003',
+    name: '蛋黄酥',
+    category: '糕点',
+    taste: 'sweet',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20egg%20yolk%20pastry%20flakey%20crispy%20golden%20brown%20dessert&image_size=square',
+    description: '层层酥皮包裹咸香蛋黄，甜咸交织，口感丰富',
+    price: 45.00,
+    memberPrice: 38.00,
+    stock: 120,
+    skuId: 'F003-S01',
+    spec: '6枚/盒',
+    tags: ['人气糕点', '酥松香脆', '甜咸交织']
+  },
+  'F004': {
+    foodId: 'F004',
+    name: '凉拌藕片',
+    category: '凉菜',
+    taste: 'salty',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20cold%20lotus%20root%20salad%20crispy%20light%20appetizer&image_size=square',
+    description: '新鲜莲藕切片，佐以秘制料汁，脆爽可口，开胃解腻',
+    price: 28.00,
+    memberPrice: 24.00,
+    stock: 100,
+    skuId: 'F004-S01',
+    spec: '300g/盒',
+    tags: ['清爽凉菜', '脆爽可口', '开胃解腻']
+  },
+  'F005': {
+    foodId: 'F005',
+    name: '盐水花生',
+    category: '凉菜',
+    taste: 'salty',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20salted%20boiled%20peanuts%20shell%20light%20snack%20appetizer&image_size=square',
+    description: '带壳花生经卤水煮制，咸香入味，是佐茶佳品',
+    price: 22.00,
+    memberPrice: 18.00,
+    stock: 180,
+    skuId: 'F005-S01',
+    spec: '250g/袋',
+    tags: ['经典下酒', '咸香入味', '老少皆宜']
+  },
+  'F006': {
+    foodId: 'F006',
+    name: '凉拌黄瓜',
+    category: '凉菜',
+    taste: 'salty',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20cold%20cucumber%20salad%20garlic%20crispy%20fresh%20light&image_size=square',
+    description: '新鲜黄瓜拍碎，配以蒜末香醋，清爽脆嫩，低卡健康',
+    price: 18.00,
+    memberPrice: 15.00,
+    stock: 200,
+    skuId: 'F006-S01',
+    spec: '200g/盒',
+    tags: ['低卡健康', '清爽脆嫩', '开胃解腻']
+  },
+  'F007': {
+    foodId: 'F007',
+    name: '桂花糯米藕',
+    category: '糕点',
+    taste: 'sweet',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20osmanthus%20sticky%20rice%20stuffed%20lotus%20root%20sweet%20dessert%20honey&image_size=square',
+    description: '莲藕灌入糯米，淋上桂花蜜汁，软糯香甜，经典江南风味',
+    price: 48.00,
+    memberPrice: 42.00,
+    stock: 80,
+    skuId: 'F007-S01',
+    spec: '500g/盒',
+    tags: ['江南名点', '软糯香甜', '桂花风味']
+  },
+  'F008': {
+    foodId: 'F008',
+    name: '海蜇丝',
+    category: '凉菜',
+    taste: 'salty',
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20jellyfish%20salad%20shredded%20crispy%20sesame%20light&image_size=square',
+    description: '精选优质海蜇，切丝凉拌，脆嫩爽滑，富含胶原蛋白',
+    price: 35.00,
+    memberPrice: 30.00,
+    stock: 90,
+    skuId: 'F008-S01',
+    spec: '200g/盒',
+    tags: ['海鲜凉菜', '脆嫩爽滑', '胶原蛋白']
+  }
+};
+
+var teaPairings = {
+  'jin-gui': {
+    varietyKey: 'jin-gui',
+    varietyName: '金桂',
+    themeColor: '#DAA520',
+    themeBg: 'linear-gradient(135deg, #FFD700 0%, #DAA520 100%)',
+    icon: '🌼',
+    tagline: '浓郁花香，宜配甜点',
+    pairingIntro: '金桂花茶香气浓郁持久，口感醇厚甘甜，最适合搭配甜度适中的糕点类茶点，甜食的绵密口感与金桂的浓郁花香相得益彰。',
+    pairingReason: '金桂的高香度需要甜度来平衡，糕点中的糖分能够柔和茶中的涩感，同时茶香能够解腻，形成完美的味觉搭配。',
+    recommendedFoods: ['F001', 'F002', 'F003', 'F007'],
+    avoidFoods: ['F004', 'F006'],
+    expertComment: '国家级评茶师推荐：金桂属高香型花茶，搭配甜品类可令层次更丰富，切忌搭配重口味咸食以免掩盖花香。'
+  },
+  'yin-gui': {
+    varietyKey: 'yin-gui',
+    varietyName: '银桂',
+    themeColor: '#708090',
+    themeBg: 'linear-gradient(135deg, #E8E8E8 0%, #708090 100%)',
+    icon: '🌸',
+    tagline: '清雅淡香，宜配凉菜',
+    pairingIntro: '银桂花茶香气清雅淡远，口感柔和细腻，与清淡爽口的凉菜搭配最为相宜，既能凸显茶香又不会互相掩盖。',
+    pairingReason: '银桂的清香型特点适合搭配口味清淡的凉菜，凉菜的脆爽口感能够衬托茶的细腻，茶香也能中和凉菜的些许腥气。',
+    recommendedFoods: ['F004', 'F005', 'F006', 'F008'],
+    avoidFoods: ['F003', 'F007'],
+    expertComment: '国家级评茶师推荐：银桂属清香型花茶，搭配清淡凉菜更能凸显清雅品质，避免甜食以免过于甜腻。'
+  },
+  'dan-gui': {
+    varietyKey: 'dan-gui',
+    varietyName: '丹桂',
+    themeColor: '#CD5C5C',
+    themeBg: 'linear-gradient(135deg, #FF6B6B 0%, #CD5C5C 100%)',
+    icon: '🌺',
+    tagline: '馥郁浓烈，甜咸皆宜',
+    pairingIntro: '丹桂香气馥郁浓烈，口感饱满，搭配范围广，甜咸均可，是百搭型花茶。',
+    pairingReason: '丹桂的中等香气强度既能承受甜食的甜度，也能驾驭咸食的风味，可塑性强。',
+    recommendedFoods: ['F001', 'F003', 'F004', 'F005'],
+    avoidFoods: [],
+    expertComment: '国家级评茶师推荐：丹桂香气馥郁，可甜可咸，新手入门首选百搭款。'
+  },
+  'si-ji-gui': {
+    varietyKey: 'si-ji-gui',
+    varietyName: '四季桂',
+    themeColor: '#90EE90',
+    themeBg: 'linear-gradient(135deg, #98FB98 0%, #90EE90 100%)',
+    icon: '🍃',
+    tagline: '清淡悠长，随心搭配',
+    pairingIntro: '四季桂香气清淡悠长，常年开花，口感清爽，适合搭配各类轻食小食。',
+    pairingReason: '四季桂的清香淡雅，不抢食物风味，适合作为日常百搭茶饮。',
+    recommendedFoods: ['F002', 'F005', 'F006'],
+    avoidFoods: [],
+    expertComment: '国家级评茶师推荐：四季桂香气温和，可自由搭配各类茶点，随心享用。'
+  }
+};
+
+var festivalGiftBoxes = {
+  'mid-autumn': {
+    festivalKey: 'mid-autumn',
+    festivalName: '中秋节',
+    icon: '🥮',
+    themeColor: '#FF8C00',
+    themeBg: 'linear-gradient(135deg, #FFE4B5 0%, #FF8C00 100%)',
+    date: '农历八月十五',
+    tagline: '月圆桂香，阖家团圆',
+    description: '中秋赏月品桂，桂花茶与月饼的经典搭配，承载浓浓思念与祝福。',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mid%20autumn%20festival%20gift%20box%20moon%20osmanthus%20tea%20mooncake%20elegant%20golden%20red&image_size=landscape_16_9',
+    boxes: [
+      {
+        boxId: 'GB-MA-001',
+        name: '金秋团圆礼盒（经典款）',
+        subtitle: '金桂 + 月饼 + 桂花糕',
+        price: 298.00,
+        memberPrice: 258.00,
+        originalPrice: 368.00,
+        stock: 100,
+        soldCount: 528,
+        thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mid%20autumn%20premium%20gift%20box%20osmanthus%20tea%20mooncake%20luxury%20packaging%20golden&image_size=square',
+        rating: 4.9,
+        tags: ['热销款', '经典搭配', '含月饼'],
+        includes: [
+          { traceId: 'G001', skuId: 'G001-S03', name: '金桂花茶礼盒装', quantity: 1 },
+          { foodId: 'F001', name: '桂花糕', quantity: 2 },
+          { type: 'mooncake', name: '莲蓉蛋黄月饼', quantity: 4, skuId: 'MK-001' },
+          { type: 'mooncake', name: '五仁月饼', quantity: 2, skuId: 'MK-002' }
+        ]
+      },
+      {
+        boxId: 'GB-MA-002',
+        name: '清雅赏月礼盒（轻奢款）',
+        subtitle: '银桂 + 苏式月饼 + 绿豆糕',
+        price: 388.00,
+        memberPrice: 338.00,
+        originalPrice: 488.00,
+        stock: 60,
+        soldCount: 236,
+        thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=elegant%20mid%20autumn%20gift%20box%20silver%20osmanthus%20tea%20suzhou%20style%20mooncake%20minimalist&image_size=square',
+        rating: 4.8,
+        tags: ['轻奢款', '苏式月饼', '企业定制'],
+        includes: [
+          { traceId: 'G002', skuId: 'G002-S02', name: '银桂花茶', quantity: 2 },
+          { foodId: 'F002', name: '绿豆糕', quantity: 2 },
+          { type: 'mooncake', name: '苏式鲜肉月饼', quantity: 6, skuId: 'MK-003' },
+          { type: 'mooncake', name: '苏式豆沙月饼', quantity: 4, skuId: 'MK-004' }
+        ]
+      },
+      {
+        boxId: 'GB-MA-003',
+        name: '至尊臻选礼盒（豪华款）',
+        subtitle: '双品礼盒 + 全系列月饼 + 茶器',
+        price: 888.00,
+        memberPrice: 788.00,
+        originalPrice: 1188.00,
+        stock: 30,
+        soldCount: 89,
+        thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20mid%20autumn%20gift%20box%20premium%20osmanthus%20tea%20full%20moon%20collection%20tea%20set%20gold%20red&image_size=square',
+        rating: 5.0,
+        tags: ['限量款', '商务送礼', '含茶具'],
+        includes: [
+          { traceId: 'G001', skuId: 'G001-S03', name: '金桂花茶礼盒装', quantity: 1 },
+          { traceId: 'G003', skuId: 'G003-S01', name: '丹桂臻品礼盒', quantity: 1 },
+          { foodId: 'F001', name: '桂花糕', quantity: 2 },
+          { foodId: 'F007', name: '桂花糯米藕', quantity: 1 },
+          { type: 'mooncake', name: '全系列月饼组合', quantity: 12, skuId: 'MK-SET' },
+          { type: 'teaware', name: '白瓷盖碗茶具套装', quantity: 1, skuId: 'TW-001' }
+        ]
+      }
+    ]
+  },
+  'spring-festival': {
+    festivalKey: 'spring-festival',
+    festivalName: '春节',
+    icon: '🧧',
+    themeColor: '#DC143C',
+    themeBg: 'linear-gradient(135deg, #FFC0CB 0%, #DC143C 100%)',
+    date: '农历正月初一',
+    tagline: '新春茶礼，吉祥如意',
+    description: '春节走亲访友，桂花茶礼盒承载新年祝福，红金配色大气喜庆，是送长辈送亲友的上佳之选。',
+    coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20new%20year%20spring%20festival%20gift%20box%20red%20gold%20osmanthus%20tea%20festive%20lanterns&image_size=landscape_16_9',
+    boxes: [
+      {
+        boxId: 'GB-SF-001',
+        name: '新春纳福礼盒（经典款）',
+        subtitle: '金桂 + 年货点心',
+        price: 268.00,
+        memberPrice: 228.00,
+        originalPrice: 328.00,
+        stock: 150,
+        soldCount: 689,
+        thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20new%20year%20gift%20box%20red%20golden%20osmanthus%20tea%20traditional%20snacks&image_size=square',
+        rating: 4.9,
+        tags: ['年货热销', '红金包装', '送长辈首选'],
+        includes: [
+          { traceId: 'G001', skuId: 'G001-S03', name: '金桂花茶礼盒装', quantity: 1 },
+          { foodId: 'F001', name: '桂花糕', quantity: 2 },
+          { foodId: 'F003', name: '蛋黄酥', quantity: 2 },
+          { type: 'snack', name: '什锦糖果', quantity: 1, skuId: 'SN-001' },
+          { type: 'snack', name: '坚果礼盒', quantity: 1, skuId: 'SN-002' }
+        ]
+      },
+      {
+        boxId: 'GB-SF-002',
+        name: '鸿运当头礼盒（尊享款）',
+        subtitle: '金桂+银桂 双茶礼盒 + 高档茶点',
+        price: 588.00,
+        memberPrice: 518.00,
+        originalPrice: 728.00,
+        stock: 80,
+        soldCount: 312,
+        thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=premium%20chinese%20new%20year%20gift%20box%20double%20tea%20set%20red%20gold%20luxury%20packaging&image_size=square',
+        rating: 4.9,
+        tags: ['双茶礼盒', '企业团购', '商务送礼'],
+        includes: [
+          { traceId: 'G001', skuId: 'G001-S03', name: '金桂花茶礼盒装', quantity: 1 },
+          { traceId: 'G002', skuId: 'G002-S02', name: '银桂花茶', quantity: 1 },
+          { foodId: 'F001', name: '桂花糕', quantity: 3 },
+          { foodId: 'F007', name: '桂花糯米藕', quantity: 1 },
+          { foodId: 'F003', name: '蛋黄酥', quantity: 2 },
+          { type: 'snack', name: '高端坚果组合', quantity: 1, skuId: 'SN-003' }
+        ]
+      },
+      {
+        boxId: 'GB-SF-003',
+        name: '岁朝清供礼盒（典藏款）',
+        subtitle: '丹桂臻品 + 全套茶器 + 文化周边',
+        price: 1288.00,
+        memberPrice: 1118.00,
+        originalPrice: 1588.00,
+        stock: 20,
+        soldCount: 56,
+        thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=collectors%20edition%20chinese%20new%20year%20gift%20box%20premium%20tea%20full%20tea%20ceremony%20set%20red%20gold%20exquisite&image_size=square',
+        rating: 5.0,
+        tags: ['典藏限量', '含全套茶具', 'VIP专属'],
+        includes: [
+          { traceId: 'G003', skuId: 'G003-S02', name: '丹桂豪华礼盒', quantity: 1 },
+          { traceId: 'G001', skuId: 'G001-S03', name: '金桂花茶礼盒装', quantity: 1 },
+          { foodId: 'F001', name: '桂花糕', quantity: 3 },
+          { foodId: 'F007', name: '桂花糯米藕', quantity: 2 },
+          { type: 'teaware', name: '宜兴紫砂茶具套装', quantity: 1, skuId: 'TW-002' },
+          { type: 'cultural', name: '桂花文化手账本', quantity: 1, skuId: 'CU-001' },
+          { type: 'cultural', name: '非遗窨制工艺纪念章', quantity: 1, skuId: 'CU-002' }
+        ]
+      }
+    ]
+  }
+};
+
+var preferenceQuestions = [
+  {
+    questionId: 'taste',
+    title: '您的口味偏好是？',
+    description: '我们会根据您的口味推荐最合适的茶食搭配',
+    options: [
+      { key: 'sweet', label: '🍬 甜食爱好者', desc: '喜欢甜点、糕点，热爱甜蜜口感' },
+      { key: 'salty', label: '🥒 清淡咸鲜派', desc: '偏好清爽凉菜，不喜过甜' },
+      { key: 'balanced', label: '⚖️ 甜咸皆宜', desc: '口味平衡，什么都想尝试' }
+    ]
+  },
+  {
+    questionId: 'scene',
+    title: '您最常喝茶的场景是？',
+    description: '不同场景有不同的搭配方案',
+    options: [
+      { key: 'office', label: '💼 办公休闲', desc: '工作间隙喝茶提神放松' },
+      { key: 'afternoon', label: '🍰 下午茶时光', desc: '与朋友小聚，精致下午茶' },
+      { key: 'home', label: '🏠 居家日常', desc: '居家休闲，家人共享' },
+      { key: 'gift', label: '🎁 送礼选购', desc: '为亲朋挑选合适的礼品' }
+    ]
+  },
+  {
+    questionId: 'budget',
+    title: '您的预算范围是？',
+    description: '帮您找到性价比最优的方案',
+    options: [
+      { key: 'low', label: '💰 100元以内', desc: '经济实惠，个人独享' },
+      { key: 'mid', label: '💰💰 100-300元', desc: '品质之选，亲友分享' },
+      { key: 'high', label: '💰💰💰 300元以上', desc: '臻选品质，送礼佳品' }
+    ]
+  }
+];
+
+var ugcPosts = [
+  {
+    postId: 'UGC-001',
+    user: {
+      nickName: '桂花小姐姐',
+      avatar: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20asian%20girl%20avatar%20illustration%20cartoon%20friendly&image_size=square',
+      level: 'VIP会员'
+    },
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=afternoon%20tea%20osmanthus%20tea%20cup%20osmanthus%20cake%20wooden%20table%20aesthetic%20cozy&image_size=square'
+    ],
+    content: '中秋在家用金桂配桂花糕，简直是绝配！满屋都是桂花香，配着月饼赏月，幸福感爆棚～ 强烈推荐大家试试这个组合！🌼🥮',
+    variety: '金桂',
+    pairedFoods: ['桂花糕', '月饼'],
+    likes: 328,
+    comments: 46,
+    shares: 89,
+    createTime: '2025-09-20 18:30',
+    tags: ['中秋搭配', '居家下午茶', '金桂推荐'],
+    isLiked: false
+  },
+  {
+    postId: 'UGC-002',
+    user: {
+      nickName: '茶禅一味',
+      avatar: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=asian%20man%20avatar%20elegant%20tea%20master%20illustration&image_size=square',
+      level: '品鉴达人'
+    },
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=silver%20osmanthus%20tea%20cold%20appetizers%20lotus%20root%20cucumber%20salad%20chinese%20elegant%20table&image_size=square'
+    ],
+    content: '今日分享银桂的神仙搭配：凉拌藕片 + 盐水花生 + 银桂花茶。凉菜的清爽和银桂的清雅简直天生一对！夏天喝特别解腻，作为餐前茶也很合适。🌸',
+    variety: '银桂',
+    pairedFoods: ['凉拌藕片', '盐水花生'],
+    likes: 567,
+    comments: 89,
+    shares: 156,
+    createTime: '2025-09-15 12:15',
+    tags: ['银桂搭配', '凉菜组合', '餐前茶'],
+    isLiked: true
+  },
+  {
+    postId: 'UGC-003',
+    user: {
+      nickName: '小确幸',
+      avatar: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=young%20woman%20avatar%20soft%20aesthetic%20illustration%20pastel&image_size=square',
+      level: '普通会员'
+    },
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=office%20desk%20osmanthus%20tea%20cup%20mung%20bean%20cake%20work%20break%20relaxing%20aesthetic&image_size=square'
+    ],
+    content: '办公间隙来一杯四季桂配绿豆糕，幸福感爆棚！不那么浓的香味不会影响到同事，绿豆糕也刚好垫垫肚子～ 打工人的小确幸get✅',
+    variety: '四季桂',
+    pairedFoods: ['绿豆糕'],
+    likes: 189,
+    comments: 23,
+    shares: 45,
+    createTime: '2025-09-10 15:45',
+    tags: ['办公室茶饮', '四季桂', '下午茶时间'],
+    isLiked: false
+  },
+  {
+    postId: 'UGC-004',
+    user: {
+      nickName: '吃货少女阿萌',
+      avatar: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20girl%20avatar%20foodie%20happy%20cartoon%20illustration%20pink&image_size=square',
+      level: 'VIP会员'
+    },
+    images: [
+      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=egg%20yolk%20pastry%20osmanthus%20tea%20dessert%20platter%20pink%20aesthetic%20girl%20hand&image_size=square'
+    ],
+    content: '丹桂配蛋黄酥！！！姐妹们一定要试！！！丹桂的馥郁香气和蛋黄酥的咸香酥脆，一口茶一口酥，人生圆满了！！！🌺🥮',
+    variety: '丹桂',
+    pairedFoods: ['蛋黄酥'],
+    likes: 892,
+    comments: 156,
+    shares: 267,
+    createTime: '2025-09-08 16:20',
+    tags: ['丹桂搭配', '蛋黄酥', '神仙组合'],
+    isLiked: false
+  }
+];
+
+var userPreferenceKey = 'user_tea_preference';
+var ugcPostsKey = 'ugc_posts';
+
+function getFoodProduct(foodId) {
+  var product = foodProducts[foodId];
+  return product ? JSON.parse(JSON.stringify(product)) : null;
+}
+
+function getAllFoodProducts() {
+  var list = [];
+  for (var id in foodProducts) {
+    list.push(JSON.parse(JSON.stringify(foodProducts[id])));
+  }
+  return list;
+}
+
+function getFoodProductsByCategory(category) {
+  return getAllFoodProducts().filter(function(p) { return p.category === category; });
+}
+
+function getFoodProductsByTaste(taste) {
+  return getAllFoodProducts().filter(function(p) { return p.taste === taste; });
+}
+
+function getTeaPairing(varietyKey) {
+  var pairing = teaPairings[varietyKey];
+  if (!pairing) return null;
+  var result = JSON.parse(JSON.stringify(pairing));
+  result.recommendedFoodList = result.recommendedFoods.map(function(id) { return getFoodProduct(id); }).filter(Boolean);
+  result.avoidFoodList = result.avoidFoods.map(function(id) { return getFoodProduct(id); }).filter(Boolean);
+  return result;
+}
+
+function getTeaPairingByTraceId(traceId) {
+  var traceData = getTraceData(traceId);
+  if (!traceData || !traceData.osmanthusInfo) return null;
+  var variety = traceData.osmanthusInfo.variety;
+  var varietyConfig = OSMANTHUS_VARIETIES[variety];
+  if (!varietyConfig) return null;
+  return getTeaPairing(varietyConfig.key);
+}
+
+function getAllTeaPairings() {
+  var list = [];
+  for (var key in teaPairings) {
+    list.push(getTeaPairing(key));
+  }
+  return list;
+}
+
+function getFestivalGiftBox(festivalKey) {
+  var data = festivalGiftBoxes[festivalKey];
+  return data ? JSON.parse(JSON.stringify(data)) : null;
+}
+
+function getAllFestivalGiftBoxes() {
+  var list = [];
+  for (var key in festivalGiftBoxes) {
+    list.push(getFestivalGiftBox(key));
+  }
+  return list;
+}
+
+function getGiftBoxById(boxId) {
+  var festivals = getAllFestivalGiftBoxes();
+  for (var i = 0; i < festivals.length; i++) {
+    var boxes = festivals[i].boxes || [];
+    for (var j = 0; j < boxes.length; j++) {
+      if (boxes[j].boxId === boxId) {
+        var box = JSON.parse(JSON.stringify(boxes[j]));
+        box.festivalKey = festivals[i].festivalKey;
+        box.festivalName = festivals[i].festivalName;
+        box.festivalIcon = festivals[i].icon;
+        box.festivalThemeColor = festivals[i].themeColor;
+        return box;
+      }
+    }
+  }
+  return null;
+}
+
+function getAllGiftBoxesFlat() {
+  var list = [];
+  var festivals = getAllFestivalGiftBoxes();
+  for (var i = 0; i < festivals.length; i++) {
+    var boxes = festivals[i].boxes || [];
+    for (var j = 0; j < boxes.length; j++) {
+      var box = JSON.parse(JSON.stringify(boxes[j]));
+      box.festivalKey = festivals[i].festivalKey;
+      box.festivalName = festivals[i].festivalName;
+      box.festivalIcon = festivals[i].icon;
+      box.festivalThemeColor = festivals[i].themeColor;
+      list.push(box);
+    }
+  }
+  return list;
+}
+
+function getPreferenceQuestions() {
+  return JSON.parse(JSON.stringify(preferenceQuestions));
+}
+
+function saveUserPreference(preference) {
+  try {
+    wx.setStorageSync(userPreferenceKey, preference);
+    return true;
+  } catch (e) {
+    console.error('[TeaPairing] 保存用户偏好失败:', e);
+    return false;
+  }
+}
+
+function getUserPreference() {
+  try {
+    var pref = wx.getStorageSync(userPreferenceKey);
+    return pref || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function getPersonalizedRecommendations(preference) {
+  pref = preference || getUserPreference() || {};
+  var result = {
+    pairings: [],
+    giftBoxes: [],
+    tagline: '',
+    reason: ''
+  };
+
+  var taste = pref.taste;
+  var scene = pref.scene;
+  var budget = pref.budget;
+
+  if (taste === 'sweet') {
+    result.pairings.push(getTeaPairing('jin-gui'));
+    result.tagline = '为甜食爱好者推荐：金桂 + 糕点组合';
+    result.reason = '根据您喜爱甜食的偏好，金桂浓郁的花香能完美平衡甜点的甜度，带来层次丰富的口感体验。';
+  } else if (taste === 'salty') {
+    result.pairings.push(getTeaPairing('yin-gui'));
+    result.tagline = '为清淡派推荐：银桂 + 凉菜组合';
+    result.reason = '根据您偏好清淡的口味，银桂清雅淡远的香气与清爽凉菜相得益彰，是健康又美味的选择。';
+  } else if (taste === 'balanced') {
+    result.pairings.push(getTeaPairing('dan-gui'));
+    result.pairings.push(getTeaPairing('si-ji-gui'));
+    result.tagline = '为多口味爱好者推荐：丹桂/四季桂百搭款';
+    result.reason = '根据您甜咸皆宜的口味，丹桂馥郁浓烈、四季桂清淡悠长，都是自由搭配的上佳选择。';
+  } else {
+    result.pairings = getAllTeaPairings();
+    result.tagline = '精选茶食搭配推荐';
+    result.reason = '完成偏好问卷，获取更精准的个性化推荐！';
+  }
+
+  var allBoxes = getAllGiftBoxesFlat();
+  if (budget === 'low') {
+    result.giftBoxes = allBoxes.filter(function(b) { return b.price <= 100; });
+  } else if (budget === 'mid') {
+    result.giftBoxes = allBoxes.filter(function(b) { return b.price > 100 && b.price <= 300; });
+  } else if (budget === 'high') {
+    result.giftBoxes = allBoxes.filter(function(b) { return b.price > 300; });
+  } else {
+    result.giftBoxes = allBoxes.slice(0, 3);
+  }
+
+  if (result.giftBoxes.length === 0) {
+    result.giftBoxes = allBoxes.slice(0, 3);
+  }
+
+  return result;
+}
+
+function getUgcPosts(options) {
+  options = options || {};
+  try {
+    var stored = wx.getStorageSync(ugcPostsKey);
+    var posts = Array.isArray(stored) && stored.length > 0 ? stored : JSON.parse(JSON.stringify(ugcPosts));
+    if (options.variety) {
+      posts = posts.filter(function(p) { return p.variety === options.variety; });
+    }
+    if (options.sortBy === 'hot') {
+      posts.sort(function(a, b) { return b.likes - a.likes; });
+    } else if (options.sortBy === 'new') {
+      posts.sort(function(a, b) { return new Date(b.createTime) - new Date(a.createTime); });
+    }
+    return posts;
+  } catch (e) {
+    return JSON.parse(JSON.stringify(ugcPosts));
+  }
+}
+
+function getUgcPost(postId) {
+  var posts = getUgcPosts();
+  for (var i = 0; i < posts.length; i++) {
+    if (posts[i].postId === postId) {
+      return posts[i];
+    }
+  }
+  return null;
+}
+
+function addUgcPost(postData) {
+  var posts = getUgcPosts();
+  var newPost = {
+    postId: 'UGC-' + Date.now(),
+    user: postData.user || {
+      nickName: '我',
+      avatar: '',
+      level: '普通会员'
+    },
+    images: postData.images || [],
+    content: postData.content || '',
+    variety: postData.variety || '',
+    pairedFoods: postData.pairedFoods || [],
+    likes: 0,
+    comments: 0,
+    shares: 0,
+    createTime: new Date().toLocaleString('zh-CN'),
+    tags: postData.tags || [],
+    isLiked: false
+  };
+  posts.unshift(newPost);
+  try {
+    wx.setStorageSync(ugcPostsKey, posts);
+  } catch (e) {
+    console.error('[UGC] 保存帖子失败:', e);
+  }
+  return newPost;
+}
+
+function likeUgcPost(postId) {
+  var posts = getUgcPosts();
+  for (var i = 0; i < posts.length; i++) {
+    if (posts[i].postId === postId) {
+      if (!posts[i].isLiked) {
+        posts[i].likes++;
+        posts[i].isLiked = true;
+      } else {
+        posts[i].likes--;
+        posts[i].isLiked = false;
+      }
+      try {
+        wx.setStorageSync(ugcPostsKey, posts);
+      } catch (e) {
+        console.error('[UGC] 保存点赞失败:', e);
+      }
+      return posts[i];
+    }
+  }
+  return null;
+}
+
+// 一键添加搭配到购物车
+function addPairingToCart(pairingData) {
+  var shop = require('./shop.js');
+  var addedItems = [];
+  var failedItems = [];
+
+  if (pairingData.traceId && pairingData.skuId) {
+    var teaResult = shop.addToCart({
+      traceId: pairingData.traceId,
+      skuId: pairingData.skuId,
+      quantity: pairingData.teaQuantity || 1
+    });
+    if (teaResult.success) {
+      addedItems.push({ type: 'tea', traceId: pairingData.traceId });
+    } else {
+      failedItems.push({ type: 'tea', reason: teaResult.msg });
+    }
+  }
+
+  var foodIds = pairingData.foodIds || [];
+  for (var i = 0; i < foodIds.length; i++) {
+    var food = getFoodProduct(foodIds[i]);
+    if (food) {
+      var foodTraceId = 'FOOD-' + food.foodId;
+      if (!shopProducts[foodTraceId]) {
+        shopProducts[foodTraceId] = {
+          traceId: foodTraceId,
+          productName: food.name,
+          subtitle: food.description,
+          thumbnail: food.thumbnail,
+          category: '食品',
+          variety: food.category,
+          tags: food.tags || [],
+          specs: [{ name: '规格', values: [food.spec] }],
+          skuList: [{
+            skuId: food.skuId,
+            specValues: [food.spec],
+            price: food.price,
+            memberPrice: food.memberPrice,
+            stock: food.stock,
+            barcode: food.skuId
+          }],
+          defaultSkuIndex: 0,
+          freight: 5,
+          detailImages: [food.thumbnail],
+          description: food.description,
+          storageCondition: '阴凉干燥处',
+          shelfLifeDays: 90
+        };
+      }
+      var foodResult = shop.addToCart({
+        traceId: foodTraceId,
+        skuId: food.skuId,
+        quantity: (pairingData.foodQuantities && pairingData.foodQuantities[i]) || 1
+      });
+      if (foodResult.success) {
+        addedItems.push({ type: 'food', foodId: foodIds[i] });
+      } else {
+        failedItems.push({ type: 'food', foodId: foodIds[i], reason: foodResult.msg });
+      }
+    }
+  }
+
+  if (pairingData.giftBoxId) {
+    var box = getGiftBoxById(pairingData.giftBoxId);
+    if (box) {
+      var boxTraceId = 'GIFT-' + box.boxId;
+      if (!shopProducts[boxTraceId]) {
+        shopProducts[boxTraceId] = {
+          traceId: boxTraceId,
+          productName: box.name,
+          subtitle: box.subtitle,
+          thumbnail: box.thumbnail,
+          category: '礼盒',
+          variety: box.festivalName,
+          tags: box.tags || [],
+          specs: [{ name: '礼盒', values: ['标准套装'] }],
+          skuList: [{
+            skuId: box.boxId + '-SKU',
+            specValues: ['标准套装'],
+            price: box.price,
+            memberPrice: box.memberPrice,
+            stock: box.stock,
+            barcode: box.boxId
+          }],
+          defaultSkuIndex: 0,
+          freight: 0,
+          detailImages: [box.thumbnail],
+          description: box.name + ' - ' + box.subtitle,
+          storageCondition: '阴凉干燥处',
+          shelfLifeDays: 180
+        };
+      }
+      var boxResult = shop.addToCart({
+        traceId: boxTraceId,
+        skuId: box.boxId + '-SKU',
+        quantity: pairingData.boxQuantity || 1
+      });
+      if (boxResult.success) {
+        addedItems.push({ type: 'giftBox', boxId: pairingData.giftBoxId });
+      } else {
+        failedItems.push({ type: 'giftBox', boxId: pairingData.giftBoxId, reason: boxResult.msg });
+      }
+    }
+  }
+
+  return {
+    success: addedItems.length > 0,
+    addedCount: addedItems.length,
+    failedCount: failedItems.length,
+    addedItems: addedItems,
+    failedItems: failedItems
+  };
+}
+
 // 导出模块
 module.exports = {
   getTraceData,
@@ -10566,5 +11372,25 @@ module.exports = {
   getCertificateOfOrigin,
   getInspectionQuarantine,
   getPublicLotteryInfo,
-  getEnrichedHistoryReports
+  getEnrichedHistoryReports,
+  getFoodProduct,
+  getAllFoodProducts,
+  getFoodProductsByCategory,
+  getFoodProductsByTaste,
+  getTeaPairing,
+  getTeaPairingByTraceId,
+  getAllTeaPairings,
+  getFestivalGiftBox,
+  getAllFestivalGiftBoxes,
+  getGiftBoxById,
+  getAllGiftBoxesFlat,
+  getPreferenceQuestions,
+  saveUserPreference,
+  getUserPreference,
+  getPersonalizedRecommendations,
+  getUgcPosts,
+  getUgcPost,
+  addUgcPost,
+  likeUgcPost,
+  addPairingToCart
 };
