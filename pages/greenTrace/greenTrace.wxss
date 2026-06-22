@@ -15,7 +15,7 @@
 .banner-bg {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-image: 
+  background-image:
     radial-gradient(circle at 15% 25%, rgba(255,255,255,0.1) 0%, transparent 40%),
     radial-gradient(circle at 85% 75%, rgba(218,165,32,0.15) 0%, transparent 35%);
 }
@@ -118,7 +118,7 @@
   margin-bottom: 32rpx;
 }
 
-.cert-section, .carbon-section, .recycling-section, .points-section {
+.cert-section, .carbon-section, .water-section, .biodiversity-section, .recycling-section, .points-section {
   animation: fadeInUp 0.3s ease;
 }
 
@@ -501,6 +501,627 @@
   color: #52C41A;
   line-height: 1.6;
   font-weight: 500;
+}
+
+/* ===== 水足迹 ===== */
+.water-overview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.water-total {
+  text-align: center;
+}
+
+.water-total-value {
+  font-size: 56rpx;
+  font-weight: 700;
+  color: #1890FF;
+}
+
+.water-total-unit {
+  font-size: 24rpx;
+  color: #666666;
+  margin-top: 4rpx;
+}
+
+.water-saving {
+  text-align: center;
+}
+
+.saving-badge {
+  display: flex;
+  align-items: center;
+  background: rgba(24, 144, 255, 0.1);
+  padding: 12rpx 24rpx;
+  border-radius: 24rpx;
+  margin-bottom: 8rpx;
+}
+
+.saving-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.saving-value {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1890FF;
+}
+
+.saving-desc {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.water-chart-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.water-canvas {
+  width: 300px;
+  height: 300px;
+}
+
+.water-industry-comparison {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.water-monitor-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.monitor-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.monitor-icon {
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+
+.monitor-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.monitor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.monitor-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  background: #F8FBFF;
+  border-radius: 12rpx;
+  border: 1rpx solid rgba(24, 144, 255, 0.1);
+}
+
+.monitor-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.monitor-dot.online {
+  background: #52C41A;
+  box-shadow: 0 0 8rpx rgba(82, 196, 26, 0.4);
+}
+
+.monitor-dot.offline {
+  background: #FF4D4F;
+}
+
+.monitor-info {
+  flex: 1;
+}
+
+.monitor-name {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #333333;
+  margin-bottom: 4rpx;
+}
+
+.monitor-location {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.water-note {
+  display: flex;
+  align-items: flex-start;
+  background: rgba(24, 144, 255, 0.08);
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.data-source-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 16rpx;
+  margin-top: 24rpx;
+}
+
+.ds-icon {
+  font-size: 24rpx;
+}
+
+.ds-text {
+  font-size: 22rpx;
+  color: #BBBBBB;
+}
+
+/* ===== 生物多样性 ===== */
+.bio-index-card {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #E6F7FF 0%, #BAE7FF 100%);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  border: 2rpx solid rgba(24, 144, 255, 0.2);
+}
+
+.bio-index-ring {
+  width: 140rpx;
+  height: 140rpx;
+  background: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 28rpx;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 16rpx rgba(24, 144, 255, 0.2);
+}
+
+.bio-index-score {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #1890FF;
+  line-height: 1.1;
+}
+
+.bio-index-label {
+  font-size: 20rpx;
+  color: #999999;
+  margin-top: 4rpx;
+}
+
+.bio-index-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.bio-level-badge {
+  display: inline-block;
+  font-size: 26rpx;
+  font-weight: 600;
+  padding: 8rpx 24rpx;
+  border-radius: 20rpx;
+  margin-bottom: 12rpx;
+}
+
+.bio-level-badge.excellent {
+  background: rgba(82, 196, 26, 0.15);
+  color: #52C41A;
+}
+
+.bio-level-badge.good {
+  background: rgba(24, 144, 255, 0.15);
+  color: #1890FF;
+}
+
+.bio-index-desc {
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.5;
+}
+
+.bio-summary-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.bio-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+  margin-bottom: 28rpx;
+}
+
+.bio-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16rpx 8rpx;
+  background: #F8FBFF;
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(24, 144, 255, 0.1);
+}
+
+.bio-stat-icon {
+  font-size: 36rpx;
+  margin-bottom: 8rpx;
+}
+
+.bio-stat-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1890FF;
+  line-height: 1.2;
+}
+
+.bio-stat-label {
+  font-size: 20rpx;
+  color: #999999;
+  margin-top: 4rpx;
+}
+
+.bio-summary-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.bio-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8rpx 0;
+  border-bottom: 1rpx dashed #F0F0F0;
+}
+
+.bio-meta-row:last-child {
+  border-bottom: none;
+}
+
+.bio-meta-label {
+  font-size: 24rpx;
+  color: #999999;
+  flex-shrink: 0;
+}
+
+.bio-meta-value {
+  font-size: 24rpx;
+  color: #333333;
+  font-weight: 500;
+  text-align: right;
+}
+
+.bio-monitor-count-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.bmc-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 24rpx;
+}
+
+.bmc-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.bmc-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.bmc-bar-label {
+  width: 160rpx;
+  font-size: 24rpx;
+  color: #333333;
+  flex-shrink: 0;
+}
+
+.bmc-bar-track {
+  flex: 1;
+  height: 24rpx;
+  background: #F0F0F0;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.bmc-bar-fill {
+  height: 100%;
+  border-radius: 12rpx;
+  transition: width 0.6s ease;
+  min-width: 4rpx;
+}
+
+.bmc-bar-fill.bird {
+  background: linear-gradient(90deg, #1890FF, #40A9FF);
+}
+
+.bmc-bar-fill.insect {
+  background: linear-gradient(90deg, #52C41A, #73D13D);
+}
+
+.bmc-bar-fill.plant {
+  background: linear-gradient(90deg, #13C2C2, #36CFC9);
+}
+
+.bmc-bar-num {
+  width: 80rpx;
+  font-size: 22rpx;
+  color: #666666;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.bio-key-species-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.bks-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 24rpx;
+}
+
+.bks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.bks-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #F8FBFF;
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(24, 144, 255, 0.1);
+}
+
+.bks-icon {
+  width: 64rpx;
+  height: 64rpx;
+  font-size: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.bks-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.bks-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 6rpx;
+}
+
+.bks-meta {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.bks-category {
+  color: #666666;
+}
+
+.bks-divider {
+  color: #CCCCCC;
+}
+
+.bks-protection {
+  color: #DAA520;
+}
+
+.bks-trend {
+  font-size: 22rpx;
+  font-weight: 500;
+  padding: 6rpx 16rpx;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+}
+
+.bks-trend.up {
+  background: rgba(82, 196, 26, 0.1);
+  color: #52C41A;
+}
+
+.bks-trend.stable {
+  background: rgba(24, 144, 255, 0.1);
+  color: #1890FF;
+}
+
+.bks-trend.rare {
+  background: rgba(218, 165, 32, 0.1);
+  color: #DAA520;
+}
+
+.bio-recent-monitor-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.brm-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 24rpx;
+}
+
+.brm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.brm-item {
+  padding: 20rpx;
+  background: #FAFCFF;
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(24, 144, 255, 0.08);
+}
+
+.brm-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 8rpx;
+}
+
+.brm-type-badge {
+  font-size: 20rpx;
+  font-weight: 600;
+  padding: 4rpx 14rpx;
+  border-radius: 12rpx;
+}
+
+.brm-type-badge.bird {
+  background: rgba(24, 144, 255, 0.1);
+  color: #1890FF;
+}
+
+.brm-type-badge.insect {
+  background: rgba(82, 196, 26, 0.1);
+  color: #52C41A;
+}
+
+.brm-date {
+  font-size: 22rpx;
+  color: #666666;
+}
+
+.brm-weather {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.brm-observer {
+  font-size: 22rpx;
+  color: #999999;
+  margin-bottom: 16rpx;
+}
+
+.brm-findings {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.brm-finding-item {
+  display: flex;
+  align-items: center;
+  padding: 10rpx 16rpx;
+  background: #FFFFFF;
+  border-radius: 10rpx;
+  gap: 12rpx;
+}
+
+.brm-species {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #333333;
+  min-width: 100rpx;
+}
+
+.brm-detail {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+}
+
+.brm-count {
+  color: #1890FF;
+  font-weight: 500;
+}
+
+.brm-divider {
+  color: #CCCCCC;
+}
+
+.brm-status {
+  font-size: 20rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+}
+
+.brm-status.resident {
+  background: rgba(82, 196, 26, 0.1);
+  color: #52C41A;
+}
+
+.brm-status.occasional {
+  background: rgba(24, 144, 255, 0.1);
+  color: #1890FF;
+}
+
+.brm-status.rare {
+  background: rgba(218, 165, 32, 0.1);
+  color: #DAA520;
+}
+
+.brm-habitat {
+  font-size: 20rpx;
+  color: #BBBBBB;
+  margin-left: auto;
 }
 
 /* ===== 回收指引 ===== */
@@ -2065,4 +2686,3 @@
   color: #FFFFFF;
   box-shadow: 0 6rpx 16rpx rgba(235, 47, 150, 0.25);
 }
-

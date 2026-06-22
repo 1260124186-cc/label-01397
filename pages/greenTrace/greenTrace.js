@@ -11,12 +11,16 @@ Page({
     tabs: [
       { key: 'certificate', label: '认证证书', icon: '📜' },
       { key: 'carbon', label: '碳足迹', icon: '🌍' },
+      { key: 'water', label: '水足迹', icon: '💧' },
+      { key: 'biodiversity', label: '生物多样性', icon: '🦜' },
       { key: 'recycling', label: '回收指引', icon: '♻️' },
       { key: 'ecoFund', label: '公益基金', icon: '💚' },
       { key: 'points', label: '绿色积分', icon: '🌟' }
     ],
     certificates: [],
     carbonFootprint: null,
+    waterFootprint: null,
+    biodiversity: null,
     recyclingGuide: null,
     showCertModal: false,
     selectedCert: null,
@@ -72,6 +76,8 @@ Page({
       batchNo: batchNo,
       certificates: greenData.certificates || [],
       carbonFootprint: greenData.carbonFootprint || null,
+      waterFootprint: greenData.waterFootprint || null,
+      biodiversity: greenData.biodiversity || null,
       recyclingGuide: greenData.recyclingGuide || null,
       ecoFundData: greenData.ecoFund || null,
       fundProjects: fundProjects,
@@ -93,6 +99,10 @@ Page({
 
     if (greenData.carbonFootprint) {
       this.drawCarbonChart(greenData.carbonFootprint);
+    }
+
+    if (greenData.waterFootprint) {
+      this.drawWaterChart(greenData.waterFootprint);
     }
   },
 
@@ -131,6 +141,12 @@ Page({
     if (key === 'carbon') {
       var earnResult = greenPoints.earnPoints('viewCarbon');
       if (earnResult.earned > 0) this.loadGreenPoints();
+    } else if (key === 'water') {
+      var earnResultW = greenPoints.earnPoints('viewWater');
+      if (earnResultW.earned > 0) this.loadGreenPoints();
+    } else if (key === 'biodiversity') {
+      var earnResultB = greenPoints.earnPoints('viewBiodiversity');
+      if (earnResultB.earned > 0) this.loadGreenPoints();
     } else if (key === 'recycling') {
       var earnResult2 = greenPoints.earnPoints('viewRecycling');
       if (earnResult2.earned > 0) this.loadGreenPoints();
@@ -281,6 +297,77 @@ Page({
       ctx.fillText(carbonData.unit, centerX, centerY + 10);
 
       that.setData({ carbonChartData: carbonData });
+    });
+  },
+
+  drawWaterChart: function(waterData) {
+    var that = this;
+    var query = wx.createSelectorQuery();
+    query.select('#waterCanvas').fields({ node: true, size: true }).exec(function(res) {
+      if (!res || !res[0]) {
+        console.warn('[GreenTrace] Water Canvas节点未找到');
+        return;
+      }
+
+      var canvas = res[0].node;
+      var ctx = canvas.getContext('2d');
+      var dpr = wx.getSystemInfoSync().pixelRatio;
+      var width = res[0].width;
+      var height = res[0].height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+
+      var centerX = width / 2;
+      var centerY = height / 2 - 20;
+      var radius = Math.min(width, height) / 2 - 40;
+
+      var stages = waterData.stages;
+      var startAngle = -Math.PI / 2;
+
+      for (var i = 0; i < stages.length; i++) {
+        var stage = stages[i];
+        var sliceAngle = (stage.percent / 100) * 2 * Math.PI;
+        var endAngle = startAngle + sliceAngle;
+
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = stage.color;
+        ctx.fill();
+
+        var midAngle = startAngle + sliceAngle / 2;
+        var labelRadius = radius * 0.65;
+        var labelX = centerX + Math.cos(midAngle) * labelRadius;
+        var labelY = centerY + Math.sin(midAngle) * labelRadius;
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(stage.name, labelX, labelY - 8);
+        ctx.font = '10px sans-serif';
+        ctx.fillText(stage.percent + '%', labelX, labelY + 8);
+
+        startAngle = endAngle;
+      }
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius * 0.38, 0, 2 * Math.PI);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+
+      ctx.fillStyle = '#1890FF';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(waterData.totalUsage.toString(), centerX, centerY - 8);
+      ctx.fillStyle = '#999999';
+      ctx.font = '9px sans-serif';
+      ctx.fillText(waterData.unit, centerX, centerY + 10);
+
+      that.setData({ waterFootprint: waterData });
     });
   },
 

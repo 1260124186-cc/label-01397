@@ -2803,6 +2803,93 @@ var greenTraceExtended = {
         status: '有效'
       }
     ],
+    waterFootprint: {
+      totalUsage: 185,
+      unit: 'L/罐',
+      stages: [
+        { name: '种植灌溉', value: 120, percent: 64.9, color: '#1890FF' },
+        { name: '加工窨制', value: 38, percent: 20.5, color: '#13C2C2' },
+        { name: '清洗消毒', value: 27, percent: 14.6, color: '#36CFC9' }
+      ],
+      industryAvg: {
+        totalUsage: 280,
+        unit: 'L/罐',
+        stages: [
+          { name: '种植灌溉', value: 196, percent: 70 },
+          { name: '加工窨制', value: 56, percent: 20 },
+          { name: '清洗消毒', value: 28, percent: 10 }
+        ]
+      },
+      savingPercent: 33.9,
+      comparisonNote: '本产品用水量较行业均值低33.9%，每罐节约95升水，相当于节约0.38次标准淋浴用水',
+      dataSource: '自建水表监测系统',
+      monitorPoints: [
+        { id: 'WM-001', name: '茶园灌溉水表', location: '武夷山茶园A区', status: 'online' },
+        { id: 'WM-002', name: '窨制车间水表', location: '加工厂车间A', status: 'online' },
+        { id: 'WM-003', name: '清洗线水表', location: '清洗车间', status: 'online' }
+      ]
+    },
+    biodiversity: {
+      indexScore: 87,
+      indexLevel: '优秀',
+      indexDesc: '茶园周边生态系统健康，物种多样性高于区域平均水平',
+      monitoringSummary: {
+        totalSpecies: 126,
+        birdSpecies: 38,
+        insectSpecies: 52,
+        plantSpecies: 36,
+        monitoringArea: '茶园周边2公里范围',
+        monitoringDuration: '2024年1月-2025年6月',
+        monitoringFrequency: '每月2次定点观测'
+      },
+      recentMonitoring: [
+        {
+          date: '2025-06-15',
+          type: '鸟类',
+          observer: '生态监测站·李观测员',
+          weather: '晴',
+          findings: [
+            { species: '白鹭', count: 6, status: '常驻', habitat: '茶园水塘边' },
+            { species: '画眉', count: 3, status: '常驻', habitat: '灌木丛' },
+            { species: '红嘴蓝鹊', count: 2, status: '偶见', habitat: '乔木层' }
+          ]
+        },
+        {
+          date: '2025-06-12',
+          type: '昆虫',
+          observer: '生态监测站·王观测员',
+          weather: '多云',
+          findings: [
+            { species: '中华蜜蜂', count: 15, status: '常驻', habitat: '桂花树花丛' },
+            { species: '七星瓢虫', count: 8, status: '常驻', habitat: '茶树叶片' },
+            { species: '碧凤蝶', count: 2, status: '偶见', habitat: '林缘花丛' }
+          ]
+        },
+        {
+          date: '2025-05-28',
+          type: '鸟类',
+          observer: '生态监测站·李观测员',
+          weather: '阴',
+          findings: [
+            { species: '白鹭', count: 4, status: '常驻', habitat: '茶园水塘边' },
+            { species: '大山雀', count: 5, status: '常驻', habitat: '茶树间' },
+            { species: '翠鸟', count: 1, status: '稀有', habitat: '溪流旁' }
+          ]
+        }
+      ],
+      monitoringStats: {
+        birdMonitorCount: 48,
+        insectMonitorCount: 36,
+        plantSurveyCount: 18
+      },
+      keySpecies: [
+        { name: '白鹭', category: '鸟类', protection: '省级保护', trend: '稳定', icon: '🦅' },
+        { name: '中华蜜蜂', category: '昆虫', protection: '有益物种', trend: '增长', icon: '🐝' },
+        { name: '翠鸟', category: '鸟类', protection: '国家三有', trend: '偶见', icon: '🐦' },
+        { name: '碧凤蝶', category: '昆虫', protection: '生态指示', trend: '稳定', icon: '🦋' }
+      ],
+      dataSource: '自建生态监测站'
+    },
     carbonFootprint: {
       totalEmission: 2.8,
       unit: 'kg CO₂e/罐',
@@ -2896,6 +2983,78 @@ var greenTraceExtended = {
         status: '有效'
       }
     ],
+    waterFootprint: {
+      totalUsage: 210,
+      unit: 'L/罐',
+      stages: [
+        { name: '种植灌溉', value: 140, percent: 66.7, color: '#1890FF' },
+        { name: '加工窨制', value: 42, percent: 20.0, color: '#13C2C2' },
+        { name: '清洗消毒', value: 28, percent: 13.3, color: '#36CFC9' }
+      ],
+      industryAvg: {
+        totalUsage: 280,
+        unit: 'L/罐',
+        stages: [
+          { name: '种植灌溉', value: 196, percent: 70 },
+          { name: '加工窨制', value: 56, percent: 20 },
+          { name: '清洗消毒', value: 28, percent: 10 }
+        ]
+      },
+      savingPercent: 25.0,
+      comparisonNote: '本产品用水量较行业均值低25.0%，每罐节约70升水',
+      dataSource: '自建水表监测系统',
+      monitorPoints: [
+        { id: 'WM-004', name: '茶园灌溉水表', location: '武夷山茶园B区', status: 'online' },
+        { id: 'WM-005', name: '窨制车间水表', location: '加工厂车间B', status: 'online' },
+        { id: 'WM-006', name: '清洗线水表', location: '清洗车间', status: 'online' }
+      ]
+    },
+    biodiversity: {
+      indexScore: 72,
+      indexLevel: '良好',
+      indexDesc: '茶园周边生态系统较为健康，物种多样性处于区域平均水平',
+      monitoringSummary: {
+        totalSpecies: 89,
+        birdSpecies: 24,
+        insectSpecies: 38,
+        plantSpecies: 27,
+        monitoringArea: '茶园周边2公里范围',
+        monitoringDuration: '2024年3月-2025年6月',
+        monitoringFrequency: '每月1次定点观测'
+      },
+      recentMonitoring: [
+        {
+          date: '2025-06-10',
+          type: '鸟类',
+          observer: '生态监测站·张观测员',
+          weather: '多云',
+          findings: [
+            { species: '大山雀', count: 4, status: '常驻', habitat: '茶树间' },
+            { species: '麻雀', count: 8, status: '常驻', habitat: '灌木丛' }
+          ]
+        },
+        {
+          date: '2025-06-05',
+          type: '昆虫',
+          observer: '生态监测站·刘观测员',
+          weather: '晴',
+          findings: [
+            { species: '七星瓢虫', count: 5, status: '常驻', habitat: '茶树叶片' },
+            { species: '中华蜜蜂', count: 6, status: '常驻', habitat: '桂花树花丛' }
+          ]
+        }
+      ],
+      monitoringStats: {
+        birdMonitorCount: 28,
+        insectMonitorCount: 20,
+        plantSurveyCount: 12
+      },
+      keySpecies: [
+        { name: '大山雀', category: '鸟类', protection: '国家三有', trend: '稳定', icon: '🐦' },
+        { name: '七星瓢虫', category: '昆虫', protection: '有益物种', trend: '稳定', icon: '🐞' }
+      ],
+      dataSource: '自建生态监测站'
+    },
     carbonFootprint: {
       totalEmission: 3.2,
       unit: 'kg CO₂e/罐',
@@ -2978,6 +3137,68 @@ var greenTraceExtended = {
         status: '有效'
       }
     ],
+    waterFootprint: {
+      totalUsage: 370,
+      unit: 'L/礼盒',
+      stages: [
+        { name: '种植灌溉', value: 240, percent: 64.9, color: '#1890FF' },
+        { name: '加工窨制', value: 76, percent: 20.5, color: '#13C2C2' },
+        { name: '清洗消毒', value: 54, percent: 14.6, color: '#36CFC9' }
+      ],
+      industryAvg: {
+        totalUsage: 560,
+        unit: 'L/礼盒',
+        stages: [
+          { name: '种植灌溉', value: 392, percent: 70 },
+          { name: '加工窨制', value: 112, percent: 20 },
+          { name: '清洗消毒', value: 56, percent: 10 }
+        ]
+      },
+      savingPercent: 33.9,
+      comparisonNote: '本礼盒用水量较行业均值低33.9%，每盒节约190升水',
+      dataSource: '自建水表监测系统',
+      monitorPoints: [
+        { id: 'WM-001', name: '茶园灌溉水表', location: '武夷山茶园A区', status: 'online' },
+        { id: 'WM-002', name: '窨制车间水表', location: '加工厂车间A', status: 'online' },
+        { id: 'WM-003', name: '清洗线水表', location: '清洗车间', status: 'online' }
+      ]
+    },
+    biodiversity: {
+      indexScore: 87,
+      indexLevel: '优秀',
+      indexDesc: '茶园周边生态系统健康，物种多样性高于区域平均水平',
+      monitoringSummary: {
+        totalSpecies: 126,
+        birdSpecies: 38,
+        insectSpecies: 52,
+        plantSpecies: 36,
+        monitoringArea: '茶园周边2公里范围',
+        monitoringDuration: '2024年1月-2025年6月',
+        monitoringFrequency: '每月2次定点观测'
+      },
+      recentMonitoring: [
+        {
+          date: '2025-06-15',
+          type: '鸟类',
+          observer: '生态监测站·李观测员',
+          weather: '晴',
+          findings: [
+            { species: '白鹭', count: 6, status: '常驻', habitat: '茶园水塘边' },
+            { species: '画眉', count: 3, status: '常驻', habitat: '灌木丛' }
+          ]
+        }
+      ],
+      monitoringStats: {
+        birdMonitorCount: 48,
+        insectMonitorCount: 36,
+        plantSurveyCount: 18
+      },
+      keySpecies: [
+        { name: '白鹭', category: '鸟类', protection: '省级保护', trend: '稳定', icon: '🦅' },
+        { name: '中华蜜蜂', category: '昆虫', protection: '有益物种', trend: '增长', icon: '🐝' }
+      ],
+      dataSource: '自建生态监测站'
+    },
     carbonFootprint: {
       totalEmission: 5.6,
       unit: 'kg CO₂e/礼盒',
@@ -3042,6 +3263,67 @@ var greenTraceExtended = {
         status: '有效'
       }
     ],
+    waterFootprint: {
+      totalUsage: 92,
+      unit: 'L/盒',
+      stages: [
+        { name: '种植灌溉', value: 60, percent: 65.2, color: '#1890FF' },
+        { name: '加工窨制', value: 19, percent: 20.7, color: '#13C2C2' },
+        { name: '清洗消毒', value: 13, percent: 14.1, color: '#36CFC9' }
+      ],
+      industryAvg: {
+        totalUsage: 140,
+        unit: 'L/盒',
+        stages: [
+          { name: '种植灌溉', value: 98, percent: 70 },
+          { name: '加工窨制', value: 28, percent: 20 },
+          { name: '清洗消毒', value: 14, percent: 10 }
+        ]
+      },
+      savingPercent: 34.3,
+      comparisonNote: '本产品用水量较行业均值低34.3%，每盒节约48升水',
+      dataSource: '自建水表监测系统',
+      monitorPoints: [
+        { id: 'WM-007', name: '茶园灌溉水表', location: '武夷山茶园C区', status: 'online' },
+        { id: 'WM-008', name: '加工车间水表', location: '加工厂车间C', status: 'online' }
+      ]
+    },
+    biodiversity: {
+      indexScore: 68,
+      indexLevel: '良好',
+      indexDesc: '茶园周边生态系统基本健康，物种多样性接近区域平均水平',
+      monitoringSummary: {
+        totalSpecies: 72,
+        birdSpecies: 18,
+        insectSpecies: 32,
+        plantSpecies: 22,
+        monitoringArea: '茶园周边2公里范围',
+        monitoringDuration: '2024年6月-2025年6月',
+        monitoringFrequency: '每季度1次定点观测'
+      },
+      recentMonitoring: [
+        {
+          date: '2025-06-08',
+          type: '鸟类',
+          observer: '生态监测站·赵观测员',
+          weather: '晴',
+          findings: [
+            { species: '麻雀', count: 6, status: '常驻', habitat: '灌木丛' },
+            { species: '白头鹎', count: 3, status: '常驻', habitat: '乔木层' }
+          ]
+        }
+      ],
+      monitoringStats: {
+        birdMonitorCount: 16,
+        insectMonitorCount: 12,
+        plantSurveyCount: 8
+      },
+      keySpecies: [
+        { name: '白头鹎', category: '鸟类', protection: '国家三有', trend: '稳定', icon: '🐦' },
+        { name: '七星瓢虫', category: '昆虫', protection: '有益物种', trend: '稳定', icon: '🐞' }
+      ],
+      dataSource: '自建生态监测站'
+    },
     carbonFootprint: {
       totalEmission: 1.2,
       unit: 'kg CO₂e/盒',
@@ -3085,6 +3367,8 @@ var greenPointsConfig = {
   pointsRules: [
     { action: 'viewTrace', points: 10, desc: '查看溯源信息', dailyLimit: 50 },
     { action: 'viewCarbon', points: 5, desc: '查看碳足迹', dailyLimit: 25 },
+    { action: 'viewWater', points: 5, desc: '查看水足迹', dailyLimit: 25 },
+    { action: 'viewBiodiversity', points: 5, desc: '查看生物多样性', dailyLimit: 25 },
     { action: 'viewRecycling', points: 5, desc: '查看回收指引', dailyLimit: 25 },
     { action: 'viewCertificate', points: 3, desc: '查看认证证书', dailyLimit: 15 },
     { action: 'shareGreen', points: 15, desc: '分享绿色溯源', dailyLimit: 45 },

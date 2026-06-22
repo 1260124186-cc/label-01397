@@ -141,6 +141,258 @@
       </view>
     </view>
 
+    <!-- ========== 水足迹 ========== -->
+    <view class="water-section" wx:if="{{activeTab === 'water' && waterFootprint}}">
+      <view class="section-header">
+        <text class="section-icon">💧</text>
+        <text class="section-title">水足迹</text>
+      </view>
+
+      <view class="water-overview">
+        <view class="water-total">
+          <view class="water-total-value">{{waterFootprint.totalUsage}}</view>
+          <view class="water-total-unit">{{waterFootprint.unit}}</view>
+        </view>
+        <view class="water-saving">
+          <view class="saving-badge">
+            <text class="saving-icon">📉</text>
+            <text class="saving-value">-{{waterFootprint.savingPercent}}%</text>
+          </view>
+          <view class="saving-desc">较行业均值</view>
+        </view>
+      </view>
+
+      <view class="water-chart-card">
+        <view class="chart-title">各环节用水占比</view>
+        <view class="chart-wrapper">
+          <canvas type="2d" id="waterCanvas" class="water-canvas"></canvas>
+        </view>
+
+        <view class="chart-legend">
+          <view 
+            wx:for="{{waterFootprint.stages}}" 
+            wx:key="name"
+            class="legend-item"
+          >
+            <view class="legend-dot" style="background-color: {{item.color}};"></view>
+            <text class="legend-name">{{item.name}}</text>
+            <text class="legend-value">{{item.value}}L</text>
+            <text class="legend-percent">{{item.percent}}%</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="water-industry-comparison">
+        <view class="comparison-header">
+          <text class="comparison-icon">📊</text>
+          <text class="comparison-title">单位产品耗水 vs 行业均值</text>
+        </view>
+        <view class="comparison-bars">
+          <view 
+            wx:for="{{waterFootprint.stages}}" 
+            wx:key="name"
+            class="comparison-item"
+          >
+            <view class="comp-label">{{item.name}}</view>
+            <view class="comp-bar-group">
+              <view class="comp-bar-row">
+                <text class="comp-bar-label">本产品</text>
+                <view class="comp-bar-track">
+                  <view class="comp-bar-fill product" style="width: {{(item.value / waterFootprint.industryAvg.totalUsage) * 100}}%; background-color: {{item.color}};"></view>
+                </view>
+                <text class="comp-bar-value">{{item.value}}L</text>
+              </view>
+              <view class="comp-bar-row">
+                <text class="comp-bar-label industry">行业均值</text>
+                <view class="comp-bar-track">
+                  <view class="comp-bar-fill industry" style="width: {{(waterFootprint.industryAvg.stages[index].value / waterFootprint.industryAvg.totalUsage) * 100}}%;"></view>
+                </view>
+                <text class="comp-bar-value">{{waterFootprint.industryAvg.stages[index].value}}L</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="water-monitor-card">
+        <view class="monitor-header">
+          <text class="monitor-icon">📡</text>
+          <text class="monitor-title">水表监测点</text>
+        </view>
+        <view class="monitor-list">
+          <view 
+            wx:for="{{waterFootprint.monitorPoints}}" 
+            wx:key="id"
+            class="monitor-item"
+          >
+            <view class="monitor-dot {{item.status === 'online' ? 'online' : 'offline'}}"></view>
+            <view class="monitor-info">
+              <view class="monitor-name">{{item.name}}</view>
+              <view class="monitor-location">{{item.location}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="water-note">
+        <text class="note-icon">💡</text>
+        <text class="note-text">{{waterFootprint.comparisonNote}}</text>
+      </view>
+
+      <view class="data-source-tag">
+        <text class="ds-icon">📡</text>
+        <text class="ds-text">数据来源：{{waterFootprint.dataSource}}</text>
+      </view>
+    </view>
+
+    <!-- ========== 生物多样性 ========== -->
+    <view class="biodiversity-section" wx:if="{{activeTab === 'biodiversity' && biodiversity}}">
+      <view class="section-header">
+        <text class="section-icon">🦜</text>
+        <text class="section-title">生物多样性</text>
+      </view>
+
+      <view class="bio-index-card">
+        <view class="bio-index-ring">
+          <view class="bio-index-score">{{biodiversity.indexScore}}</view>
+          <view class="bio-index-label">多样性指数</view>
+        </view>
+        <view class="bio-index-info">
+          <view class="bio-level-badge {{biodiversity.indexLevel === '优秀' ? 'excellent' : 'good'}}">{{biodiversity.indexLevel}}</view>
+          <view class="bio-index-desc">{{biodiversity.indexDesc}}</view>
+        </view>
+      </view>
+
+      <view class="bio-summary-card">
+        <view class="bio-summary-grid">
+          <view class="bio-stat-item">
+            <view class="bio-stat-icon">🦅</view>
+            <view class="bio-stat-num">{{biodiversity.monitoringSummary.birdSpecies}}</view>
+            <view class="bio-stat-label">鸟类物种</view>
+          </view>
+          <view class="bio-stat-item">
+            <view class="bio-stat-icon">🐝</view>
+            <view class="bio-stat-num">{{biodiversity.monitoringSummary.insectSpecies}}</view>
+            <view class="bio-stat-label">昆虫物种</view>
+          </view>
+          <view class="bio-stat-item">
+            <view class="bio-stat-icon">🌿</view>
+            <view class="bio-stat-num">{{biodiversity.monitoringSummary.plantSpecies}}</view>
+            <view class="bio-stat-label">植物物种</view>
+          </view>
+          <view class="bio-stat-item">
+            <view class="bio-stat-icon">🔬</view>
+            <view class="bio-stat-num">{{biodiversity.monitoringSummary.totalSpecies}}</view>
+            <view class="bio-stat-label">物种总数</view>
+          </view>
+        </view>
+        <view class="bio-summary-meta">
+          <view class="bio-meta-row">
+            <text class="bio-meta-label">监测范围</text>
+            <text class="bio-meta-value">{{biodiversity.monitoringSummary.monitoringArea}}</text>
+          </view>
+          <view class="bio-meta-row">
+            <text class="bio-meta-label">监测时段</text>
+            <text class="bio-meta-value">{{biodiversity.monitoringSummary.monitoringDuration}}</text>
+          </view>
+          <view class="bio-meta-row">
+            <text class="bio-meta-label">监测频率</text>
+            <text class="bio-meta-value">{{biodiversity.monitoringSummary.monitoringFrequency}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="bio-monitor-count-card">
+        <view class="bmc-title">🔭 监测次数统计</view>
+        <view class="bmc-bars">
+          <view class="bmc-bar-item">
+            <view class="bmc-bar-label">🦅 鸟类监测</view>
+            <view class="bmc-bar-track">
+              <view class="bmc-bar-fill bird" style="width: {{(biodiversity.monitoringStats.birdMonitorCount / 60) * 100}}%;"></view>
+            </view>
+            <view class="bmc-bar-num">{{biodiversity.monitoringStats.birdMonitorCount}}次</view>
+          </view>
+          <view class="bmc-bar-item">
+            <view class="bmc-bar-label">🐝 昆虫监测</view>
+            <view class="bmc-bar-track">
+              <view class="bmc-bar-fill insect" style="width: {{(biodiversity.monitoringStats.insectMonitorCount / 60) * 100}}%;"></view>
+            </view>
+            <view class="bmc-bar-num">{{biodiversity.monitoringStats.insectMonitorCount}}次</view>
+          </view>
+          <view class="bmc-bar-item">
+            <view class="bmc-bar-label">🌿 植物调查</view>
+            <view class="bmc-bar-track">
+              <view class="bmc-bar-fill plant" style="width: {{(biodiversity.monitoringStats.plantSurveyCount / 60) * 100}}%;"></view>
+            </view>
+            <view class="bmc-bar-num">{{biodiversity.monitoringStats.plantSurveyCount}}次</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="bio-key-species-card">
+        <view class="bks-title">🦋 重点物种</view>
+        <view class="bks-list">
+          <view 
+            wx:for="{{biodiversity.keySpecies}}" 
+            wx:key="name"
+            class="bks-item"
+          >
+            <view class="bks-icon">{{item.icon}}</view>
+            <view class="bks-info">
+              <view class="bks-name">{{item.name}}</view>
+              <view class="bks-meta">
+                <text class="bks-category">{{item.category}}</text>
+                <text class="bks-divider">·</text>
+                <text class="bks-protection">{{item.protection}}</text>
+              </view>
+            </view>
+            <view class="bks-trend {{item.trend === '增长' ? 'up' : item.trend === '偶见' ? 'rare' : 'stable'}}">
+              {{item.trend}}
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="bio-recent-monitor-card">
+        <view class="brm-title">📋 近期监测记录</view>
+        <view class="brm-list">
+          <view 
+            wx:for="{{biodiversity.recentMonitoring}}" 
+            wx:key="date"
+            class="brm-item"
+          >
+            <view class="brm-header">
+              <view class="brm-type-badge {{item.type === '鸟类' ? 'bird' : 'insect'}}">{{item.type}}</view>
+              <view class="brm-date">{{item.date}}</view>
+              <view class="brm-weather">{{item.weather}}</view>
+            </view>
+            <view class="brm-observer">{{item.observer}}</view>
+            <view class="brm-findings">
+              <view 
+                wx:for="{{item.findings}}" 
+                wx:for-item="finding" 
+                wx:key="species"
+                class="brm-finding-item"
+              >
+                <view class="brm-species">{{finding.species}}</view>
+                <view class="brm-detail">
+                  <text class="brm-count">{{finding.count}}只</text>
+                  <text class="brm-divider">·</text>
+                  <text class="brm-status {{finding.status === '常驻' ? 'resident' : finding.status === '稀有' ? 'rare' : 'occasional'}}">{{finding.status}}</text>
+                </view>
+                <view class="brm-habitat">{{finding.habitat}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="data-source-tag">
+        <text class="ds-icon">📡</text>
+        <text class="ds-text">数据来源：{{biodiversity.dataSource}}</text>
+      </view>
+    </view>
+
     <!-- ========== 包装回收指引 ========== -->
     <view class="recycling-section" wx:if="{{activeTab === 'recycling' && recyclingGuide}}">
       <view class="section-header">
