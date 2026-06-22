@@ -47,6 +47,32 @@ var DEFAULT_INSPECTION_TYPES = ['pesticide', 'heavyMetal'];
 var DEFAULT_CHAIN_NAME = '溯源链';
 var DEFAULT_BLOCK_EXPLORER_BASE = 'https://explorer.tracechain.cn/tx/';
 
+var MEMBER_STRATEGY = {
+  WAIT: 'wait',
+  ALERT: 'alert',
+  FAIL: 'fail'
+};
+
+var MEMBER_STRATEGY_LABELS = {
+  wait: '等待凑齐',
+  alert: '告警启动',
+  fail: '未满即停'
+};
+
+var START_STATUS = {
+  PENDING: 'pending',
+  WAITING: 'waiting',
+  STARTED: 'started',
+  FAILED: 'failed',
+  PARTIAL: 'partial'
+};
+
+var DEFAULT_MIN_WITNESSES = 3;
+var DEFAULT_WAIT_TIMEOUT = 300000;
+var DEFAULT_START_STORAGE_KEY = 'public_lottery_start_timers';
+
+var STORAGE_KEY_START_META = 'public_lottery_round_meta';
+
 function safeGetStorage(key, defaultValue) {
   try {
     var value = wx.getStorageSync(key);
@@ -792,6 +818,423 @@ function closeLotteryRound(roundId) {
   return { success: true, message: '抽检轮次已归档' };
 }
 
+function _loadRoundMeta() {
+  var meta = safeGetStorage(STORAGE_KEY_START_META, null);
+  if (meta && typeof meta === 'object') return meta;
+  return {};
+}
+
+function _saveRoundMeta(meta) {
+  return safeSetStorage(STORAGE_KEY_START_META, meta);
+}
+
+function _getRoundMeta(roundId) {
+  var allMeta = _loadRoundMeta();
+  return allMeta[roundId] || null;
+}
+
+function _setRoundMeta(roundId, metaData) {
+  var allMeta = _loadRoundMeta();
+  allMeta[roundId] = Object.assign({}, allMeta[roundId] || {}, metaData);
+  _saveRoundMeta(allMeta);
+  return allMeta[roundId];
+}
+
+function _checkMemberAdequacy(round) {
+  var currentCount = (round.consumerWitnesses || []).length;
+  var minWitnesses = round.minWitnesses || DEFAULT_MIN_WITNESSES;
+  var maxWitnesses = round.maxWitnesses || DEFAULT_MAX_WITNESSES;
+
+  return {
+    currentCount: currentCount,
+    minWitnesses: minWitnesses,
+    maxWitnesses: maxWitnesses,
+    isSufficient: currentCount >= minWitnesses,
+    isFull: currentCount >= maxWitnesses,
+    adequacyRatio: maxWitnesses > 0 ? currentCount / maxWitnesses : 0,
+    deficit: Math.max(0, minWitnesses - currentCount),
+    surplus: Math.max(0, currentCount - maxWitnesses)
+  };
+}
+
+function createScheduledLotteryRound(options) {
+  initializeLotterySystem();
+  options = options || {};
+
+  var salesPool = _getSalesBatchPool();
+  var roundId = generateLotteryId();
+  var now = _now();
+  var seed = options.drawSeed || ('SEED-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6));
+
+  var round = {
+    roundId: roundId,
+    roundName: options.roundName || (_formatDate(now) + ' 公开抽检'),
+    status: LOTTERY_STATUS.SCHEDULED,
+    scheduleDate: _formatDate(now),
+    drawDate: options.drawDate ? _formatDateTime(options.drawDate) : null,
+    drawSeed: seed,
+    drawHash: generateSeedHash(seed + '-' + salesPool.slice().sort().join(',')),
+    candidateBatchNos: salesPool.slice(),
+    selectedBatchNos: [],
+    inspectionTypes: options.inspectionTypes || DEFAULT_INSPECTION_TYPES.slice(),
+    institution: options.institution || DEFAULT_INSTITUTION,
+    liveStreamUrl: options.liveStreamUrl || '',
+    replayUrl: '',
+    consumerWitnesses: [],
+    maxWitnesses: options.maxWitnesses || DEFAULT_MAX_WITNESSES,
+    minWitnesses: options.minWitnesses || DEFAULT_MIN_WITNESSES,
+    memberStrategy: options.memberStrategy || MEMBER_STRATEGY.WAIT,
+    waitTimeout: options.waitTimeout || DEFAULT_WAIT_TIMEOUT,
+    allowPartial: options.allowPartial !== false,
+    currentWitnessCount: 0,
+    isWitnessFull: false,
+    inspectionResult: null,
+    blockchainEndorsement: null,
+    brandNarrative: options.brandNarrative || '品牌主动发起公开抽检，随机抽取在售批次，全程透明公开，接受消费者监督。'
+  };
+
+  var rounds = _loadRounds();
+  rounds.push(round);
+  _saveRounds(rounds);
+
+  _setRoundMeta(roundId, {
+    startStatus: START_STATUS.PENDING,
+    strategy: round.memberStrategy,
+    minWitnesses: round.minWitnesses,
+    waitTimeout: round.waitTimeout,
+    allowPartial: round.allowPartial,
+    waitStartedAt: null,
+    startedAt: null,
+    failedAt: null,
+    failReason: null,
+    startedWithPartial: false
+  });
+
+  return {
+    success: true,
+    round: round,
+    message: '抽检轮次已创建，状态为待抽签'
+  };
+}
+
+function _handleFailStrategy(round, adequacy, meta) {
+  if (!adequacy.isSufficient) {
+    var failReason = '成员不足，当前 ' + adequacy.currentCount + ' 人，最低要求 ' + adequacy.minWitnesses + ' 人，缺 ' + adequacy.deficit + ' 人';
+
+    _setRoundMeta(round.roundId, {
+      startStatus: START_STATUS.FAILED,
+      failedAt: _formatDateTime(_now()),
+      failReason: failReason
+    });
+
+    return {
+      success: false,
+      round: round,
+      startStatus: START_STATUS.FAILED,
+      adequacy: adequacy,
+      message: failReason
+    };
+  }
+
+  return null;
+}
+
+function _handleAlertStrategy(round, adequacy, meta) {
+  if (!adequacy.isSufficient) {
+    var alertMsg = '成员不足，当前 ' + adequacy.currentCount + '/' + adequacy.minWitnesses + ' 人，将按告警模式启动';
+
+    round.status = LOTTERY_STATUS.DRAWING;
+    round.selectedBatchNos = performLotteryDraw(round.candidateBatchNos, round.drawSeed);
+
+    var onChainProofs = _loadOnChainProofs();
+    var proof = _buildOnChainProof(round, 'drawing');
+    round.blockchainEndorsement = proof;
+    onChainProofs[round.roundId] = proof;
+    _saveOnChainProofs(onChainProofs);
+
+    _setRoundMeta(round.roundId, {
+      startStatus: START_STATUS.PARTIAL,
+      startedAt: _formatDateTime(_now()),
+      startedWithPartial: true,
+      adequacyAtStart: adequacy,
+      alertMessage: alertMsg
+    });
+
+    var rounds = _loadRounds();
+    for (var i = 0; i < rounds.length; i++) {
+      if (rounds[i].roundId === round.roundId) {
+        rounds[i] = round;
+        break;
+      }
+    }
+    _saveRounds(rounds);
+
+    return {
+      success: true,
+      round: round,
+      startStatus: START_STATUS.PARTIAL,
+      adequacy: adequacy,
+      isPartial: true,
+      alertMessage: alertMsg,
+      message: alertMsg + '，抽签已完成'
+    };
+  }
+
+  return null;
+}
+
+function _handleWaitStrategy(round, adequacy, meta) {
+  if (!adequacy.isSufficient) {
+    var now = _now();
+    var waitStartedAt = meta && meta.waitStartedAt ? new Date(meta.waitStartedAt) : null;
+    var timeoutMs = round.waitTimeout || DEFAULT_WAIT_TIMEOUT;
+
+    if (!waitStartedAt) {
+      _setRoundMeta(round.roundId, {
+        startStatus: START_STATUS.WAITING,
+        waitStartedAt: _formatDateTime(now),
+        adequacyAtWaitStart: adequacy
+      });
+
+      return {
+        success: true,
+        round: round,
+        startStatus: START_STATUS.WAITING,
+        adequacy: adequacy,
+        isWaiting: true,
+        timeoutMs: timeoutMs,
+        waitStartedAt: _formatDateTime(now),
+        message: '开始等待成员凑齐，超时时间 ' + (timeoutMs / 1000) + ' 秒，当前 ' + adequacy.currentCount + '/' + adequacy.minWitnesses + ' 人'
+      };
+    }
+
+    var elapsedMs = now.getTime() - waitStartedAt.getTime();
+    if (elapsedMs >= timeoutMs) {
+      var timedOutMsg = '等待超时（' + (elapsedMs / 1000) + '秒），成员仍不足，当前 ' + adequacy.currentCount + '/' + adequacy.minWitnesses + ' 人';
+
+      if (round.allowPartial) {
+        round.status = LOTTERY_STATUS.DRAWING;
+        round.selectedBatchNos = performLotteryDraw(round.candidateBatchNos, round.drawSeed);
+
+        var onChainProofs = _loadOnChainProofs();
+        var proof = _buildOnChainProof(round, 'drawing');
+        round.blockchainEndorsement = proof;
+        onChainProofs[round.roundId] = proof;
+        _saveOnChainProofs(onChainProofs);
+
+        _setRoundMeta(round.roundId, {
+          startStatus: START_STATUS.PARTIAL,
+          startedAt: _formatDateTime(now),
+          startedWithPartial: true,
+          adequacyAtStart: adequacy,
+          waitTimedOut: true,
+          waitElapsedMs: elapsedMs
+        });
+
+        var rounds = _loadRounds();
+        for (var i = 0; i < rounds.length; i++) {
+          if (rounds[i].roundId === round.roundId) {
+            rounds[i] = round;
+            break;
+          }
+        }
+        _saveRounds(rounds);
+
+        return {
+          success: true,
+          round: round,
+          startStatus: START_STATUS.PARTIAL,
+          adequacy: adequacy,
+          isPartial: true,
+          waitTimedOut: true,
+          waitElapsedMs: elapsedMs,
+          message: timedOutMsg + '，已按部分可用模式启动'
+        };
+      } else {
+        _setRoundMeta(round.roundId, {
+          startStatus: START_STATUS.FAILED,
+          failedAt: _formatDateTime(now),
+          failReason: timedOutMsg,
+          waitTimedOut: true,
+          waitElapsedMs: elapsedMs
+        });
+
+        return {
+          success: false,
+          round: round,
+          startStatus: START_STATUS.FAILED,
+          adequacy: adequacy,
+          waitTimedOut: true,
+          waitElapsedMs: elapsedMs,
+          message: timedOutMsg + '，启动失败'
+        };
+      }
+    }
+
+    var remainingMs = timeoutMs - elapsedMs;
+    return {
+      success: true,
+      round: round,
+      startStatus: START_STATUS.WAITING,
+      adequacy: adequacy,
+      isWaiting: true,
+      timeoutMs: timeoutMs,
+      elapsedMs: elapsedMs,
+      remainingMs: remainingMs,
+      waitStartedAt: meta.waitStartedAt,
+      message: '等待中，已过 ' + (elapsedMs / 1000).toFixed(0) + ' 秒，剩余 ' + (remainingMs / 1000).toFixed(0) + ' 秒，当前 ' + adequacy.currentCount + '/' + adequacy.minWitnesses + ' 人'
+    };
+  }
+
+  return null;
+}
+
+function _finalizeNormalStart(round, adequacy) {
+  var now = _now();
+
+  round.status = LOTTERY_STATUS.DRAWING;
+  round.selectedBatchNos = performLotteryDraw(round.candidateBatchNos, round.drawSeed);
+
+  var onChainProofs = _loadOnChainProofs();
+  var proof = _buildOnChainProof(round, 'drawing');
+  round.blockchainEndorsement = proof;
+  onChainProofs[round.roundId] = proof;
+  _saveOnChainProofs(onChainProofs);
+
+  _setRoundMeta(round.roundId, {
+    startStatus: START_STATUS.STARTED,
+    startedAt: _formatDateTime(now),
+    adequacyAtStart: adequacy,
+    startedWithPartial: false
+  });
+
+  var rounds = _loadRounds();
+  for (var i = 0; i < rounds.length; i++) {
+    if (rounds[i].roundId === round.roundId) {
+      rounds[i] = round;
+      break;
+    }
+  }
+  _saveRounds(rounds);
+
+  return {
+    success: true,
+    round: round,
+    startStatus: START_STATUS.STARTED,
+    adequacy: adequacy,
+    isPartial: false,
+    message: '成员充足（' + adequacy.currentCount + '/' + adequacy.minWitnesses + '），抽签已完成，结果已上链存证'
+  };
+}
+
+function startLotteryRound(roundId) {
+  initializeLotterySystem();
+
+  var rounds = _loadRounds();
+  var round = null;
+  var roundIdx = -1;
+
+  for (var i = 0; i < rounds.length; i++) {
+    if (rounds[i].roundId === roundId) {
+      round = rounds[i];
+      roundIdx = i;
+      break;
+    }
+  }
+
+  if (!round) {
+    return {
+      success: false,
+      startStatus: START_STATUS.FAILED,
+      message: '未找到该抽检轮次'
+    };
+  }
+
+  if (round.status !== LOTTERY_STATUS.SCHEDULED && round.status !== LOTTERY_STATUS.DRAWING) {
+    return {
+      success: false,
+      startStatus: START_STATUS.FAILED,
+      message: '当前状态 ' + round.status + ' 不允许启动，仅 SCHEDULED 状态可启动'
+    };
+  }
+
+  var meta = _getRoundMeta(roundId);
+  var adequacy = _checkMemberAdequacy(round);
+  var strategy = (meta && meta.strategy) || round.memberStrategy || MEMBER_STRATEGY.WAIT;
+
+  if (adequacy.isSufficient) {
+    return _finalizeNormalStart(round, adequacy);
+  }
+
+  var strategyResult = null;
+
+  switch (strategy) {
+    case MEMBER_STRATEGY.FAIL:
+      strategyResult = _handleFailStrategy(round, adequacy, meta);
+      break;
+    case MEMBER_STRATEGY.ALERT:
+      strategyResult = _handleAlertStrategy(round, adequacy, meta);
+      break;
+    case MEMBER_STRATEGY.WAIT:
+    default:
+      strategyResult = _handleWaitStrategy(round, adequacy, meta);
+      break;
+  }
+
+  if (strategyResult) {
+    return strategyResult;
+  }
+
+  return _finalizeNormalStart(round, adequacy);
+}
+
+function cancelStartLottery(roundId) {
+  initializeLotterySystem();
+  var meta = _getRoundMeta(roundId);
+
+  if (!meta || meta.startStatus !== START_STATUS.WAITING) {
+    return {
+      success: false,
+      message: '当前轮次不处于等待状态，无法取消'
+    };
+  }
+
+  _setRoundMeta(roundId, {
+    startStatus: START_STATUS.FAILED,
+    failedAt: _formatDateTime(_now()),
+    failReason: '等待被手动取消',
+    cancelled: true
+  });
+
+  return {
+    success: true,
+    message: '已取消等待，启动失败'
+  };
+}
+
+function getRoundStartStatus(roundId) {
+  initializeLotterySystem();
+  var round = getLotteryRoundById(roundId);
+  if (!round) {
+    return { success: false, message: '未找到该抽检轮次' };
+  }
+
+  var meta = _getRoundMeta(roundId);
+  var adequacy = _checkMemberAdequacy(round);
+
+  return {
+    success: true,
+    roundId: roundId,
+    status: round.status,
+    startStatus: meta ? meta.startStatus : START_STATUS.PENDING,
+    strategy: meta ? meta.strategy : null,
+    adequacy: adequacy,
+    meta: meta,
+    canStart: round.status === LOTTERY_STATUS.SCHEDULED ||
+      (round.status === LOTTERY_STATUS.DRAWING && (!meta || meta.startStatus === START_STATUS.WAITING))
+  };
+}
+
 function getOnChainProof(roundId) {
   initializeLotterySystem();
   var proofs = _loadOnChainProofs();
@@ -1019,5 +1462,16 @@ module.exports = {
   getStatusColor: getStatusColor,
   getSalesBatchPool: getSalesBatchPool,
   getBatchReportMap: getBatchReportMap,
-  getReportsForBatch: getReportsForBatch
+  getReportsForBatch: getReportsForBatch,
+
+  MEMBER_STRATEGY: MEMBER_STRATEGY,
+  MEMBER_STRATEGY_LABELS: MEMBER_STRATEGY_LABELS,
+  START_STATUS: START_STATUS,
+  DEFAULT_MIN_WITNESSES: DEFAULT_MIN_WITNESSES,
+  DEFAULT_WAIT_TIMEOUT: DEFAULT_WAIT_TIMEOUT,
+
+  createScheduledLotteryRound: createScheduledLotteryRound,
+  startLotteryRound: startLotteryRound,
+  cancelStartLottery: cancelStartLottery,
+  getRoundStartStatus: getRoundStartStatus
 };

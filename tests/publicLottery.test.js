@@ -560,4 +560,400 @@ describe('公开抽检与透明 Lottery 模块测试', function() {
       }
     });
   });
+
+  describe('任务启动成员检查与策略处理测试', function() {
+
+    beforeEach(function() {
+      resetStorage();
+    });
+
+    describe('基础常量测试', function() {
+      test('MEMBER_STRATEGY 枚举应正确定义', function() {
+        expect(publicLottery.MEMBER_STRATEGY.WAIT).toBe('wait');
+        expect(publicLottery.MEMBER_STRATEGY.ALERT).toBe('alert');
+        expect(publicLottery.MEMBER_STRATEGY.FAIL).toBe('fail');
+      });
+
+      test('START_STATUS 枚举应正确定义', function() {
+        expect(publicLottery.START_STATUS.PENDING).toBe('pending');
+        expect(publicLottery.START_STATUS.WAITING).toBe('waiting');
+        expect(publicLottery.START_STATUS.STARTED).toBe('started');
+        expect(publicLottery.START_STATUS.FAILED).toBe('failed');
+        expect(publicLottery.START_STATUS.PARTIAL).toBe('partial');
+      });
+
+      test('默认配置常量应正确定义', function() {
+        expect(publicLottery.DEFAULT_MIN_WITNESSES).toBe(3);
+        expect(publicLottery.DEFAULT_WAIT_TIMEOUT).toBe(300000);
+      });
+    });
+
+    describe('createScheduledLotteryRound 测试', function() {
+      test('应创建 SCHEDULED 状态的轮次', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-SCHEDULED-TEST',
+          minWitnesses: 3,
+          maxWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.WAIT
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.round.status).toBe(publicLottery.LOTTERY_STATUS.SCHEDULED);
+        expect(result.round.minWitnesses).toBe(3);
+        expect(result.round.maxWitnesses).toBe(5);
+        expect(result.round.memberStrategy).toBe('wait');
+        expect(result.round.selectedBatchNos.length).toBe(0);
+      });
+
+      test('应正确设置元数据', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-META-TEST',
+          memberStrategy: publicLottery.MEMBER_STRATEGY.FAIL,
+          allowPartial: false,
+          waitTimeout: 60000
+        });
+
+        var status = publicLottery.getRoundStartStatus(result.round.roundId);
+        expect(status.success).toBe(true);
+        expect(status.startStatus).toBe('pending');
+        expect(status.strategy).toBe('fail');
+        expect(status.meta.allowPartial).toBe(false);
+        expect(status.meta.waitTimeout).toBe(60000);
+      });
+    });
+
+    describe('FAIL 策略测试', function() {
+      test('成员不足时应直接失败', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-FAIL-STRATEGY',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.FAIL
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+        publicLottery.registerWitness(roundId, '李四', '13800138002');
+
+        var startResult = publicLottery.startLotteryRound(roundId);
+
+        expect(startResult.success).toBe(false);
+        expect(startResult.startStatus).toBe('failed');
+        expect(startResult.message).toContain('成员不足');
+        expect(startResult.adequacy.currentCount).toBe(2);
+        expect(startResult.adequacy.deficit).toBe(3);
+      });
+
+      test('成员充足时应正常启动', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-FAIL-SUFFICIENT',
+          minWitnesses: 2,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.FAIL
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+        publicLottery.registerWitness(roundId, '李四', '13800138002');
+
+        var startResult = publicLottery.startLotteryRound(roundId);
+
+        expect(startResult.success).toBe(true);
+        expect(startResult.startStatus).toBe('started');
+        expect(startResult.round.status).toBe('drawing');
+        expect(startResult.round.selectedBatchNos.length).toBeGreaterThan(0);
+      });
+    });
+
+    describe('ALERT 策略测试', function() {
+      test('成员不足时应告警并按部分可用模式启动', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-ALERT-STRATEGY',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.ALERT
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+        publicLottery.registerWitness(roundId, '李四', '13800138002');
+
+        var startResult = publicLottery.startLotteryRound(roundId);
+
+        expect(startResult.success).toBe(true);
+        expect(startResult.startStatus).toBe('partial');
+        expect(startResult.isPartial).toBe(true);
+        expect(startResult.alertMessage).toBeDefined();
+        expect(startResult.round.status).toBe('drawing');
+        expect(startResult.round.selectedBatchNos.length).toBeGreaterThan(0);
+      });
+
+      test('成员充足时应正常启动无告警', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-ALERT-SUFFICIENT',
+          minWitnesses: 2,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.ALERT
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+        publicLottery.registerWitness(roundId, '李四', '13800138002');
+
+        var startResult = publicLottery.startLotteryRound(roundId);
+
+        expect(startResult.success).toBe(true);
+        expect(startResult.startStatus).toBe('started');
+        expect(startResult.isPartial).toBe(false);
+        expect(startResult.round.status).toBe('drawing');
+      });
+    });
+
+    describe('WAIT 策略测试', function() {
+      test('成员不足时首次调用应进入等待状态', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-WAIT-STRATEGY',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.WAIT,
+          waitTimeout: 60000
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+
+        var startResult = publicLottery.startLotteryRound(roundId);
+
+        expect(startResult.success).toBe(true);
+        expect(startResult.startStatus).toBe('waiting');
+        expect(startResult.isWaiting).toBe(true);
+        expect(startResult.timeoutMs).toBe(60000);
+        expect(startResult.message).toContain('等待成员凑齐');
+      });
+
+      test('等待期间成员凑齐后应正常启动', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-WAIT-SUFFICIENT',
+          minWitnesses: 3,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.WAIT,
+          waitTimeout: 60000
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+        publicLottery.registerWitness(roundId, '李四', '13800138002');
+
+        var firstResult = publicLottery.startLotteryRound(roundId);
+        expect(firstResult.startStatus).toBe('waiting');
+
+        publicLottery.registerWitness(roundId, '王五', '13800138003');
+
+        var secondResult = publicLottery.startLotteryRound(roundId);
+        expect(secondResult.success).toBe(true);
+        expect(secondResult.startStatus).toBe('started');
+        expect(secondResult.isPartial).toBe(false);
+        expect(secondResult.adequacy.currentCount).toBe(3);
+      });
+
+      test('超时后 allowPartial=true 应按部分可用启动', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-WAIT-TIMEOUT-PARTIAL',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.WAIT,
+          waitTimeout: 1000,
+          allowPartial: true
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+        publicLottery.registerWitness(roundId, '李四', '13800138002');
+
+        var firstResult = publicLottery.startLotteryRound(roundId);
+        expect(firstResult.startStatus).toBe('waiting');
+
+        var timeoutPromise = new Promise(function(resolve) {
+          setTimeout(function() {
+            var secondResult = publicLottery.startLotteryRound(roundId);
+            resolve(secondResult);
+          }, 1200);
+        });
+
+        return timeoutPromise.then(function(startResult) {
+          expect(startResult.success).toBe(true);
+          expect(startResult.startStatus).toBe('partial');
+          expect(startResult.isPartial).toBe(true);
+          expect(startResult.waitTimedOut).toBe(true);
+          expect(startResult.round.status).toBe('drawing');
+        });
+      });
+
+      test('超时后 allowPartial=false 应启动失败', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-WAIT-TIMEOUT-FAIL',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.WAIT,
+          waitTimeout: 1000,
+          allowPartial: false
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+
+        var firstResult = publicLottery.startLotteryRound(roundId);
+        expect(firstResult.startStatus).toBe('waiting');
+
+        var timeoutPromise = new Promise(function(resolve) {
+          setTimeout(function() {
+            var secondResult = publicLottery.startLotteryRound(roundId);
+            resolve(secondResult);
+          }, 1200);
+        });
+
+        return timeoutPromise.then(function(startResult) {
+          expect(startResult.success).toBe(false);
+          expect(startResult.startStatus).toBe('failed');
+          expect(startResult.waitTimedOut).toBe(true);
+          expect(startResult.message).toContain('等待超时');
+        });
+      });
+    });
+
+    describe('取消等待测试', function() {
+      test('等待状态可被手动取消', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-WAIT-CANCEL',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.WAIT
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.startLotteryRound(roundId);
+
+        var status1 = publicLottery.getRoundStartStatus(roundId);
+        expect(status1.startStatus).toBe('waiting');
+
+        var cancelResult = publicLottery.cancelStartLottery(roundId);
+        expect(cancelResult.success).toBe(true);
+
+        var status2 = publicLottery.getRoundStartStatus(roundId);
+        expect(status2.startStatus).toBe('failed');
+        expect(status2.meta.cancelled).toBe(true);
+      });
+
+      test('非等待状态取消应失败', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-CANCEL-FAIL',
+          minWitnesses: 2,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.WAIT
+        });
+
+        var roundId = result.round.roundId;
+
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+        publicLottery.registerWitness(roundId, '李四', '13800138002');
+
+        publicLottery.startLotteryRound(roundId);
+
+        var cancelResult = publicLottery.cancelStartLottery(roundId);
+        expect(cancelResult.success).toBe(false);
+        expect(cancelResult.message).toContain('不处于等待状态');
+      });
+    });
+
+    describe('状态验证测试', function() {
+      test('非 SCHEDULED 状态无法启动', function() {
+        publicLottery.initializeLotterySystem();
+        var rounds = publicLottery.getAllLotteryRounds();
+        var reportedRound = rounds.find(function(r) {
+          return r.status === publicLottery.LOTTERY_STATUS.REPORTED;
+        });
+
+        if (reportedRound) {
+          var startResult = publicLottery.startLotteryRound(reportedRound.roundId);
+          expect(startResult.success).toBe(false);
+          expect(startResult.message).toContain('不允许启动');
+        }
+      });
+
+      test('getRoundStartStatus 应返回完整状态信息', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-STATUS-CHECK',
+          minWitnesses: 3,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.FAIL
+        });
+
+        var roundId = result.round.roundId;
+        var status = publicLottery.getRoundStartStatus(roundId);
+
+        expect(status.success).toBe(true);
+        expect(status.roundId).toBe(roundId);
+        expect(status.status).toBe('scheduled');
+        expect(status.startStatus).toBe('pending');
+        expect(status.strategy).toBe('fail');
+        expect(status.canStart).toBe(true);
+        expect(status.adequacy.minWitnesses).toBe(3);
+      });
+    });
+
+    describe('部分可用场景验证', function() {
+      test('部分可用启动后链上存证应包含见证人数', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-PARTIAL-BC',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.ALERT
+        });
+
+        var roundId = result.round.roundId;
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+
+        var startResult = publicLottery.startLotteryRound(roundId);
+
+        expect(startResult.success).toBe(true);
+        expect(startResult.round.blockchainEndorsement).not.toBeNull();
+
+        var witnessCountItem = startResult.round.blockchainEndorsement.onChainData.find(
+          function(d) { return d.key === 'witnessCount'; }
+        );
+        expect(witnessCountItem).toBeDefined();
+        expect(witnessCountItem.value).toBe('1');
+      });
+
+      test('元数据应记录启动时的成员充足情况', function() {
+        publicLottery.initializeLotterySystem();
+        var result = publicLottery.createScheduledLotteryRound({
+          drawSeed: 'SEED-META-RECORD',
+          minWitnesses: 5,
+          memberStrategy: publicLottery.MEMBER_STRATEGY.ALERT
+        });
+
+        var roundId = result.round.roundId;
+        publicLottery.registerWitness(roundId, '张三', '13800138001');
+
+        var startResult = publicLottery.startLotteryRound(roundId);
+
+        var status = publicLottery.getRoundStartStatus(roundId);
+        expect(status.meta.startedWithPartial).toBe(true);
+        expect(status.meta.adequacyAtStart.currentCount).toBe(1);
+        expect(status.meta.adequacyAtStart.isSufficient).toBe(false);
+      });
+    });
+  });
 });
