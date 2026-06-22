@@ -22,6 +22,7 @@ Page({
     waterFootprint: null,
     biodiversity: null,
     recyclingGuide: null,
+    biodiversityMaxMonitorCount: 60,
     showCertModal: false,
     selectedCert: null,
     showVerifyCertModal: false,
@@ -33,6 +34,8 @@ Page({
     pointsHistory: [],
     showPointsDetail: false,
     carbonChartData: null,
+    waterChartDrawn: false,
+    carbonChartDrawn: false,
     ecoFundData: null,
     fundProjects: [],
     selectedProjectKey: '',
@@ -70,6 +73,14 @@ Page({
     var batchConfig = ecoFund.getBatchDonationConfig(batchNo);
     var selectedKey = batchConfig ? batchConfig.projectKey : fundProjects[0].key;
 
+    var bioMaxMonitor = 60;
+    if (greenData.biodiversity && greenData.biodiversity.monitoringStats) {
+      var ms = greenData.biodiversity.monitoringStats;
+      bioMaxMonitor = Math.max(ms.birdMonitorCount || 0, ms.insectMonitorCount || 0, ms.plantSurveyCount || 0);
+      bioMaxMonitor = Math.max(bioMaxMonitor, 10);
+      bioMaxMonitor = Math.ceil(bioMaxMonitor * 1.2 / 10) * 10;
+    }
+
     this.setData({
       traceId: traceId,
       productName: traceData ? traceData.basicInfo.productName : '',
@@ -79,6 +90,7 @@ Page({
       waterFootprint: greenData.waterFootprint || null,
       biodiversity: greenData.biodiversity || null,
       recyclingGuide: greenData.recyclingGuide || null,
+      biodiversityMaxMonitorCount: bioMaxMonitor,
       ecoFundData: greenData.ecoFund || null,
       fundProjects: fundProjects,
       selectedProjectKey: selectedKey,
@@ -97,12 +109,18 @@ Page({
       this.loadGreenPoints();
     }
 
-    if (greenData.carbonFootprint) {
-      this.drawCarbonChart(greenData.carbonFootprint);
+    if (greenData.carbonFootprint && this.data.activeTab === 'carbon') {
+      var thatCarbon = this;
+      setTimeout(function() {
+        thatCarbon.drawCarbonChart(greenData.carbonFootprint);
+      }, 100);
     }
 
-    if (greenData.waterFootprint) {
-      this.drawWaterChart(greenData.waterFootprint);
+    if (greenData.waterFootprint && this.data.activeTab === 'water') {
+      var thatWater = this;
+      setTimeout(function() {
+        thatWater.drawWaterChart(greenData.waterFootprint);
+      }, 100);
     }
   },
 
@@ -138,12 +156,27 @@ Page({
     var key = e.currentTarget.dataset.key;
     this.setData({ activeTab: key });
 
+    var that = this;
+    var greenData = mockData.getGreenTraceExtended(this.data.traceId);
+
     if (key === 'carbon') {
       var earnResult = greenPoints.earnPoints('viewCarbon');
       if (earnResult.earned > 0) this.loadGreenPoints();
+      if (!this.data.carbonChartDrawn && greenData && greenData.carbonFootprint) {
+        setTimeout(function() {
+          that.drawCarbonChart(greenData.carbonFootprint);
+          that.setData({ carbonChartDrawn: true });
+        }, 100);
+      }
     } else if (key === 'water') {
       var earnResultW = greenPoints.earnPoints('viewWater');
       if (earnResultW.earned > 0) this.loadGreenPoints();
+      if (!this.data.waterChartDrawn && greenData && greenData.waterFootprint) {
+        setTimeout(function() {
+          that.drawWaterChart(greenData.waterFootprint);
+          that.setData({ waterChartDrawn: true });
+        }, 100);
+      }
     } else if (key === 'biodiversity') {
       var earnResultB = greenPoints.earnPoints('viewBiodiversity');
       if (earnResultB.earned > 0) this.loadGreenPoints();
@@ -296,7 +329,7 @@ Page({
       ctx.font = '9px sans-serif';
       ctx.fillText(carbonData.unit, centerX, centerY + 10);
 
-      that.setData({ carbonChartData: carbonData });
+      that.setData({ carbonChartData: carbonData, carbonChartDrawn: true });
     });
   },
 
@@ -367,7 +400,7 @@ Page({
       ctx.font = '9px sans-serif';
       ctx.fillText(waterData.unit, centerX, centerY + 10);
 
-      that.setData({ waterFootprint: waterData });
+      that.setData({ waterChartDrawn: true });
     });
   },
 

@@ -308,21 +308,21 @@
           <view class="bmc-bar-item">
             <view class="bmc-bar-label">🦅 鸟类监测</view>
             <view class="bmc-bar-track">
-              <view class="bmc-bar-fill bird" style="width: {{(biodiversity.monitoringStats.birdMonitorCount / 60) * 100}}%;"></view>
+              <view class="bmc-bar-fill bird" style="width: {{(biodiversity.monitoringStats.birdMonitorCount / biodiversityMaxMonitorCount) * 100}}%;"></view>
             </view>
             <view class="bmc-bar-num">{{biodiversity.monitoringStats.birdMonitorCount}}次</view>
           </view>
           <view class="bmc-bar-item">
             <view class="bmc-bar-label">🐝 昆虫监测</view>
             <view class="bmc-bar-track">
-              <view class="bmc-bar-fill insect" style="width: {{(biodiversity.monitoringStats.insectMonitorCount / 60) * 100}}%;"></view>
+              <view class="bmc-bar-fill insect" style="width: {{(biodiversity.monitoringStats.insectMonitorCount / biodiversityMaxMonitorCount) * 100}}%;"></view>
             </view>
             <view class="bmc-bar-num">{{biodiversity.monitoringStats.insectMonitorCount}}次</view>
           </view>
           <view class="bmc-bar-item">
             <view class="bmc-bar-label">🌿 植物调查</view>
             <view class="bmc-bar-track">
-              <view class="bmc-bar-fill plant" style="width: {{(biodiversity.monitoringStats.plantSurveyCount / 60) * 100}}%;"></view>
+              <view class="bmc-bar-fill plant" style="width: {{(biodiversity.monitoringStats.plantSurveyCount / biodiversityMaxMonitorCount) * 100}}%;"></view>
             </view>
             <view class="bmc-bar-num">{{biodiversity.monitoringStats.plantSurveyCount}}次</view>
           </view>

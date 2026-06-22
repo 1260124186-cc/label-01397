@@ -477,7 +477,7 @@
 .comp-bar-value {
   font-size: 22rpx;
   color: #666666;
-  width: 64rpx;
+  width: 80rpx;
   text-align: right;
   flex-shrink: 0;
 }
@@ -660,6 +660,10 @@
   background: rgba(24, 144, 255, 0.08);
   border-radius: 16rpx;
   padding: 24rpx;
+}
+
+.water-note .note-text {
+  color: #1890FF;
 }
 
 .data-source-tag {
